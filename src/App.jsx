@@ -1,11 +1,89 @@
-import './App.css'
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useLocation, Link } from "react-router-dom";
+import { StoreProvider } from "./lib/store";
+import { Header, Footer } from "./components/SiteChrome";
 
-function App() {
-  return (
-    <div className="app">
-      <h1>Gemora Diam</h1>
-    </div>
-  )
+import HomePage from "./pages/HomePage";
+import ShopPage from "./pages/ShopPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import CartPage from "./pages/CartPage";
+import OrdersPage from "./pages/OrdersPage";
+import ProfilePage from "./pages/ProfilePage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsPage from "./pages/TermsPage";
+
+function ScrollToTop() {
+  const { pathname, search } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname, search]);
+
+  return null;
 }
 
-export default App
+function NotFoundPage() {
+  return (
+    <div
+      style={{
+        minHeight: "65vh",
+        display: "grid",
+        placeItems: "center",
+        padding: "40px 20px",
+        textAlign: "center"
+      }}
+    >
+      <div style={{ maxWidth: "480px" }}>
+        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>404 Not Found</p>
+        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.5rem, 5vw, 3.6rem)", marginTop: "12px" }}>
+          This piece is not in our vault
+        </h1>
+        <p style={{ marginTop: "16px", fontSize: "0.95rem", color: "var(--muted-foreground)" }}>
+          The atelier creation or salon page you are looking for may have been archived or moved.
+        </p>
+        <Link
+          to="/"
+          className="eyebrow"
+          style={{
+            marginTop: "32px",
+            display: "inline-block",
+            backgroundColor: "var(--primary)",
+            color: "var(--primary-foreground)",
+            padding: "16px 36px"
+          }}
+        >
+          Return to Maison
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <StoreProvider>
+        <ScrollToTop />
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+          <Header />
+          <main style={{ flex: 1 }}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/shop" element={<ShopPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/orders" element={<OrdersPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </StoreProvider>
+    </BrowserRouter>
+  );
+}
