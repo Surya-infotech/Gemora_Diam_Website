@@ -691,22 +691,14 @@ function SettingsTab() {
 
 function SignInView({ onLogin }) {
   const [isRegister, setIsRegister] = useState(false);
-  const [email, setEmail] = useState("isabella@example.com");
-  const [password, setPassword] = useState("password123");
-  const [name, setName] = useState("Isabella Laurent");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!email) return;
     onLogin({ email, name: isRegister ? name : (name || email.split("@")[0]) });
-  };
-
-  const handleDemoLogin = () => {
-    onLogin({
-      name: "Isabella Laurent",
-      email: "isabella@example.com",
-      phone: "+1 212 555 0198"
-    });
   };
 
   return (
@@ -742,7 +734,7 @@ function SignInView({ onLogin }) {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Isabella Laurent"
+                placeholder="Full Name"
                 required
               />
             </div>
@@ -794,24 +786,6 @@ function SignInView({ onLogin }) {
             }}
           >
             {isRegister ? "Create Salon Account" : "Sign In"}
-          </button>
-
-          <button
-            type="button"
-            onClick={handleDemoLogin}
-            className="eyebrow"
-            style={{
-              backgroundColor: "transparent",
-              color: "var(--foreground)",
-              border: "1px solid var(--border)",
-              padding: "12px",
-              cursor: "pointer",
-              fontWeight: 600,
-              letterSpacing: "0.1em",
-              textAlign: "center"
-            }}
-          >
-            Sign In with Demo Account
           </button>
         </form>
 
