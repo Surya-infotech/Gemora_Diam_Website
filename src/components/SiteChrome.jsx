@@ -27,6 +27,8 @@ import amexSvg from "../assets/vemus/payment_am-ex.svg";
 import discoverSvg from "../assets/vemus/payment_discover.svg";
 
 export function Logo() {
+  const { generalSettings } = useStore();
+  const brandName = generalSettings?.softwarename;
   return (
     <Link to="/" style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", textDecoration: "none" }}>
       <span
@@ -40,7 +42,7 @@ export function Logo() {
           lineHeight: 1
         }}
       >
-        Vemus
+        {brandName}
       </span>
       <span
         style={{
@@ -85,7 +87,7 @@ function Badge({ n }) {
 }
 
 export function Header() {
-  const { cartCount, wishlist, currency, setCurrency, setCartOpen } = useStore();
+  const { cartCount, wishlist, currency, setCurrency, setCartOpen, generalSettings } = useStore();
   const [mobile, setMobile] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
@@ -169,14 +171,18 @@ export function Header() {
       >
         {/* Left: Phone & Store */}
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-          <a
-            href="tel:85332453"
-            style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#ffffff" }}
-          >
-            <Phone size={13} />
-            <span>(61) 8533 2453</span>
-          </a>
-          <span style={{ opacity: 0.5 }}>|</span>
+          {generalSettings?.phone && (
+            <>
+              <a
+                href={`tel:${generalSettings.phone.replace(/\s+/g, '')}`}
+                style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#ffffff" }}
+              >
+                <Phone size={13} />
+                <span>{generalSettings.phone}</span>
+              </a>
+              <span style={{ opacity: 0.5 }}>|</span>
+            </>
+          )}
           <Link
             to="/contact"
             style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#ffffff" }}
@@ -563,7 +569,9 @@ export function Header() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <span className="eyebrow" style={{ color: "var(--primary)" }}>Search Vemus Jewelry</span>
+              <span className="eyebrow" style={{ color: "var(--primary)" }}>
+                {generalSettings?.softwarename ? `Search ${generalSettings.softwarename} Jewelry` : "Search Jewelry"}
+              </span>
               <button onClick={() => setSearch(false)}>
                 <X size={20} strokeWidth={1.4} />
               </button>
@@ -749,7 +757,7 @@ function CartDrawer() {
 
 export function Footer() {
   const [email, setEmail] = useState("");
-  const { notify } = useStore();
+  const { notify, generalSettings, socialMedia } = useStore();
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -757,7 +765,7 @@ export function Footer() {
       alert("Please enter a valid email address");
       return;
     }
-    notify("Thank you for joining the Vemus Tribe!", "Enjoy 15% off your first purchase: VEMUS15");
+    notify(generalSettings?.softwarename ? `Thank you for joining the ${generalSettings.softwarename} Circle!` : "Thank you for subscribing!", "Enjoy 15% off your first purchase.");
     setEmail("");
   };
 
@@ -861,9 +869,11 @@ export function Footer() {
       >
         {/* Col 1: Join the Tribe */}
         <div>
-          <span style={{ fontSize: "0.75rem", letterSpacing: "0.2em", fontWeight: 700, textTransform: "uppercase", color: "var(--primary)" }}>
-            JOIN THE #VEMUS TRIBE
-          </span>
+          {generalSettings?.softwarename && (
+            <span style={{ fontSize: "0.75rem", letterSpacing: "0.2em", fontWeight: 700, textTransform: "uppercase", color: "var(--primary)" }}>
+              JOIN THE #{generalSettings.softwarename.replace(/\s+/g, '').toUpperCase()} TRIBE
+            </span>
+          )}
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", marginTop: "12px", marginBottom: "8px" }}>
             Shiny Things Await - 10% Off Inside!
           </h3>
@@ -892,28 +902,44 @@ export function Footer() {
           </form>
 
           {/* Socials */}
-          <div style={{ display: "flex", gap: "14px", marginTop: "24px" }}>
-            {["facebook", "instagram", "twitter", "pinterest"].map((net) => (
-              <span
-                key={net}
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  border: "1px solid #ddd",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "0.75rem",
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  color: "#555",
-                  cursor: "pointer"
-                }}
-              >
-                {net[0].toUpperCase()}
-              </span>
-            ))}
-          </div>
+          {socialMedia && socialMedia.length > 0 && (
+            <div style={{ display: "flex", gap: "14px", marginTop: "24px", flexWrap: "wrap" }}>
+              {socialMedia.map((net, idx) => (
+                <a
+                  key={net._id || idx}
+                  href={net.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  title={net.platform}
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    border: "1px solid #ddd",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    color: "#555",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    transition: "all 0.2s ease"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = "var(--primary)";
+                    e.currentTarget.style.color = "var(--primary)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "#ddd";
+                    e.currentTarget.style.color = "#555";
+                  }}
+                >
+                  {net.platform ? net.platform[0].toUpperCase() : "✦"}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Col 2: Find Us */}
@@ -921,29 +947,53 @@ export function Footer() {
           <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem", letterSpacing: "0.08em", marginBottom: "20px" }}>
             FIND US
           </h4>
-          <p style={{ fontSize: "0.85rem", color: "#666", marginBottom: "14px" }}>
-            Find a location nearest you.
-          </p>
-          <p style={{ fontSize: "0.85rem", marginBottom: "10px" }}>
-            <a
-              href="https://www.google.com/maps?q=123+Yarran+st,Punchbowl,NSW+202196,Australia"
-              target="_blank"
-              rel="noreferrer"
-              style={{ textDecoration: "underline", color: "#181818", fontWeight: 500 }}
-            >
-              See Our Stores
-            </a>
-          </p>
-          <p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>
-            <a href="tel:6483441233" style={{ color: "#666" }}>
-              (64) 8344 1233
-            </a>
-          </p>
-          <p style={{ fontSize: "0.85rem" }}>
-            <a href="mailto:hello@vemus.com" style={{ color: "#666" }}>
-              hello@vemus.com
-            </a>
-          </p>
+          {generalSettings?.address && (
+            <>
+              <p style={{ fontSize: "0.85rem", color: "#666", marginBottom: "14px", lineHeight: 1.6 }}>
+                <span>
+                  {generalSettings.address}, {generalSettings.cityname}
+                  <br />
+                  {generalSettings.statename}, {generalSettings.countryname}{generalSettings.postalcode ? ` - ${generalSettings.postalcode}` : ""}
+                </span>
+              </p>
+              <p style={{ fontSize: "0.85rem", marginBottom: "10px" }}>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    [generalSettings.address, generalSettings.cityname, generalSettings.statename, generalSettings.countryname].filter(Boolean).join(", ")
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "underline", color: "#181818", fontWeight: 500 }}
+                >
+                  See Our Stores
+                </a>
+              </p>
+            </>
+          )}
+          {generalSettings?.phone && (
+            <p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>
+              <a
+                href={`tel:${generalSettings.phone.replace(/\s+/g, "")}`}
+                style={{ color: "#666", transition: "color 0.2s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#666")}
+              >
+                {generalSettings.phone}
+              </a>
+            </p>
+          )}
+          {generalSettings?.email && (
+            <p style={{ fontSize: "0.85rem" }}>
+              <a
+                href={`mailto:${generalSettings.email}`}
+                style={{ color: "#666", transition: "color 0.2s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#666")}
+              >
+                {generalSettings.email}
+              </a>
+            </p>
+          )}
         </div>
 
         {/* Col 3: Help */}
@@ -1005,7 +1055,9 @@ export function Footer() {
             color: "#777"
           }}
         >
-          <p style={{ margin: 0 }}>All Rights Reserved 2026 VEMUS Fine Jewelry.</p>
+          <p style={{ margin: 0 }}>
+            {generalSettings?.copyright}
+          </p>
 
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
             <img src={visaSvg} alt="Visa" style={{ height: "22px", objectFit: "contain" }} />

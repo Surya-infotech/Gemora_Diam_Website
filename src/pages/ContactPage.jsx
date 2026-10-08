@@ -11,7 +11,7 @@ const validate = (f) => ({
 });
 
 export default function ContactPage() {
-  const { showToast } = useStore();
+  const { showToast, generalSettings } = useStore();
   const [f, setF] = useState({ name: "", email: "", phone: "", reason: "", message: "" });
   const [touched, setTouched] = useState({});
   const [bookModalOpen, setBookModalOpen] = useState(false);
@@ -199,13 +199,20 @@ export default function ContactPage() {
 
         {/* Right Info Aside */}
         <aside style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-          {/* Paris Flagship Card */}
+          {/* Atelier / Flagship Card */}
           <div style={{ border: "1px solid var(--border)", backgroundColor: "var(--card)", padding: "32px", borderRadius: "2px" }}>
-            <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Paris Flagship & Atelier</p>
-            <p style={{ display: "flex", gap: "12px", alignItems: "flex-start", marginTop: "18px", fontSize: "0.92rem", color: "var(--foreground)" }}>
-              <MapPin size={18} style={{ color: "var(--gold-deep)", flexShrink: 0, marginTop: "2px" }} />
-              <span>12 Rue de la Paix, 75002 Paris, France</span>
+            <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
+              {generalSettings?.cityname ? `${generalSettings.cityname} Flagship & Atelier` : "Flagship & Atelier"}
             </p>
+            {generalSettings?.address && (
+              <p style={{ display: "flex", gap: "12px", alignItems: "flex-start", marginTop: "18px", fontSize: "0.92rem", color: "var(--foreground)" }}>
+                <MapPin size={18} style={{ color: "var(--gold-deep)", flexShrink: 0, marginTop: "2px" }} />
+                <span>
+                  {[generalSettings.address, generalSettings.cityname, generalSettings.statename, generalSettings.countryname].filter(Boolean).join(", ")}
+                  {generalSettings.postalcode ? ` - ${generalSettings.postalcode}` : ""}
+                </span>
+              </p>
+            )}
             <p style={{ display: "flex", gap: "12px", alignItems: "flex-start", marginTop: "12px", fontSize: "0.92rem", color: "var(--foreground)" }}>
               <Clock size={18} style={{ color: "var(--gold-deep)", flexShrink: 0, marginTop: "2px" }} />
               <span>Mon – Sat 10:00 – 19:00 · Sun by private appointment</span>
@@ -238,81 +245,91 @@ export default function ContactPage() {
           </div>
 
           {/* Map Preview */}
-          <div style={{ width: "100%", height: "240px", border: "1px solid var(--border)", overflow: "hidden" }}>
-            <iframe
-              title="GEMORA DIAM Paris Location Map"
-              style={{ width: "100%", height: "100%", border: "none", filter: "grayscale(85%) contrast(1.1)" }}
-              loading="lazy"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=2.326%2C48.866%2C2.336%2C48.872&layer=mapnik&marker=48.869%2C2.331"
-            />
-          </div>
+          {generalSettings?.address && (
+            <div style={{ width: "100%", height: "240px", border: "1px solid var(--border)", overflow: "hidden" }}>
+              <iframe
+                title={`${generalSettings?.softwarename || "Atelier"} Location Map`}
+                style={{ width: "100%", height: "100%", border: "none", filter: "grayscale(85%) contrast(1.1)" }}
+                loading="lazy"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                  [generalSettings.address, generalSettings.cityname, generalSettings.statename, generalSettings.countryname].filter(Boolean).join(", ")
+                )}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+              />
+            </div>
+          )}
 
           {/* Quick Communication Channels */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
-            <a
-              href="https://wa.me/33100000000"
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "8px",
-                border: "1px solid var(--border)",
-                padding: "16px 8px",
-                fontSize: "0.75rem",
-                color: "var(--foreground)",
-                textAlign: "center",
-                transition: "border-color 0.2s ease"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--gold)")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
-            >
-              <MessageCircle size={20} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
-              <span>WhatsApp</span>
-            </a>
+            {generalSettings?.phone && (
+              <a
+                href={`https://wa.me/${generalSettings.phone.replace(/[^0-9]/g, "")}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "8px",
+                  border: "1px solid var(--border)",
+                  padding: "16px 8px",
+                  fontSize: "0.75rem",
+                  color: "var(--foreground)",
+                  textAlign: "center",
+                  transition: "border-color 0.2s ease"
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--gold)")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+              >
+                <MessageCircle size={20} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
+                <span>WhatsApp</span>
+              </a>
+            )}
 
-            <a
-              href="tel:+33100000000"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "8px",
-                border: "1px solid var(--border)",
-                padding: "16px 8px",
-                fontSize: "0.75rem",
-                color: "var(--foreground)",
-                textAlign: "center",
-                transition: "border-color 0.2s ease"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--gold)")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
-            >
-              <Phone size={20} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
-              <span>VIP Line</span>
-            </a>
+            {generalSettings?.phone && (
+              <a
+                href={`tel:${generalSettings.phone.replace(/\s+/g, "")}`}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "8px",
+                  border: "1px solid var(--border)",
+                  padding: "16px 8px",
+                  fontSize: "0.75rem",
+                  color: "var(--foreground)",
+                  textAlign: "center",
+                  transition: "border-color 0.2s ease"
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--gold)")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+              >
+                <Phone size={20} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
+                <span>VIP Line</span>
+              </a>
+            )}
 
-            <a
-              href="mailto:concierge@gemoradiam.com"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "8px",
-                border: "1px solid var(--border)",
-                padding: "16px 8px",
-                fontSize: "0.75rem",
-                color: "var(--foreground)",
-                textAlign: "center",
-                transition: "border-color 0.2s ease"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--gold)")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
-            >
-              <Mail size={20} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
-              <span>Email</span>
-            </a>
+            {generalSettings?.email && (
+              <a
+                href={`mailto:${generalSettings.email}`}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "8px",
+                  border: "1px solid var(--border)",
+                  padding: "16px 8px",
+                  fontSize: "0.75rem",
+                  color: "var(--foreground)",
+                  textAlign: "center",
+                  transition: "border-color 0.2s ease"
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--gold)")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+              >
+                <Mail size={20} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
+                <span>Email</span>
+              </a>
+            )}
           </div>
         </aside>
       </div>
@@ -332,6 +349,7 @@ export default function ContactPage() {
 }
 
 function BookingDialog({ onClose, onSuccess }) {
+  const { generalSettings } = useStore();
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
   const slots = ["10:30", "12:00", "14:00", "15:30", "17:00"];
@@ -403,7 +421,7 @@ function BookingDialog({ onClose, onSuccess }) {
           Book Atelier Appointment
         </h2>
         <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", marginTop: "6px" }}>
-          Reserve dedicated time with a GEMORA DIAM master gemologist at 12 Rue de la Paix.
+          {generalSettings?.description || "Reserve dedicated time with our master gemologists for a personalized fine jewelry consultation."}
         </p>
 
         {/* Date Selection */}

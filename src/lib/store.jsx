@@ -45,6 +45,9 @@ export function StoreProvider({ children }) {
   const [wishlist, setWishlist] = useState(() => load("gemora.wishlist", ["eternelle-solitaire", "verdant-drop"]));
   const [currency, setCurrency] = useState(() => load("gemora.currency", "USD"));
   const [user, setUser] = useState(() => load("gemora.user", defaultUser));
+  const [generalSettings, setGeneralSettings] = useState(() => load("gemora.settings", null));
+  const [socialMedia, setSocialMedia] = useState(() => load("gemora.socialMedia", []));
+  const [settingsLoading, setSettingsLoading] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
@@ -54,6 +57,39 @@ export function StoreProvider({ children }) {
       setToastMessage(null);
     }, 3500);
   };
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchSettings = async () => {
+      try {
+        setSettingsLoading(true);
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
+        const res = await fetch(`${backendUrl}/System/GetGeneralSetting_landingpage`);
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted) {
+            if (data.generalSetting) {
+              setGeneralSettings(data.generalSetting);
+              localStorage.setItem("gemora.settings", JSON.stringify(data.generalSetting));
+            }
+            if (data.socialMedia && Array.isArray(data.socialMedia)) {
+              setSocialMedia(data.socialMedia);
+              localStorage.setItem("gemora.socialMedia", JSON.stringify(data.socialMedia));
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch general settings from backend, using defaults:", err);
+      } finally {
+        if (isMounted) setSettingsLoading(false);
+      }
+    };
+
+    fetchSettings();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("gemora.cart", JSON.stringify(cart));
@@ -138,7 +174,11 @@ export function StoreProvider({ children }) {
         format,
         cartCount,
         subtotal,
-        notify
+        notify,
+        showToast: notify,
+        generalSettings,
+        socialMedia,
+        settingsLoading
       }}
     >
       {children}
