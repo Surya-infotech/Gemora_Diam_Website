@@ -418,6 +418,130 @@ export function StoreProvider({ children }) {
     [backendUrl, customerIdKey, customerTokenKey, notify, user]
   );
 
+  const getAddresses = useCallback(
+    async (customerId) => {
+      try {
+        const id = customerId || user?.customerid;
+        if (!id) return [];
+        const res = await fetch(`${backendUrl}/Customer/GetAddresses/${id}`);
+        const data = await res.json();
+        if (res.ok && Array.isArray(data.addresses)) {
+          return data.addresses;
+        }
+        return [];
+      } catch (err) {
+        console.error("Failed to load addresses:", err);
+        return [];
+      }
+    },
+    [backendUrl, user]
+  );
+
+  const addAddress = useCallback(
+    async (addressData) => {
+      try {
+        const targetId = user?.customerid;
+        const token = localStorage.getItem(customerTokenKey);
+        const res = await fetch(`${backendUrl}/Customer/AddAddress`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            ...addressData,
+            customerid: targetId
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to add address");
+        }
+        notify("Address Saved", "Your new address has been added successfully.");
+        return { success: true, address: data.address };
+      } catch (err) {
+        notify("Address Error", err.message || "Could not save address");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, customerTokenKey, notify, user]
+  );
+
+  const updateAddress = useCallback(
+    async (addressId, addressData) => {
+      try {
+        const token = localStorage.getItem(customerTokenKey);
+        const res = await fetch(`${backendUrl}/Customer/UpdateAddress/${addressId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(addressData)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to update address");
+        }
+        notify("Address Updated", "Your address has been updated successfully.");
+        return { success: true, address: data.address };
+      } catch (err) {
+        notify("Address Error", err.message || "Could not update address");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, customerTokenKey, notify]
+  );
+
+  const deleteAddress = useCallback(
+    async (addressId) => {
+      try {
+        const token = localStorage.getItem(customerTokenKey);
+        const res = await fetch(`${backendUrl}/Customer/DeleteAddress/${addressId}`, {
+          method: "DELETE",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          }
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to delete address");
+        }
+        notify("Address Deleted", "The address has been removed.");
+        return { success: true };
+      } catch (err) {
+        notify("Error", err.message || "Could not delete address");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, customerTokenKey, notify]
+  );
+
+  const setDefaultAddress = useCallback(
+    async (addressId) => {
+      try {
+        const token = localStorage.getItem(customerTokenKey);
+        const res = await fetch(`${backendUrl}/Customer/SetDefaultAddress/${addressId}`, {
+          method: "PUT",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          }
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to set default address");
+        }
+        notify("Default Address Set", "Primary shipping address updated.");
+        return { success: true, address: data.address };
+      } catch (err) {
+        notify("Error", err.message || "Could not set default address");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, customerTokenKey, notify]
+  );
+
+
   // Fetch all Admin Panel data
   useEffect(() => {
     let isMounted = true;
@@ -664,6 +788,11 @@ export function StoreProvider({ children }) {
         setUser,
         updateProfile,
         updatePassword,
+        getAddresses,
+        addAddress,
+        updateAddress,
+        deleteAddress,
+        setDefaultAddress,
         login,
         signup,
         logout,

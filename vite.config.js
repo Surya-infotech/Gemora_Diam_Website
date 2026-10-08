@@ -7,4 +7,7 @@ export default defineConfig({
   server: {
     port: 5178,
   },
+  optimizeDeps: {
+    include: ['country-state-city', 'lucide-react', 'react-router-dom'],
+  },
 })
