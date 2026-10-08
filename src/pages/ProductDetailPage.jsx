@@ -9,7 +9,8 @@ import {
   RotateCcw,
   Sparkles,
   Share2,
-  ChevronRight
+  ChevronRight,
+  ChevronDown
 } from "lucide-react";
 import { useStore } from "../lib/store";
 
@@ -408,65 +409,154 @@ function ProductDetailContent({ product }) {
               </div>
             )}
 
-            {/* Stone Selector (shown above Diamond Size, based on selected Metal) */}
-            {availableStones.length > 0 && (
-              <div>
-                <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "10px", color: "var(--foreground)" }}>
-                  Stone: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{activeStone}</span>
-                </label>
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  {availableStones.map((st) => (
-                    <button
-                      key={st}
-                      type="button"
-                      onClick={() => setSelectedStone(st)}
+            {/* Stone & Diamond Size Dropdowns (Side by Side) */}
+            {(availableStones.length > 0 || (hasCarat && activeCaratPrices.length > 0)) && (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    availableStones.length > 0 && hasCarat && activeCaratPrices.length > 0
+                      ? "repeat(auto-fit, minmax(180px, 1fr))"
+                      : "1fr",
+                  gap: "16px",
+                  alignItems: "start"
+                }}
+              >
+                {/* Stone Dropdown */}
+                {availableStones.length > 0 && (
+                  <div>
+                    <label
+                      htmlFor="stone-select"
                       style={{
-                        padding: "8px 16px",
-                        border: activeStone === st ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                        backgroundColor: activeStone === st ? "var(--primary-soft)" : "#ffffff",
-                        color: activeStone === st ? "var(--primary)" : "var(--foreground)",
-                        borderRadius: "2px",
-                        fontSize: "0.82rem",
-                        fontWeight: activeStone === st ? 600 : 400,
-                        cursor: "pointer",
-                        transition: "all 0.15s"
+                        fontSize: "0.78rem",
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.12em",
+                        display: "block",
+                        marginBottom: "8px",
+                        color: "var(--foreground)"
                       }}
                     >
-                      {st}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+                      Stone: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{activeStone}</span>
+                    </label>
+                    <div style={{ position: "relative" }}>
+                      <select
+                        id="stone-select"
+                        value={activeStone}
+                        onChange={(e) => setSelectedStone(e.target.value)}
+                        style={{
+                          width: "100%",
+                          height: "44px",
+                          padding: "0 36px 0 14px",
+                          border: "1px solid var(--border)",
+                          borderRadius: "2px",
+                          backgroundColor: "#ffffff",
+                          color: "var(--foreground)",
+                          fontSize: "0.84rem",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                          appearance: "none",
+                          WebkitAppearance: "none",
+                          outline: "none",
+                          transition: "all 0.2s"
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = "var(--primary)";
+                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = "var(--border)";
+                          e.currentTarget.style.boxShadow = "none";
+                        }}
+                      >
+                        {availableStones.map((st) => (
+                          <option key={st} value={st}>
+                            {st}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown
+                        size={16}
+                        style={{
+                          position: "absolute",
+                          right: "12px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          pointerEvents: "none",
+                          color: "var(--muted-foreground)"
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
 
-            {/* Diamond Carat Sizes from Backend (matching selected Metal + Stone) */}
-            {hasCarat && activeCaratPrices.length > 0 && (
-              <div>
-                <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "10px", color: "var(--foreground)" }}>
-                  Diamond Size: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{carat}</span>
-                </label>
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  {activeCaratPrices.map((cp) => (
-                    <button
-                      key={cp.diamondsize}
-                      type="button"
-                      onClick={() => setSelectedCarat(cp.diamondsize)}
+                {/* Diamond Size Dropdown */}
+                {hasCarat && activeCaratPrices.length > 0 && (
+                  <div>
+                    <label
+                      htmlFor="carat-select"
                       style={{
-                        padding: "8px 16px",
-                        border: carat === cp.diamondsize ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                        backgroundColor: carat === cp.diamondsize ? "var(--primary-soft)" : "#ffffff",
-                        color: carat === cp.diamondsize ? "var(--primary)" : "var(--foreground)",
-                        borderRadius: "2px",
-                        fontSize: "0.82rem",
-                        fontWeight: carat === cp.diamondsize ? 600 : 400,
-                        cursor: "pointer",
-                        transition: "all 0.15s"
+                        fontSize: "0.78rem",
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.12em",
+                        display: "block",
+                        marginBottom: "8px",
+                        color: "var(--foreground)"
                       }}
                     >
-                      {cp.diamondsize}
-                    </button>
-                  ))}
-                </div>
+                      Diamond Size: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{carat}</span>
+                    </label>
+                    <div style={{ position: "relative" }}>
+                      <select
+                        id="carat-select"
+                        value={carat}
+                        onChange={(e) => setSelectedCarat(e.target.value)}
+                        style={{
+                          width: "100%",
+                          height: "44px",
+                          padding: "0 36px 0 14px",
+                          border: "1px solid var(--border)",
+                          borderRadius: "2px",
+                          backgroundColor: "#ffffff",
+                          color: "var(--foreground)",
+                          fontSize: "0.84rem",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                          appearance: "none",
+                          WebkitAppearance: "none",
+                          outline: "none",
+                          transition: "all 0.2s"
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = "var(--primary)";
+                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = "var(--border)";
+                          e.currentTarget.style.boxShadow = "none";
+                        }}
+                      >
+                        {activeCaratPrices.map((cp) => (
+                          <option key={cp.diamondsize} value={cp.diamondsize}>
+                            {cp.diamondsize}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown
+                        size={16}
+                        style={{
+                          position: "absolute",
+                          right: "12px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          pointerEvents: "none",
+                          color: "var(--muted-foreground)"
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
