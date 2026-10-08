@@ -47,6 +47,7 @@ export function CartLines({ compact = false }) {
                   </h4>
                   <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "4px" }}>
                     {item.metal}
+                    {item.stone ? ` • ${item.stone}` : ""}
                     {item.carat ? ` • ${item.carat}` : ""}
                     {item.size ? ` • Size ${item.size}` : ""}
                   </p>

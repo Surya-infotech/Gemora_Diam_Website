@@ -364,7 +364,7 @@ export function ProductCard({ product }) {
                           cursor: "pointer"
                         }}
                       >
-                        {cp.diamondsize} ({format(cp.price)})
+                        {cp.diamondsize}
                       </button>
                     ))}
                   </div>

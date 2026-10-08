@@ -46,38 +46,84 @@ function ProductDetailContent({ product }) {
   const [qty, setQty] = useState(1);
   const [metal, setMetal] = useState(availableMetals[0] || "");
   const [ringSize, setRingSize] = useState(product?.ringSizes?.[0] || "");
+  const [selectedStone, setSelectedStone] = useState("");
   const [selectedCarat, setSelectedCarat] = useState("");
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("description");
   const [copied, setCopied] = useState(false);
   const [selectedShape, setSelectedShape] = useState(product?.shapes?.[0] || "");
   const [selectedClarity, setSelectedClarity] = useState(product?.clarities?.[0] || "");
-  const [selectedStone, setSelectedStone] = useState(product?.stones?.[0] || "");
   const [selectedColor, setSelectedColor] = useState(product?.diamondColors?.[0] || "");
   const [selectedStyle, setSelectedStyle] = useState(product?.styles?.[0] || "");
+
+  // Available stones for selected metal from backend pricing
+  const availableStones = useMemo(() => {
+    if (!product) return [];
+    if (product.pricing?.priceType === "metal_with_stone_diamond_carat") {
+      const list = product.pricing.metalWithStoneDiamondCaratPrices || [];
+      const forMetal = list.filter(
+        (m) => (m.metalname || "").trim().toLowerCase() === (metal || "").trim().toLowerCase()
+      );
+      const stonesFromPricing = (forMetal.length > 0 ? forMetal : list)
+        .map((m) => m.stonename)
+        .filter(Boolean);
+      const unique = Array.from(new Set(stonesFromPricing));
+      if (unique.length > 0) return unique;
+    }
+    return product.stones || [];
+  }, [product, metal]);
+
+  const activeStone = useMemo(() => {
+    if (availableStones.length === 0) return "";
+    if (selectedStone && availableStones.includes(selectedStone)) {
+      return selectedStone;
+    }
+    return availableStones[0] || "";
+  }, [availableStones, selectedStone]);
 
   const matchedPricing = useMemo(() => {
     if (!product || product.pricing?.priceType !== "metal_with_stone_diamond_carat") {
       return null;
     }
-    return (
-      product.pricing.metalWithStoneDiamondCaratPrices?.find(
-        (m) => (m.metalname || "").toLowerCase() === (metal || "").toLowerCase()
-      ) || product.pricing.metalWithStoneDiamondCaratPrices?.[0]
+    const list = product.pricing.metalWithStoneDiamondCaratPrices || [];
+    // 1. Match both metal and active stone
+    const exact = list.find(
+      (m) =>
+        (m.metalname || "").trim().toLowerCase() === (metal || "").trim().toLowerCase() &&
+        (m.stonename || "").trim().toLowerCase() === (activeStone || "").trim().toLowerCase()
     );
-  }, [product, metal]);
+    if (exact) return exact;
 
-  const activeCaratPrices = matchedPricing?.caratPrices || [];
-  const carat =
-    activeCaratPrices.length > 0
-      ? activeCaratPrices.some((c) => c.diamondsize === selectedCarat)
-        ? selectedCarat
-        : activeCaratPrices[0]?.diamondsize || ""
-      : "";
+    // 2. Fallback matching metal
+    const metalMatch = list.find(
+      (m) => (m.metalname || "").trim().toLowerCase() === (metal || "").trim().toLowerCase()
+    );
+    if (metalMatch) return metalMatch;
+
+    return list[0] || null;
+  }, [product, metal, activeStone]);
+
+  const activeCaratPrices = useMemo(() => {
+    const hasCaratPricing =
+      matchedPricing?.hasCarat !== false && matchedPricing?.stonePricingType !== "fixed";
+    return hasCaratPricing && Array.isArray(matchedPricing?.caratPrices)
+      ? matchedPricing.caratPrices
+      : [];
+  }, [matchedPricing]);
+
+  const hasCarat = activeCaratPrices.length > 0;
+
+  const carat = useMemo(() => {
+    if (!hasCarat || activeCaratPrices.length === 0) return "";
+    if (selectedCarat && activeCaratPrices.some((c) => c.diamondsize === selectedCarat)) {
+      return selectedCarat;
+    }
+    return activeCaratPrices[0]?.diamondsize || "";
+  }, [hasCarat, activeCaratPrices, selectedCarat]);
 
   const currentPrice = useMemo(() => {
-    return getItemPrice(product, metal, carat);
-  }, [getItemPrice, product, metal, carat]);
+    return getItemPrice(product, metal, activeStone, carat);
+  }, [getItemPrice, product, metal, activeStone, carat]);
 
   const allMedia = useMemo(() => {
     if (!product) return [];
@@ -118,7 +164,7 @@ function ProductDetailContent({ product }) {
   const handleAddToCart = () => {
     if (!product) return;
     for (let i = 0; i < qty; i++) {
-      addToCart(product.id, metal, ringSize, carat, currentPrice);
+      addToCart(product.id, metal, ringSize, carat, currentPrice, activeStone);
     }
     notify("Added to Bag", `${qty}x ${product.name} (${format(currentPrice * qty)})`);
   };
@@ -365,8 +411,39 @@ function ProductDetailContent({ product }) {
               </div>
             )}
 
-            {/* Diamond Carat Sizes from Backend */}
-            {activeCaratPrices.length > 0 && (
+            {/* Stone Selector (shown above Diamond Size, based on selected Metal) */}
+            {availableStones.length > 0 && (
+              <div>
+                <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "10px", color: "var(--foreground)" }}>
+                  Stone: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{activeStone}</span>
+                </label>
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  {availableStones.map((st) => (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => setSelectedStone(st)}
+                      style={{
+                        padding: "8px 16px",
+                        border: activeStone === st ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                        backgroundColor: activeStone === st ? "var(--primary-soft)" : "#ffffff",
+                        color: activeStone === st ? "var(--primary)" : "var(--foreground)",
+                        borderRadius: "2px",
+                        fontSize: "0.82rem",
+                        fontWeight: activeStone === st ? 600 : 400,
+                        cursor: "pointer",
+                        transition: "all 0.15s"
+                      }}
+                    >
+                      {st}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Diamond Carat Sizes from Backend (matching selected Metal + Stone) */}
+            {hasCarat && activeCaratPrices.length > 0 && (
               <div>
                 <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "10px", color: "var(--foreground)" }}>
                   Diamond Size: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{carat}</span>
@@ -389,23 +466,10 @@ function ProductDetailContent({ product }) {
                         transition: "all 0.15s"
                       }}
                     >
-                      {cp.diamondsize} • {format(cp.price)}
+                      {cp.diamondsize}
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* Stone Info if present in pricing */}
-            {matchedPricing?.stonename && (
-              <div style={{ padding: "10px 14px", backgroundColor: "#fafbf8", border: "1px solid var(--border-subtle)", borderRadius: "3px", fontSize: "0.84rem" }}>
-                <span style={{ fontWeight: 600, color: "var(--foreground)" }}>Stone:</span>{" "}
-                <span style={{ color: "var(--muted-foreground)" }}>{matchedPricing.stonename}</span>
-                {matchedPricing.stonePricingType === "fixed" && (
-                  <span style={{ marginLeft: "8px", fontSize: "0.75rem", backgroundColor: "var(--primary-soft)", color: "var(--primary)", padding: "2px 6px", borderRadius: "2px" }}>
-                    Fixed Price
-                  </span>
-                )}
               </div>
             )}
 
@@ -504,35 +568,7 @@ function ProductDetailContent({ product }) {
                 </div>
               )}
 
-              {product.stones && product.stones.length > 0 && (
-                <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                    Stone: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedStone || product.stones[0]}</span>
-                  </label>
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {product.stones.map((st) => (
-                      <button
-                        key={st}
-                        type="button"
-                        onClick={() => setSelectedStone(st)}
-                        style={{
-                          padding: "6px 14px",
-                          border: (selectedStone || product.stones[0]) === st ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: (selectedStone || product.stones[0]) === st ? "var(--primary-soft)" : "#ffffff",
-                          color: (selectedStone || product.stones[0]) === st ? "var(--primary)" : "var(--foreground)",
-                          borderRadius: "2px",
-                          fontSize: "0.82rem",
-                          fontWeight: (selectedStone || product.stones[0]) === st ? 600 : 400,
-                          cursor: "pointer",
-                          transition: "all 0.15s"
-                        }}
-                      >
-                        {st}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+
 
               {product.diamondColors && product.diamondColors.length > 0 && (
                 <div>

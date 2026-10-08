@@ -60,9 +60,18 @@ function mapBackendItem(item) {
   };
 }
 
-function getItemPrice(product, selectedMetal, selectedCarat) {
+function getItemPrice(product, selectedMetal, selectedStoneOrCarat, maybeCarat) {
   if (!product || !product.pricing) return product?.price || 0;
   const { priceType, metalWisePrices, metalWithStoneDiamondCaratPrices } = product.pricing;
+
+  let selectedStone = "";
+  let selectedCarat = "";
+  if (maybeCarat !== undefined) {
+    selectedStone = (selectedStoneOrCarat || "").trim();
+    selectedCarat = (maybeCarat || "").trim();
+  } else {
+    selectedCarat = (selectedStoneOrCarat || "").trim();
+  }
 
   if (priceType === "metal_wise") {
     if (Array.isArray(metalWisePrices) && metalWisePrices.length > 0) {
@@ -76,22 +85,41 @@ function getItemPrice(product, selectedMetal, selectedCarat) {
     }
   } else if (priceType === "metal_with_stone_diamond_carat") {
     if (Array.isArray(metalWithStoneDiamondCaratPrices) && metalWithStoneDiamondCaratPrices.length > 0) {
-      let matchedGroup = metalWithStoneDiamondCaratPrices[0];
-      if (selectedMetal) {
-        const found = metalWithStoneDiamondCaratPrices.find(
+      let matchedGroup = null;
+
+      // 1. Match both metal and stone if stone is provided
+      if (selectedMetal && selectedStone) {
+        matchedGroup = metalWithStoneDiamondCaratPrices.find(
+          (m) =>
+            (m.metalname || "").trim().toLowerCase() === selectedMetal.trim().toLowerCase() &&
+            (m.stonename || "").trim().toLowerCase() === selectedStone.trim().toLowerCase()
+        );
+      }
+
+      // 2. Fallback to metal only
+      if (!matchedGroup && selectedMetal) {
+        matchedGroup = metalWithStoneDiamondCaratPrices.find(
           (m) => (m.metalname || "").trim().toLowerCase() === selectedMetal.trim().toLowerCase()
         );
-        if (found) matchedGroup = found;
+      }
+
+      // 3. Fallback to first pricing config
+      if (!matchedGroup) {
+        matchedGroup = metalWithStoneDiamondCaratPrices[0];
       }
 
       if (matchedGroup) {
-        if (!matchedGroup.hasCarat && typeof matchedGroup.price === "number" && matchedGroup.price !== null) {
+        const isCaratPricing =
+          matchedGroup.hasCarat !== false && matchedGroup.stonePricingType !== "fixed";
+
+        if (!isCaratPricing && typeof matchedGroup.price === "number" && matchedGroup.price !== null) {
           return matchedGroup.price;
         }
-        if (Array.isArray(matchedGroup.caratPrices) && matchedGroup.caratPrices.length > 0) {
+
+        if (isCaratPricing && Array.isArray(matchedGroup.caratPrices) && matchedGroup.caratPrices.length > 0) {
           if (selectedCarat) {
             const matchedCarat = matchedGroup.caratPrices.find(
-              (c) => (c.diamondsize || "").trim().toLowerCase() === selectedCarat.trim().toLowerCase()
+              (c) => (c.diamondsize || "").trim().toLowerCase() === selectedCarat.toLowerCase()
             );
             if (matchedCarat && typeof matchedCarat.price === "number") {
               return matchedCarat.price;
@@ -99,6 +127,7 @@ function getItemPrice(product, selectedMetal, selectedCarat) {
           }
           return matchedGroup.caratPrices[0]?.price ?? (product.price || 0);
         }
+
         if (typeof matchedGroup.price === "number" && matchedGroup.price !== null) {
           return matchedGroup.price;
         }
@@ -669,18 +698,18 @@ export function StoreProvider({ children }) {
     [storeCurrency]
   );
 
-  const addToCart = (productId, metal = "", size = "", carat = "", customPrice = null) => {
+  const addToCart = (productId, metal = "", size = "", carat = "", customPrice = null, stone = "") => {
     const p = getProduct(productId);
     const resolvedPrice =
       customPrice !== null && customPrice !== undefined
         ? Number(customPrice)
-        : getItemPrice(p, metal, carat);
-    const key = `${productId}|${metal || ""}|${size || ""}|${carat || ""}`;
+        : getItemPrice(p, metal, stone, carat);
+    const key = `${productId}|${metal || ""}|${stone || ""}|${size || ""}|${carat || ""}`;
     setCart((c) => {
       const ex = c.find((i) => i.key === key);
       return ex
         ? c.map((i) => (i.key === key ? { ...i, qty: i.qty + 1 } : i))
-        : [...c, { key, productId, metal, size, carat, price: resolvedPrice, qty: 1 }];
+        : [...c, { key, productId, metal, stone, size, carat, price: resolvedPrice, qty: 1 }];
     });
     notify("Added to Bag", `${p?.name || "Jewelry Piece"}${metal ? " • " + metal : ""}`);
     setCartOpen(true);
