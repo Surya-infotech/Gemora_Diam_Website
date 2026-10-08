@@ -551,16 +551,6 @@ export function Header() {
               />
             </form>
 
-            {/* Mobile Search Icon Button */}
-            <button
-              aria-label="Search"
-              onClick={() => setSearch(true)}
-              style={{ color: "#181818" }}
-              className="mobile-only-btn"
-            >
-              <Search size={22} strokeWidth={1.4} />
-            </button>
-
             {/* Account Menu & Logout */}
             <AccountMenu />
 

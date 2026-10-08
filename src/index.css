@@ -184,3 +184,16 @@ img {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
+
+/* Responsive Navigation Visibility */
+@media (min-width: 1024px) {
+  .mobile-only-btn {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .desktop-only-nav {
+    display: none !important;
+  }
+}
