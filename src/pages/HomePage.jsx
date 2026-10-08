@@ -7,8 +7,7 @@ import {
   ShoppingBag,
   ChevronLeft,
   ChevronRight,
-  ArrowUp,
-  X
+  ArrowUp
 } from "lucide-react";
 import { useStore } from "../lib/store";
 
@@ -22,7 +21,6 @@ import banner6 from "../assets/vemus/banner_banner-6.jpg";
 
 
 export default function HomePage() {
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -40,13 +38,13 @@ export default function HomePage() {
   return (
     <div style={{ backgroundColor: "#ffffff", color: "#181818", overflowX: "hidden" }}>
       {/* 1. Hero Section Slider */}
-      <HeroSlider onQuickView={setQuickViewProduct} />
+      <HeroSlider />
 
       {/* 2. Three Circular Promo Cards */}
       <CircularCategories />
 
       {/* 3. Best Seller Section with Tab Filter */}
-      <BestSellerSection onQuickView={setQuickViewProduct} />
+      <BestSellerSection />
 
       {/* 4. Split Collection Banners: The Modern Bride & The Art of Stack */}
       <SplitCollectionBanners />
@@ -55,7 +53,7 @@ export default function HomePage() {
       <OutlineMarquee />
 
       {/* 6. Shop The Look Section */}
-      <ShopTheLookSection onQuickView={setQuickViewProduct} />
+      <ShopTheLookSection />
 
 
       {/* 8. Just For You Curated 6-Tile Gallery */}
@@ -63,11 +61,6 @@ export default function HomePage() {
 
       {/* 9. Newsletter 15% Off Banner */}
       <NewsletterBanner />
-
-      {/* Quick View Modal */}
-      {quickViewProduct && (
-        <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
-      )}
 
       {/* Floating Back to Top Button */}
       {showScrollTop && (
@@ -553,7 +546,8 @@ function CircularCategories() {
 /* =========================================================================
    3. BEST SELLER SECTION WITH TAB FILTERS
    ========================================================================= */
-function BestSellerSection({ onQuickView }) {
+function BestSellerSection() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
   const {
     addToCart,
@@ -687,7 +681,7 @@ function BestSellerSection({ onQuickView }) {
                       cursor: "pointer"
                     }}
                     className="product-card-hover"
-                    onClick={() => onQuickView(item)}
+                    onClick={() => navigate(`/product/${item.id}`)}
                   >
                     <img
                       src={item.image}
@@ -783,7 +777,7 @@ function BestSellerSection({ onQuickView }) {
                         cursor: "pointer",
                         fontFamily: "var(--font-serif)"
                       }}
-                      onClick={() => onQuickView(item)}
+                      onClick={() => navigate(`/product/${item.id}`)}
                     >
                       {item.name}
                     </h4>
@@ -1044,7 +1038,8 @@ function OutlineMarquee() {
 /* =========================================================================
    6. SHOP THE LOOK SECTION
    ========================================================================= */
-function ShopTheLookSection({ onQuickView }) {
+function ShopTheLookSection() {
+  const navigate = useNavigate();
   const { products: dynamicProducts } = useStore();
 
   const products = dynamicProducts || [];
@@ -1091,7 +1086,7 @@ function ShopTheLookSection({ onQuickView }) {
           {looks.map((item, idx) => (
             <div
               key={item.product?.id || idx}
-              onClick={() => onQuickView && onQuickView(item.product)}
+              onClick={() => item.product?.id && navigate(`/product/${item.product.id}`)}
               style={{
                 position: "relative",
                 height: "520px",
@@ -1399,326 +1394,5 @@ function NewsletterBanner() {
         </form>
       </div>
     </section>
-  );
-}
-
-/* =========================================================================
-   10. INTERACTIVE QUICK VIEW MODAL
-   ========================================================================= */
-function QuickViewModal({ product, onClose }) {
-  const { addToCart, notify, format, getItemPrice, generalSettings } = useStore();
-  const [qty, setQty] = useState(1);
-  const availableMetals = product?.metals || [];
-  const [metal, setMetal] = useState(availableMetals[0] || "");
-  const [ringSize, setRingSize] = useState(product?.ringSizes?.[0] || "");
-
-  const matchedPricing = useMemo(() => {
-    if (product?.pricing?.priceType === "metal_with_stone_diamond_carat") {
-      return (
-        product.pricing.metalWithStoneDiamondCaratPrices?.find(
-          (m) => (m.metalname || "").toLowerCase() === (metal || "").toLowerCase()
-        ) || product.pricing.metalWithStoneDiamondCaratPrices?.[0]
-      );
-    }
-    return null;
-  }, [product, metal]);
-
-  const activeCaratPrices = matchedPricing?.caratPrices || [];
-  const [selectedCarat, setSelectedCarat] = useState("");
-  const carat =
-    activeCaratPrices.length > 0
-      ? activeCaratPrices.some((c) => c.diamondsize === selectedCarat)
-        ? selectedCarat
-        : activeCaratPrices[0]?.diamondsize || ""
-      : "";
-
-  const currentPrice = getItemPrice(product, metal, carat);
-
-  const allMedia = useMemo(() => {
-    const list = [];
-    if (product?.image) list.push({ type: "image", url: product.image });
-    if (Array.isArray(product?.galleryImages)) {
-      product.galleryImages.forEach((url) => {
-        if (url && url !== product.image) list.push({ type: "image", url });
-      });
-    }
-    if (product?.video) list.push({ type: "video", url: product.video });
-    return list;
-  }, [product]);
-
-  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 9999,
-        backgroundColor: "rgba(0,0,0,0.65)",
-        backdropFilter: "blur(4px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px",
-        animation: "fadeIn 0.2s ease-out"
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          backgroundColor: "#ffffff",
-          maxWidth: "880px",
-          width: "100%",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          borderRadius: "4px",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.25)",
-          position: "relative",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          gap: "36px",
-          padding: "36px"
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          style={{ position: "absolute", top: "18px", right: "18px", color: "#181818", background: "none", border: "none", cursor: "pointer", zIndex: 10 }}
-        >
-          <X size={22} />
-        </button>
-
-        {/* Left: Product Image & Gallery */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <div style={{ backgroundColor: "#f8f8f8", borderRadius: "2px", overflow: "hidden", display: "grid", placeItems: "center", minHeight: "340px", maxHeight: "380px" }}>
-            {allMedia[activeMediaIndex]?.type === "video" ? (
-              <video
-                src={allMedia[activeMediaIndex].url}
-                controls
-                autoPlay
-                muted
-                style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
-              />
-            ) : (
-              <img
-                src={allMedia[activeMediaIndex]?.url || product.image}
-                alt={product.name}
-                style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
-              />
-            )}
-          </div>
-
-          {allMedia.length > 1 && (
-            <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
-              {allMedia.map((m, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveMediaIndex(idx)}
-                  style={{
-                    width: "54px",
-                    height: "54px",
-                    flexShrink: 0,
-                    borderRadius: "2px",
-                    border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid #ddd",
-                    padding: 0,
-                    overflow: "hidden",
-                    cursor: "pointer",
-                    backgroundColor: "#f5f5f5"
-                  }}
-                >
-                  {m.type === "video" ? (
-                    <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", fontSize: "0.68rem", fontWeight: 700, backgroundColor: "#222", color: "#fff" }}>
-                      PLAY
-                    </div>
-                  ) : (
-                    <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Right: Info */}
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <span style={{ fontSize: "0.75rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--primary)", fontWeight: 600 }}>
-            {product.category || (generalSettings?.softwarename || "Gemora Diam")}{product.subcategory ? ` • ${product.subcategory}` : ""} {product.sku ? `• SKU: ${product.sku}` : ""}
-          </span>
-
-          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.6rem", margin: "8px 0 12px 0", lineHeight: 1.3 }}>
-            {product.name}
-          </h3>
-
-          <div style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--primary)", marginBottom: "16px" }}>
-            {format(currentPrice)}
-          </div>
-
-          {product.description ? (
-            <p style={{ fontSize: "0.88rem", color: "#666", lineHeight: 1.6, marginBottom: "20px" }}>
-              {product.description}
-            </p>
-          ) : null}
-
-          {/* Stone Information for Selected Metal if available */}
-          {matchedPricing?.stonename && (
-            <div style={{ marginBottom: "14px", fontSize: "0.82rem", color: "#444" }}>
-              <span style={{ fontWeight: 600 }}>Stone:</span> {matchedPricing.stonename}
-              {matchedPricing.stonePricingType === "fixed" && " • Fixed Price"}
-            </div>
-          )}
-
-          {/* Diamond Carat Sizes from Backend */}
-          {activeCaratPrices.length > 0 && (
-            <div style={{ marginBottom: "18px" }}>
-              <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "8px" }}>
-                Diamond Size
-              </label>
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {activeCaratPrices.map((cp) => (
-                  <button
-                    key={cp.diamondsize}
-                    onClick={() => setSelectedCarat(cp.diamondsize)}
-                    style={{
-                      padding: "6px 12px",
-                      border: carat === cp.diamondsize ? "1.5px solid var(--primary)" : "1px solid #ddd",
-                      fontSize: "0.8rem",
-                      borderRadius: "2px",
-                      backgroundColor: carat === cp.diamondsize ? "var(--primary-soft)" : "transparent",
-                      cursor: "pointer"
-                    }}
-                  >
-                    {cp.diamondsize} ({format(cp.price)})
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Metal Choice from Backend */}
-          {availableMetals.length > 0 && (
-            <div style={{ marginBottom: "18px" }}>
-              <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "8px" }}>
-                Metal: {metal}
-              </label>
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {availableMetals.map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => setMetal(m)}
-                    style={{
-                      padding: "6px 14px",
-                      border: metal === m ? "1.5px solid var(--primary)" : "1px solid #ddd",
-                      fontSize: "0.8rem",
-                      borderRadius: "2px",
-                      backgroundColor: metal === m ? "var(--primary-soft)" : "transparent",
-                      cursor: "pointer"
-                    }}
-                  >
-                    {m}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Ring Sizes from Backend */}
-          {product.ringSizes && product.ringSizes.length > 0 && (
-            <div style={{ marginBottom: "18px" }}>
-              <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "8px" }}>
-                Ring Size
-              </label>
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {product.ringSizes.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setRingSize(s)}
-                    style={{
-                      padding: "4px 10px",
-                      border: ringSize === s ? "1.5px solid var(--primary)" : "1px solid #ddd",
-                      fontSize: "0.8rem",
-                      borderRadius: "2px",
-                      backgroundColor: ringSize === s ? "var(--primary-soft)" : "transparent",
-                      cursor: "pointer"
-                    }}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Backend Attributes Badges */}
-          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "20px" }}>
-            {product.shapes?.map((sh) => (
-              <span key={sh} style={{ fontSize: "0.75rem", backgroundColor: "#f5f5f5", padding: "4px 8px", borderRadius: "2px" }}>
-                Shape: {sh}
-              </span>
-            ))}
-            {product.clarities?.map((cl) => (
-              <span key={cl} style={{ fontSize: "0.75rem", backgroundColor: "#f5f5f5", padding: "4px 8px", borderRadius: "2px" }}>
-                Clarity: {cl}
-              </span>
-            ))}
-            {product.stones?.map((st) => (
-              <span key={st} style={{ fontSize: "0.75rem", backgroundColor: "#f5f5f5", padding: "4px 8px", borderRadius: "2px" }}>
-                Stone: {st}
-              </span>
-            ))}
-            {product.diamondColors?.map((dc) => (
-              <span key={dc} style={{ fontSize: "0.75rem", backgroundColor: "#f5f5f5", padding: "4px 8px", borderRadius: "2px" }}>
-                Color: {dc}
-              </span>
-            ))}
-            {product.styles?.map((sy) => (
-              <span key={sy} style={{ fontSize: "0.75rem", backgroundColor: "#f5f5f5", padding: "4px 8px", borderRadius: "2px" }}>
-                Style: {sy}
-              </span>
-            ))}
-          </div>
-
-          {/* Quantity & Add to Cart */}
-          <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-            <div style={{ display: "flex", border: "1px solid #ddd", borderRadius: "2px" }}>
-              <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={{ padding: "10px 14px", cursor: "pointer", background: "none", border: "none" }}>
-                -
-              </button>
-              <span style={{ padding: "10px 14px", fontWeight: 600, fontSize: "0.9rem" }}>{qty}</span>
-              <button onClick={() => setQty((q) => q + 1)} style={{ padding: "10px 14px", cursor: "pointer", background: "none", border: "none" }}>
-                +
-              </button>
-            </div>
-
-            <button
-              onClick={() => {
-                for (let i = 0; i < qty; i++) {
-                  addToCart(product.id, metal, ringSize, carat, currentPrice);
-                }
-                notify("Added to Bag", `${qty}x ${product.name}`);
-                onClose();
-              }}
-              style={{
-                flex: 1,
-                padding: "14px 28px",
-                backgroundColor: "var(--primary)",
-                color: "#ffffff",
-                fontSize: "0.82rem",
-                fontWeight: 600,
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                borderRadius: "2px",
-                cursor: "pointer",
-                transition: "background 0.2s"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
-            >
-              Add To Bag • {format(currentPrice * qty)}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }

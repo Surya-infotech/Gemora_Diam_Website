@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { Heart, Eye, X } from "lucide-react";
 import { useStore } from "../lib/store";
 
@@ -107,18 +108,20 @@ export function ProductCard({ product }) {
           borderRadius: "2px"
         }}
       >
-        <img
-          src={product.image}
-          alt={product.name}
-          loading="lazy"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transform: isHovered ? "scale(1.08)" : "scale(1)",
-            transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
-          }}
-        />
+        <Link to={`/product/${product.id}`} style={{ display: "block", width: "100%", height: "100%" }}>
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transform: isHovered ? "scale(1.08)" : "scale(1)",
+              transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
+            }}
+          />
+        </Link>
 
         {/* Wishlist Button */}
         <button
@@ -200,7 +203,9 @@ export function ProductCard({ product }) {
             {product.category}
           </p>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.3rem", marginTop: "4px", lineHeight: 1.25 }}>
-            {product.name}
+            <Link to={`/product/${product.id}`} style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
+              {product.name}
+            </Link>
           </h3>
         </div>
         <p style={{ fontSize: "0.95rem", fontWeight: 600, whiteSpace: "nowrap" }}>

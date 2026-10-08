@@ -13,6 +13,7 @@ import ProfilePage from "./pages/ProfilePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsPage from "./pages/TermsPage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 
 function ScrollToTop() {
   const { pathname, search } = useLocation();
@@ -72,6 +73,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/shop" element={<ShopPage />} />
+              <Route path="/product/:id" element={<ProductDetailPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faq" element={<ContactPage />} />
