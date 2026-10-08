@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 import { useNavigate } from "react-router-dom";
 
 
-export function mapBackendItem(item) {
+function mapBackendItem(item) {
   let basePrice = 0;
   if (item.pricing?.priceType === "metal_wise") {
     basePrice = item.pricing.metalWisePrices?.[0]?.price || 0;
@@ -60,7 +60,7 @@ export function mapBackendItem(item) {
   };
 }
 
-export function getItemPrice(product, selectedMetal, selectedCarat) {
+function getItemPrice(product, selectedMetal, selectedCarat) {
   if (!product || !product.pricing) return product?.price || 0;
   const { priceType, metalWisePrices, metalWithStoneDiamondCaratPrices } = product.pricing;
 
@@ -110,7 +110,7 @@ export function getItemPrice(product, selectedMetal, selectedCarat) {
 
 const Ctx = createContext(null);
 
-export function formatCurrencyWithDetails(amount, details) {
+function formatCurrencyWithDetails(amount, details) {
   const num = typeof amount === "number" ? amount : parseFloat(amount) || 0;
   const {
     decimal = 2,

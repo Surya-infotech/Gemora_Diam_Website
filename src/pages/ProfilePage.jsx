@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Trash2, LogOut } from "lucide-react";
 import { useStore } from "../lib/store";
