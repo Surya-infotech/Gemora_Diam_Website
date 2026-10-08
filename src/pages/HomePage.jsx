@@ -511,7 +511,7 @@ function CircularCategories() {
                 style={{
                   fontFamily: "var(--font-serif)",
                   fontSize: "1.7rem",
-                  color: "#957127",
+                  color: "var(--primary)",
                   marginBottom: "12px",
                   fontWeight: 500
                 }}
@@ -882,8 +882,8 @@ function BestSellerSection({ onQuickView }) {
                         left: "50%",
                         transform: "translateX(-50%)",
                         backgroundColor: "#ffffff",
-                        border: "1px solid #e0d7c3",
-                        color: "#AE873E",
+                        border: "1px solid var(--border)",
+                        color: "var(--primary)",
                         fontSize: "0.82rem",
                         fontWeight: 700,
                         padding: "6px 16px",
@@ -1054,7 +1054,7 @@ function SplitCollectionBanners() {
               fontWeight: 600,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#957127"
+              color: "var(--primary)"
             }}
           >
             SHOP NOW <ArrowRight size={16} />
@@ -1103,7 +1103,7 @@ function SplitCollectionBanners() {
               fontWeight: 600,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#957127"
+              color: "var(--primary)"
             }}
           >
             SHOP NOW <ArrowRight size={16} />
@@ -1149,7 +1149,7 @@ function OutlineMarquee() {
         >
           NOW, PAY LATER
         </span>
-        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
         <span
           style={{
             fontFamily: "var(--font-sans)",
@@ -1161,7 +1161,7 @@ function OutlineMarquee() {
         >
           APPLE PAY
         </span>
-        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
         <span
           style={{
             fontFamily: "var(--font-sans)",
@@ -1174,7 +1174,7 @@ function OutlineMarquee() {
         >
           SHOP NOW
         </span>
-        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
         <span
           style={{
             fontFamily: "var(--font-sans)",
@@ -1186,7 +1186,7 @@ function OutlineMarquee() {
         >
           FREE SHIPPING
         </span>
-        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
         <span
           style={{
             fontFamily: "var(--font-sans)",
@@ -1199,7 +1199,7 @@ function OutlineMarquee() {
         >
           100% CERTIFIED
         </span>
-        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
       </div>
     </div>
   );
@@ -1504,7 +1504,7 @@ function TestimonialsSection({ onQuickView }) {
               style={{
                 fontFamily: "var(--font-serif)",
                 fontSize: "clamp(2.4rem, 5vw, 3.8rem)",
-                color: "#AE873E",
+                color: "var(--primary)",
                 letterSpacing: "0.04em",
                 fontWeight: 500,
                 margin: "0 0 24px 0"
@@ -1808,7 +1808,7 @@ function QuickViewModal({ product, onClose }) {
 
           <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
             {[1, 2, 3, 4, 5].map((s) => (
-              <Star key={s} size={14} fill="#AE873E" stroke="#AE873E" />
+              <Star key={s} size={14} fill="var(--gold)" stroke="var(--gold)" />
             ))}
             <span style={{ fontSize: "0.8rem", color: "#777", marginLeft: "6px" }}>(24 reviews)</span>
           </div>

@@ -11,29 +11,36 @@
   --card: #ffffff;
   --card-foreground: #1f1f1f;
 
-  /* Vemus Royal Gold Palette */
-  --primary: #AE873E;
-  --primary-hover: #957127;
+  /* Gemora Diam Botanical Luxury Palette */
+  --primary: #556832;
+  --primary-hover: #435226;
   --primary-foreground: #ffffff;
-  --primary-soft: #faf5ed;
-  --gold: #AE873E;
-  --gold-deep: #957127;
-  --gold-bar: #b0894f;
+  --primary-soft: #eef2e6;
+  --primary-light: #708447;
 
-  /* Vemus Grays & Backgrounds */
-  --main-dark: #1F1F1F;
-  --main-darker: #181818;
-  --main-muted: #717171;
-  --main-subtle: #8F8F8F;
-  --secondary: #F5F2E9;
-  --secondary-foreground: #1F1F1F;
-  --muted: #F5F2E9;
-  --muted-foreground: #6b7562;
-  --cream-bg: #F5F2E9;
-  --champagne: #F5F2E9;
-  --border: #e8e8e8;
-  --border-subtle: #eeeeee;
-  --destructive: #d32f2f;
+  /* Harmonious Luxury Accent (Champagne Gold / Antique Brass) */
+  --accent: #c5a059;
+  --accent-hover: #b38e46;
+  --gold: #c5a059;
+  --gold-deep: #9e7d37;
+  --gold-bar: #556832;
+
+  /* Premium Neutrals & Backgrounds */
+  --foreground: #1e2419;
+  --card-foreground: #1e2419;
+  --main-dark: #1a2216;
+  --main-darker: #131a10;
+  --main-muted: #626e59;
+  --main-subtle: #85917c;
+  --secondary: #f4f6f0;
+  --secondary-foreground: #1e2419;
+  --muted: #edf1e7;
+  --muted-foreground: #5e6b54;
+  --cream-bg: #faf9f5;
+  --champagne: #f4f1e8;
+  --border: #dfe4d8;
+  --border-subtle: #edf1e8;
+  --destructive: #c0392b;
 
   /* Typography */
   --font-serif: "Playfair Display", "Cormorant Garamond", Georgia, serif;
@@ -132,15 +139,15 @@ img {
 @keyframes pulsePin {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(174, 135, 62, 0.7);
+    box-shadow: 0 0 0 0 rgba(85, 104, 50, 0.7);
   }
   70% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 12px rgba(174, 135, 62, 0);
+    box-shadow: 0 0 0 12px rgba(85, 104, 50, 0);
   }
   100% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(174, 135, 62, 0);
+    box-shadow: 0 0 0 0 rgba(85, 104, 50, 0);
   }
 }
 
@@ -170,10 +177,10 @@ img {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f7f5f0;
+  background: #f4f6f0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d8cebc;
+  background: #cdd5c5;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
