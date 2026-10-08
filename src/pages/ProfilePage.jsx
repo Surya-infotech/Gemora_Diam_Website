@@ -113,28 +113,6 @@ export default function ProfilePage() {
             </button>
           ))}
         </div>
-
-        <button
-          onClick={logout}
-          className="eyebrow"
-          style={{
-            background: "none",
-            border: "none",
-            color: "#888",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-            paddingBottom: "14px",
-            whiteSpace: "nowrap",
-            fontSize: "0.76rem"
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#c33")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
-        >
-          <LogOut size={14} />
-          Log Out
-        </button>
       </div>
 
       <div style={{ marginTop: "40px" }}>
@@ -420,38 +398,6 @@ function SettingsTab() {
         </button>
       </form>
 
-      {/* Email Preferences */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem" }}>Salon Preferences</h3>
-        {[
-          "New collection previews & private vault releases",
-          "Private Paris atelier event invitations",
-          "Order tracking and courier notifications",
-          "Fine jewelry care and diamond styling notes"
-        ].map((item, idx) => (
-          <label
-            key={item}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              borderBottom: "1px solid var(--border)",
-              paddingBottom: "12px",
-              fontSize: "0.85rem",
-              cursor: "pointer",
-              color: "var(--foreground)"
-            }}
-          >
-            <span>{item}</span>
-            <input
-              type="checkbox"
-              defaultChecked={idx < 3}
-              onChange={() => showToast("Salon preferences updated", "info")}
-              style={{ width: "16px", height: "16px", accentColor: "var(--primary)", cursor: "pointer" }}
-            />
-          </label>
-        ))}
-      </div>
       {/* Account Session & Logout */}
       <div
         style={{
