@@ -935,29 +935,6 @@ function BestSellerSection({ onQuickView }) {
                   >
                     {item.name}
                   </h4>
-
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span
-                      style={{
-                        fontSize: "0.95rem",
-                        fontWeight: 600,
-                        color: item.oldPrice ? "#F43B3B" : "#181818"
-                      }}
-                    >
-                      {format(item.price)}
-                    </span>
-                    {item.oldPrice && (
-                      <span
-                        style={{
-                          fontSize: "0.85rem",
-                          color: "#888888",
-                          textDecoration: "line-through"
-                        }}
-                      >
-                        {format(item.oldPrice)}
-                      </span>
-                    )}
-                  </div>
                 </div>
               </div>
             );
