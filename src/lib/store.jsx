@@ -148,6 +148,8 @@ export function formatCurrencyWithDetails(amount, details) {
 
 export function StoreProvider({ children }) {
   const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
+  const customerTokenKey = import.meta.env.VITE_CUSTOMERTOKEN_NAME;
+  const customerIdKey = import.meta.env.VITE_CUSTOMERID_NAME;
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [currency, setCurrency] = useState("INR");
@@ -165,10 +167,11 @@ export function StoreProvider({ children }) {
   const [cartOpen, setCartOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
-  // On mount: Purge all items from localStorage except customer_token and customer_id, and verify token
+  // On mount: Purge all items from localStorage except CustomerID and customer token, and verify token
   useEffect(() => {
-    const allowed = ["customer_id", "customer_token"];
+    const allowed = [customerIdKey, customerTokenKey];
     try {
+      // Purge all items from localStorage except CustomerID and customer token
       Object.keys(localStorage).forEach((key) => {
         if (!allowed.includes(key)) {
           localStorage.removeItem(key);
@@ -178,8 +181,8 @@ export function StoreProvider({ children }) {
       // ignore
     }
 
-    const token = localStorage.getItem("customer_token");
-    const customerId = localStorage.getItem("customer_id");
+    const token = localStorage.getItem(customerTokenKey);
+    const customerId = localStorage.getItem(customerIdKey);
 
     if (!token || !customerId) {
       setUser(null);
@@ -204,15 +207,15 @@ export function StoreProvider({ children }) {
             phone: data.customer.phone || ""
           });
         } else {
-          localStorage.removeItem("customer_token");
-          localStorage.removeItem("customer_id");
+          localStorage.removeItem(customerTokenKey);
+          localStorage.removeItem(customerIdKey);
           setUser(null);
         }
       })
       .catch(() => {
         setUser(null);
       });
-  }, [backendUrl]);
+  }, [backendUrl, customerIdKey, customerTokenKey]);
 
   const notify = useCallback((title, description = "") => {
     setToastMessage({ title, description });
@@ -227,19 +230,19 @@ export function StoreProvider({ children }) {
 
   const logout = useCallback(() => {
     setUser(null);
+    localStorage.removeItem(customerTokenKey);
+    localStorage.removeItem(customerIdKey);
     localStorage.removeItem("customer_token");
     localStorage.removeItem("customer_id");
     try {
       Object.keys(localStorage).forEach((key) => {
-        if (key !== "customer_token" && key !== "customer_id") {
-          localStorage.removeItem(key);
-        }
+        localStorage.removeItem(key);
       });
     } catch {
       // ignore
     }
     notify("Logged Out", "You have successfully signed out of your account.");
-  }, [notify]);
+  }, [customerTokenKey, customerIdKey, notify]);
 
   const signup = useCallback(
     async ({ fullname, email, password, phone }) => {
@@ -259,10 +262,10 @@ export function StoreProvider({ children }) {
         const token = data.token;
 
         if (customerId) {
-          localStorage.setItem("customer_id", customerId);
+          localStorage.setItem(customerIdKey, customerId);
         }
         if (token) {
-          localStorage.setItem("customer_token", token);
+          localStorage.setItem(customerTokenKey, token);
         }
 
         const customerUser = {
@@ -276,7 +279,6 @@ export function StoreProvider({ children }) {
 
         setUser(customerUser);
 
-
         notify("Account Created", `Welcome to Maison Gemora, ${customerUser.fullname}!`);
         return { success: true, customer: customerUser, token, customer_id: customerId };
       } catch (err) {
@@ -284,7 +286,7 @@ export function StoreProvider({ children }) {
         return { success: false, error: err.message };
       }
     },
-    [backendUrl, notify]
+    [backendUrl, customerIdKey, customerTokenKey, notify]
   );
 
   const login = useCallback(
@@ -304,10 +306,10 @@ export function StoreProvider({ children }) {
         const token = data.token;
 
         if (customerId) {
-          localStorage.setItem("customer_id", customerId);
+          localStorage.setItem(customerIdKey, customerId);
         }
         if (token) {
-          localStorage.setItem("customer_token", token);
+          localStorage.setItem(customerTokenKey, token);
         }
 
         const customerUser = {
@@ -321,7 +323,6 @@ export function StoreProvider({ children }) {
 
         setUser(customerUser);
 
-
         notify("Welcome Back", `Signed in as ${customerUser.fullname}`);
         return { success: true, customer: customerUser, token, customer_id: customerId };
       } catch (err) {
@@ -329,7 +330,7 @@ export function StoreProvider({ children }) {
         return { success: false, error: err.message };
       }
     },
-    [backendUrl, notify]
+    [backendUrl, customerIdKey, customerTokenKey, notify]
   );
 
   // Fetch all Admin Panel data
