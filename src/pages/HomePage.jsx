@@ -4,7 +4,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   Heart,
-  Eye,
   ShoppingBag,
   ChevronLeft,
   ChevronRight,
@@ -684,9 +683,11 @@ function BestSellerSection({ onQuickView }) {
                       overflow: "hidden",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center"
+                      justifyContent: "center",
+                      cursor: "pointer"
                     }}
                     className="product-card-hover"
+                    onClick={() => onQuickView(item)}
                   >
                     <img
                       src={item.image}
@@ -738,27 +739,9 @@ function BestSellerSection({ onQuickView }) {
                       </button>
 
                       <button
-                        onClick={() => onQuickView(item)}
-                        aria-label="Quick View"
-                        style={{
-                          width: "36px",
-                          height: "36px",
-                          borderRadius: "50%",
-                          backgroundColor: "#ffffff",
-                          display: "grid",
-                          placeItems: "center",
-                          color: "#333",
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                          transition: "all 0.2s"
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
-                      >
-                        <Eye size={16} />
-                      </button>
-
-                      <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           addToCart(item.id, item.metals?.[0] || "", item.ringSizes?.[0] || "", "", item.price);
                           notify("Added to Bag", `1x ${item.name} (${format(item.price)})`);
                         }}
@@ -1108,6 +1091,7 @@ function ShopTheLookSection({ onQuickView }) {
           {looks.map((item, idx) => (
             <div
               key={item.product?.id || idx}
+              onClick={() => onQuickView && onQuickView(item.product)}
               style={{
                 position: "relative",
                 height: "520px",
@@ -1117,19 +1101,18 @@ function ShopTheLookSection({ onQuickView }) {
                 backgroundColor: "#f7f7f7",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
+                cursor: "pointer"
               }}
             >
               {/* Main Model / Product Look Image */}
               <img
                 src={item.img}
                 alt={item.product?.name || "Product"}
-                onClick={() => onQuickView && onQuickView(item.product)}
                 style={{
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  cursor: "pointer",
                   transition: "transform 0.5s ease"
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
@@ -1149,70 +1132,37 @@ function ShopTheLookSection({ onQuickView }) {
                   padding: "12px 16px",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "12px",
+                  gap: "14px",
                   boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
                 }}
               >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, cursor: "pointer" }}
-                  onClick={() => onQuickView && onQuickView(item.product)}
-                >
-                  <img
-                    src={item.product?.image || item.img}
-                    alt={item.product?.name || ""}
-                    style={{
-                      width: "48px",
-                      height: "48px",
-                      borderRadius: "2px",
-                      objectFit: "contain",
-                      backgroundColor: "#f5f5f5",
-                      flexShrink: 0
-                    }}
-                  />
-                  <div style={{ minWidth: 0 }}>
-                    <h5
-                      style={{
-                        fontSize: "0.88rem",
-                        fontWeight: 600,
-                        margin: 0,
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                      }}
-                    >
-                      {item.product?.name}
-                    </h5>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => onQuickView && onQuickView(item.product)}
-                  aria-label="Quick View"
+                <img
+                  src={item.product?.image || item.img}
+                  alt={item.product?.name || ""}
                   style={{
-                    width: "36px",
-                    height: "36px",
-                    borderRadius: "50%",
-                    border: "1px solid #d5c8b2",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "var(--primary)",
-                    flexShrink: 0,
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    backgroundColor: "transparent"
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "2px",
+                    objectFit: "contain",
+                    backgroundColor: "#f5f5f5",
+                    flexShrink: 0
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "var(--primary)";
-                    e.currentTarget.style.color = "#ffffff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "var(--primary)";
-                  }}
-                >
-                  <Eye size={16} />
-                </button>
+                />
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <h5
+                    style={{
+                      fontSize: "0.92rem",
+                      fontWeight: 600,
+                      margin: 0,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      color: "#181818"
+                    }}
+                  >
+                    {item.product?.name}
+                  </h5>
+                </div>
               </div>
             </div>
           ))}
