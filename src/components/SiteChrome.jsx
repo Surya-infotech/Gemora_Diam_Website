@@ -17,7 +17,6 @@ import {
   ArrowRight
 } from "lucide-react";
 import { useStore } from "../lib/store";
-import { CURRENCIES } from "../lib/products";
 import { CartLines } from "./CartLines";
 
 import visaSvg from "../assets/vemus/payment_visa.svg";
@@ -86,167 +85,8 @@ function Badge({ n }) {
   );
 }
 
-function CountryCurrencyDropdown() {
-  const { currency, setCurrency } = useStore();
-  const [open, setOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  const activeMeta = CURRENCIES[currency] || CURRENCIES.INR || {
-    country: "India",
-    symbol: "₹",
-    code: "in",
-    flagEmoji: "🇮🇳"
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
-
-  return (
-    <div style={{ position: "relative" }} ref={dropdownRef}>
-      <button
-        onClick={() => setOpen((prev) => !prev)}
-        aria-label="Select Country and Currency"
-        style={{
-          background: "transparent",
-          border: "none",
-          color: "#ffffff",
-          fontSize: "0.76rem",
-          fontWeight: 500,
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          cursor: "pointer",
-          padding: "5px 10px",
-          borderRadius: "2px",
-          transition: "background 0.2s"
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.12)")}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-      >
-        <img
-          src={`https://flagcdn.com/20x15/${activeMeta.code}.png`}
-          srcSet={`https://flagcdn.com/40x30/${activeMeta.code}.png 2x`}
-          width="20"
-          height="15"
-          alt={activeMeta.country}
-          style={{
-            borderRadius: "2px",
-            objectFit: "cover",
-            display: "inline-block",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
-            verticalAlign: "middle"
-          }}
-        />
-        <span>
-          {activeMeta.country} {currency} ({activeMeta.symbol})
-        </span>
-        <ChevronDown
-          size={12}
-          style={{
-            transform: open ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.2s ease"
-          }}
-        />
-      </button>
-
-      {open && (
-        <div
-          style={{
-            position: "absolute",
-            top: "calc(100% + 8px)",
-            right: 0,
-            backgroundColor: "#ffffff",
-            color: "#181818",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
-            borderRadius: "4px",
-            border: "1px solid #ebebeb",
-            padding: "6px 0",
-            minWidth: "240px",
-            zIndex: 9999,
-            animation: "fadeIn 0.15s ease-out"
-          }}
-        >
-          <div
-            style={{
-              padding: "6px 16px 8px 16px",
-              borderBottom: "1px solid #f0f0f0",
-              fontSize: "0.72rem",
-              color: "#888",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              fontWeight: 600
-            }}
-          >
-            Select Country &amp; Currency
-          </div>
-          {Object.entries(CURRENCIES).map(([code, meta]) => {
-            const isSelected = (currency || "").toUpperCase() === code.toUpperCase();
-            return (
-              <button
-                key={code}
-                onClick={() => {
-                  setCurrency(code);
-                  setOpen(false);
-                }}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  padding: "9px 16px",
-                  background: isSelected ? "#f4f6f0" : "transparent",
-                  border: "none",
-                  textAlign: "left",
-                  fontSize: "0.82rem",
-                  cursor: "pointer",
-                  color: isSelected ? "var(--primary)" : "#181818",
-                  fontWeight: isSelected ? 600 : 400,
-                  transition: "background 0.15s"
-                }}
-                onMouseEnter={(e) => {
-                  if (!isSelected) e.currentTarget.style.backgroundColor = "#f9f9f9";
-                }}
-                onMouseLeave={(e) => {
-                  if (!isSelected) e.currentTarget.style.backgroundColor = "transparent";
-                }}
-              >
-                <img
-                  src={`https://flagcdn.com/20x15/${meta.code}.png`}
-                  srcSet={`https://flagcdn.com/40x30/${meta.code}.png 2x`}
-                  width="20"
-                  height="15"
-                  alt={meta.country}
-                  style={{
-                    borderRadius: "2px",
-                    objectFit: "cover",
-                    flexShrink: 0,
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.15)"
-                  }}
-                />
-                <span style={{ flex: 1 }}>{meta.country} ({code})</span>
-                <span style={{ color: isSelected ? "var(--primary)" : "#666", fontSize: "0.82rem", fontWeight: 600 }}>
-                  {meta.symbol}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function Header() {
-  const { cartCount, wishlist, currency, setCurrency, setCartOpen, generalSettings, products: dynamicProducts, format } = useStore();
+  const { cartCount, wishlist, setCartOpen, generalSettings, products: dynamicProducts, format } = useStore();
   const [mobile, setMobile] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
@@ -363,11 +203,6 @@ export function Header() {
           <Link to="/shop" style={{ textDecoration: "underline", fontWeight: 600, color: "#ffffff" }}>
             SHOP NOW
           </Link>
-        </div>
-
-        {/* Right: Country Flag & Currency Selector */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <CountryCurrencyDropdown />
         </div>
       </div>
 
@@ -657,52 +492,6 @@ export function Header() {
                 Contact &amp; Stores
               </Link>
             </nav>
-
-            <div style={{ marginTop: "auto", borderTop: "1px solid #eee", paddingTop: "20px" }}>
-              <label style={{ fontSize: "0.75rem", color: "#888", display: "block", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
-                Country &amp; Currency
-              </label>
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                {Object.entries(CURRENCIES).map(([c, meta]) => {
-                  const isSelected = (currency || "").toUpperCase() === c.toUpperCase();
-                  return (
-                    <button
-                      key={c}
-                      onClick={() => {
-                        setCurrency(c);
-                        setMobile(false);
-                      }}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                        padding: "10px 12px",
-                        border: isSelected ? "1.5px solid var(--primary)" : "1px solid #eee",
-                        backgroundColor: isSelected ? "#f4f6f0" : "#fafafa",
-                        borderRadius: "2px",
-                        cursor: "pointer",
-                        textAlign: "left"
-                      }}
-                    >
-                      <img
-                        src={`https://flagcdn.com/20x15/${meta.code}.png`}
-                        srcSet={`https://flagcdn.com/40x30/${meta.code}.png 2x`}
-                        width="20"
-                        height="15"
-                        alt={meta.country}
-                        style={{ borderRadius: "2px", flexShrink: 0 }}
-                      />
-                      <span style={{ fontSize: "0.85rem", fontWeight: isSelected ? 600 : 400, flex: 1, color: isSelected ? "var(--primary)" : "#181818" }}>
-                        {meta.country} ({c})
-                      </span>
-                      <span style={{ fontSize: "0.85rem", fontWeight: 600, color: isSelected ? "var(--primary)" : "#666" }}>
-                        {meta.symbol}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         </div>
       )}
