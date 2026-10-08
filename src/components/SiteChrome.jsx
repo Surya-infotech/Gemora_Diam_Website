@@ -430,39 +430,9 @@ export function Header() {
                 SHOP <ChevronDown size={12} />
               </Link>
 
-              <Link
-                to="/shop"
-                style={{
-                  fontSize: "0.82rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: "#181818",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  transition: "color 0.2s"
-                }}
-              >
-                PRODUCTS <ChevronDown size={12} />
-              </Link>
 
-              <Link
-                to="/about"
-                style={{
-                  fontSize: "0.82rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: location.pathname === "/about" ? "var(--primary)" : "#181818",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  transition: "color 0.2s"
-                }}
-              >
-                PAGES <ChevronDown size={12} />
-              </Link>
+
+
 
               <Link
                 to="/contact"
