@@ -99,9 +99,11 @@ function ProductDetailContent({ product }) {
 
   const relatedProducts = useMemo(() => {
     if (!product || !products) return [];
-    return products
-      .filter((p) => String(p.id) !== String(product.id) && (p.category === product.category || !product.category))
-      .slice(0, 4);
+    const sameCategory = products.filter(
+      (p) => String(p.id) !== String(product.id) && p.category === product.category
+    );
+    if (sameCategory.length > 0) return sameCategory.slice(0, 4);
+    return products.filter((p) => String(p.id) !== String(product.id)).slice(0, 4);
   }, [product, products]);
 
   const handleShare = () => {
@@ -758,8 +760,9 @@ function ProductDetailContent({ product }) {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-                gap: "28px"
+                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 300px))",
+                gap: "28px",
+                justifyContent: "flex-start"
               }}
             >
               {relatedProducts.map((rel) => (
@@ -770,45 +773,76 @@ function ProductDetailContent({ product }) {
                     cursor: "pointer",
                     display: "flex",
                     flexDirection: "column",
-                    transition: "transform 0.25s ease"
+                    maxWidth: "300px",
+                    width: "100%",
+                    borderRadius: "4px",
+                    border: "1px solid var(--border-subtle)",
+                    backgroundColor: "#ffffff",
+                    overflow: "hidden",
+                    transition: "all 0.3s ease",
+                    boxShadow: "0 2px 10px rgba(0,0,0,0.03)"
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-4px)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.08)";
+                    e.currentTarget.style.borderColor = "var(--border)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 2px 10px rgba(0,0,0,0.03)";
+                    e.currentTarget.style.borderColor = "var(--border-subtle)";
+                  }}
                 >
                   <div
                     style={{
+                      position: "relative",
                       aspectRatio: "1/1",
-                      backgroundColor: "#f7f7f7",
-                      borderRadius: "2px",
+                      backgroundColor: "#f9f9f9",
                       overflow: "hidden",
-                      display: "grid",
-                      placeItems: "center"
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "16px"
                     }}
                   >
                     <img
                       src={rel.image}
                       alt={rel.name}
-                      style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        transition: "transform 0.5s ease"
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                     />
                   </div>
-                  <div style={{ paddingTop: "14px" }}>
-                    <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#888888", fontWeight: 600 }}>
-                      {rel.category}
+
+                  <div style={{ padding: "18px 18px 20px 18px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--muted-foreground)", fontWeight: 600 }}>
+                      {rel.category || "Fine Jewelry"}
                     </span>
                     <h4
                       style={{
                         fontFamily: "var(--font-serif)",
-                        fontSize: "1.05rem",
-                        marginTop: "4px",
+                        fontSize: "1.08rem",
+                        fontWeight: 500,
                         lineHeight: 1.3,
-                        color: "var(--foreground)"
+                        color: "var(--foreground)",
+                        margin: 0
                       }}
                     >
                       {rel.name}
                     </h4>
-                    <span style={{ fontSize: "0.96rem", fontWeight: 700, color: "var(--primary)", marginTop: "6px", display: "inline-block" }}>
-                      {format(rel.price)}
-                    </span>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "6px" }}>
+                      <span style={{ fontSize: "0.98rem", fontWeight: 700, color: "var(--primary)" }}>
+                        {format(rel.price)}
+                      </span>
+                      <span style={{ fontSize: "0.76rem", color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
+                        View Details &rarr;
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}
