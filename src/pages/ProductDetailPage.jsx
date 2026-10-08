@@ -437,7 +437,7 @@ function ProductDetailContent({ product }) {
                         color: "var(--foreground)"
                       }}
                     >
-                      Stone: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{activeStone}</span>
+                      Stone
                     </label>
                     <div style={{ position: "relative" }}>
                       <select
@@ -505,7 +505,7 @@ function ProductDetailContent({ product }) {
                         color: "var(--foreground)"
                       }}
                     >
-                      Diamond Size: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{carat}</span>
+                      Diamond Size
                     </label>
                     <div style={{ position: "relative" }}>
                       <select
