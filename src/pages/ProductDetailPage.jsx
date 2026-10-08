@@ -50,6 +50,11 @@ function ProductDetailContent({ product }) {
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("description");
   const [copied, setCopied] = useState(false);
+  const [selectedShape, setSelectedShape] = useState(product?.shapes?.[0] || "");
+  const [selectedClarity, setSelectedClarity] = useState(product?.clarities?.[0] || "");
+  const [selectedStone, setSelectedStone] = useState(product?.stones?.[0] || "");
+  const [selectedColor, setSelectedColor] = useState(product?.diamondColors?.[0] || "");
+  const [selectedStyle, setSelectedStyle] = useState(product?.styles?.[0] || "");
 
   const matchedPricing = useMemo(() => {
     if (!product || product.pricing?.priceType !== "metal_with_stone_diamond_carat") {
@@ -435,33 +440,157 @@ function ProductDetailContent({ product }) {
               </div>
             )}
 
-            {/* Attribute Badges */}
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              {product.shapes?.map((sh) => (
-                <span key={sh} style={{ fontSize: "0.76rem", backgroundColor: "#f4f6f0", color: "#3a4433", padding: "5px 10px", borderRadius: "2px" }}>
-                  Shape: {sh}
-                </span>
-              ))}
-              {product.clarities?.map((cl) => (
-                <span key={cl} style={{ fontSize: "0.76rem", backgroundColor: "#f4f6f0", color: "#3a4433", padding: "5px 10px", borderRadius: "2px" }}>
-                  Clarity: {cl}
-                </span>
-              ))}
-              {product.stones?.map((st) => (
-                <span key={st} style={{ fontSize: "0.76rem", backgroundColor: "#f4f6f0", color: "#3a4433", padding: "5px 10px", borderRadius: "2px" }}>
-                  Stone: {st}
-                </span>
-              ))}
-              {product.diamondColors?.map((dc) => (
-                <span key={dc} style={{ fontSize: "0.76rem", backgroundColor: "#f4f6f0", color: "#3a4433", padding: "5px 10px", borderRadius: "2px" }}>
-                  Color: {dc}
-                </span>
-              ))}
-              {product.styles?.map((sy) => (
-                <span key={sy} style={{ fontSize: "0.76rem", backgroundColor: "#f4f6f0", color: "#3a4433", padding: "5px 10px", borderRadius: "2px" }}>
-                  Style: {sy}
-                </span>
-              ))}
+            {/* Attribute Groups (Single Label Per Group) */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {product.shapes && product.shapes.length > 0 && (
+                <div>
+                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                    Shape: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedShape || product.shapes[0]}</span>
+                  </label>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {product.shapes.map((sh) => (
+                      <button
+                        key={sh}
+                        type="button"
+                        onClick={() => setSelectedShape(sh)}
+                        style={{
+                          padding: "6px 14px",
+                          border: (selectedShape || product.shapes[0]) === sh ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: (selectedShape || product.shapes[0]) === sh ? "var(--primary-soft)" : "#ffffff",
+                          color: (selectedShape || product.shapes[0]) === sh ? "var(--primary)" : "var(--foreground)",
+                          borderRadius: "2px",
+                          fontSize: "0.82rem",
+                          fontWeight: (selectedShape || product.shapes[0]) === sh ? 600 : 400,
+                          cursor: "pointer",
+                          transition: "all 0.15s"
+                        }}
+                      >
+                        {sh}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.clarities && product.clarities.length > 0 && (
+                <div>
+                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                    Clarity: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedClarity || product.clarities[0]}</span>
+                  </label>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {product.clarities.map((cl) => (
+                      <button
+                        key={cl}
+                        type="button"
+                        onClick={() => setSelectedClarity(cl)}
+                        style={{
+                          padding: "6px 14px",
+                          border: (selectedClarity || product.clarities[0]) === cl ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: (selectedClarity || product.clarities[0]) === cl ? "var(--primary-soft)" : "#ffffff",
+                          color: (selectedClarity || product.clarities[0]) === cl ? "var(--primary)" : "var(--foreground)",
+                          borderRadius: "2px",
+                          fontSize: "0.82rem",
+                          fontWeight: (selectedClarity || product.clarities[0]) === cl ? 600 : 400,
+                          cursor: "pointer",
+                          transition: "all 0.15s"
+                        }}
+                      >
+                        {cl}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.stones && product.stones.length > 0 && (
+                <div>
+                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                    Stone: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedStone || product.stones[0]}</span>
+                  </label>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {product.stones.map((st) => (
+                      <button
+                        key={st}
+                        type="button"
+                        onClick={() => setSelectedStone(st)}
+                        style={{
+                          padding: "6px 14px",
+                          border: (selectedStone || product.stones[0]) === st ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: (selectedStone || product.stones[0]) === st ? "var(--primary-soft)" : "#ffffff",
+                          color: (selectedStone || product.stones[0]) === st ? "var(--primary)" : "var(--foreground)",
+                          borderRadius: "2px",
+                          fontSize: "0.82rem",
+                          fontWeight: (selectedStone || product.stones[0]) === st ? 600 : 400,
+                          cursor: "pointer",
+                          transition: "all 0.15s"
+                        }}
+                      >
+                        {st}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.diamondColors && product.diamondColors.length > 0 && (
+                <div>
+                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                    Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedColor || product.diamondColors[0]}</span>
+                  </label>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {product.diamondColors.map((dc) => (
+                      <button
+                        key={dc}
+                        type="button"
+                        onClick={() => setSelectedColor(dc)}
+                        style={{
+                          padding: "6px 14px",
+                          border: (selectedColor || product.diamondColors[0]) === dc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: (selectedColor || product.diamondColors[0]) === dc ? "var(--primary-soft)" : "#ffffff",
+                          color: (selectedColor || product.diamondColors[0]) === dc ? "var(--primary)" : "var(--foreground)",
+                          borderRadius: "2px",
+                          fontSize: "0.82rem",
+                          fontWeight: (selectedColor || product.diamondColors[0]) === dc ? 600 : 400,
+                          cursor: "pointer",
+                          transition: "all 0.15s"
+                        }}
+                      >
+                        {dc}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.styles && product.styles.length > 0 && (
+                <div>
+                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                    Style: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedStyle || product.styles[0]}</span>
+                  </label>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {product.styles.map((sy) => (
+                      <button
+                        key={sy}
+                        type="button"
+                        onClick={() => setSelectedStyle(sy)}
+                        style={{
+                          padding: "6px 14px",
+                          border: (selectedStyle || product.styles[0]) === sy ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: (selectedStyle || product.styles[0]) === sy ? "var(--primary-soft)" : "#ffffff",
+                          color: (selectedStyle || product.styles[0]) === sy ? "var(--primary)" : "var(--foreground)",
+                          borderRadius: "2px",
+                          fontSize: "0.82rem",
+                          fontWeight: (selectedStyle || product.styles[0]) === sy ? 600 : 400,
+                          cursor: "pointer",
+                          transition: "all 0.15s"
+                        }}
+                      >
+                        {sy}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Quantity & Add to Cart Action */}
