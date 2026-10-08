@@ -24,13 +24,6 @@ import promo3 from "../assets/vemus/collections_promo-3.jpg";
 import banner5 from "../assets/vemus/banner_banner-5.jpg";
 import banner6 from "../assets/vemus/banner_banner-6.jpg";
 
-import p39 from "../assets/vemus/products_product-39.jpg";
-import p40 from "../assets/vemus/products_product-40.jpg";
-import p41 from "../assets/vemus/products_product-41.jpg";
-import p42 from "../assets/vemus/products_product-42.jpg";
-import p43 from "../assets/vemus/products_product-43.jpg";
-import p44 from "../assets/vemus/products_product-44.jpg";
-import p45 from "../assets/vemus/products_product-45.jpg";
 import p52 from "../assets/vemus/products_product-52.jpg";
 import p53 from "../assets/vemus/products_product-53.jpg";
 import p66 from "../assets/vemus/products_product-66.jpg";
@@ -615,104 +608,8 @@ function BestSellerSection({ onQuickView }) {
     categories: dynamicCategories
   } = useStore();
 
-  const fallbackProducts = [
-    {
-      id: "halo-engagement-ring",
-      name: "Emerald-cut Halo Engagement Ring with a Diamond Platinum Band",
-      price: 3370,
-      oldPrice: null,
-      category: "rings",
-      image: p39,
-      badgeType: "sizes",
-      badgeText: "3 sizes are available",
-      desc: "An emerald-cut diamond surrounded by a halo of micro-pavé diamonds on a platinum band."
-    },
-    {
-      id: "small-earrings-gold",
-      name: "Small Earrings In Gold with Diamond",
-      price: 3370,
-      oldPrice: 3899,
-      category: "earrings",
-      image: p40,
-      badgeType: "countdown",
-      badgeText: "11d : 11h : 54m : 12s",
-      desc: "Delicate 18k yellow gold huggies encrusted with shimmering brilliant-cut solitaire diamonds."
-    },
-    {
-      id: "sixteen-stone-earrings",
-      name: "Sixteen Stone Narrow Earrings",
-      price: 2499,
-      oldPrice: 2899,
-      category: "earrings",
-      image: p41,
-      badgeType: "flash",
-      badgeText: "30% OFF ⚡ Selling fast ⚡ 30% OFF",
-      desc: "Sixteen round brilliant diamonds hand-set in platinum for unmatched sparkle and comfort."
-    },
-    {
-      id: "moon-star-studs",
-      name: "Sparkling Moon & Star Stud Earrings",
-      price: 2499,
-      oldPrice: null,
-      category: "earrings",
-      image: p42,
-      badgeType: "notify",
-      badgeText: "Notify Me When Available",
-      desc: "Celestial moon and star studs adorned with fine pave diamonds and white gold mounts."
-    },
-    {
-      id: "riviera-tennis-bracelets",
-      name: "Riviera Tennis Bracelet in White Gold",
-      price: 7600,
-      oldPrice: 8400,
-      category: "bracelets",
-      image: p43,
-      badgeType: "sizes",
-      badgeText: "2 sizes available",
-      desc: "Fifty-two hand-selected diamonds set in a continuous line of fluid light."
-    },
-    {
-      id: "heart-bangle",
-      name: "Organically Shaped Heart Bangle",
-      price: 2499,
-      oldPrice: null,
-      category: "bracelets",
-      image: p44,
-      badgeType: "sizes",
-      badgeText: "One size fits all",
-      desc: "Sculptural gold bangle with organic contours and double safety clasp."
-    },
-    {
-      id: "yellow-gold-engagement",
-      name: "Engagement Ring in 18k Yellow Gold",
-      price: 2499,
-      oldPrice: 2899,
-      category: "rings",
-      image: p45,
-      badgeType: "sizes",
-      badgeText: "4 sizes available",
-      desc: "Solitaire diamond held aloft in a whisper-thin four-claw 18k yellow gold setting."
-    },
-    {
-      id: "april-birthstone-necklace",
-      name: "April Birthstone Chain Necklace",
-      price: 2399,
-      oldPrice: 3499,
-      category: "necklaces",
-      image: p67,
-      badgeType: "flash",
-      badgeText: "30% OFF ⚡ Selling fast",
-      desc: "Fine curb chain with shimmering diamond pendant crafted for effortless everyday luxury."
-    }
-  ];
-
-  // Prioritize dynamic products from admin panel
-  const combinedProducts = [
-    ...(dynamicProducts || []),
-    ...fallbackProducts.filter(
-      (fb) => !(dynamicProducts || []).some((dp) => dp.id === fb.id || dp.name === fb.name)
-    )
-  ];
+  // Only use products from backend
+  const products = dynamicProducts || [];
 
   const categoryTabs = [
     { id: "all", label: "all" },
@@ -721,18 +618,17 @@ function BestSellerSection({ onQuickView }) {
           id: (c.categoryname || "").toLowerCase(),
           label: (c.categoryname || "").toLowerCase()
         }))
-      : [
-          { id: "rings", label: "rings" },
-          { id: "bracelets", label: "bracelets" },
-          { id: "necklaces", label: "necklaces" },
-          { id: "earrings", label: "earrings" }
-        ])
+      : [])
   ];
 
   const filtered =
     activeTab === "all"
-      ? combinedProducts.slice(0, 8)
-      : combinedProducts.filter((p) => (p.category || "").toLowerCase() === activeTab.toLowerCase());
+      ? products
+      : products.filter(
+          (p) =>
+            (p.category || "").toLowerCase() === activeTab.toLowerCase() ||
+            String(p.categoryid || "") === String(activeTab)
+        );
 
   return (
     <section style={{ padding: "50px 0 90px 0", backgroundColor: "#ffffff" }}>
@@ -751,50 +647,65 @@ function BestSellerSection({ onQuickView }) {
         </h2>
 
         {/* Category Tabs */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "32px",
-            marginBottom: "48px",
-            borderBottom: "1px solid #ebebeb",
-            paddingBottom: "12px",
-            flexWrap: "wrap"
-          }}
-        >
-          {categoryTabs.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setActiveTab(t.id)}
-              style={{
-                fontSize: "0.85rem",
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                fontWeight: 600,
-                color: activeTab === t.id ? "var(--primary)" : "#777777",
-                borderBottom: activeTab === t.id ? "2px solid var(--primary)" : "none",
-                paddingBottom: "12px",
-                marginBottom: "-13px",
-                transition: "all 0.2s",
-                background: "none",
-                cursor: "pointer"
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+        {categoryTabs.length > 1 && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "32px",
+              marginBottom: "48px",
+              borderBottom: "1px solid #ebebeb",
+              paddingBottom: "12px",
+              flexWrap: "wrap"
+            }}
+          >
+            {categoryTabs.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                style={{
+                  fontSize: "0.85rem",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  color: activeTab === t.id ? "var(--primary)" : "#777777",
+                  borderBottom: activeTab === t.id ? "2px solid var(--primary)" : "none",
+                  paddingBottom: "12px",
+                  marginBottom: "-13px",
+                  transition: "all 0.2s",
+                  background: "none",
+                  cursor: "pointer"
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
 
-        {/* 4 Column Product Grid */}
+        {/* Product Grid */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-            gap: "28px"
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 320px))",
+            gap: "28px",
+            justifyContent: "flex-start"
           }}
         >
-          {filtered.map((item) => {
-            const isLiked = wishlist.includes(item.id);
+          {filtered.length === 0 ? (
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                textAlign: "center",
+                padding: "60px 20px",
+                color: "#888888"
+              }}
+            >
+              <p style={{ fontSize: "1rem" }}>No pieces found in this collection.</p>
+            </div>
+          ) : (
+            filtered.map((item) => {
+              const isLiked = wishlist.includes(item.id);
 
             return (
               <div
@@ -1050,7 +961,8 @@ function BestSellerSection({ onQuickView }) {
                 </div>
               </div>
             );
-          })}
+          })
+        )}
         </div>
       </div>
     </section>
