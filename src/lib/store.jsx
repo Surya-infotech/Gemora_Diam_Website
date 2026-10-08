@@ -1,4 +1,10 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import {
+  CUSTOMER_TOKEN_NAME,
+  storeEncryptedCustomerId,
+  removeEncryptedCustomerId,
+  getDecryptedCustomerId
+} from "./cryptoStorage";
 
 
 export function mapBackendItem(item) {
@@ -171,9 +177,11 @@ export function StoreProvider({ children }) {
 
     const token = localStorage.getItem("customer_token") || localStorage.getItem("gemora.token");
     const expiry = localStorage.getItem("gemora.token_expiry");
+    const hasEncryptedId = localStorage.getItem(CUSTOMER_TOKEN_NAME);
 
-    // Strictly require a valid customer token for active session
-    if (!token || (expiry && Date.now() > Number(expiry))) {
+    // Strictly require a valid customer token and encrypted ID for active session
+    if (!token || !hasEncryptedId || (expiry && Date.now() > Number(expiry))) {
+      removeEncryptedCustomerId();
       localStorage.removeItem("customer_id");
       localStorage.removeItem("gemora.customer_id");
       localStorage.removeItem("customer_token");
@@ -219,6 +227,7 @@ export function StoreProvider({ children }) {
 
   const logout = useCallback(() => {
     setUser(null);
+    removeEncryptedCustomerId();
     localStorage.removeItem("customer_id");
     localStorage.removeItem("gemora.customer_id");
     localStorage.removeItem("customer_token");
@@ -247,6 +256,7 @@ export function StoreProvider({ children }) {
         const token = data.token;
 
         if (customerId) {
+          storeEncryptedCustomerId(customerId);
           localStorage.setItem("customer_id", customerId);
           localStorage.setItem("gemora.customer_id", customerId);
         }
@@ -296,6 +306,7 @@ export function StoreProvider({ children }) {
         const token = data.token;
 
         if (customerId) {
+          storeEncryptedCustomerId(customerId);
           localStorage.setItem("customer_id", customerId);
           localStorage.setItem("gemora.customer_id", customerId);
         }
@@ -604,7 +615,9 @@ export function StoreProvider({ children }) {
         generalSettings,
         socialMedia,
         storeCurrency,
-        settingsLoading
+        settingsLoading,
+        getDecryptedCustomerId,
+        CUSTOMER_TOKEN_NAME
       }}
     >
       {children}
