@@ -14,21 +14,24 @@ import {
 } from "lucide-react";
 import { useStore } from "../lib/store";
 
-const metalSwatch = {
-  "18k Yellow Gold": "#c5a059",
-  "14k Yellow Gold": "#d4af37",
-  "Yellow Gold": "#c5a059",
-  "Rose Gold": "#e8a999",
-  "14k Rose Gold": "#e8a999",
-  "18k Rose Gold": "#d98f7e",
-  Platinum: "#dce1d4",
-  "14k White Gold": "#e5e8e8",
-  "18k White Gold": "#e5e8e8",
-  "10K White Gold": "#e5e8e8",
-  "White Gold": "#e5e8e8",
-  "925 Sliver": "#c0c0c0",
-  Silver: "#c0c0c0"
-};
+
+
+function getMetalGradient(metalName = "") {
+  const lower = (metalName || "").toLowerCase();
+  if (lower.includes("rose")) {
+    return "linear-gradient(135deg, #fcd3c7 0%, #e8a999 50%, #c97e6e 100%)";
+  }
+  if (lower.includes("white")) {
+    return "linear-gradient(135deg, #ffffff 0%, #e3e7e8 50%, #bdc4c7 100%)";
+  }
+  if (lower.includes("plat")) {
+    return "linear-gradient(135deg, #ffffff 0%, #eaeded 50%, #cbd2d5 100%)";
+  }
+  if (lower.includes("silver") || lower.includes("sliver")) {
+    return "linear-gradient(135deg, #f0f0f0 0%, #d8d8d8 50%, #b0b0b0 100%)";
+  }
+  return "linear-gradient(135deg, #f3db7b 0%, #d4af37 50%, #a88722 100%)";
+}
 
 function ProductDetailContent({ product }) {
   const navigate = useNavigate();
@@ -46,6 +49,7 @@ function ProductDetailContent({ product }) {
   const availableMetals = product?.metals || [];
   const [qty, setQty] = useState(1);
   const [metal, setMetal] = useState(availableMetals[0] || "");
+  const [hoveredMetal, setHoveredMetal] = useState(null);
   const [selectedRingSize, setSelectedRingSize] = useState("");
   const [selectedStone, setSelectedStone] = useState("");
   const [selectedCarat, setSelectedCarat] = useState("");
@@ -395,42 +399,93 @@ function ProductDetailContent({ product }) {
             {/* Metal Selector */}
             {availableMetals.length > 0 && (
               <div>
-                <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "10px", color: "var(--foreground)" }}>
-                  Select Metal: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{metal}</span>
+                <label
+                  style={{
+                    fontSize: "0.78rem",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.12em",
+                    display: "block",
+                    marginBottom: "12px",
+                    color: "var(--foreground)"
+                  }}
+                >
+                  Select Metal:{" "}
+                  <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>
+                    {hoveredMetal || metal}
+                  </span>
                 </label>
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  {availableMetals.map((m) => (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => setMetal(m)}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        padding: "8px 16px",
-                        border: metal === m ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                        backgroundColor: metal === m ? "var(--primary-soft)" : "#ffffff",
-                        color: metal === m ? "var(--primary)" : "var(--foreground)",
-                        borderRadius: "2px",
-                        fontSize: "0.82rem",
-                        fontWeight: metal === m ? 600 : 400,
-                        cursor: "pointer",
-                        transition: "all 0.15s"
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: "12px",
-                          height: "12px",
-                          borderRadius: "50%",
-                          backgroundColor: metalSwatch[m] || "#c5a059",
-                          border: "1px solid rgba(0,0,0,0.15)"
-                        }}
-                      />
-                      {m}
-                    </button>
-                  ))}
+                <div style={{ display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap", padding: "6px 2px" }}>
+                  {availableMetals.map((m) => {
+                    const isSelected = metal === m;
+                    const isHovered = hoveredMetal === m;
+                    return (
+                      <div key={m} style={{ position: "relative", display: "inline-flex" }}>
+                        <button
+                          type="button"
+                          onClick={() => setMetal(m)}
+                          onMouseEnter={() => setHoveredMetal(m)}
+                          onMouseLeave={() => setHoveredMetal(null)}
+                          title={m}
+                          aria-label={m}
+                          style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "50%",
+                            background: getMetalGradient(m),
+                            border: "1px solid rgba(0,0,0,0.18)",
+                            boxShadow: isSelected
+                              ? "0 0 0 2px #ffffff, 0 0 0 4px var(--primary)"
+                              : isHovered
+                              ? "0 0 0 2px #ffffff, 0 0 0 3px rgba(0,0,0,0.25)"
+                              : "0 1px 3px rgba(0,0,0,0.08)",
+                            transform: isSelected || isHovered ? "scale(1.08)" : "scale(1)",
+                            cursor: "pointer",
+                            transition: "all 0.18s cubic-bezier(0.4, 0, 0.2, 1)",
+                            outline: "none"
+                          }}
+                        />
+                        {/* Hover Tooltip with metal name */}
+                        {isHovered && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              bottom: "calc(100% + 9px)",
+                              left: "50%",
+                              transform: "translateX(-50%)",
+                              backgroundColor: "#181818",
+                              color: "#ffffff",
+                              padding: "5px 10px",
+                              borderRadius: "3px",
+                              fontSize: "0.72rem",
+                              fontWeight: 600,
+                              letterSpacing: "0.04em",
+                              whiteSpace: "nowrap",
+                              pointerEvents: "none",
+                              zIndex: 50,
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+                              animation: "fadeIn 0.15s ease-out"
+                            }}
+                          >
+                            {m}
+                            <div
+                              style={{
+                                position: "absolute",
+                                top: "100%",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                width: 0,
+                                height: 0,
+                                borderLeft: "5px solid transparent",
+                                borderRight: "5px solid transparent",
+                                borderTop: "5px solid #181818"
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
