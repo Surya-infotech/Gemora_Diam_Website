@@ -169,8 +169,11 @@ export function StoreProvider({ children }) {
     const isLoggedOut = localStorage.getItem("gemora.loggedOut");
     if (isLoggedOut === "true") return null;
 
+    const token = localStorage.getItem("customer_token") || localStorage.getItem("gemora.token");
     const expiry = localStorage.getItem("gemora.token_expiry");
-    if (expiry && Date.now() > Number(expiry)) {
+
+    // Strictly require a valid customer token for active session
+    if (!token || (expiry && Date.now() > Number(expiry))) {
       localStorage.removeItem("customer_id");
       localStorage.removeItem("gemora.customer_id");
       localStorage.removeItem("customer_token");
@@ -181,11 +184,7 @@ export function StoreProvider({ children }) {
     }
 
     const savedUser = load("gemora.user", null);
-    if (
-      savedUser &&
-      (savedUser.email === "isabella@example.com" ||
-        savedUser.fullname === "Isabella Laurent")
-    ) {
+    if (!savedUser || (!savedUser._id && !savedUser.id)) {
       localStorage.removeItem("gemora.user");
       return null;
     }
