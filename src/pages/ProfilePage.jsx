@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Award, Trash2, LogOut } from "lucide-react";
 import { useStore } from "../lib/store";
@@ -292,32 +292,61 @@ function WishlistTab() {
 }
 
 function SettingsTab() {
-  const { user, setUser, showToast, logout } = useStore();
+  const { user, updateProfile, updatePassword, showToast, logout } = useStore();
   const [profileData, setProfileData] = useState({
-    fullname: user.fullname || "",
-    email: user.email,
-    phone: user.phone || ""
+    fullname: user?.fullname || "",
+    email: user?.email || "",
+    phone: user?.phone || ""
   });
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [savingPassword, setSavingPassword] = useState(false);
   const [passData, setPassData] = useState({ current: "", next: "", confirm: "" });
 
-  const handleProfileSubmit = (e) => {
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        fullname: user.fullname || "",
+        email: user.email || "",
+        phone: user.phone || ""
+      });
+    }
+  }, [user]);
+
+  const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    setUser({ ...user, ...profileData });
-    showToast("Profile details updated successfully", "success");
+    setSavingProfile(true);
+    await updateProfile({
+      fullname: profileData.fullname,
+      email: profileData.email,
+      phone: profileData.phone
+    });
+    setSavingProfile(false);
   };
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
+    if (!passData.current) {
+      showToast("Current password is required", "error");
+      return;
+    }
     if (passData.next.length < 8) {
-      showToast("Password must be at least 8 characters", "error");
+      showToast("New password must be at least 8 characters", "error");
       return;
     }
     if (passData.next !== passData.confirm) {
       showToast("New passwords do not match", "error");
       return;
     }
-    setPassData({ current: "", next: "", confirm: "" });
-    showToast("Password updated successfully", "success");
+
+    setSavingPassword(true);
+    const res = await updatePassword({
+      currentPassword: passData.current,
+      newPassword: passData.next
+    });
+    setSavingPassword(false);
+    if (res?.success) {
+      setPassData({ current: "", next: "", confirm: "" });
+    }
   };
 
   return (
@@ -330,12 +359,15 @@ function SettingsTab() {
           value={profileData.fullname}
           onChange={(e) => setProfileData({ ...profileData, fullname: e.target.value })}
           placeholder="Full name"
+          required
         />
         <input
           style={fieldStyle}
+          type="email"
           value={profileData.email}
           onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
           placeholder="Email"
+          required
         />
         <input
           style={fieldStyle}
@@ -345,6 +377,7 @@ function SettingsTab() {
         />
         <button
           type="submit"
+          disabled={savingProfile}
           className="eyebrow"
           style={{
             alignSelf: "flex-start",
@@ -352,10 +385,11 @@ function SettingsTab() {
             color: "var(--primary-foreground)",
             padding: "12px 24px",
             border: "none",
-            cursor: "pointer"
+            cursor: savingProfile ? "not-allowed" : "pointer",
+            opacity: savingProfile ? 0.75 : 1
           }}
         >
-          Save Changes
+          {savingProfile ? "Saving..." : "Save Changes"}
         </button>
       </form>
 
@@ -385,16 +419,18 @@ function SettingsTab() {
         />
         <button
           type="submit"
+          disabled={savingPassword}
           className="eyebrow"
           style={{
             alignSelf: "flex-start",
             border: "1px solid var(--foreground)",
             backgroundColor: "transparent",
             padding: "12px 24px",
-            cursor: "pointer"
+            cursor: savingPassword ? "not-allowed" : "pointer",
+            opacity: savingPassword ? 0.75 : 1
           }}
         >
-          Update Password
+          {savingPassword ? "Updating..." : "Update Password"}
         </button>
       </form>
 

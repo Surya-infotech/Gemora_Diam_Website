@@ -333,6 +333,90 @@ export function StoreProvider({ children }) {
     [backendUrl, customerIdKey, customerTokenKey, notify]
   );
 
+  const updateProfile = useCallback(
+    async ({ fullname, phone, email }) => {
+      try {
+        const customerId = user?._id || user?.id || localStorage.getItem(customerIdKey);
+        if (!customerId) {
+          throw new Error("You must be signed in to update your profile");
+        }
+
+        const payload = {};
+        if (fullname !== undefined) payload.fullname = fullname;
+        if (phone !== undefined) payload.phone = phone;
+        if (email !== undefined) payload.email = email;
+
+        const token = localStorage.getItem(customerTokenKey);
+        const res = await fetch(`${backendUrl}/Customer/UpdateProfile/${customerId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to update profile");
+        }
+
+        const updatedCustomer = data.customer || {};
+        const resolvedId = data.customer_id || updatedCustomer._id || customerId;
+        const updatedUser = {
+          ...user,
+          ...updatedCustomer,
+          _id: resolvedId,
+          id: resolvedId,
+          fullname: updatedCustomer.fullname || (fullname !== undefined ? fullname : user?.fullname),
+          email: updatedCustomer.email || (email !== undefined ? email : user?.email),
+          phone: updatedCustomer.phone !== undefined ? updatedCustomer.phone : (phone !== undefined ? phone : (user?.phone || ""))
+        };
+
+        setUser(updatedUser);
+        notify("Profile Updated", data.message || "Your profile details have been saved.");
+        return { success: true, customer: updatedUser, data };
+      } catch (err) {
+        notify("Update Error", err.message || "Could not save profile changes");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, customerIdKey, customerTokenKey, notify, user]
+  );
+
+  const updatePassword = useCallback(
+    async ({ currentPassword, newPassword }) => {
+      try {
+        const customerId = user?._id || user?.id || localStorage.getItem(customerIdKey);
+        if (!customerId) {
+          throw new Error("You must be signed in to update your password");
+        }
+
+        const token = localStorage.getItem(customerTokenKey);
+        const res = await fetch(`${backendUrl}/Customer/UpdateProfile/${customerId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ currentPassword, newPassword })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to update password");
+        }
+
+        notify("Password Updated", data.message || "Your password has been updated.");
+        return { success: true, data };
+      } catch (err) {
+        notify("Password Error", err.message || "Could not update password");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, customerIdKey, customerTokenKey, notify, user]
+  );
+
   // Fetch all Admin Panel data
   useEffect(() => {
     let isMounted = true;
@@ -565,6 +649,8 @@ export function StoreProvider({ children }) {
         clearCart,
         toggleWishlist,
         setUser,
+        updateProfile,
+        updatePassword,
         login,
         signup,
         logout,
