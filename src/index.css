@@ -197,3 +197,37 @@ img {
     display: none !important;
   }
 }
+
+/* Product Gallery Layout (Thumbnails vertical on left of main image) */
+.product-gallery-layout {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 14px;
+}
+
+.product-gallery-thumbnails {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+}
+
+@media (min-width: 640px) {
+  .product-gallery-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .product-gallery-thumbnails {
+    flex-direction: column;
+    max-height: 520px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-bottom: 0;
+    padding-right: 4px;
+    flex-shrink: 0;
+  }
+}

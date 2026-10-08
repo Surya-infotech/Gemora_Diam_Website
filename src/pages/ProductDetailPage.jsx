@@ -283,11 +283,67 @@ function ProductDetailContent({ product }) {
           }}
         >
           {/* LEFT: Media Gallery */}
-          <div style={{ position: "sticky", top: "100px", display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div
+            className="product-gallery-layout"
+            style={{ position: "sticky", top: "100px" }}
+          >
+            {/* Thumbnail Rail (Vertical on the left side) */}
+            {allMedia.length > 1 && (
+              <div
+                className="product-gallery-thumbnails"
+                style={{
+                  scrollbarWidth: "thin"
+                }}
+              >
+                {allMedia.map((m, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveMediaIndex(idx)}
+                    aria-label={`Select media ${idx + 1}`}
+                    style={{
+                      width: "74px",
+                      height: "74px",
+                      flexShrink: 0,
+                      borderRadius: "3px",
+                      border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid var(--border)",
+                      backgroundColor: "#f7f7f7",
+                      padding: "2px",
+                      overflow: "hidden",
+                      cursor: "pointer",
+                      opacity: activeMediaIndex === idx ? 1 : 0.8,
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={(e) => {
+                      if (activeMediaIndex !== idx) {
+                        e.currentTarget.style.opacity = "1";
+                        e.currentTarget.style.borderColor = "var(--primary-light)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeMediaIndex !== idx) {
+                        e.currentTarget.style.opacity = "0.8";
+                        e.currentTarget.style.borderColor = "var(--border)";
+                      }
+                    }}
+                  >
+                    {m.type === "video" ? (
+                      <div style={{ width: "100%", height: "100%", backgroundColor: "#1e2419", color: "#fff", display: "grid", placeItems: "center", fontSize: "0.72rem", fontWeight: 700 }}>
+                        VIDEO
+                      </div>
+                    ) : (
+                      <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* Main Stage */}
             <div
               style={{
                 position: "relative",
+                flex: 1,
+                minWidth: 0,
                 width: "100%",
                 height: "520px",
                 backgroundColor: "#f7f7f7",
@@ -346,38 +402,6 @@ function ProductDetailContent({ product }) {
                 <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
               </button>
             </div>
-
-            {/* Thumbnail Rail */}
-            {allMedia.length > 1 && (
-              <div style={{ display: "flex", gap: "12px", overflowX: "auto", paddingBottom: "6px" }}>
-                {allMedia.map((m, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveMediaIndex(idx)}
-                    style={{
-                      width: "74px",
-                      height: "74px",
-                      flexShrink: 0,
-                      borderRadius: "3px",
-                      border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid var(--border)",
-                      backgroundColor: "#f7f7f7",
-                      padding: "2px",
-                      overflow: "hidden",
-                      cursor: "pointer",
-                      transition: "border-color 0.2s"
-                    }}
-                  >
-                    {m.type === "video" ? (
-                      <div style={{ width: "100%", height: "100%", backgroundColor: "#1e2419", color: "#fff", display: "grid", placeItems: "center", fontSize: "0.72rem", fontWeight: 700 }}>
-                        VIDEO
-                      </div>
-                    ) : (
-                      <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* RIGHT: Product Details & Purchase Form */}
