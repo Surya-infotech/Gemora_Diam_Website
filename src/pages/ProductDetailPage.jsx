@@ -54,7 +54,8 @@ function ProductDetailContent({ product }) {
   const [copied, setCopied] = useState(false);
   const [selectedShape, setSelectedShape] = useState(product?.shapes?.[0] || "");
   const [selectedClarity, setSelectedClarity] = useState(product?.clarities?.[0] || "");
-  const [selectedColor, setSelectedColor] = useState(product?.diamondColors?.[0] || "");
+  const [selectedDiamondColor, setSelectedDiamondColor] = useState(product?.diamondColors?.[0] || "");
+  const [selectedBandColor, setSelectedBandColor] = useState(product?.bandColors?.[0] || "");
 
   // Available stones for selected metal from backend pricing
   const availableStones = useMemo(() => {
@@ -719,27 +720,57 @@ function ProductDetailContent({ product }) {
               {product.diamondColors && product.diamondColors.length > 0 && (
                 <div>
                   <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                    Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedColor || product.diamondColors[0]}</span>
+                    Diamond Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedDiamondColor || product.diamondColors[0]}</span>
                   </label>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {product.diamondColors.map((dc) => (
                       <button
                         key={dc}
                         type="button"
-                        onClick={() => setSelectedColor(dc)}
+                        onClick={() => setSelectedDiamondColor(dc)}
                         style={{
                           padding: "6px 14px",
-                          border: (selectedColor || product.diamondColors[0]) === dc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: (selectedColor || product.diamondColors[0]) === dc ? "var(--primary-soft)" : "#ffffff",
-                          color: (selectedColor || product.diamondColors[0]) === dc ? "var(--primary)" : "var(--foreground)",
+                          border: (selectedDiamondColor || product.diamondColors[0]) === dc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: (selectedDiamondColor || product.diamondColors[0]) === dc ? "var(--primary-soft)" : "#ffffff",
+                          color: (selectedDiamondColor || product.diamondColors[0]) === dc ? "var(--primary)" : "var(--foreground)",
                           borderRadius: "2px",
                           fontSize: "0.82rem",
-                          fontWeight: (selectedColor || product.diamondColors[0]) === dc ? 600 : 400,
+                          fontWeight: (selectedDiamondColor || product.diamondColors[0]) === dc ? 600 : 400,
                           cursor: "pointer",
                           transition: "all 0.15s"
                         }}
                       >
                         {dc}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.bandColors && product.bandColors.length > 0 && (
+                <div>
+                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                    Band Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedBandColor || product.bandColors[0]}</span>
+                  </label>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {product.bandColors.map((bc) => (
+                      <button
+                        key={bc}
+                        type="button"
+                        onClick={() => setSelectedBandColor(bc)}
+                        style={{
+                          padding: "6px 14px",
+                          border: (selectedBandColor || product.bandColors[0]) === bc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: (selectedBandColor || product.bandColors[0]) === bc ? "var(--primary-soft)" : "#ffffff",
+                          color: (selectedBandColor || product.bandColors[0]) === bc ? "var(--primary)" : "var(--foreground)",
+                          borderRadius: "2px",
+                          fontSize: "0.82rem",
+                          fontWeight: (selectedBandColor || product.bandColors[0]) === bc ? 600 : 400,
+                          cursor: "pointer",
+                          transition: "all 0.15s"
+                        }}
+                      >
+                        {bc}
                       </button>
                     ))}
                   </div>
