@@ -162,6 +162,7 @@ export function formatCurrencyWithDetails(amount, details) {
 }
 
 export function StoreProvider({ children }) {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [cart, setCart] = useState(() => load("gemora.cart", []));
   const [wishlist, setWishlist] = useState(() => load("gemora.wishlist", []));
   const [currency, setCurrency] = useState(() => {
@@ -171,34 +172,52 @@ export function StoreProvider({ children }) {
     return storeCur?.currency || "INR";
   });
   const [storeCurrency, setStoreCurrency] = useState(() => load("gemora.storeCurrency", null));
-  const [user, setUser] = useState(() => {
-    const isLoggedOut = localStorage.getItem("gemora.loggedOut");
-    if (isLoggedOut === "true") return null;
+  const [user, setUser] = useState(null);
 
-    const token = localStorage.getItem("customer_token") || localStorage.getItem("gemora.token");
-    const expiry = localStorage.getItem("gemora.token_expiry");
-    const hasEncryptedId = localStorage.getItem(CUSTOMER_TOKEN_NAME);
+  // On mount: Clean up any legacy user storage and securely restore session from backend using customer token
+  useEffect(() => {
+    localStorage.removeItem("gemora.user");
+    localStorage.removeItem("gemora.customer_id");
+    localStorage.removeItem("gemora.token");
+    localStorage.removeItem("gemora.token_expiry");
+    localStorage.removeItem("gemora.loggedOut");
 
-    // Strictly require a valid customer token and encrypted ID for active session
-    if (!token || !hasEncryptedId || (expiry && Date.now() > Number(expiry))) {
-      removeEncryptedCustomerId();
-      localStorage.removeItem("customer_id");
-      localStorage.removeItem("gemora.customer_id");
-      localStorage.removeItem("customer_token");
-      localStorage.removeItem("gemora.token");
-      localStorage.removeItem("gemora.token_expiry");
-      localStorage.removeItem("gemora.user");
-      return null;
+    const token = localStorage.getItem("customer_token");
+    const encryptedId = localStorage.getItem(CUSTOMER_TOKEN_NAME);
+
+    if (!token || !encryptedId) {
+      setUser(null);
+      return;
     }
 
-    const savedUser = load("gemora.user", null);
-    if (!savedUser || (!savedUser._id && !savedUser.id)) {
-      localStorage.removeItem("gemora.user");
-      return null;
-    }
-
-    return savedUser;
-  });
+    fetch(`${backendUrl}/Customer/verify-token`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.customer) {
+          const customerId = data.customer_id || data.customer._id;
+          setUser({
+            ...data.customer,
+            _id: customerId,
+            id: customerId,
+            fullname: data.customer.fullname,
+            email: data.customer.email,
+            phone: data.customer.phone || ""
+          });
+        } else {
+          removeEncryptedCustomerId();
+          localStorage.removeItem("customer_token");
+          localStorage.removeItem("customer_id");
+          setUser(null);
+        }
+      })
+      .catch(() => {
+        setUser(null);
+      });
+  }, [backendUrl]);
   const [generalSettings, setGeneralSettings] = useState(() => load("gemora.settings", null));
   const [socialMedia, setSocialMedia] = useState(() => load("gemora.socialMedia", []));
   const [products, setProducts] = useState(() => load("gemora.products", []));
@@ -223,18 +242,16 @@ export function StoreProvider({ children }) {
     localStorage.setItem("gemora.currency", JSON.stringify(newCode));
   }, []);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
-
   const logout = useCallback(() => {
     setUser(null);
     removeEncryptedCustomerId();
-    localStorage.removeItem("customer_id");
-    localStorage.removeItem("gemora.customer_id");
     localStorage.removeItem("customer_token");
+    localStorage.removeItem("customer_id");
+    localStorage.removeItem("gemora.user");
+    localStorage.removeItem("gemora.customer_id");
     localStorage.removeItem("gemora.token");
     localStorage.removeItem("gemora.token_expiry");
-    localStorage.removeItem("gemora.user");
-    localStorage.setItem("gemora.loggedOut", "true");
+    localStorage.removeItem("gemora.loggedOut");
     notify("Logged Out", "You have successfully signed out of your account.");
   }, [notify]);
 
@@ -258,12 +275,9 @@ export function StoreProvider({ children }) {
         if (customerId) {
           storeEncryptedCustomerId(customerId);
           localStorage.setItem("customer_id", customerId);
-          localStorage.setItem("gemora.customer_id", customerId);
         }
         if (token) {
           localStorage.setItem("customer_token", token);
-          localStorage.setItem("gemora.token", token);
-          localStorage.setItem("gemora.token_expiry", String(Date.now() + 12 * 60 * 60 * 1000));
         }
 
         const customerUser = {
@@ -276,8 +290,7 @@ export function StoreProvider({ children }) {
         };
 
         setUser(customerUser);
-        localStorage.setItem("gemora.user", JSON.stringify(customerUser));
-        localStorage.removeItem("gemora.loggedOut");
+
 
         notify("Account Created", `Welcome to Maison Gemora, ${customerUser.fullname}!`);
         return { success: true, customer: customerUser, token, customer_id: customerId };
@@ -308,12 +321,9 @@ export function StoreProvider({ children }) {
         if (customerId) {
           storeEncryptedCustomerId(customerId);
           localStorage.setItem("customer_id", customerId);
-          localStorage.setItem("gemora.customer_id", customerId);
         }
         if (token) {
           localStorage.setItem("customer_token", token);
-          localStorage.setItem("gemora.token", token);
-          localStorage.setItem("gemora.token_expiry", String(Date.now() + 12 * 60 * 60 * 1000));
         }
 
         const customerUser = {
@@ -326,8 +336,7 @@ export function StoreProvider({ children }) {
         };
 
         setUser(customerUser);
-        localStorage.setItem("gemora.user", JSON.stringify(customerUser));
-        localStorage.removeItem("gemora.loggedOut");
+
 
         notify("Welcome Back", `Signed in as ${customerUser.fullname}`);
         return { success: true, customer: customerUser, token, customer_id: customerId };
@@ -450,15 +459,7 @@ export function StoreProvider({ children }) {
     localStorage.setItem("gemora.currency", JSON.stringify(currency));
   }, [currency]);
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("gemora.user", JSON.stringify(user));
-      localStorage.removeItem("gemora.loggedOut");
-    } else {
-      localStorage.removeItem("gemora.user");
-      localStorage.setItem("gemora.loggedOut", "true");
-    }
-  }, [user]);
+
 
   const getProduct = useCallback(
     (id) => {
