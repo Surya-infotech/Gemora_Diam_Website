@@ -440,219 +440,219 @@ function ProductDetailContent({ product }) {
             {(availableStones.length > 0 ||
               (hasCarat && activeCaratPrices.length > 0) ||
               sortedRingSizes.length > 0) && (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
-                  gap: "16px",
-                  alignItems: "start"
-                }}
-              >
-                {/* Stone Dropdown */}
-                {availableStones.length > 0 && (
-                  <div>
-                    <label
-                      htmlFor="stone-select"
-                      style={{
-                        fontSize: "0.78rem",
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.12em",
-                        display: "block",
-                        marginBottom: "8px",
-                        color: "var(--foreground)"
-                      }}
-                    >
-                      Stone
-                    </label>
-                    <div style={{ position: "relative" }}>
-                      <select
-                        id="stone-select"
-                        value={activeStone}
-                        onChange={(e) => setSelectedStone(e.target.value)}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+                    gap: "16px",
+                    alignItems: "start"
+                  }}
+                >
+                  {/* Stone Dropdown */}
+                  {availableStones.length > 0 && (
+                    <div>
+                      <label
+                        htmlFor="stone-select"
                         style={{
-                          width: "100%",
-                          height: "44px",
-                          padding: "0 36px 0 14px",
-                          border: "1px solid var(--border)",
-                          borderRadius: "2px",
-                          backgroundColor: "#ffffff",
-                          color: "var(--foreground)",
-                          fontSize: "0.84rem",
-                          fontWeight: 500,
-                          cursor: "pointer",
-                          appearance: "none",
-                          WebkitAppearance: "none",
-                          outline: "none",
-                          transition: "all 0.2s"
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--primary)";
-                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                          e.currentTarget.style.boxShadow = "none";
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.12em",
+                          display: "block",
+                          marginBottom: "8px",
+                          color: "var(--foreground)"
                         }}
                       >
-                        {availableStones.map((st) => (
-                          <option key={st} value={st}>
-                            {st}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        size={16}
-                        style={{
-                          position: "absolute",
-                          right: "12px",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          pointerEvents: "none",
-                          color: "var(--muted-foreground)"
-                        }}
-                      />
+                        Stone
+                      </label>
+                      <div style={{ position: "relative" }}>
+                        <select
+                          id="stone-select"
+                          value={activeStone}
+                          onChange={(e) => setSelectedStone(e.target.value)}
+                          style={{
+                            width: "100%",
+                            height: "44px",
+                            padding: "0 36px 0 14px",
+                            border: "1px solid var(--border)",
+                            borderRadius: "2px",
+                            backgroundColor: "#ffffff",
+                            color: "var(--foreground)",
+                            fontSize: "0.84rem",
+                            fontWeight: 500,
+                            cursor: "pointer",
+                            appearance: "none",
+                            WebkitAppearance: "none",
+                            outline: "none",
+                            transition: "all 0.2s"
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = "var(--primary)";
+                            e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = "var(--border)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }}
+                        >
+                          {availableStones.map((st) => (
+                            <option key={st} value={st}>
+                              {st}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown
+                          size={16}
+                          style={{
+                            position: "absolute",
+                            right: "12px",
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            pointerEvents: "none",
+                            color: "var(--muted-foreground)"
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Diamond Size Dropdown */}
-                {hasCarat && activeCaratPrices.length > 0 && (
-                  <div>
-                    <label
-                      htmlFor="carat-select"
-                      style={{
-                        fontSize: "0.78rem",
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.12em",
-                        display: "block",
-                        marginBottom: "8px",
-                        color: "var(--foreground)"
-                      }}
-                    >
-                      Diamond Size
-                    </label>
-                    <div style={{ position: "relative" }}>
-                      <select
-                        id="carat-select"
-                        value={carat}
-                        onChange={(e) => setSelectedCarat(e.target.value)}
+                  {/* Diamond Size Dropdown */}
+                  {hasCarat && activeCaratPrices.length > 0 && (
+                    <div>
+                      <label
+                        htmlFor="carat-select"
                         style={{
-                          width: "100%",
-                          height: "44px",
-                          padding: "0 36px 0 14px",
-                          border: "1px solid var(--border)",
-                          borderRadius: "2px",
-                          backgroundColor: "#ffffff",
-                          color: "var(--foreground)",
-                          fontSize: "0.84rem",
-                          fontWeight: 500,
-                          cursor: "pointer",
-                          appearance: "none",
-                          WebkitAppearance: "none",
-                          outline: "none",
-                          transition: "all 0.2s"
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--primary)";
-                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                          e.currentTarget.style.boxShadow = "none";
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.12em",
+                          display: "block",
+                          marginBottom: "8px",
+                          color: "var(--foreground)"
                         }}
                       >
-                        {activeCaratPrices.map((cp) => (
-                          <option key={cp.diamondsize} value={cp.diamondsize}>
-                            {cp.diamondsize}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        size={16}
-                        style={{
-                          position: "absolute",
-                          right: "12px",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          pointerEvents: "none",
-                          color: "var(--muted-foreground)"
-                        }}
-                      />
+                        Diamond Size
+                      </label>
+                      <div style={{ position: "relative" }}>
+                        <select
+                          id="carat-select"
+                          value={carat}
+                          onChange={(e) => setSelectedCarat(e.target.value)}
+                          style={{
+                            width: "100%",
+                            height: "44px",
+                            padding: "0 36px 0 14px",
+                            border: "1px solid var(--border)",
+                            borderRadius: "2px",
+                            backgroundColor: "#ffffff",
+                            color: "var(--foreground)",
+                            fontSize: "0.84rem",
+                            fontWeight: 500,
+                            cursor: "pointer",
+                            appearance: "none",
+                            WebkitAppearance: "none",
+                            outline: "none",
+                            transition: "all 0.2s"
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = "var(--primary)";
+                            e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = "var(--border)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }}
+                        >
+                          {activeCaratPrices.map((cp) => (
+                            <option key={cp.diamondsize} value={cp.diamondsize}>
+                              {cp.diamondsize}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown
+                          size={16}
+                          style={{
+                            position: "absolute",
+                            right: "12px",
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            pointerEvents: "none",
+                            color: "var(--muted-foreground)"
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Ring Size Dropdown */}
-                {sortedRingSizes.length > 0 && (
-                  <div>
-                    <label
-                      htmlFor="ringsize-select"
-                      style={{
-                        fontSize: "0.78rem",
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.12em",
-                        display: "block",
-                        marginBottom: "8px",
-                        color: "var(--foreground)"
-                      }}
-                    >
-                      Ring Size
-                    </label>
-                    <div style={{ position: "relative" }}>
-                      <select
-                        id="ringsize-select"
-                        value={ringSize}
-                        onChange={(e) => setSelectedRingSize(e.target.value)}
+                  {/* Ring Size Dropdown */}
+                  {sortedRingSizes.length > 0 && (
+                    <div>
+                      <label
+                        htmlFor="ringsize-select"
                         style={{
-                          width: "100%",
-                          height: "44px",
-                          padding: "0 36px 0 14px",
-                          border: "1px solid var(--border)",
-                          borderRadius: "2px",
-                          backgroundColor: "#ffffff",
-                          color: "var(--foreground)",
-                          fontSize: "0.84rem",
-                          fontWeight: 500,
-                          cursor: "pointer",
-                          appearance: "none",
-                          WebkitAppearance: "none",
-                          outline: "none",
-                          transition: "all 0.2s"
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--primary)";
-                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                          e.currentTarget.style.boxShadow = "none";
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.12em",
+                          display: "block",
+                          marginBottom: "8px",
+                          color: "var(--foreground)"
                         }}
                       >
-                        {sortedRingSizes.map((s) => (
-                          <option key={s} value={s}>
-                            {s}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        size={16}
-                        style={{
-                          position: "absolute",
-                          right: "12px",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          pointerEvents: "none",
-                          color: "var(--muted-foreground)"
-                        }}
-                      />
+                        Ring Size
+                      </label>
+                      <div style={{ position: "relative" }}>
+                        <select
+                          id="ringsize-select"
+                          value={ringSize}
+                          onChange={(e) => setSelectedRingSize(e.target.value)}
+                          style={{
+                            width: "100%",
+                            height: "44px",
+                            padding: "0 36px 0 14px",
+                            border: "1px solid var(--border)",
+                            borderRadius: "2px",
+                            backgroundColor: "#ffffff",
+                            color: "var(--foreground)",
+                            fontSize: "0.84rem",
+                            fontWeight: 500,
+                            cursor: "pointer",
+                            appearance: "none",
+                            WebkitAppearance: "none",
+                            outline: "none",
+                            transition: "all 0.2s"
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = "var(--primary)";
+                            e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = "var(--border)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }}
+                        >
+                          {sortedRingSizes.map((s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown
+                          size={16}
+                          style={{
+                            position: "absolute",
+                            right: "12px",
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            pointerEvents: "none",
+                            color: "var(--muted-foreground)"
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
+                  )}
+                </div>
+              )}
 
             {/* Attribute Groups (Single Label Per Group) */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -906,8 +906,7 @@ function ProductDetailContent({ product }) {
             {activeTab === "description" && (
               <div>
                 <p>
-                  {product.description ||
-                    `${product.name} embodies the utmost in Haute Joaillerie excellence, meticulously shaped by master diamond setters using ethical gemstones and high-grade precious metals.`}
+                  {product.description}
                 </p>
               </div>
             )}
