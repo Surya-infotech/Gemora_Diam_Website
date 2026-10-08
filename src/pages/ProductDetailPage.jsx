@@ -409,15 +409,14 @@ function ProductDetailContent({ product }) {
               </div>
             )}
 
-            {/* Stone & Diamond Size Dropdowns (Side by Side) */}
-            {(availableStones.length > 0 || (hasCarat && activeCaratPrices.length > 0)) && (
+            {/* Stone, Diamond Size & Ring Size Dropdowns (Side by Side) */}
+            {(availableStones.length > 0 ||
+              (hasCarat && activeCaratPrices.length > 0) ||
+              (product.ringSizes && product.ringSizes.length > 0)) && (
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns:
-                    availableStones.length > 0 && hasCarat && activeCaratPrices.length > 0
-                      ? "repeat(auto-fit, minmax(180px, 1fr))"
-                      : "1fr",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
                   gap: "16px",
                   alignItems: "start"
                 }}
@@ -557,39 +556,74 @@ function ProductDetailContent({ product }) {
                     </div>
                   </div>
                 )}
-              </div>
-            )}
 
-            {/* Ring Sizes from Backend */}
-            {product.ringSizes && product.ringSizes.length > 0 && (
-              <div>
-                <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "10px", color: "var(--foreground)" }}>
-                  Ring Size: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{ringSize}</span>
-                </label>
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                  {product.ringSizes.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setRingSize(s)}
+                {/* Ring Size Dropdown */}
+                {product.ringSizes && product.ringSizes.length > 0 && (
+                  <div>
+                    <label
+                      htmlFor="ringsize-select"
                       style={{
-                        minWidth: "40px",
-                        height: "36px",
-                        padding: "0 10px",
-                        border: ringSize === s ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                        backgroundColor: ringSize === s ? "var(--primary-soft)" : "#ffffff",
-                        color: ringSize === s ? "var(--primary)" : "var(--foreground)",
-                        borderRadius: "2px",
-                        fontSize: "0.82rem",
-                        fontWeight: ringSize === s ? 600 : 400,
-                        cursor: "pointer",
-                        transition: "all 0.15s"
+                        fontSize: "0.78rem",
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.12em",
+                        display: "block",
+                        marginBottom: "8px",
+                        color: "var(--foreground)"
                       }}
                     >
-                      {s}
-                    </button>
-                  ))}
-                </div>
+                      Ring Size
+                    </label>
+                    <div style={{ position: "relative" }}>
+                      <select
+                        id="ringsize-select"
+                        value={ringSize}
+                        onChange={(e) => setRingSize(e.target.value)}
+                        style={{
+                          width: "100%",
+                          height: "44px",
+                          padding: "0 36px 0 14px",
+                          border: "1px solid var(--border)",
+                          borderRadius: "2px",
+                          backgroundColor: "#ffffff",
+                          color: "var(--foreground)",
+                          fontSize: "0.84rem",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                          appearance: "none",
+                          WebkitAppearance: "none",
+                          outline: "none",
+                          transition: "all 0.2s"
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = "var(--primary)";
+                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = "var(--border)";
+                          e.currentTarget.style.boxShadow = "none";
+                        }}
+                      >
+                        {product.ringSizes.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown
+                        size={16}
+                        style={{
+                          position: "absolute",
+                          right: "12px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          pointerEvents: "none",
+                          color: "var(--muted-foreground)"
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
