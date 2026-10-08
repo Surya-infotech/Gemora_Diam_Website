@@ -55,7 +55,6 @@ function ProductDetailContent({ product }) {
   const [selectedShape, setSelectedShape] = useState(product?.shapes?.[0] || "");
   const [selectedClarity, setSelectedClarity] = useState(product?.clarities?.[0] || "");
   const [selectedColor, setSelectedColor] = useState(product?.diamondColors?.[0] || "");
-  const [selectedStyle, setSelectedStyle] = useState(product?.styles?.[0] || "");
 
   // Available stones for selected metal from backend pricing
   const availableStones = useMemo(() => {
@@ -742,36 +741,6 @@ function ProductDetailContent({ product }) {
                         }}
                       >
                         {dc}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {product.styles && product.styles.length > 0 && (
-                <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                    Style: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedStyle || product.styles[0]}</span>
-                  </label>
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {product.styles.map((sy) => (
-                      <button
-                        key={sy}
-                        type="button"
-                        onClick={() => setSelectedStyle(sy)}
-                        style={{
-                          padding: "6px 14px",
-                          border: (selectedStyle || product.styles[0]) === sy ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: (selectedStyle || product.styles[0]) === sy ? "var(--primary-soft)" : "#ffffff",
-                          color: (selectedStyle || product.styles[0]) === sy ? "var(--primary)" : "var(--foreground)",
-                          borderRadius: "2px",
-                          fontSize: "0.82rem",
-                          fontWeight: (selectedStyle || product.styles[0]) === sy ? 600 : 400,
-                          cursor: "pointer",
-                          transition: "all 0.15s"
-                        }}
-                      >
-                        {sy}
                       </button>
                     ))}
                   </div>
