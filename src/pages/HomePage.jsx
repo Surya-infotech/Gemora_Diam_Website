@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -78,7 +78,7 @@ export default function HomePage() {
       <TestimonialsSection onQuickView={setQuickViewProduct} />
 
       {/* 8. Just For You Curated 6-Tile Gallery */}
-      <JustForYouGallery />
+      <JustForYouGallery onQuickView={setQuickViewProduct} />
 
       {/* 9. Newsletter 15% Off Banner */}
       <NewsletterBanner />
@@ -1430,15 +1430,62 @@ function TestimonialsSection({ onQuickView }) {
 /* =========================================================================
    8. JUST FOR YOU CURATED 6-TILE GALLERY
    ========================================================================= */
-function JustForYouGallery() {
-  const tiles = [
-    { img: gal1, title: "Golden Glow Essentials", desc: "Discover jewelry that defines every moment." },
-    { img: gal2, title: "Timeless Beauty Collection", desc: "Adorn yourself with elegance that lasts a lifetime." },
-    { img: gal3, title: "Radiant Spark Jewelry", desc: "Jewelry that mirrors your inner brilliance." },
-    { img: gal4, title: "Luxe Grace Designs", desc: "Celebrate life’s sparkle with every piece you wear." },
-    { img: gal5, title: "Shine Within You", desc: "Designs that embrace beauty, forever." },
-    { img: gal6, title: "Elegant Moments Only", desc: "Let every gem tell your story." }
+function JustForYouGallery({ onQuickView }) {
+  const { products } = useStore();
+  const navigate = useNavigate();
+
+  const defaultTiles = [
+    { img: gal1, title: "Golden Glow Essentials", desc: "Discover jewelry that defines every moment.", link: "/shop" },
+    { img: gal2, title: "Timeless Beauty Collection", desc: "Adorn yourself with elegance that lasts a lifetime.", link: "/shop" },
+    { img: gal3, title: "Radiant Spark Jewelry", desc: "Jewelry that mirrors your inner brilliance.", link: "/shop" },
+    { img: gal4, title: "Luxe Grace Designs", desc: "Celebrate life’s sparkle with every piece you wear.", link: "/shop" },
+    { img: gal5, title: "Shine Within You", desc: "Designs that embrace beauty, forever.", link: "/shop" },
+    { img: gal6, title: "Elegant Moments Only", desc: "Let every gem tell your story.", link: "/shop" }
   ];
+
+  // Dynamically build tiles from backend products and their uploaded gallery images
+  const dynamicTiles = useMemo(() => {
+    if (!products || products.length === 0) return [];
+
+    const list = [];
+    // 1. First add each active backend product's main image
+    products.forEach((p) => {
+      if (p.image) {
+        list.push({
+          id: p.id,
+          product: p,
+          img: p.image,
+          title: p.name || "Handcrafted Jewelry",
+          desc: p.description?.trim() || `${p.category || "Fine Jewelry"} Collection`,
+          link: `/product/${p.id}`
+        });
+      }
+    });
+
+    // 2. If fewer than 6, supplement with gallery images of backend products
+    if (list.length < 6) {
+      products.forEach((p) => {
+        if (Array.isArray(p.galleryImages)) {
+          p.galleryImages.forEach((gImg, idx) => {
+            if (list.length < 6 && gImg && gImg !== p.image) {
+              list.push({
+                id: `${p.id}-gal-${idx}`,
+                product: p,
+                img: gImg,
+                title: p.name || "Exclusive Detail",
+                desc: `${p.category || "Fine Jewelry"} Detail`,
+                link: `/product/${p.id}`
+              });
+            }
+          });
+        }
+      });
+    }
+
+    return list.slice(0, 6);
+  }, [products]);
+
+  const tiles = dynamicTiles.length > 0 ? dynamicTiles : defaultTiles;
 
   return (
     <section style={{ padding: "80px 0 0 0", backgroundColor: "#ffffff" }}>
@@ -1466,7 +1513,10 @@ function JustForYouGallery() {
       >
         {tiles.map((t, idx) => (
           <div
-            key={idx}
+            key={t.id || idx}
+            onClick={() => {
+              if (t.link) navigate(t.link);
+            }}
             style={{
               position: "relative",
               height: "360px",
@@ -1492,7 +1542,7 @@ function JustForYouGallery() {
               style={{
                 position: "absolute",
                 inset: 0,
-                backgroundColor: "rgba(0,0,0,0.4)",
+                backgroundColor: "rgba(0,0,0,0.45)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -1513,7 +1563,8 @@ function JustForYouGallery() {
                 {t.desc}
               </p>
               <Link
-                to="/shop"
+                to={t.link || "/shop"}
+                onClick={(e) => e.stopPropagation()}
                 style={{
                   fontSize: "0.76rem",
                   letterSpacing: "0.16em",
