@@ -472,8 +472,8 @@ function ProductDetailContent({ product }) {
                             boxShadow: isSelected
                               ? "0 0 0 2px #ffffff, 0 0 0 4px var(--primary)"
                               : isHovered
-                              ? "0 0 0 2px #ffffff, 0 0 0 3px rgba(0,0,0,0.25)"
-                              : "0 1px 3px rgba(0,0,0,0.08)",
+                                ? "0 0 0 2px #ffffff, 0 0 0 3px rgba(0,0,0,0.25)"
+                                : "0 1px 3px rgba(0,0,0,0.08)",
                             transform: isSelected || isHovered ? "scale(1.08)" : "scale(1)",
                             cursor: "pointer",
                             transition: "all 0.18s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -754,127 +754,159 @@ function ProductDetailContent({ product }) {
 
             {/* Attribute Groups (Single Label Per Group) */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {product.shapes && product.shapes.length > 0 && (
-                <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                    Shape: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedShape || product.shapes[0]}</span>
-                  </label>
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {product.shapes.map((sh) => (
-                      <button
-                        key={sh}
-                        type="button"
-                        onClick={() => setSelectedShape(sh)}
-                        style={{
-                          padding: "6px 14px",
-                          border: (selectedShape || product.shapes[0]) === sh ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: (selectedShape || product.shapes[0]) === sh ? "var(--primary-soft)" : "#ffffff",
-                          color: (selectedShape || product.shapes[0]) === sh ? "var(--primary)" : "var(--foreground)",
-                          borderRadius: "2px",
-                          fontSize: "0.82rem",
-                          fontWeight: (selectedShape || product.shapes[0]) === sh ? 600 : 400,
-                          cursor: "pointer",
-                          transition: "all 0.15s"
-                        }}
-                      >
-                        {sh}
-                      </button>
-                    ))}
+              {/* Shape & Clarity in One Row */}
+              {((product.shapes && product.shapes.length > 0) ||
+                (product.clarities && product.clarities.length > 0)) && (
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        product.shapes?.length > 0 && product.clarities?.length > 0
+                          ? "repeat(auto-fit, minmax(200px, 1fr))"
+                          : "1fr",
+                      gap: "20px",
+                      alignItems: "start"
+                    }}
+                  >
+                    {product.shapes && product.shapes.length > 0 && (
+                      <div>
+                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                          Shape: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedShape || product.shapes[0]}</span>
+                        </label>
+                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                          {product.shapes.map((sh) => (
+                            <button
+                              key={sh}
+                              type="button"
+                              onClick={() => setSelectedShape(sh)}
+                              style={{
+                                padding: "6px 14px",
+                                border: (selectedShape || product.shapes[0]) === sh ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                                backgroundColor: (selectedShape || product.shapes[0]) === sh ? "var(--primary-soft)" : "#ffffff",
+                                color: (selectedShape || product.shapes[0]) === sh ? "var(--primary)" : "var(--foreground)",
+                                borderRadius: "2px",
+                                fontSize: "0.82rem",
+                                fontWeight: (selectedShape || product.shapes[0]) === sh ? 600 : 400,
+                                cursor: "pointer",
+                                transition: "all 0.15s"
+                              }}
+                            >
+                              {sh}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {product.clarities && product.clarities.length > 0 && (
+                      <div>
+                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                          Clarity: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedClarity || product.clarities[0]}</span>
+                        </label>
+                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                          {product.clarities.map((cl) => (
+                            <button
+                              key={cl}
+                              type="button"
+                              onClick={() => setSelectedClarity(cl)}
+                              style={{
+                                padding: "6px 14px",
+                                border: (selectedClarity || product.clarities[0]) === cl ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                                backgroundColor: (selectedClarity || product.clarities[0]) === cl ? "var(--primary-soft)" : "#ffffff",
+                                color: (selectedClarity || product.clarities[0]) === cl ? "var(--primary)" : "var(--foreground)",
+                                borderRadius: "2px",
+                                fontSize: "0.82rem",
+                                fontWeight: (selectedClarity || product.clarities[0]) === cl ? 600 : 400,
+                                cursor: "pointer",
+                                transition: "all 0.15s"
+                              }}
+                            >
+                              {cl}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
+                )}
 
-              {product.clarities && product.clarities.length > 0 && (
-                <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                    Clarity: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedClarity || product.clarities[0]}</span>
-                  </label>
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {product.clarities.map((cl) => (
-                      <button
-                        key={cl}
-                        type="button"
-                        onClick={() => setSelectedClarity(cl)}
-                        style={{
-                          padding: "6px 14px",
-                          border: (selectedClarity || product.clarities[0]) === cl ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: (selectedClarity || product.clarities[0]) === cl ? "var(--primary-soft)" : "#ffffff",
-                          color: (selectedClarity || product.clarities[0]) === cl ? "var(--primary)" : "var(--foreground)",
-                          borderRadius: "2px",
-                          fontSize: "0.82rem",
-                          fontWeight: (selectedClarity || product.clarities[0]) === cl ? 600 : 400,
-                          cursor: "pointer",
-                          transition: "all 0.15s"
-                        }}
-                      >
-                        {cl}
-                      </button>
-                    ))}
+
+
+              {/* Diamond Color & Band Color in One Row */}
+              {((product.diamondColors && product.diamondColors.length > 0) ||
+                (product.bandColors && product.bandColors.length > 0)) && (
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        product.diamondColors?.length > 0 && product.bandColors?.length > 0
+                          ? "repeat(auto-fit, minmax(200px, 1fr))"
+                          : "1fr",
+                      gap: "20px",
+                      alignItems: "start"
+                    }}
+                  >
+                    {product.diamondColors && product.diamondColors.length > 0 && (
+                      <div>
+                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                          Diamond Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedDiamondColor || product.diamondColors[0]}</span>
+                        </label>
+                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                          {product.diamondColors.map((dc) => (
+                            <button
+                              key={dc}
+                              type="button"
+                              onClick={() => setSelectedDiamondColor(dc)}
+                              style={{
+                                padding: "6px 14px",
+                                border: (selectedDiamondColor || product.diamondColors[0]) === dc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                                backgroundColor: (selectedDiamondColor || product.diamondColors[0]) === dc ? "var(--primary-soft)" : "#ffffff",
+                                color: (selectedDiamondColor || product.diamondColors[0]) === dc ? "var(--primary)" : "var(--foreground)",
+                                borderRadius: "2px",
+                                fontSize: "0.82rem",
+                                fontWeight: (selectedDiamondColor || product.diamondColors[0]) === dc ? 600 : 400,
+                                cursor: "pointer",
+                                transition: "all 0.15s"
+                              }}
+                            >
+                              {dc}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {product.bandColors && product.bandColors.length > 0 && (
+                      <div>
+                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                          Band Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedBandColor || product.bandColors[0]}</span>
+                        </label>
+                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                          {product.bandColors.map((bc) => (
+                            <button
+                              key={bc}
+                              type="button"
+                              onClick={() => setSelectedBandColor(bc)}
+                              style={{
+                                padding: "6px 14px",
+                                border: (selectedBandColor || product.bandColors[0]) === bc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                                backgroundColor: (selectedBandColor || product.bandColors[0]) === bc ? "var(--primary-soft)" : "#ffffff",
+                                color: (selectedBandColor || product.bandColors[0]) === bc ? "var(--primary)" : "var(--foreground)",
+                                borderRadius: "2px",
+                                fontSize: "0.82rem",
+                                fontWeight: (selectedBandColor || product.bandColors[0]) === bc ? 600 : 400,
+                                cursor: "pointer",
+                                transition: "all 0.15s"
+                              }}
+                            >
+                              {bc}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
-
-
-
-              {product.diamondColors && product.diamondColors.length > 0 && (
-                <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                    Diamond Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedDiamondColor || product.diamondColors[0]}</span>
-                  </label>
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {product.diamondColors.map((dc) => (
-                      <button
-                        key={dc}
-                        type="button"
-                        onClick={() => setSelectedDiamondColor(dc)}
-                        style={{
-                          padding: "6px 14px",
-                          border: (selectedDiamondColor || product.diamondColors[0]) === dc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: (selectedDiamondColor || product.diamondColors[0]) === dc ? "var(--primary-soft)" : "#ffffff",
-                          color: (selectedDiamondColor || product.diamondColors[0]) === dc ? "var(--primary)" : "var(--foreground)",
-                          borderRadius: "2px",
-                          fontSize: "0.82rem",
-                          fontWeight: (selectedDiamondColor || product.diamondColors[0]) === dc ? 600 : 400,
-                          cursor: "pointer",
-                          transition: "all 0.15s"
-                        }}
-                      >
-                        {dc}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {product.bandColors && product.bandColors.length > 0 && (
-                <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                    Band Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedBandColor || product.bandColors[0]}</span>
-                  </label>
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {product.bandColors.map((bc) => (
-                      <button
-                        key={bc}
-                        type="button"
-                        onClick={() => setSelectedBandColor(bc)}
-                        style={{
-                          padding: "6px 14px",
-                          border: (selectedBandColor || product.bandColors[0]) === bc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: (selectedBandColor || product.bandColors[0]) === bc ? "var(--primary-soft)" : "#ffffff",
-                          color: (selectedBandColor || product.bandColors[0]) === bc ? "var(--primary)" : "var(--foreground)",
-                          borderRadius: "2px",
-                          fontSize: "0.82rem",
-                          fontWeight: (selectedBandColor || product.bandColors[0]) === bc ? 600 : 400,
-                          cursor: "pointer",
-                          transition: "all 0.15s"
-                        }}
-                      >
-                        {bc}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+                )}
             </div>
 
             {/* Quantity & Add to Cart Action */}
