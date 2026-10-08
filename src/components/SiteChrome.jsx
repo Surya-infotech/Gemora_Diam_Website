@@ -206,7 +206,7 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Right: Currency & Language */}
+        {/* Right: Currency */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
             <select
@@ -230,10 +230,6 @@ export function Header() {
               ))}
             </select>
           </div>
-          <span style={{ opacity: 0.5 }}>|</span>
-          <span style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "3px" }}>
-            EN <ChevronDown size={12} />
-          </span>
         </div>
       </div>
 
