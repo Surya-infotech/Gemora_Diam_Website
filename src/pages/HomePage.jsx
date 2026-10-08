@@ -1192,6 +1192,7 @@ function OutlineMarquee() {
    6. SHOP THE LOOK SECTION
    ========================================================================= */
 function ShopTheLookSection({ onQuickView }) {
+  const { format } = useStore();
   const looks = [
     {
       img: gal1,
@@ -1338,11 +1339,11 @@ function ShopTheLookSection({ onQuickView }) {
                     </h5>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "3px" }}>
                       <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "#181818" }}>
-                        ${item.product.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                        {format(item.product.price)}
                       </span>
                       {item.product.oldPrice && (
                         <span style={{ fontSize: "0.78rem", color: "#888", textDecoration: "line-through" }}>
-                          ${item.product.oldPrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          {format(item.product.oldPrice)}
                         </span>
                       )}
                     </div>
@@ -1388,6 +1389,7 @@ function ShopTheLookSection({ onQuickView }) {
    7. TESTIMONIAL / EDITORIAL REVIEWS
    ========================================================================= */
 function TestimonialsSection({ onQuickView }) {
+  const { format } = useStore();
   const reviews = [
     {
       title: "RECOMMEND!",
@@ -1471,7 +1473,7 @@ function TestimonialsSection({ onQuickView }) {
                   {cur.product.name}
                 </h5>
                 <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--primary)" }}>
-                  ${cur.product.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                  {format(cur.product.price)}
                 </span>
               </div>
               <ArrowRight size={18} style={{ color: "#181818" }} />

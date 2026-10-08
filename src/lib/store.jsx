@@ -83,10 +83,48 @@ function load(key, fallback) {
   }
 }
 
+export function formatCurrencyWithDetails(amount, details) {
+  const num = typeof amount === "number" ? amount : parseFloat(amount) || 0;
+  const {
+    decimal = 2,
+    thousandseparator = ",",
+    decimalseparator = ".",
+    currencysymbol = "$",
+    currencyposition = "left"
+  } = details || {};
+
+  const decPlaces = decimal !== undefined && decimal !== null ? parseInt(decimal, 10) : 2;
+  let [intPart, decPart] = num.toFixed(decPlaces).split(".");
+  const sep = thousandseparator || ",";
+
+  const last3 = intPart.slice(-3);
+  const other = intPart.slice(0, -3);
+  const formattedInt = other !== "" ? other.replace(/\B(?=(\d{2,3})+(?!\d))/g, sep) + sep + last3 : last3;
+
+  const decSep = decimalseparator || ".";
+  const formattedAmount = decPlaces > 0 && decPart !== undefined ? `${formattedInt}${decSep}${decPart}` : formattedInt;
+
+  const symbol = currencysymbol || "";
+
+  switch (currencyposition) {
+    case "left":
+      return `${symbol}${formattedAmount}`;
+    case "left-space":
+      return `${symbol} ${formattedAmount}`;
+    case "right":
+      return `${formattedAmount}${symbol}`;
+    case "right-space":
+      return `${formattedAmount} ${symbol}`;
+    default:
+      return `${symbol}${formattedAmount}`;
+  }
+}
+
 export function StoreProvider({ children }) {
   const [cart, setCart] = useState(() => load("gemora.cart", []));
   const [wishlist, setWishlist] = useState(() => load("gemora.wishlist", ["eternelle-solitaire", "verdant-drop"]));
   const [currency, setCurrency] = useState(() => load("gemora.currency", "USD"));
+  const [storeCurrency, setStoreCurrency] = useState(() => load("gemora.storeCurrency", null));
   const [user, setUser] = useState(() => load("gemora.user", defaultUser));
   const [generalSettings, setGeneralSettings] = useState(() => load("gemora.settings", null));
   const [socialMedia, setSocialMedia] = useState(() => load("gemora.socialMedia", []));
@@ -118,7 +156,7 @@ export function StoreProvider({ children }) {
         setSettingsLoading(true);
         setProductsLoading(true);
 
-        // 1. General Settings
+        // 1. General Settings & Currency from Misc Setting
         fetch(`${backendUrl}/System/GetGeneralSetting_landingpage`)
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
@@ -130,6 +168,10 @@ export function StoreProvider({ children }) {
             if (Array.isArray(data.socialMedia)) {
               setSocialMedia(data.socialMedia);
               localStorage.setItem("gemora.socialMedia", JSON.stringify(data.socialMedia));
+            }
+            if (data.currency) {
+              setStoreCurrency(data.currency);
+              localStorage.setItem("gemora.storeCurrency", JSON.stringify(data.currency));
             }
           })
           .catch((err) => console.warn("Failed to fetch settings:", err));
@@ -229,12 +271,19 @@ export function StoreProvider({ children }) {
   );
 
   const format = useCallback(
-    (usd) => {
-      const c = CURRENCIES[currency] || CURRENCIES.USD;
-      const amount = typeof usd === "number" ? usd : 0;
-      return c.symbol + Math.round(amount * c.rate).toLocaleString(currency === "INR" ? "en-IN" : "en-US");
+    (amount) => {
+      if (storeCurrency) {
+        return formatCurrencyWithDetails(amount, storeCurrency);
+      }
+      return formatCurrencyWithDetails(amount, {
+        currencysymbol: "$",
+        currencyposition: "left",
+        decimal: 2,
+        thousandseparator: ",",
+        decimalseparator: "."
+      });
     },
-    [currency]
+    [storeCurrency]
   );
 
   const addToCart = (productId, metal = "18k Yellow Gold", size) => {
@@ -352,6 +401,7 @@ export function StoreProvider({ children }) {
         subscribeNewsletter,
         generalSettings,
         socialMedia,
+        storeCurrency,
         settingsLoading
       }}
     >

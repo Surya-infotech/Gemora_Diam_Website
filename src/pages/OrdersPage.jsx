@@ -129,7 +129,7 @@ function OrderDetailModal({ order, onClose }) {
               <span style="font-size: 0.85em; color: #666;">${it.metal}</span>
             </td>
             <td style="padding: 12px 0; border-bottom: 1px solid #EFECE6; text-align: center;">${it.qty}</td>
-            <td style="padding: 12px 0; border-bottom: 1px solid #EFECE6; text-align: right;">$${((p?.price || 0) * it.qty).toLocaleString()}</td>
+            <td style="padding: 12px 0; border-bottom: 1px solid #EFECE6; text-align: right;">${format((p?.price || 0) * it.qty)}</td>
           </tr>
         `;
       })
@@ -159,14 +159,14 @@ function OrderDetailModal({ order, onClose }) {
               <tr>
                 <th>Piece & Spec</th>
                 <th style="text-align: center;">Qty</th>
-                <th style="text-align: right;">Amount (USD)</th>
+                <th style="text-align: right;">Amount</th>
               </tr>
             </thead>
             <tbody>
               ${rows}
             </tbody>
           </table>
-          <div class="total">Total: $${order.total.toLocaleString()}</div>
+          <div class="total">Total: ${format(order.total)}</div>
           <p style="margin-top: 48px; font-size: 11px; color: #888; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
             GEMORA DIAM Fine Jewelry · 12 Rue de la Paix, 75002 Paris, France · Conflict-Free Kimberley Certified
           </p>
