@@ -258,7 +258,6 @@ function ProductDetailContent({ product }) {
                 <span className="eyebrow" style={{ color: "var(--primary)", letterSpacing: "0.22em" }}>
                   {product.category || (generalSettings?.softwarename || "Gemora Diam")}
                   {product.subcategory ? ` • ${product.subcategory}` : ""}
-                  {product.sku ? ` • SKU: ${product.sku}` : ""}
                 </span>
 
                 <button
