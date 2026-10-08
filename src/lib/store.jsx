@@ -185,7 +185,10 @@ export function formatCurrencyWithDetails(amount, details) {
 
 export function StoreProvider({ children }) {
   const [cart, setCart] = useState(() => load("gemora.cart", []));
-  const [wishlist, setWishlist] = useState(() => load("gemora.wishlist", ["eternelle-solitaire", "verdant-drop"]));
+  const [wishlist, setWishlist] = useState(() => {
+    const raw = load("gemora.wishlist", []);
+    return Array.isArray(raw) ? raw.filter((id) => id !== "eternelle-solitaire" && id !== "verdant-drop") : [];
+  });
   const [currency, setCurrency] = useState(() => load("gemora.currency", "USD"));
   const [storeCurrency, setStoreCurrency] = useState(() => load("gemora.storeCurrency", null));
   const [user, setUser] = useState(() => load("gemora.user", defaultUser));

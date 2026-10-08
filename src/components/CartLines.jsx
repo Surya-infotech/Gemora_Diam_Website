@@ -47,6 +47,7 @@ export function CartLines({ compact = false }) {
                   </h4>
                   <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "4px" }}>
                     {item.metal}
+                    {item.carat ? ` • ${item.carat}` : ""}
                     {item.size ? ` • Size ${item.size}` : ""}
                   </p>
                   <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "2px" }}>
@@ -100,7 +101,7 @@ export function CartLines({ compact = false }) {
                 </div>
 
                 <span style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)" }}>
-                  {format(p.price * item.qty)}
+                  {format((item.price ?? p.price) * item.qty)}
                 </span>
               </div>
             </div>

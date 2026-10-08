@@ -18,25 +18,60 @@ export default function OrdersPage() {
         Orders & Tracking
       </h1>
 
-      {/* Active Orders */}
-      <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", marginTop: "50px" }}>
-        Active Orders
-      </h2>
-      <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-        {active.map((o) => (
-          <OrderRow key={o.id} order={o} onSelect={() => setSelectedOrder(o)} format={format} />
-        ))}
-      </div>
+      {active.length === 0 && done.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "80px 20px" }}>
+          <p style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", color: "var(--foreground)" }}>
+            No Orders Found
+          </p>
+          <p style={{ marginTop: "12px", fontSize: "0.95rem", color: "var(--muted-foreground)" }}>
+            You haven't placed any orders yet. Discover our latest fine jewelry collections.
+          </p>
+          <a
+            href="/shop"
+            className="eyebrow"
+            style={{
+              display: "inline-block",
+              marginTop: "28px",
+              padding: "14px 32px",
+              backgroundColor: "var(--primary)",
+              color: "var(--primary-foreground)",
+              borderRadius: "2px"
+            }}
+          >
+            Explore Collection
+          </a>
+        </div>
+      ) : (
+        <>
+          {/* Active Orders */}
+          {active.length > 0 && (
+            <>
+              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", marginTop: "50px" }}>
+                Active Orders
+              </h2>
+              <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                {active.map((o) => (
+                  <OrderRow key={o.id} order={o} onSelect={() => setSelectedOrder(o)} format={format} />
+                ))}
+              </div>
+            </>
+          )}
 
-      {/* Completed Orders */}
-      <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", marginTop: "50px" }}>
-        Past Orders
-      </h2>
-      <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-        {done.map((o) => (
-          <OrderRow key={o.id} order={o} onSelect={() => setSelectedOrder(o)} format={format} />
-        ))}
-      </div>
+          {/* Completed Orders */}
+          {done.length > 0 && (
+            <>
+              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", marginTop: "50px" }}>
+                Past Orders
+              </h2>
+              <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                {done.map((o) => (
+                  <OrderRow key={o.id} order={o} onSelect={() => setSelectedOrder(o)} format={format} />
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      )}
 
       {/* Order Detail Modal */}
       {selectedOrder && (

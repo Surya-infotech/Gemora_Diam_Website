@@ -159,35 +159,41 @@ function OverviewTab() {
           </Link>
         </div>
 
-        <div style={{ marginTop: "16px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px" }}>
-          {ORDERS.slice(0, 2).map((o) => {
-            const firstProduct = getProduct(o.items[0]?.productId);
-            return (
-              <div
-                key={o.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "16px",
-                  border: "1px solid var(--border)",
-                  backgroundColor: "var(--card)",
-                  padding: "20px"
-                }}
-              >
-                <img
-                  src={firstProduct?.image}
-                  alt=""
-                  style={{ width: "64px", height: "64px", objectFit: "cover", borderRadius: "2px" }}
-                />
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem" }}>{o.id}</p>
-                  <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>{format(o.total)}</p>
+        {ORDERS.length === 0 ? (
+          <p style={{ marginTop: "16px", color: "var(--muted-foreground)", fontSize: "0.9rem" }}>
+            No recent orders placed yet.
+          </p>
+        ) : (
+          <div style={{ marginTop: "16px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px" }}>
+            {ORDERS.slice(0, 2).map((o) => {
+              const firstProduct = getProduct(o.items[0]?.productId);
+              return (
+                <div
+                  key={o.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "16px",
+                    border: "1px solid var(--border)",
+                    backgroundColor: "var(--card)",
+                    padding: "20px"
+                  }}
+                >
+                  <img
+                    src={firstProduct?.image}
+                    alt=""
+                    style={{ width: "64px", height: "64px", objectFit: "cover", borderRadius: "2px" }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem" }}>{o.id}</p>
+                    <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>{format(o.total)}</p>
+                  </div>
+                  <StatusBadge s={o.status} />
                 </div>
-                <StatusBadge s={o.status} />
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

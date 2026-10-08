@@ -466,11 +466,11 @@ function CircularCategories() {
   const cards =
     categories && categories.length > 0
       ? categories.map((c, i) => ({
-          img: c.image || c.categoryimage || (i % 3 === 0 ? promo1 : i % 3 === 1 ? promo2 : promo3),
-          title: c.categoryname,
-          desc: c.description || `Exquisite handcrafted ${c.categoryname.toLowerCase()} sculpted with certified Kimberley diamonds and solid gold.`,
-          link: `/shop?category=${encodeURIComponent(c.categoryname)}`
-        }))
+        img: c.image || c.categoryimage || (i % 3 === 0 ? promo1 : i % 3 === 1 ? promo2 : promo3),
+        title: c.categoryname,
+        desc: c.description || `Exquisite handcrafted ${c.categoryname.toLowerCase()} sculpted with certified Kimberley diamonds and solid gold.`,
+        link: `/shop?category=${encodeURIComponent(c.categoryname)}`
+      }))
       : defaultCards;
 
   return (
@@ -611,9 +611,9 @@ function BestSellerSection({ onQuickView }) {
     { id: "all", label: "all" },
     ...(dynamicCategories && dynamicCategories.length > 0
       ? dynamicCategories.map((c) => ({
-          id: (c.categoryname || "").toLowerCase(),
-          label: (c.categoryname || "").toLowerCase()
-        }))
+        id: (c.categoryname || "").toLowerCase(),
+        label: (c.categoryname || "").toLowerCase()
+      }))
       : [])
   ];
 
@@ -621,10 +621,10 @@ function BestSellerSection({ onQuickView }) {
     activeTab === "all"
       ? products
       : products.filter(
-          (p) =>
-            (p.category || "").toLowerCase() === activeTab.toLowerCase() ||
-            String(p.categoryid || "") === String(activeTab)
-        );
+        (p) =>
+          (p.category || "").toLowerCase() === activeTab.toLowerCase() ||
+          String(p.categoryid || "") === String(activeTab)
+      );
 
   return (
     <section style={{ padding: "50px 0 90px 0", backgroundColor: "#ffffff" }}>
@@ -703,239 +703,157 @@ function BestSellerSection({ onQuickView }) {
             filtered.map((item) => {
               const isLiked = wishlist.includes(item.id);
 
-            return (
-              <div
-                key={item.id}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  position: "relative",
-                  transition: "transform 0.3s ease"
-                }}
-              >
-                {/* Product Image Frame */}
+              return (
                 <div
+                  key={item.id}
                   style={{
-                    position: "relative",
-                    aspectRatio: "1/1",
-                    backgroundColor: "#f7f7f7",
-                    overflow: "hidden",
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
+                    flexDirection: "column",
+                    position: "relative",
+                    transition: "transform 0.3s ease"
                   }}
-                  className="product-card-hover"
                 >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                      transition: "transform 0.5s ease"
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                  />
-
-                  {/* Hover Quick Action Buttons */}
+                  {/* Product Image Frame */}
                   <div
                     style={{
-                      position: "absolute",
-                      right: "12px",
-                      top: "12px",
+                      position: "relative",
+                      aspectRatio: "1/1",
+                      backgroundColor: "#f7f7f7",
+                      overflow: "hidden",
                       display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
-                      zIndex: 2
+                      alignItems: "center",
+                      justifyContent: "center"
                     }}
+                    className="product-card-hover"
                   >
-                    <button
-                      onClick={() => toggleWishlist(item.id)}
-                      aria-label="Wishlist"
+                    <img
+                      src={item.image}
+                      alt={item.name}
                       style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        backgroundColor: "#ffffff",
-                        display: "grid",
-                        placeItems: "center",
-                        color: isLiked ? "var(--primary)" : "#333",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                        transition: "all 0.2s"
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        transition: "transform 0.5s ease"
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
-                    >
-                      <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
-                    </button>
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                    />
 
-                    <button
-                      onClick={() => onQuickView(item)}
-                      aria-label="Quick View"
+                    {/* Hover Quick Action Buttons */}
+                    <div
                       style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        backgroundColor: "#ffffff",
-                        display: "grid",
-                        placeItems: "center",
-                        color: "#333",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                        transition: "all 0.2s"
+                        position: "absolute",
+                        right: "12px",
+                        top: "12px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px",
+                        zIndex: 2
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
                     >
-                      <Eye size={16} />
-                    </button>
+                      <button
+                        onClick={() => toggleWishlist(item.id)}
+                        aria-label="Wishlist"
+                        style={{
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "50%",
+                          backgroundColor: "#ffffff",
+                          display: "grid",
+                          placeItems: "center",
+                          color: isLiked ? "var(--primary)" : "#333",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                          transition: "all 0.2s"
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+                      >
+                        <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
+                      </button>
 
-                    <button
-                      onClick={() => {
-                        addToCart(item.id, item.metals?.[0] || "18k Yellow Gold");
-                      }}
-                      aria-label="Add to Cart"
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        backgroundColor: "#ffffff",
-                        display: "grid",
-                        placeItems: "center",
-                        color: "#333",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                        transition: "all 0.2s"
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
-                    >
-                      <ShoppingBag size={16} />
-                    </button>
+                      <button
+                        onClick={() => onQuickView(item)}
+                        aria-label="Quick View"
+                        style={{
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "50%",
+                          backgroundColor: "#ffffff",
+                          display: "grid",
+                          placeItems: "center",
+                          color: "#333",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                          transition: "all 0.2s"
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+                      >
+                        <Eye size={16} />
+                      </button>
 
-                    <button
-                      onClick={() => notify("Compare", `Added ${item.name} to comparison list`)}
-                      aria-label="Compare"
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        backgroundColor: "#ffffff",
-                        display: "grid",
-                        placeItems: "center",
-                        color: "#333",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                        transition: "all 0.2s"
-                      }}
-                    >
-                      <Repeat size={16} />
-                    </button>
+                      <button
+                        onClick={() => {
+                          addToCart(item.id, item.metals?.[0] || "", item.ringSizes?.[0] || "", "", item.price);
+                          notify("Added to Bag", `1x ${item.name} (${format(item.price)})`);
+                        }}
+                        aria-label="Add to Cart"
+                        style={{
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "50%",
+                          backgroundColor: "#ffffff",
+                          display: "grid",
+                          placeItems: "center",
+                          color: "#333",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                          transition: "all 0.2s"
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+                      >
+                        <ShoppingBag size={16} />
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Bottom Image Badge Bar */}
-                  {item.badgeType === "sizes" && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        backgroundColor: "#c7c7c7",
-                        color: "#181818",
-                        fontSize: "0.76rem",
-                        padding: "6px 12px",
-                        textAlign: "center",
-                        fontWeight: 500
-                      }}
-                    >
-                      {item.badgeText}
+                  {/* Item Details According to Backend */}
+                  <div style={{ paddingTop: "14px", display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#888888", fontWeight: 600 }}>
+                        {item.category || "Jewelry"} {item.sku ? `• ${item.sku}` : ""}
+                      </span>
                     </div>
-                  )}
 
-                  {item.badgeType === "countdown" && (
-                    <div
+                    <h4
                       style={{
-                        position: "absolute",
-                        bottom: "12px",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        backgroundColor: "#ffffff",
-                        border: "1px solid var(--border)",
-                        color: "var(--primary)",
-                        fontSize: "0.82rem",
-                        fontWeight: 700,
-                        padding: "6px 16px",
-                        borderRadius: "2px",
-                        whiteSpace: "nowrap",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.06)"
-                      }}
-                    >
-                      {item.badgeText}
-                    </div>
-                  )}
-
-                  {item.badgeType === "flash" && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        backgroundColor: "#8C763B",
-                        color: "#ffffff",
-                        fontSize: "0.75rem",
-                        padding: "7px 12px",
-                        textAlign: "center",
-                        fontWeight: 600,
-                        letterSpacing: "0.04em"
-                      }}
-                    >
-                      {item.badgeText}
-                    </div>
-                  )}
-
-                  {item.badgeType === "notify" && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        backgroundColor: "#1F1F1F",
-                        color: "#ffffff",
-                        fontSize: "0.78rem",
-                        padding: "8px 12px",
-                        textAlign: "center",
+                        fontSize: "1rem",
                         fontWeight: 500,
-                        cursor: "pointer"
+                        lineHeight: 1.3,
+                        color: "#181818",
+                        margin: "2px 0 0 0",
+                        cursor: "pointer",
+                        fontFamily: "var(--font-serif)"
                       }}
-                      onClick={() => notify("Notification Saved", "We will alert you once back in stock!")}
+                      onClick={() => onQuickView(item)}
                     >
-                      {item.badgeText}
-                    </div>
-                  )}
-                </div>
+                      {item.name}
+                    </h4>
 
-                {/* Details */}
-                <div style={{ paddingTop: "14px" }}>
-                  <h4
-                    style={{
-                      fontSize: "0.92rem",
-                      fontWeight: 400,
-                      lineHeight: 1.4,
-                      color: "#181818",
-                      marginBottom: "6px",
-                      cursor: "pointer"
-                    }}
-                    onClick={() => onQuickView(item)}
-                  >
-                    {item.name}
-                  </h4>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "6px" }}>
+                      <span style={{ fontSize: "0.96rem", fontWeight: 700, color: "var(--primary)" }}>
+                        {format(item.price)}
+                      </span>
+                      {item.metals && item.metals.length > 0 && (
+                        <span style={{ fontSize: "0.74rem", color: "#777777" }}>
+                          {item.metals.length} {item.metals.length === 1 ? "metal" : "metals"}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            );
-          })
-        )}
+              );
+            })
+          )}
         </div>
       </div>
     </section>
@@ -1209,8 +1127,8 @@ function ShopTheLookSection({ onQuickView }) {
               looks.length === 1
                 ? "minmax(320px, 440px)"
                 : looks.length === 2
-                ? "repeat(auto-fit, minmax(320px, 480px))"
-                : "repeat(auto-fit, minmax(300px, 1fr))",
+                  ? "repeat(auto-fit, minmax(320px, 480px))"
+                  : "repeat(auto-fit, minmax(300px, 1fr))",
             justifyContent: "center",
             gap: "28px"
           }}
@@ -1702,10 +1620,10 @@ function QuickViewModal({ product, onClose }) {
   const activeCaratPrices =
     product?.pricing?.priceType === "metal_with_stone_diamond_carat"
       ? (
-          product.pricing.metalWithStoneDiamondCaratPrices?.find(
-            (m) => (m.metalname || "").toLowerCase() === (metal || "").toLowerCase()
-          ) || product.pricing.metalWithStoneDiamondCaratPrices?.[0]
-        )?.caratPrices || []
+        product.pricing.metalWithStoneDiamondCaratPrices?.find(
+          (m) => (m.metalname || "").toLowerCase() === (metal || "").toLowerCase()
+        ) || product.pricing.metalWithStoneDiamondCaratPrices?.[0]
+      )?.caratPrices || []
       : [];
 
   const [carat, setCarat] = useState(() => activeCaratPrices[0]?.diamondsize || "");
