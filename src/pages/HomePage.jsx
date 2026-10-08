@@ -6,13 +6,10 @@ import {
   Heart,
   Eye,
   ShoppingBag,
-  Repeat,
-  Star,
   ChevronLeft,
   ChevronRight,
   ArrowUp,
-  X,
-  Quote
+  X
 } from "lucide-react";
 import { useStore } from "../lib/store";
 
@@ -63,7 +60,7 @@ export default function HomePage() {
 
 
       {/* 8. Just For You Curated 6-Tile Gallery */}
-      <JustForYouGallery onQuickView={setQuickViewProduct} />
+      <JustForYouGallery />
 
       {/* 9. Newsletter 15% Off Banner */}
       <NewsletterBanner />
@@ -1255,7 +1252,7 @@ function ShopTheLookSection({ onQuickView }) {
 /* =========================================================================
    7. JUST FOR YOU CURATED GALLERY (FROM BACKEND PRODUCTS)
    ========================================================================= */
-function JustForYouGallery({ onQuickView }) {
+function JustForYouGallery() {
   const { products } = useStore();
   const navigate = useNavigate();
 
@@ -1504,18 +1501,13 @@ function QuickViewModal({ product, onClose }) {
   }, [product, metal]);
 
   const activeCaratPrices = matchedPricing?.caratPrices || [];
-
-  const [carat, setCarat] = useState(() => activeCaratPrices[0]?.diamondsize || "");
-
-  useEffect(() => {
-    if (activeCaratPrices.length > 0) {
-      if (!activeCaratPrices.some((c) => c.diamondsize === carat)) {
-        setCarat(activeCaratPrices[0]?.diamondsize || "");
-      }
-    } else {
-      setCarat("");
-    }
-  }, [metal, activeCaratPrices]);
+  const [selectedCarat, setSelectedCarat] = useState("");
+  const carat =
+    activeCaratPrices.length > 0
+      ? activeCaratPrices.some((c) => c.diamondsize === selectedCarat)
+        ? selectedCarat
+        : activeCaratPrices[0]?.diamondsize || ""
+      : "";
 
   const currentPrice = getItemPrice(product, metal, carat);
 
@@ -1663,7 +1655,7 @@ function QuickViewModal({ product, onClose }) {
                 {activeCaratPrices.map((cp) => (
                   <button
                     key={cp.diamondsize}
-                    onClick={() => setCarat(cp.diamondsize)}
+                    onClick={() => setSelectedCarat(cp.diamondsize)}
                     style={{
                       padding: "6px 12px",
                       border: carat === cp.diamondsize ? "1.5px solid var(--primary)" : "1px solid #ddd",

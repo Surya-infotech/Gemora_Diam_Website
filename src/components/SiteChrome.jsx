@@ -1121,7 +1121,7 @@ export function Footer() {
                   background: "transparent"
                 }}
               />
-              <button type="submit" aria-label="Subscribe" style={{ color: "var(--primary)" }}>
+              <button type="submit" aria-label="Subscribe" disabled={subscribing} style={{ color: "var(--primary)", opacity: subscribing ? 0.6 : 1, cursor: subscribing ? "not-allowed" : "pointer" }}>
                 <ArrowRight size={18} />
               </button>
             </div>

@@ -192,6 +192,7 @@ export default function ContactPage() {
 
           <button
             type="submit"
+            disabled={isSubmitting}
             className="eyebrow"
             style={{
               alignSelf: "flex-start",
@@ -199,13 +200,18 @@ export default function ContactPage() {
               color: "var(--primary-foreground)",
               padding: "16px 36px",
               border: "none",
-              cursor: "pointer",
+              cursor: isSubmitting ? "not-allowed" : "pointer",
+              opacity: isSubmitting ? 0.7 : 1,
               transition: "opacity 0.2s ease"
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            onMouseEnter={(e) => {
+              if (!isSubmitting) e.currentTarget.style.opacity = "0.9";
+            }}
+            onMouseLeave={(e) => {
+              if (!isSubmitting) e.currentTarget.style.opacity = "1";
+            }}
           >
-            Send Message
+            {isSubmitting ? "Sending..." : "Send Message"}
           </button>
         </form>
 

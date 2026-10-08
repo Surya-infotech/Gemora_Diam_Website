@@ -2,7 +2,6 @@ import { useStore } from "../lib/store";
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Award, Sparkles, ShieldCheck } from "lucide-react";
 import atelier from "../assets/atelier.jpg";
-import { images } from "../lib/products";
 
 export default function AboutPage() {
   const { generalSettings } = useStore();

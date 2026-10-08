@@ -187,7 +187,6 @@ export function StoreProvider({ children }) {
     const customerId = localStorage.getItem(customerIdKey);
 
     if (!token || !customerId) {
-      setUser(null);
       return;
     }
 

@@ -150,7 +150,9 @@ function OrderRow({ order, onSelect, format }) {
 }
 
 function OrderDetailModal({ order, onClose }) {
-  const { format, getProduct } = useStore();
+  const { format, getProduct, generalSettings } = useStore();
+  const brandName = generalSettings?.softwarename || "GEMORA DIAM";
+  const addressLine = [generalSettings?.address, generalSettings?.cityname, generalSettings?.statename, generalSettings?.countryname].filter(Boolean).join(", ");
   const currentStepIdx = STATUSES.indexOf(order.status);
 
   const printInvoice = () => {
@@ -176,7 +178,7 @@ function OrderDetailModal({ order, onClose }) {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Invoice ${order.id} - GEMORA DIAM</title>
+          <title>Invoice ${order.id} - ${brandName}</title>
           <style>
             body { font-family: 'Georgia', serif; padding: 48px; color: #1c2211; max-width: 800px; margin: 0 auto; }
             h1 { letter-spacing: 0.35em; font-size: 26px; text-transform: uppercase; color: #556832; margin-bottom: 8px; }
@@ -186,7 +188,7 @@ function OrderDetailModal({ order, onClose }) {
           </style>
         </head>
         <body>
-          <h1>GEMORA DIAM</h1>
+          <h1>${brandName}</h1>
           <p style="font-size: 14px; color: #666;">Official Order Invoice</p>
           <p style="margin-top: 24px; font-size: 13px;"><strong>Order ID:</strong> ${order.id}<br><strong>Date:</strong> ${order.date}<br><strong>Tracking:</strong> ${order.tracking || "Insured Courier"}</p>
           <table>
@@ -203,7 +205,7 @@ function OrderDetailModal({ order, onClose }) {
           </table>
           <div class="total">Total: ${format(order.total)}</div>
           <p style="margin-top: 48px; font-size: 11px; color: #888; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
-            GEMORA DIAM Fine Jewelry · 12 Rue de la Paix, 75002 Paris, France · Conflict-Free Kimberley Certified
+            ${brandName} Fine Jewelry${addressLine ? ` · ${addressLine}` : ""} · Certified Fine Jewelry
           </p>
           <script>window.print()</script>
         </body>
@@ -293,10 +295,10 @@ function OrderDetailModal({ order, onClose }) {
                   {step}
                 </p>
                 <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "2px" }}>
-                  {step === "Processing" && "Order verified and gemstone allocation confirmed"}
-                  {step === "Crafted" && "Hand-finished, claw-tightened, and hallmarked in Paris"}
-                  {step === "Shipped" && "Dispatched via fully insured armoured courier"}
-                  {step === "Delivered" && "Signed for and received at client destination"}
+                  {step === "Processing" && "Order verified and jewelry preparation started"}
+                  {step === "Crafted" && "Handcrafted, polished, and quality certified"}
+                  {step === "Shipped" && "Dispatched with tracked insured delivery"}
+                  {step === "Delivered" && "Safely delivered to your address"}
                 </p>
               </div>
             );

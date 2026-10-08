@@ -115,7 +115,7 @@ export default function ProfilePage() {
 
       <div style={{ marginTop: "40px" }}>
         {currentTab === "wishlist" && <WishlistTab />}
-        {currentTab === "settings" && <SettingsTab />}
+        {currentTab === "settings" && <SettingsTab key={user?._id || user?.id || "guest"} />}
       </div>
     </div>
   );
@@ -211,16 +211,6 @@ function SettingsTab() {
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
   const [passData, setPassData] = useState({ current: "", next: "", confirm: "" });
-
-  useEffect(() => {
-    if (user) {
-      setProfileData({
-        fullname: user.fullname || "",
-        email: user.email || "",
-        phone: user.phone || ""
-      });
-    }
-  }, [user]);
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();

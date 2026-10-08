@@ -63,18 +63,13 @@ export function ProductCard({ product }) {
   }, [product, metal]);
 
   const activeCaratPrices = matchedPricing?.caratPrices || [];
-
-  const [carat, setCarat] = useState(() => activeCaratPrices[0]?.diamondsize || "");
-
-  useEffect(() => {
-    if (activeCaratPrices.length > 0) {
-      if (!activeCaratPrices.some((c) => c.diamondsize === carat)) {
-        setCarat(activeCaratPrices[0]?.diamondsize || "");
-      }
-    } else {
-      setCarat("");
-    }
-  }, [metal, activeCaratPrices]);
+  const [selectedCarat, setSelectedCarat] = useState("");
+  const carat =
+    activeCaratPrices.length > 0
+      ? activeCaratPrices.some((c) => c.diamondsize === selectedCarat)
+        ? selectedCarat
+        : activeCaratPrices[0]?.diamondsize || ""
+      : "";
 
   const currentPrice = getItemPrice(product, metal, carat);
 
@@ -353,7 +348,7 @@ export function ProductCard({ product }) {
                     {activeCaratPrices.map((cp) => (
                       <button
                         key={cp.diamondsize}
-                        onClick={() => setCarat(cp.diamondsize)}
+                        onClick={() => setSelectedCarat(cp.diamondsize)}
                         style={{
                           fontSize: "0.78rem",
                           border: carat === cp.diamondsize ? "1.5px solid var(--primary)" : "1px solid var(--border)",
