@@ -25,12 +25,11 @@ export default function ProfilePage() {
   };
 
   if (!user) {
-    return <SignInView onLogin={login} />;
+    return <SignInView />;
   }
 
   const tabs = [
     { id: "overview", label: "Overview" },
-    { id: "addresses", label: "Saved Addresses" },
     { id: "wishlist", label: "Wishlist" },
     { id: "settings", label: "Security & Settings" },
   ];
@@ -41,7 +40,7 @@ export default function ProfilePage() {
         <div>
           <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>My Account</p>
           <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.6rem, 5vw, 3.8rem)", marginTop: "12px" }}>
-            Bonjour, {user.name ? user.name.split(" ")[0] : "Client"}
+            Bonjour, {user.fullname ? user.fullname.split(" ")[0] : (user.name ? user.name.split(" ")[0] : "Client")}
           </h1>
         </div>
         <button
@@ -140,7 +139,6 @@ export default function ProfilePage() {
 
       <div style={{ marginTop: "40px" }}>
         {currentTab === "overview" && <OverviewTab />}
-        {currentTab === "addresses" && <AddressesTab />}
         {currentTab === "wishlist" && <WishlistTab />}
         {currentTab === "settings" && <SettingsTab />}
       </div>
@@ -156,7 +154,7 @@ function OverviewTab() {
       {/* Welcome Card in Brand Green (#556832) */}
       <div
         style={{
-          gridColumn: "span 2",
+          gridColumn: "1 / -1",
           backgroundColor: "var(--primary)",
           color: "var(--primary-foreground)",
           padding: "40px",
@@ -168,7 +166,7 @@ function OverviewTab() {
           Your private salon awaits
         </h2>
         <p style={{ marginTop: "14px", fontSize: "0.92rem", lineHeight: 1.6, opacity: 0.85, maxWidth: "560px" }}>
-          Enjoy priority preview access to rare natural gemstone releases, private atelier viewings, and complimentary cleaning as an esteemed {user.tier} member.
+          Enjoy priority preview access to rare natural gemstone releases, private atelier viewings, and complimentary jewelry care services.
         </p>
         <Link
           to="/shop?high=true"
@@ -184,38 +182,6 @@ function OverviewTab() {
         >
           Preview High Jewelry
         </Link>
-      </div>
-
-      {/* Loyalty Tier Card */}
-      <div
-        style={{
-          border: "1px solid var(--border)",
-          backgroundColor: "var(--card)",
-          padding: "36px",
-          borderRadius: "2px"
-        }}
-      >
-        <Award size={30} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
-        <p className="eyebrow" style={{ color: "var(--muted-foreground)", marginTop: "16px" }}>Loyalty Tier</p>
-        <p style={{ fontFamily: "var(--font-serif)", fontSize: "2.2rem", marginTop: "4px" }}>{user.tier}</p>
-        <p style={{ fontSize: "0.9rem", color: "var(--foreground)", marginTop: "16px" }}>
-          {user.points.toLocaleString()} points accumulated
-        </p>
-
-        {/* Progress Bar */}
-        <div style={{ marginTop: "8px", width: "100%", height: "6px", backgroundColor: "var(--muted)", borderRadius: "3px", overflow: "hidden" }}>
-          <div
-            style={{
-              width: `${(user.points / 5000) * 100}%`,
-              height: "100%",
-              backgroundColor: "var(--primary)",
-              transition: "width 0.4s ease"
-            }}
-          />
-        </div>
-        <p style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", marginTop: "8px" }}>
-          {(5000 - user.points).toLocaleString()} points to Platinum Circle tier
-        </p>
       </div>
 
       {/* Recent Orders Section */}
@@ -267,156 +233,6 @@ function OverviewTab() {
   );
 }
 
-function AddressesTab() {
-  const { user, setUser, showToast } = useStore();
-  const [form, setForm] = useState({ label: "", line: "", city: "", country: "" });
-
-  const saveAddresses = (addresses) => {
-    setUser({ ...user, addresses });
-  };
-
-  const handleAddAddress = (e) => {
-    e.preventDefault();
-    if (!form.label || !form.line || !form.city || !form.country) {
-      showToast("Please fill in all address fields", "error");
-      return;
-    }
-    const newAddress = {
-      id: "addr-" + Date.now(),
-      name: user.name,
-      isDefault: user.addresses.length === 0,
-      ...form
-    };
-    saveAddresses([...user.addresses, newAddress]);
-    setForm({ label: "", line: "", city: "", country: "" });
-    showToast("Address saved successfully", "success");
-  };
-
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
-      {user.addresses.map((a) => (
-        <div
-          key={a.id}
-          style={{
-            border: a.isDefault ? "2px solid var(--primary)" : "1px solid var(--border)",
-            backgroundColor: "var(--card)",
-            padding: "28px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between"
-          }}
-        >
-          <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <p className="eyebrow" style={{ color: "var(--foreground)" }}>{a.label}</p>
-              {a.isDefault && (
-                <span className="eyebrow" style={{ color: "var(--primary)", fontWeight: 600 }}>Default</span>
-              )}
-            </div>
-            <p style={{ marginTop: "16px", fontSize: "0.9rem", lineHeight: 1.7, color: "var(--muted-foreground)" }}>
-              <strong style={{ color: "var(--foreground)" }}>{a.name}</strong><br />
-              {a.line}<br />
-              {a.city}<br />
-              {a.country}
-            </p>
-          </div>
-
-          <div style={{ marginTop: "24px", display: "flex", gap: "16px", fontSize: "0.78rem" }}>
-            {!a.isDefault && (
-              <button
-                type="button"
-                onClick={() => {
-                  saveAddresses(user.addresses.map((x) => ({ ...x, isDefault: x.id === a.id })));
-                  showToast("Default address updated", "success");
-                }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  borderBottom: "1px solid var(--foreground)",
-                  cursor: "pointer",
-                  padding: 0
-                }}
-              >
-                Set as default
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                saveAddresses(user.addresses.filter((x) => x.id !== a.id));
-                showToast("Address removed", "info");
-              }}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#d9534f",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-                cursor: "pointer",
-                padding: 0
-              }}
-            >
-              <Trash2 size={13} /> Remove
-            </button>
-          </div>
-        </div>
-      ))}
-
-      {/* Add New Address Form */}
-      <form
-        onSubmit={handleAddAddress}
-        style={{
-          border: "1px dashed var(--border)",
-          padding: "28px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px"
-        }}
-      >
-        <p className="eyebrow">Add New Address</p>
-        <input
-          style={fieldStyle}
-          placeholder="Label (e.g. Paris Villa, Office)"
-          value={form.label}
-          onChange={(e) => setForm({ ...form, label: e.target.value })}
-        />
-        <input
-          style={fieldStyle}
-          placeholder="Street address"
-          value={form.line}
-          onChange={(e) => setForm({ ...form, line: e.target.value })}
-        />
-        <input
-          style={fieldStyle}
-          placeholder="City, postal code"
-          value={form.city}
-          onChange={(e) => setForm({ ...form, city: e.target.value })}
-        />
-        <input
-          style={fieldStyle}
-          placeholder="Country"
-          value={form.country}
-          onChange={(e) => setForm({ ...form, country: e.target.value })}
-        />
-        <button
-          type="submit"
-          className="eyebrow"
-          style={{
-            marginTop: "8px",
-            backgroundColor: "var(--primary)",
-            color: "var(--primary-foreground)",
-            padding: "12px",
-            border: "none",
-            cursor: "pointer"
-          }}
-        >
-          Save Address
-        </button>
-      </form>
-    </div>
-  );
-}
 
 function WishlistTab() {
   const { wishlist, toggleWishlist, addToCart, format, getProduct } = useStore();
@@ -499,12 +315,16 @@ function WishlistTab() {
 
 function SettingsTab() {
   const { user, setUser, showToast, logout } = useStore();
-  const [profileData, setProfileData] = useState({ name: user.name, email: user.email, phone: user.phone });
+  const [profileData, setProfileData] = useState({
+    fullname: user.fullname || user.name || "",
+    email: user.email,
+    phone: user.phone || ""
+  });
   const [passData, setPassData] = useState({ current: "", next: "", confirm: "" });
 
   const handleProfileSubmit = (e) => {
     e.preventDefault();
-    setUser({ ...user, ...profileData });
+    setUser({ ...user, ...profileData, name: profileData.fullname });
     showToast("Profile details updated successfully", "success");
   };
 
@@ -529,8 +349,8 @@ function SettingsTab() {
         <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem" }}>Profile Details</h3>
         <input
           style={fieldStyle}
-          value={profileData.name}
-          onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+          value={profileData.fullname}
+          onChange={(e) => setProfileData({ ...profileData, fullname: e.target.value })}
           placeholder="Full name"
         />
         <input
@@ -689,16 +509,40 @@ function SettingsTab() {
   );
 }
 
-function SignInView({ onLogin }) {
+function SignInView() {
+  const { signup, login } = useStore();
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return;
-    onLogin({ email, name: isRegister ? name : (name || email.split("@")[0]) });
+    if (!email || !password) return;
+    setErrorMsg("");
+    setLoading(true);
+
+    if (isRegister) {
+      if (!fullname.trim()) {
+        setErrorMsg("Please enter your full name.");
+        setLoading(false);
+        return;
+      }
+      const res = await signup({ fullname, email, password, phone });
+      setLoading(false);
+      if (!res.success) {
+        setErrorMsg(res.error || "Failed to create account.");
+      }
+    } else {
+      const res = await login({ email, password });
+      setLoading(false);
+      if (!res.success) {
+        setErrorMsg(res.error || "Invalid email or password.");
+      }
+    }
   };
 
   return (
@@ -723,7 +567,24 @@ function SignInView({ onLogin }) {
             : "Sign in to access your private salon, order archives, and personal bespoke jewelry collections."}
         </p>
 
-        <form onSubmit={handleSubmit} style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "16px", textAlign: "left" }}>
+        {errorMsg && (
+          <div
+            style={{
+              marginTop: "20px",
+              padding: "12px 16px",
+              backgroundColor: "#fff0f0",
+              border: "1px solid #ffd0d0",
+              color: "#c33",
+              fontSize: "0.84rem",
+              borderRadius: "2px",
+              textAlign: "left"
+            }}
+          >
+            {errorMsg}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ marginTop: "28px", display: "flex", flexDirection: "column", gap: "16px", textAlign: "left" }}>
           {isRegister && (
             <div>
               <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666", display: "block", marginBottom: "6px" }}>
@@ -732,8 +593,8 @@ function SignInView({ onLogin }) {
               <input
                 style={fieldStyle}
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
                 placeholder="Full Name"
                 required
               />
@@ -754,6 +615,21 @@ function SignInView({ onLogin }) {
             />
           </div>
 
+          {isRegister && (
+            <div>
+              <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666", display: "block", marginBottom: "6px" }}>
+                Phone Number (Optional)
+              </label>
+              <input
+                style={fieldStyle}
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+1 234 567 8900"
+              />
+            </div>
+          )}
+
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
               <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666" }}>
@@ -772,6 +648,7 @@ function SignInView({ onLogin }) {
 
           <button
             type="submit"
+            disabled={loading}
             className="eyebrow"
             style={{
               marginTop: "12px",
@@ -779,13 +656,14 @@ function SignInView({ onLogin }) {
               color: "#ffffff",
               padding: "14px",
               border: "none",
-              cursor: "pointer",
+              cursor: loading ? "not-allowed" : "pointer",
               fontWeight: 600,
               letterSpacing: "0.15em",
-              textAlign: "center"
+              textAlign: "center",
+              opacity: loading ? 0.75 : 1
             }}
           >
-            {isRegister ? "Create Salon Account" : "Sign In"}
+            {loading ? "Processing..." : isRegister ? "Create Salon Account" : "Sign In"}
           </button>
         </form>
 
@@ -795,7 +673,10 @@ function SignInView({ onLogin }) {
               Already have an account?{" "}
               <button
                 type="button"
-                onClick={() => setIsRegister(false)}
+                onClick={() => {
+                  setIsRegister(false);
+                  setErrorMsg("");
+                }}
                 style={{ background: "none", border: "none", color: "var(--primary)", fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}
               >
                 Sign In
@@ -806,7 +687,10 @@ function SignInView({ onLogin }) {
               Don't have an account yet?{" "}
               <button
                 type="button"
-                onClick={() => setIsRegister(true)}
+                onClick={() => {
+                  setIsRegister(true);
+                  setErrorMsg("");
+                }}
                 style={{ background: "none", border: "none", color: "var(--primary)", fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}
               >
                 Create Account

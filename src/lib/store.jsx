@@ -1,33 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { CURRENCIES } from "./products";
 
-const defaultUser = {
-  name: "Isabella Laurent",
-  email: "isabella@example.com",
-  phone: "+1 212 555 0198",
-  points: 2840,
-  tier: "Gold Circle",
-  addresses: [
-    {
-      id: "a1",
-      label: "Home",
-      name: "Isabella Laurent",
-      line: "740 Park Avenue, Apt 12B",
-      city: "New York, NY 10021",
-      country: "United States",
-      isDefault: true
-    },
-    {
-      id: "a2",
-      label: "Office",
-      name: "Isabella Laurent",
-      line: "1 Rockefeller Plaza, Fl 20",
-      city: "New York, NY 10020",
-      country: "United States",
-      isDefault: false
-    }
-  ]
-};
 
 export function mapBackendItem(item) {
   let basePrice = 0;
@@ -185,10 +157,7 @@ export function formatCurrencyWithDetails(amount, details) {
 
 export function StoreProvider({ children }) {
   const [cart, setCart] = useState(() => load("gemora.cart", []));
-  const [wishlist, setWishlist] = useState(() => {
-    const raw = load("gemora.wishlist", []);
-    return Array.isArray(raw) ? raw.filter((id) => id !== "eternelle-solitaire" && id !== "verdant-drop") : [];
-  });
+  const [wishlist, setWishlist] = useState(() => load("gemora.wishlist", []));
   const [currency, setCurrency] = useState(() => {
     const saved = load("gemora.currency", null);
     if (saved) return saved;
@@ -199,7 +168,30 @@ export function StoreProvider({ children }) {
   const [user, setUser] = useState(() => {
     const isLoggedOut = localStorage.getItem("gemora.loggedOut");
     if (isLoggedOut === "true") return null;
-    return load("gemora.user", defaultUser);
+
+    const expiry = localStorage.getItem("gemora.token_expiry");
+    if (expiry && Date.now() > Number(expiry)) {
+      localStorage.removeItem("customer_id");
+      localStorage.removeItem("gemora.customer_id");
+      localStorage.removeItem("customer_token");
+      localStorage.removeItem("gemora.token");
+      localStorage.removeItem("gemora.token_expiry");
+      localStorage.removeItem("gemora.user");
+      return null;
+    }
+
+    const savedUser = load("gemora.user", null);
+    if (
+      savedUser &&
+      (savedUser.email === "isabella@example.com" ||
+        savedUser.fullname === "Isabella Laurent" ||
+        savedUser.name === "Isabella Laurent")
+    ) {
+      localStorage.removeItem("gemora.user");
+      return null;
+    }
+
+    return savedUser;
   });
   const [generalSettings, setGeneralSettings] = useState(() => load("gemora.settings", null));
   const [socialMedia, setSocialMedia] = useState(() => load("gemora.socialMedia", []));
@@ -223,43 +215,122 @@ export function StoreProvider({ children }) {
   const changeCurrency = useCallback((newCode) => {
     setCurrency(newCode);
     localStorage.setItem("gemora.currency", JSON.stringify(newCode));
-    const meta = CURRENCIES[newCode];
-    if (meta) {
-      setStoreCurrency((prev) => ({
-        ...prev,
-        countryname: meta.country,
-        currency: newCode,
-        currencysymbol: meta.symbol,
-        currencyposition: meta.symbol === "₹" ? "right" : "left"
-      }));
-    }
   }, []);
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
 
   const logout = useCallback(() => {
     setUser(null);
+    localStorage.removeItem("customer_id");
+    localStorage.removeItem("gemora.customer_id");
+    localStorage.removeItem("customer_token");
+    localStorage.removeItem("gemora.token");
+    localStorage.removeItem("gemora.token_expiry");
     localStorage.removeItem("gemora.user");
     localStorage.setItem("gemora.loggedOut", "true");
     notify("Logged Out", "You have successfully signed out of your account.");
   }, [notify]);
 
-  const login = useCallback(
-    (credentials) => {
-      localStorage.removeItem("gemora.loggedOut");
-      const loggedInUser = {
-        ...defaultUser,
-        name: credentials?.name || (credentials?.email ? credentials.email.split("@")[0] : defaultUser.name),
-        email: credentials?.email || defaultUser.email,
-        phone: credentials?.phone || defaultUser.phone
-      };
-      setUser(loggedInUser);
-      localStorage.setItem("gemora.user", JSON.stringify(loggedInUser));
-      notify("Welcome Back", `Signed in as ${loggedInUser.name}`);
-      return loggedInUser;
+  const signup = useCallback(
+    async ({ fullname, name, email, password, phone }) => {
+      try {
+        const finalFullName = (fullname || name || "").trim();
+        const res = await fetch(`${backendUrl}/Customer/Signup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fullname: finalFullName, email, password, phone })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to create account");
+        }
+
+        const customerId = data.customer_id || data.customer?._id;
+        const token = data.token;
+
+        if (customerId) {
+          localStorage.setItem("customer_id", customerId);
+          localStorage.setItem("gemora.customer_id", customerId);
+        }
+        if (token) {
+          localStorage.setItem("customer_token", token);
+          localStorage.setItem("gemora.token", token);
+          localStorage.setItem("gemora.token_expiry", String(Date.now() + 12 * 60 * 60 * 1000));
+        }
+
+        const customerUser = {
+          ...data.customer,
+          _id: customerId,
+          id: customerId,
+          fullname: data.customer.fullname || finalFullName,
+          name: data.customer.fullname || finalFullName,
+          email: data.customer.email || email,
+          phone: data.customer.phone || phone || ""
+        };
+
+        setUser(customerUser);
+        localStorage.setItem("gemora.user", JSON.stringify(customerUser));
+        localStorage.removeItem("gemora.loggedOut");
+
+        notify("Account Created", `Welcome to Maison Gemora, ${customerUser.fullname || customerUser.name}!`);
+        return { success: true, customer: customerUser, token, customer_id: customerId };
+      } catch (err) {
+        notify("Registration Error", err.message || "Could not register account");
+        return { success: false, error: err.message };
+      }
     },
-    [notify]
+    [backendUrl, notify]
   );
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
+  const login = useCallback(
+    async (credentials) => {
+      try {
+        const res = await fetch(`${backendUrl}/Customer/Signin`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: credentials?.email, password: credentials?.password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Invalid email or password");
+        }
+
+        const customerId = data.customer_id || data.customer?._id;
+        const token = data.token;
+
+        if (customerId) {
+          localStorage.setItem("customer_id", customerId);
+          localStorage.setItem("gemora.customer_id", customerId);
+        }
+        if (token) {
+          localStorage.setItem("customer_token", token);
+          localStorage.setItem("gemora.token", token);
+          localStorage.setItem("gemora.token_expiry", String(Date.now() + 12 * 60 * 60 * 1000));
+        }
+
+        const customerUser = {
+          ...data.customer,
+          _id: customerId,
+          id: customerId,
+          fullname: data.customer.fullname || data.customer.name,
+          name: data.customer.fullname || data.customer.name,
+          email: data.customer.email,
+          phone: data.customer.phone || ""
+        };
+
+        setUser(customerUser);
+        localStorage.setItem("gemora.user", JSON.stringify(customerUser));
+        localStorage.removeItem("gemora.loggedOut");
+
+        notify("Welcome Back", `Signed in as ${customerUser.fullname || customerUser.name}`);
+        return { success: true, customer: customerUser, token, customer_id: customerId };
+      } catch (err) {
+        notify("Sign In Error", err.message || "Could not sign in");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, notify]
+  );
 
   // Fetch all Admin Panel data
   useEffect(() => {
@@ -523,6 +594,7 @@ export function StoreProvider({ children }) {
         toggleWishlist,
         setUser,
         login,
+        signup,
         logout,
         getProduct,
         getItemPrice,

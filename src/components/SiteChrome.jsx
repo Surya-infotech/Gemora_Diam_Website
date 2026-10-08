@@ -145,7 +145,7 @@ function AccountMenu() {
                   Client Salon
                 </div>
                 <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818", marginTop: "2px" }}>
-                  {user.name}
+                  {user.fullname || user.name}
                 </div>
                 <div style={{ fontSize: "0.76rem", color: "#888", marginTop: "1px" }}>
                   {user.email}
@@ -168,21 +168,7 @@ function AccountMenu() {
                 >
                   My Account Overview
                 </Link>
-                <Link
-                  to="/profile?tab=addresses"
-                  onClick={() => setOpen(false)}
-                  style={{
-                    display: "block",
-                    padding: "8px 18px",
-                    fontSize: "0.82rem",
-                    color: "#333",
-                    textDecoration: "none"
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                >
-                  Saved Addresses
-                </Link>
+
                 <Link
                   to="/profile?tab=settings"
                   onClick={() => setOpen(false)}
@@ -696,10 +682,10 @@ export function Header() {
                         fontSize: "0.9rem"
                       }}
                     >
-                      {user.name ? user.name[0] : "U"}
+                      {user.fullname ? user.fullname[0] : (user.name ? user.name[0] : "U")}
                     </div>
                     <div>
-                      <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818" }}>{user.name}</div>
+                      <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818" }}>{user.fullname || user.name}</div>
                       <div style={{ fontSize: "0.76rem", color: "#888" }}>{user.email}</div>
                     </div>
                   </div>
