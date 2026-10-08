@@ -342,7 +342,7 @@ function ProductDetailContent({ product }) {
                 {product.name}
               </h1>
 
-              <div style={{ display: "flex", alignItems: "baseline", gap: "12px", marginTop: "14px" }}>
+              <div style={{ marginTop: "14px" }}>
                 <span
                   style={{
                     fontFamily: "var(--font-serif)",
@@ -352,9 +352,6 @@ function ProductDetailContent({ product }) {
                   }}
                 >
                   {format(currentPrice)}
-                </span>
-                <span style={{ fontSize: "0.82rem", color: "var(--muted-foreground)" }}>
-                  Tax included. Complimentary luxury shipping.
                 </span>
               </div>
             </div>
