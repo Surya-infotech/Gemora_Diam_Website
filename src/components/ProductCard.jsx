@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Heart, Eye, X } from "lucide-react";
-import { METALS } from "../lib/products";
 import { useStore } from "../lib/store";
 
 const metalSwatch = {
@@ -13,11 +12,14 @@ const metalSwatch = {
   Platinum: "#dce1d4",
   "14k White Gold": "#e5e8e8",
   "18k White Gold": "#e5e8e8",
+  "10K White Gold": "#e5e8e8",
   "White Gold": "#e5e8e8",
+  "925 Sliver": "#c0c0c0",
   Silver: "#c0c0c0"
 };
 
-export function MetalPills({ value, onChange, metals = METALS }) {
+export function MetalPills({ value, onChange, metals = [] }) {
+  if (!metals || metals.length === 0) return null;
   return (
     <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
       {metals.map((m) => (
@@ -44,9 +46,25 @@ export function MetalPills({ value, onChange, metals = METALS }) {
 }
 
 export function ProductCard({ product }) {
-  const { addToCart, toggleWishlist, wishlist, format } = useStore();
-  const availableMetals = product.metals && product.metals.length > 0 ? product.metals : METALS;
-  const [metal, setMetal] = useState(availableMetals[0] || "18k Yellow Gold");
+  const { addToCart, toggleWishlist, wishlist, format, getItemPrice } = useStore();
+  const availableMetals = product.metals || [];
+  const [metal, setMetal] = useState(availableMetals[0] || "");
+  const [ringSize, setRingSize] = useState(product.ringSizes?.[0] || "");
+
+  const activeCaratPrices = useMemo(() => {
+    if (product.pricing?.priceType === "metal_with_stone_diamond_carat") {
+      const match =
+        product.pricing.metalWithStoneDiamondCaratPrices?.find(
+          (m) => (m.metalname || "").toLowerCase() === (metal || "").toLowerCase()
+        ) || product.pricing.metalWithStoneDiamondCaratPrices?.[0];
+      return match?.caratPrices || [];
+    }
+    return [];
+  }, [product, metal]);
+
+  const [carat, setCarat] = useState(() => activeCaratPrices[0]?.diamondsize || "");
+  const currentPrice = getItemPrice(product, metal, carat);
+
   const [quick, setQuick] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const liked = wishlist.includes(product.id);
@@ -117,7 +135,7 @@ export function ProductCard({ product }) {
           }}
         >
           <button
-            onClick={() => addToCart(product.id, metal)}
+            onClick={() => addToCart(product.id, metal, ringSize, carat, currentPrice)}
             className="eyebrow"
             style={{
               flex: 1,
@@ -160,16 +178,18 @@ export function ProductCard({ product }) {
           </h3>
         </div>
         <p style={{ fontSize: "0.95rem", fontWeight: 600, whiteSpace: "nowrap" }}>
-          {format(product.price)}
+          {format(currentPrice)}
         </p>
       </div>
 
-      <div style={{ marginTop: "12px", display: "flex", alignItems: "center", gap: "10px" }}>
-        <MetalPills value={metal} onChange={setMetal} metals={availableMetals} />
-        <span style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>
-          {metal}
-        </span>
-      </div>
+      {availableMetals.length > 0 && (
+        <div style={{ marginTop: "12px", display: "flex", alignItems: "center", gap: "10px" }}>
+          <MetalPills value={metal} onChange={setMetal} metals={availableMetals} />
+          <span style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>
+            {metal}
+          </span>
+        </div>
+      )}
 
       {/* Quick View Modal */}
       {quick && (
@@ -193,8 +213,9 @@ export function ProductCard({ product }) {
               backgroundColor: "var(--background)",
               maxWidth: "780px",
               width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
               borderRadius: "2px",
-              overflow: "hidden",
               boxShadow: "var(--shadow-soft)",
               position: "relative",
               display: "grid",
@@ -210,7 +231,10 @@ export function ProductCard({ product }) {
                 right: "16px",
                 zIndex: 10,
                 color: "var(--foreground)",
-                padding: "4px"
+                padding: "4px",
+                background: "none",
+                border: "none",
+                cursor: "pointer"
               }}
             >
               <X size={20} strokeWidth={1.4} />
@@ -219,64 +243,135 @@ export function ProductCard({ product }) {
             <img
               src={product.image}
               alt={product.name}
-              style={{ width: "100%", height: "100%", minHeight: "360px", objectFit: "cover" }}
+              style={{ width: "100%", height: "100%", minHeight: "360px", objectFit: "contain", backgroundColor: "#f7f7f7" }}
             />
 
             <div style={{ padding: "36px", display: "flex", flexDirection: "column" }}>
               <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-                {product.category}
+                {product.category} {product.sku ? `• SKU: ${product.sku}` : ""}
               </p>
               <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: "8px 0 10px 0" }}>
                 {product.name}
               </h2>
-              <p style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--primary)" }}>
-                {format(product.price)}
+              <p style={{ fontSize: "1.35rem", fontWeight: 700, color: "var(--primary)", margin: "0 0 16px 0" }}>
+                {format(currentPrice)}
               </p>
-              <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", lineHeight: 1.7, margin: "16px 0 24px 0" }}>
-                {product.description}
-              </p>
+              {product.description ? (
+                <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", lineHeight: 1.7, margin: "0 0 20px 0" }}>
+                  {product.description}
+                </p>
+              ) : null}
 
-              {product.carat && (
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "20px" }}>
-                  <span style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
-                    {product.carat}
-                  </span>
-                  <span style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
-                    Color {product.color}
-                  </span>
-                  <span style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
-                    Clarity {product.clarity}
-                  </span>
-                  {product.certification && (
-                    <span style={{ fontSize: "0.72rem", backgroundColor: "var(--primary-soft)", color: "var(--primary)", padding: "4px 8px", borderRadius: "2px", fontWeight: 600 }}>
-                      ★ {product.certification}
-                    </span>
-                  )}
-                </div>
-              )}
-
-              {product.ringSizes && product.ringSizes.length > 0 && (
+              {/* Diamond Carat Size Options from Backend */}
+              {activeCaratPrices.length > 0 && (
                 <div style={{ marginBottom: "16px" }}>
-                  <p className="eyebrow" style={{ marginBottom: "6px" }}>Available Sizes</p>
-                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                    {product.ringSizes.map((s) => (
-                      <span key={s} style={{ fontSize: "0.75rem", border: "1px solid var(--border)", padding: "2px 8px", borderRadius: "2px" }}>
-                        {s}
-                      </span>
+                  <p className="eyebrow" style={{ marginBottom: "6px" }}>Diamond Size</p>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {activeCaratPrices.map((cp) => (
+                      <button
+                        key={cp.diamondsize}
+                        onClick={() => setCarat(cp.diamondsize)}
+                        style={{
+                          fontSize: "0.78rem",
+                          border: carat === cp.diamondsize ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: carat === cp.diamondsize ? "var(--primary-soft)" : "transparent",
+                          color: carat === cp.diamondsize ? "var(--primary)" : "var(--foreground)",
+                          padding: "6px 12px",
+                          borderRadius: "2px",
+                          cursor: "pointer"
+                        }}
+                      >
+                        {cp.diamondsize} ({format(cp.price)})
+                      </button>
                     ))}
                   </div>
                 </div>
               )}
 
-              <p className="eyebrow" style={{ marginBottom: "10px" }}>
-                Precious Metal — {metal}
-              </p>
-              <MetalPills value={metal} onChange={setMetal} metals={availableMetals} />
+              {/* Ring Sizes from Backend */}
+              {product.ringSizes && product.ringSizes.length > 0 && (
+                <div style={{ marginBottom: "16px" }}>
+                  <p className="eyebrow" style={{ marginBottom: "6px" }}>Ring Size</p>
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    {product.ringSizes.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => setRingSize(s)}
+                        style={{
+                          fontSize: "0.78rem",
+                          border: ringSize === s ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: ringSize === s ? "var(--primary-soft)" : "transparent",
+                          padding: "4px 10px",
+                          borderRadius: "2px",
+                          cursor: "pointer"
+                        }}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-              <div style={{ marginTop: "auto", paddingTop: "28px" }}>
+              {/* Other Backend Attributes */}
+              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" }}>
+                {product.shapes?.map((sh) => (
+                  <span key={sh} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
+                    Shape: {sh}
+                  </span>
+                ))}
+                {product.clarities?.map((cl) => (
+                  <span key={cl} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
+                    Clarity: {cl}
+                  </span>
+                ))}
+                {product.stones?.map((st) => (
+                  <span key={st} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
+                    Stone: {st}
+                  </span>
+                ))}
+                {product.diamondColors?.map((dc) => (
+                  <span key={dc} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
+                    Diamond: {dc}
+                  </span>
+                ))}
+                {product.styles?.map((sy) => (
+                  <span key={sy} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
+                    {sy}
+                  </span>
+                ))}
+              </div>
+
+              {availableMetals.length > 0 && (
+                <div style={{ marginBottom: "20px" }}>
+                  <p className="eyebrow" style={{ marginBottom: "8px" }}>
+                    Precious Metal — {metal}
+                  </p>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {availableMetals.map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => setMetal(m)}
+                        style={{
+                          fontSize: "0.78rem",
+                          border: metal === m ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                          backgroundColor: metal === m ? "var(--primary-soft)" : "transparent",
+                          padding: "6px 12px",
+                          borderRadius: "2px",
+                          cursor: "pointer"
+                        }}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div style={{ marginTop: "auto", paddingTop: "20px" }}>
                 <button
                   onClick={() => {
-                    addToCart(product.id, metal);
+                    addToCart(product.id, metal, ringSize, carat, currentPrice);
                     setQuick(false);
                   }}
                   className="eyebrow"
@@ -285,10 +380,11 @@ export function ProductCard({ product }) {
                     backgroundColor: "var(--primary)",
                     color: "var(--primary-foreground)",
                     padding: "16px",
-                    borderRadius: "2px"
+                    borderRadius: "2px",
+                    cursor: "pointer"
                   }}
                 >
-                  Add to Bag
+                  Add to Bag • {format(currentPrice)}
                 </button>
               </div>
             </div>

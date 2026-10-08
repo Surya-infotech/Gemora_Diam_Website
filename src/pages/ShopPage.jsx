@@ -1,5 +1,4 @@
 import { useSearchParams, Link } from "react-router-dom";
-import { CATEGORIES as DEFAULT_CATEGORIES, PRODUCTS as DEFAULT_PRODUCTS } from "../lib/products";
 import { ProductCard } from "../components/ProductCard";
 import { useStore } from "../lib/store";
 
@@ -11,14 +10,11 @@ export default function ShopPage() {
 
   const { products, categories, productsLoading } = useStore();
 
-  // Combine dynamic products from Admin Panel with default fallback if empty
-  const allProducts = products && products.length > 0 ? products : DEFAULT_PRODUCTS;
+  // Only use dynamic products from Admin Panel
+  const allProducts = products || [];
 
   // Active categories from Admin Panel
-  const activeCategories =
-    categories && categories.length > 0
-      ? categories.map((c) => c.categoryname)
-      : DEFAULT_CATEGORIES;
+  const activeCategories = (categories || []).map((c) => c.categoryname).filter(Boolean);
 
   const list = allProducts.filter((p) => {
     if (search) {
@@ -42,8 +38,8 @@ export default function ShopPage() {
   const title = search
     ? `Search: "${searchParams.get("search")}"`
     : high
-    ? "High Jewelry"
-    : category ?? "All Jewelry";
+      ? "High Jewelry"
+      : category ?? "All Jewelry";
 
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>

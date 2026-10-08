@@ -1,9 +1,8 @@
 import { Minus, Plus, X } from "lucide-react";
-import { getProduct } from "../lib/products";
 import { useStore } from "../lib/store";
 
 export function CartLines({ compact = false }) {
-  const { cart, updateQty, removeItem, format } = useStore();
+  const { cart, updateQty, removeItem, format, getProduct } = useStore();
 
   return (
     <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -51,7 +50,7 @@ export function CartLines({ compact = false }) {
                     {item.size ? ` • Size ${item.size}` : ""}
                   </p>
                   <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "2px" }}>
-                    {format(p.price)} each
+                    {format(item.price ?? p.price)} each
                   </p>
                 </div>
 

@@ -17,7 +17,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { useStore } from "../lib/store";
-import { CURRENCIES, PRODUCTS } from "../lib/products";
+import { CURRENCIES } from "../lib/products";
 import { CartLines } from "./CartLines";
 
 import visaSvg from "../assets/vemus/payment_visa.svg";
@@ -110,10 +110,7 @@ export function Header() {
     return () => clearInterval(timer);
   }, []);
 
-  const searchPool = [
-    ...(dynamicProducts || []),
-    ...PRODUCTS.filter((fb) => !(dynamicProducts || []).some((dp) => dp.id === fb.id || dp.name === fb.name))
-  ];
+  const searchPool = dynamicProducts || [];
 
   const results = q
     ? searchPool.filter((p) => (p.name + " " + (p.category || "")).toLowerCase().includes(q.toLowerCase()))

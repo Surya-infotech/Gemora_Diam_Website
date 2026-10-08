@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Award, Trash2 } from "lucide-react";
 import { useStore } from "../lib/store";
-import { getProduct } from "../lib/products";
 import { ORDERS } from "../lib/orders";
 import { StatusBadge } from "../components/StatusBadge";
 
@@ -346,7 +345,7 @@ function AddressesTab() {
 }
 
 function WishlistTab() {
-  const { wishlist, toggleWishlist, addToCart, format } = useStore();
+  const { wishlist, toggleWishlist, addToCart, format, getProduct } = useStore();
 
   if (!wishlist.length) {
     return (

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { CURRENCIES, PRODUCTS as FALLBACK_PRODUCTS } from "./products";
+import { CURRENCIES } from "./products";
 
 const defaultUser = {
   name: "Isabella Laurent",
@@ -38,9 +38,23 @@ export function mapBackendItem(item) {
     basePrice = p?.price || p?.caratPrices?.[0]?.price || 0;
   }
 
-  const metals = (item.pricing?.metalWisePrices || [])
+  // Extract metals from both pricing types
+  const metalWiseMetals = (item.pricing?.metalWisePrices || [])
     .map((m) => m.metalname)
     .filter(Boolean);
+  const caratMetals = (item.pricing?.metalWithStoneDiamondCaratPrices || [])
+    .map((m) => m.metalname)
+    .filter(Boolean);
+  const metals = Array.from(new Set([...metalWiseMetals, ...caratMetals]));
+
+  // Normalize all item attributes from backend
+  const ringSizes = (item.ringsizes || []).map((r) => (typeof r === "object" ? r.ringsize : r)).filter(Boolean);
+  const shapes = (item.shapes || []).map((s) => (typeof s === "object" ? s.shapename : s)).filter(Boolean);
+  const clarities = (item.clarities || []).map((c) => (typeof c === "object" ? c.clarityname : c)).filter(Boolean);
+  const diamondColors = (item.diamondcolors || []).map((c) => (typeof c === "object" ? c.colorname : c)).filter(Boolean);
+  const bandColors = (item.bandcolors || []).map((c) => (typeof c === "object" ? c.colorname : c)).filter(Boolean);
+  const stones = (item.stones || []).map((s) => (typeof s === "object" ? s.stonename : s)).filter(Boolean);
+  const styles = (item.styles || []).map((s) => (typeof s === "object" ? s.stylename : s)).filter(Boolean);
 
   const gallery = (item.galleryimages || []).map((g) => g.imageUrl).filter(Boolean);
   const mainImage = item.image || gallery[0] || "";
@@ -59,17 +73,66 @@ export function mapBackendItem(item) {
     galleryImages: gallery,
     video: item.video || item.galleryvideos?.[0]?.videoUrl || "",
     description: item.description || "",
-    metals: metals.length > 0 ? metals : ["18k Yellow Gold", "14k White Gold", "Rose Gold", "Platinum"],
-    ringSizes: item.ringsizes || [],
-    shapes: item.shapes || [],
-    clarities: item.clarities || [],
-    colors: item.diamondcolors || [],
-    stones: item.stones || [],
-    styles: item.styles || [],
+    metals,
+    ringSizes,
+    shapes,
+    clarities,
+    diamondColors,
+    bandColors,
+    stones,
+    styles,
     pricing: item.pricing,
     status: item.status,
     bestseller: true
   };
+}
+
+export function getItemPrice(product, selectedMetal, selectedCarat) {
+  if (!product || !product.pricing) return product?.price || 0;
+  const { priceType, metalWisePrices, metalWithStoneDiamondCaratPrices } = product.pricing;
+
+  if (priceType === "metal_wise") {
+    if (Array.isArray(metalWisePrices) && metalWisePrices.length > 0) {
+      if (selectedMetal) {
+        const matched = metalWisePrices.find(
+          (m) => (m.metalname || "").trim().toLowerCase() === selectedMetal.trim().toLowerCase()
+        );
+        if (matched && typeof matched.price === "number") return matched.price;
+      }
+      return metalWisePrices[0]?.price ?? (product.price || 0);
+    }
+  } else if (priceType === "metal_with_stone_diamond_carat") {
+    if (Array.isArray(metalWithStoneDiamondCaratPrices) && metalWithStoneDiamondCaratPrices.length > 0) {
+      let matchedGroup = metalWithStoneDiamondCaratPrices[0];
+      if (selectedMetal) {
+        const found = metalWithStoneDiamondCaratPrices.find(
+          (m) => (m.metalname || "").trim().toLowerCase() === selectedMetal.trim().toLowerCase()
+        );
+        if (found) matchedGroup = found;
+      }
+
+      if (matchedGroup) {
+        if (!matchedGroup.hasCarat && typeof matchedGroup.price === "number" && matchedGroup.price !== null) {
+          return matchedGroup.price;
+        }
+        if (Array.isArray(matchedGroup.caratPrices) && matchedGroup.caratPrices.length > 0) {
+          if (selectedCarat) {
+            const matchedCarat = matchedGroup.caratPrices.find(
+              (c) => (c.diamondsize || "").trim().toLowerCase() === selectedCarat.trim().toLowerCase()
+            );
+            if (matchedCarat && typeof matchedCarat.price === "number") {
+              return matchedCarat.price;
+            }
+          }
+          return matchedGroup.caratPrices[0]?.price ?? (product.price || 0);
+        }
+        if (typeof matchedGroup.price === "number" && matchedGroup.price !== null) {
+          return matchedGroup.price;
+        }
+      }
+    }
+  }
+  return product.price || 0;
 }
 
 const Ctx = createContext(null);
@@ -261,11 +324,11 @@ export function StoreProvider({ children }) {
   const getProduct = useCallback(
     (id) => {
       if (!id) return null;
-      const found = products.find(
-        (p) => String(p.id) === String(id) || String(p.rawId) === String(id) || String(p._id) === String(id)
+      return (
+        products.find(
+          (p) => String(p.id) === String(id) || String(p.rawId) === String(id) || String(p._id) === String(id)
+        ) || null
       );
-      if (found) return found;
-      return FALLBACK_PRODUCTS.find((p) => String(p.id) === String(id));
     },
     [products]
   );
@@ -286,16 +349,20 @@ export function StoreProvider({ children }) {
     [storeCurrency]
   );
 
-  const addToCart = (productId, metal = "18k Yellow Gold", size) => {
-    const key = `${productId}|${metal}|${size ?? ""}`;
+  const addToCart = (productId, metal = "", size = "", carat = "", customPrice = null) => {
     const p = getProduct(productId);
+    const resolvedPrice =
+      customPrice !== null && customPrice !== undefined
+        ? Number(customPrice)
+        : getItemPrice(p, metal, carat);
+    const key = `${productId}|${metal || ""}|${size || ""}|${carat || ""}`;
     setCart((c) => {
       const ex = c.find((i) => i.key === key);
       return ex
         ? c.map((i) => (i.key === key ? { ...i, qty: i.qty + 1 } : i))
-        : [...c, { key, productId, metal, size, qty: 1 }];
+        : [...c, { key, productId, metal, size, carat, price: resolvedPrice, qty: 1 }];
     });
-    notify("Added to Bag", `${p?.name || "Jewelry Piece"} • ${metal}`);
+    notify("Added to Bag", `${p?.name || "Jewelry Piece"}${metal ? " • " + metal : ""}`);
     setCartOpen(true);
   };
 
@@ -326,7 +393,10 @@ export function StoreProvider({ children }) {
 
   const clearCart = () => setCart([]);
 
-  const subtotal = cart.reduce((s, i) => s + (getProduct(i.productId)?.price ?? 0) * i.qty, 0);
+  const subtotal = cart.reduce(
+    (s, i) => s + (i.price !== undefined && i.price !== null ? i.price : (getProduct(i.productId)?.price ?? 0)) * i.qty,
+    0
+  );
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
 
   // Send Contact Us inquiry to backend Admin Panel
@@ -392,6 +462,7 @@ export function StoreProvider({ children }) {
         toggleWishlist,
         setUser,
         getProduct,
+        getItemPrice,
         format,
         cartCount,
         subtotal,

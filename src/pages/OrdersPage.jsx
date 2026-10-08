@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Check, Download, X } from "lucide-react";
 import { ORDERS, STATUSES } from "../lib/orders";
-import { getProduct } from "../lib/products";
 import { useStore } from "../lib/store";
 import { StatusBadge } from "../components/StatusBadge";
 
 export default function OrdersPage() {
-  const { format } = useStore();
+  const { format, getProduct } = useStore();
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const active = ORDERS.filter((o) => o.status !== "Delivered");
@@ -48,6 +47,7 @@ export default function OrdersPage() {
 }
 
 function OrderRow({ order, onSelect, format }) {
+  const { getProduct } = useStore();
   return (
     <button
       onClick={onSelect}
@@ -115,7 +115,7 @@ function OrderRow({ order, onSelect, format }) {
 }
 
 function OrderDetailModal({ order, onClose }) {
-  const { format } = useStore();
+  const { format, getProduct } = useStore();
   const currentStepIdx = STATUSES.indexOf(order.status);
 
   const printInvoice = () => {
