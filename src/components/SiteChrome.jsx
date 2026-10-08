@@ -272,21 +272,7 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Top countdown timer simulation
-  const [timeLeft, setTimeLeft] = useState({ d: 11, h: 11, m: 54, s: 52 });
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.s > 0) return { ...prev, s: prev.s - 1 };
-        if (prev.m > 0) return { ...prev, m: prev.m - 1, s: 59 };
-        if (prev.h > 0) return { ...prev, h: prev.h - 1, m: 59, s: 59 };
-        if (prev.d > 0) return { ...prev, d: prev.d - 1, h: 23, m: 59, s: 59 };
-        return prev;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const searchPool = dynamicProducts || [];
 
@@ -372,17 +358,6 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Center: Countdown Sale */}
-        <div style={{ textAlign: "center", letterSpacing: "0.02em" }}>
-          Get 30% off and FREE SHIPPING. Sale ends in{" "}
-          <strong style={{ fontWeight: 700, letterSpacing: "0.05em" }}>
-            {timeLeft.d}d : {timeLeft.h}h : {timeLeft.m}m : {timeLeft.s}s
-          </strong>{" "}
-          -{" "}
-          <Link to="/shop" style={{ textDecoration: "underline", fontWeight: 600, color: "#ffffff" }}>
-            SHOP NOW
-          </Link>
-        </div>
       </div>
 
       {/* 3. Main Navigation Header */}
