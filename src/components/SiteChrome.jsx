@@ -430,10 +430,6 @@ export function Header() {
                 SHOP <ChevronDown size={12} />
               </Link>
 
-
-
-
-
               <Link
                 to="/contact"
                 style={{
