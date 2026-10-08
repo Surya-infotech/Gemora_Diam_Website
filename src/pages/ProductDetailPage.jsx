@@ -406,14 +406,11 @@ function ProductDetailContent({ product }) {
                     textTransform: "uppercase",
                     letterSpacing: "0.12em",
                     display: "block",
-                    marginBottom: "12px",
+                    marginBottom: "22px",
                     color: "var(--foreground)"
                   }}
                 >
-                  Select Metal:{" "}
-                  <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>
-                    {hoveredMetal || metal}
-                  </span>
+                  Select Metal
                 </label>
                 <div style={{ display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap", padding: "6px 2px" }}>
                   {availableMetals.map((m) => {
