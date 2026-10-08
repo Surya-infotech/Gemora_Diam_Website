@@ -145,7 +145,7 @@ function AccountMenu() {
                   Client Salon
                 </div>
                 <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818", marginTop: "2px" }}>
-                  {user.fullname || user.name}
+                  {user.fullname}
                 </div>
                 <div style={{ fontSize: "0.76rem", color: "#888", marginTop: "1px" }}>
                   {user.email}
@@ -682,10 +682,10 @@ export function Header() {
                         fontSize: "0.9rem"
                       }}
                     >
-                      {user.fullname ? user.fullname[0] : (user.name ? user.name[0] : "U")}
+                      {user.fullname ? user.fullname[0] : "U"}
                     </div>
                     <div>
-                      <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818" }}>{user.fullname || user.name}</div>
+                      <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818" }}>{user.fullname}</div>
                       <div style={{ fontSize: "0.76rem", color: "#888" }}>{user.email}</div>
                     </div>
                   </div>

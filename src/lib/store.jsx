@@ -184,8 +184,7 @@ export function StoreProvider({ children }) {
     if (
       savedUser &&
       (savedUser.email === "isabella@example.com" ||
-        savedUser.fullname === "Isabella Laurent" ||
-        savedUser.name === "Isabella Laurent")
+        savedUser.fullname === "Isabella Laurent")
     ) {
       localStorage.removeItem("gemora.user");
       return null;
@@ -232,9 +231,9 @@ export function StoreProvider({ children }) {
   }, [notify]);
 
   const signup = useCallback(
-    async ({ fullname, name, email, password, phone }) => {
+    async ({ fullname, email, password, phone }) => {
       try {
-        const finalFullName = (fullname || name || "").trim();
+        const finalFullName = (fullname || "").trim();
         const res = await fetch(`${backendUrl}/Customer/Signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -263,7 +262,6 @@ export function StoreProvider({ children }) {
           _id: customerId,
           id: customerId,
           fullname: data.customer.fullname || finalFullName,
-          name: data.customer.fullname || finalFullName,
           email: data.customer.email || email,
           phone: data.customer.phone || phone || ""
         };
@@ -272,7 +270,7 @@ export function StoreProvider({ children }) {
         localStorage.setItem("gemora.user", JSON.stringify(customerUser));
         localStorage.removeItem("gemora.loggedOut");
 
-        notify("Account Created", `Welcome to Maison Gemora, ${customerUser.fullname || customerUser.name}!`);
+        notify("Account Created", `Welcome to Maison Gemora, ${customerUser.fullname}!`);
         return { success: true, customer: customerUser, token, customer_id: customerId };
       } catch (err) {
         notify("Registration Error", err.message || "Could not register account");
@@ -312,8 +310,7 @@ export function StoreProvider({ children }) {
           ...data.customer,
           _id: customerId,
           id: customerId,
-          fullname: data.customer.fullname || data.customer.name,
-          name: data.customer.fullname || data.customer.name,
+          fullname: data.customer.fullname,
           email: data.customer.email,
           phone: data.customer.phone || ""
         };
@@ -322,7 +319,7 @@ export function StoreProvider({ children }) {
         localStorage.setItem("gemora.user", JSON.stringify(customerUser));
         localStorage.removeItem("gemora.loggedOut");
 
-        notify("Welcome Back", `Signed in as ${customerUser.fullname || customerUser.name}`);
+        notify("Welcome Back", `Signed in as ${customerUser.fullname}`);
         return { success: true, customer: customerUser, token, customer_id: customerId };
       } catch (err) {
         notify("Sign In Error", err.message || "Could not sign in");

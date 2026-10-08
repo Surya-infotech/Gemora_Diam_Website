@@ -40,7 +40,7 @@ export default function ProfilePage() {
         <div>
           <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>My Account</p>
           <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.6rem, 5vw, 3.8rem)", marginTop: "12px" }}>
-            Bonjour, {user.fullname ? user.fullname.split(" ")[0] : (user.name ? user.name.split(" ")[0] : "Client")}
+            Bonjour, {user.fullname ? user.fullname.split(" ")[0] : "Client"}
           </h1>
         </div>
         <button
@@ -316,7 +316,7 @@ function WishlistTab() {
 function SettingsTab() {
   const { user, setUser, showToast, logout } = useStore();
   const [profileData, setProfileData] = useState({
-    fullname: user.fullname || user.name || "",
+    fullname: user.fullname || "",
     email: user.email,
     phone: user.phone || ""
   });
@@ -324,7 +324,7 @@ function SettingsTab() {
 
   const handleProfileSubmit = (e) => {
     e.preventDefault();
-    setUser({ ...user, ...profileData, name: profileData.fullname });
+    setUser({ ...user, ...profileData });
     showToast("Profile details updated successfully", "success");
   };
 
@@ -476,7 +476,7 @@ function SettingsTab() {
             Account Session &amp; Sign Out
           </h4>
           <p style={{ fontSize: "0.88rem", color: "#666", margin: 0 }}>
-            Currently signed in as <strong style={{ color: "#181818" }}>{user?.name}</strong> ({user?.email}).
+            Currently signed in as <strong style={{ color: "#181818" }}>{user?.fullname}</strong> ({user?.email}).
           </p>
         </div>
         <button
