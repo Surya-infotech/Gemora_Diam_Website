@@ -1169,45 +1169,27 @@ function OutlineMarquee() {
    6. SHOP THE LOOK SECTION
    ========================================================================= */
 function ShopTheLookSection({ onQuickView }) {
-  const { format } = useStore();
-  const looks = [
-    {
-      img: gal1,
-      hotspot: { top: "68%", left: "52%" },
-      product: {
-        id: "tapered-huggie-earrings",
-        name: "Tapered Huggie Earrings",
-        price: 1799,
-        oldPrice: 2899,
-        image: p66,
-        desc: "Sculpted tapered huggies adorned with pavé diamonds in solid yellow gold."
-      }
-    },
-    {
-      img: gal2,
-      hotspot: { top: "50%", left: "48%" },
-      product: {
-        id: "april-birthstone-chain-necklace",
-        name: "April Birthstone Chain Necklace",
-        price: 2399,
-        oldPrice: 3499,
-        image: p67,
-        desc: "April birthstone chain necklace featuring a luminous round brilliant diamond pendant."
-      }
-    },
-    {
-      img: gal3,
-      hotspot: { top: "54%", left: "74%" },
-      product: {
-        id: "nura-round-pearl-ring",
-        name: "Nura Round Pearl Ring",
-        price: 2499,
-        oldPrice: 2899,
-        image: p68,
-        desc: "Freshwater luminous pearl crowned with sparkling diamonds in a modern platinum band."
-      }
-    }
+  const { format, products: dynamicProducts } = useStore();
+  const fallbackGallery = [gal1, gal2, gal3];
+  const hotspotPositions = [
+    { top: "48%", left: "50%" },
+    { top: "50%", left: "52%" },
+    { top: "46%", left: "48%" }
   ];
+
+  const products = dynamicProducts || [];
+  if (products.length === 0) {
+    return null;
+  }
+
+  const looks = products.slice(0, 3).map((item, idx) => {
+    const bgImage = item.galleryImages?.[0] || item.image || fallbackGallery[idx % fallbackGallery.length];
+    return {
+      img: bgImage,
+      hotspot: hotspotPositions[idx % hotspotPositions.length],
+      product: item
+    };
+  });
 
   return (
     <section style={{ padding: "80px 0 90px 0", backgroundColor: "#ffffff" }}>
@@ -1227,32 +1209,49 @@ function ShopTheLookSection({ onQuickView }) {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gridTemplateColumns:
+              looks.length === 1
+                ? "minmax(320px, 440px)"
+                : looks.length === 2
+                ? "repeat(auto-fit, minmax(320px, 480px))"
+                : "repeat(auto-fit, minmax(300px, 1fr))",
+            justifyContent: "center",
             gap: "28px"
           }}
         >
           {looks.map((item, idx) => (
             <div
-              key={idx}
+              key={item.product?.id || idx}
               style={{
                 position: "relative",
                 height: "520px",
                 overflow: "hidden",
                 borderRadius: "2px",
-                boxShadow: "0 4px 18px rgba(0,0,0,0.06)"
+                boxShadow: "0 4px 18px rgba(0,0,0,0.06)",
+                backgroundColor: "#f7f7f7",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
               }}
             >
-              {/* Main Model Image */}
+              {/* Main Model / Product Look Image */}
               <img
                 src={item.img}
-                alt={item.product.name}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                alt={item.product?.name || "Product"}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  transition: "transform 0.5s ease"
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               />
 
               {/* Interactive Pulsing Hotspot Pin */}
               <div
                 className="hotspot-pin"
-                onClick={() => onQuickView(item.product)}
+                onClick={() => onQuickView && onQuickView(item.product)}
                 style={{
                   position: "absolute",
                   top: item.hotspot.top,
@@ -1264,8 +1263,10 @@ function ShopTheLookSection({ onQuickView }) {
                   border: "2px solid var(--primary)",
                   cursor: "pointer",
                   display: "grid",
-                  placeItems: "center"
+                  placeItems: "center",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.25)"
                 }}
+                title={`Quick View: ${item.product?.name}`}
               >
                 <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--primary)" }} />
               </div>
@@ -1277,7 +1278,7 @@ function ShopTheLookSection({ onQuickView }) {
                   bottom: "20px",
                   left: "20px",
                   right: "20px",
-                  backgroundColor: "rgba(255, 255, 255, 0.92)",
+                  backgroundColor: "rgba(255, 255, 255, 0.94)",
                   backdropFilter: "blur(8px)",
                   borderRadius: "4px",
                   padding: "12px 16px",
@@ -1288,15 +1289,18 @@ function ShopTheLookSection({ onQuickView }) {
                   boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, cursor: "pointer" }}
+                  onClick={() => onQuickView && onQuickView(item.product)}
+                >
                   <img
-                    src={item.product.image}
-                    alt={item.product.name}
+                    src={item.product?.image || item.img}
+                    alt={item.product?.name || ""}
                     style={{
                       width: "48px",
                       height: "48px",
                       borderRadius: "2px",
-                      objectFit: "cover",
+                      objectFit: "contain",
                       backgroundColor: "#f5f5f5",
                       flexShrink: 0
                     }}
@@ -1312,13 +1316,13 @@ function ShopTheLookSection({ onQuickView }) {
                         textOverflow: "ellipsis"
                       }}
                     >
-                      {item.product.name}
+                      {item.product?.name}
                     </h5>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "3px" }}>
                       <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "#181818" }}>
-                        {format(item.product.price)}
+                        {format(item.product?.price || 0)}
                       </span>
-                      {item.product.oldPrice && (
+                      {item.product?.oldPrice && (
                         <span style={{ fontSize: "0.78rem", color: "#888", textDecoration: "line-through" }}>
                           {format(item.product.oldPrice)}
                         </span>
@@ -1328,7 +1332,7 @@ function ShopTheLookSection({ onQuickView }) {
                 </div>
 
                 <button
-                  onClick={() => onQuickView(item.product)}
+                  onClick={() => onQuickView && onQuickView(item.product)}
                   aria-label="Quick View"
                   style={{
                     width: "36px",
@@ -1340,7 +1344,8 @@ function ShopTheLookSection({ onQuickView }) {
                     color: "var(--primary)",
                     flexShrink: 0,
                     cursor: "pointer",
-                    transition: "all 0.2s"
+                    transition: "all 0.2s",
+                    backgroundColor: "transparent"
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = "var(--primary)";
@@ -1366,7 +1371,21 @@ function ShopTheLookSection({ onQuickView }) {
    7. TESTIMONIAL / EDITORIAL REVIEWS
    ========================================================================= */
 function TestimonialsSection({ onQuickView }) {
-  const { format } = useStore();
+  const { format, products: dynamicProducts } = useStore();
+  const prod0 = dynamicProducts?.[0] || {
+    id: "crystal-birthstone-charm",
+    name: "Crystal Birthstone Eternity Circle Charm",
+    price: 2499,
+    image: p53,
+    desc: "Handcrafted crystal birthstone pendant set in fine sterling & white gold."
+  };
+  const prod1 = dynamicProducts?.[1] || dynamicProducts?.[0] || {
+    id: "twisted-pearl-ring",
+    name: "Twisted Gold Statement Pearl Ring",
+    price: 2499,
+    image: p52,
+    desc: "Architectural twisted 18k gold band holding a natural white pearl."
+  };
   const reviews = [
     {
       title: "RECOMMEND!",
@@ -1375,13 +1394,7 @@ function TestimonialsSection({ onQuickView }) {
       author: "PATRICK JOHN",
       avatar: avt1,
       modelImg: tes4,
-      product: {
-        id: "crystal-birthstone-charm",
-        name: "Crystal Birthstone Eternity Circle Charm",
-        price: 2499,
-        image: p53,
-        desc: "Handcrafted crystal birthstone pendant set in fine sterling & white gold."
-      }
+      product: prod0
     },
     {
       title: "LOVE IT!",
@@ -1390,13 +1403,7 @@ function TestimonialsSection({ onQuickView }) {
       author: "EMILY TRAN",
       avatar: avt2,
       modelImg: tes5,
-      product: {
-        id: "twisted-pearl-ring",
-        name: "Twisted Gold Statement Pearl Ring",
-        price: 2499,
-        image: p52,
-        desc: "Architectural twisted 18k gold band holding a natural white pearl."
-      }
+      product: prod1
     }
   ];
 
