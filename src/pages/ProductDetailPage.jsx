@@ -46,7 +46,7 @@ function ProductDetailContent({ product }) {
   const availableMetals = product?.metals || [];
   const [qty, setQty] = useState(1);
   const [metal, setMetal] = useState(availableMetals[0] || "");
-  const [ringSize, setRingSize] = useState(product?.ringSizes?.[0] || "");
+  const [selectedRingSize, setSelectedRingSize] = useState("");
   const [selectedStone, setSelectedStone] = useState("");
   const [selectedCarat, setSelectedCarat] = useState("");
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
@@ -107,9 +107,17 @@ function ProductDetailContent({ product }) {
   const activeCaratPrices = useMemo(() => {
     const hasCaratPricing =
       matchedPricing?.hasCarat !== false && matchedPricing?.stonePricingType !== "fixed";
-    return hasCaratPricing && Array.isArray(matchedPricing?.caratPrices)
-      ? matchedPricing.caratPrices
-      : [];
+    const rawList =
+      hasCaratPricing && Array.isArray(matchedPricing?.caratPrices)
+        ? matchedPricing.caratPrices
+        : [];
+    // Sort ascending (lowest carat to highest carat)
+    return [...rawList].sort((a, b) => {
+      const numA = parseFloat(String(a.diamondsize || "").replace(/[^0-9.]/g, "")) || 0;
+      const numB = parseFloat(String(b.diamondsize || "").replace(/[^0-9.]/g, "")) || 0;
+      if (numA !== numB) return numA - numB;
+      return String(a.diamondsize || "").localeCompare(String(b.diamondsize || ""));
+    });
   }, [matchedPricing]);
 
   const hasCarat = activeCaratPrices.length > 0;
@@ -121,6 +129,25 @@ function ProductDetailContent({ product }) {
     }
     return activeCaratPrices[0]?.diamondsize || "";
   }, [hasCarat, activeCaratPrices, selectedCarat]);
+
+  const sortedRingSizes = useMemo(() => {
+    if (!product?.ringSizes || !Array.isArray(product.ringSizes)) return [];
+    // Sort ascending (lowest size to highest size)
+    return [...product.ringSizes].sort((a, b) => {
+      const numA = parseFloat(String(a).replace(/[^0-9.]/g, "")) || 0;
+      const numB = parseFloat(String(b).replace(/[^0-9.]/g, "")) || 0;
+      if (numA !== numB) return numA - numB;
+      return String(a).localeCompare(String(b));
+    });
+  }, [product]);
+
+  const ringSize = useMemo(() => {
+    if (sortedRingSizes.length === 0) return "";
+    if (selectedRingSize && sortedRingSizes.includes(selectedRingSize)) {
+      return selectedRingSize;
+    }
+    return sortedRingSizes[0] || "";
+  }, [sortedRingSizes, selectedRingSize]);
 
   const currentPrice = useMemo(() => {
     return getItemPrice(product, metal, activeStone, carat);
@@ -412,7 +439,7 @@ function ProductDetailContent({ product }) {
             {/* Stone, Diamond Size & Ring Size Dropdowns (Side by Side) */}
             {(availableStones.length > 0 ||
               (hasCarat && activeCaratPrices.length > 0) ||
-              (product.ringSizes && product.ringSizes.length > 0)) && (
+              sortedRingSizes.length > 0) && (
               <div
                 style={{
                   display: "grid",
@@ -558,7 +585,7 @@ function ProductDetailContent({ product }) {
                 )}
 
                 {/* Ring Size Dropdown */}
-                {product.ringSizes && product.ringSizes.length > 0 && (
+                {sortedRingSizes.length > 0 && (
                   <div>
                     <label
                       htmlFor="ringsize-select"
@@ -578,7 +605,7 @@ function ProductDetailContent({ product }) {
                       <select
                         id="ringsize-select"
                         value={ringSize}
-                        onChange={(e) => setRingSize(e.target.value)}
+                        onChange={(e) => setSelectedRingSize(e.target.value)}
                         style={{
                           width: "100%",
                           height: "44px",
@@ -604,7 +631,7 @@ function ProductDetailContent({ product }) {
                           e.currentTarget.style.boxShadow = "none";
                         }}
                       >
-                        {product.ringSizes.map((s) => (
+                        {sortedRingSizes.map((s) => (
                           <option key={s} value={s}>
                             {s}
                           </option>

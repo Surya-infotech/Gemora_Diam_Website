@@ -63,7 +63,15 @@ export function ProductCard({ product }) {
     return null;
   }, [product, metal]);
 
-  const activeCaratPrices = matchedPricing?.caratPrices || [];
+  const activeCaratPrices = useMemo(() => {
+    const raw = matchedPricing?.caratPrices || [];
+    return [...raw].sort((a, b) => {
+      const numA = parseFloat(String(a.diamondsize || "").replace(/[^0-9.]/g, "")) || 0;
+      const numB = parseFloat(String(b.diamondsize || "").replace(/[^0-9.]/g, "")) || 0;
+      if (numA !== numB) return numA - numB;
+      return String(a.diamondsize || "").localeCompare(String(b.diamondsize || ""));
+    });
+  }, [matchedPricing]);
   const [selectedCarat, setSelectedCarat] = useState("");
   const carat =
     activeCaratPrices.length > 0

@@ -21,7 +21,15 @@ function mapBackendItem(item) {
   const metals = Array.from(new Set([...metalWiseMetals, ...caratMetals]));
 
   // Normalize all item attributes from backend
-  const ringSizes = (item.ringsizes || []).map((r) => (typeof r === "object" ? r.ringsize : r)).filter(Boolean);
+  const ringSizes = (item.ringsizes || [])
+    .map((r) => (typeof r === "object" ? r.ringsize : r))
+    .filter(Boolean)
+    .sort((a, b) => {
+      const numA = parseFloat(String(a).replace(/[^0-9.]/g, "")) || 0;
+      const numB = parseFloat(String(b).replace(/[^0-9.]/g, "")) || 0;
+      if (numA !== numB) return numA - numB;
+      return String(a).localeCompare(String(b));
+    });
   const shapes = (item.shapes || []).map((s) => (typeof s === "object" ? s.shapename : s)).filter(Boolean);
   const clarities = (item.clarities || []).map((c) => (typeof c === "object" ? c.clarityname : c)).filter(Boolean);
   const diamondColors = (item.diamondcolors || []).map((c) => (typeof c === "object" ? c.colorname : c)).filter(Boolean);
