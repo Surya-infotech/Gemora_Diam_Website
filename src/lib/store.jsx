@@ -1,10 +1,4 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
-import {
-  CUSTOMER_TOKEN_NAME,
-  storeEncryptedCustomerId,
-  removeEncryptedCustomerId,
-  getDecryptedCustomerId
-} from "./cryptoStorage";
 
 
 export function mapBackendItem(item) {
@@ -115,15 +109,6 @@ export function getItemPrice(product, selectedMetal, selectedCarat) {
 
 const Ctx = createContext(null);
 
-function load(key, fallback) {
-  try {
-    const v = localStorage.getItem(key);
-    return v ? JSON.parse(v) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
 export function formatCurrencyWithDetails(amount, details) {
   const num = typeof amount === "number" ? amount : parseFloat(amount) || 0;
   const {
@@ -162,30 +147,41 @@ export function formatCurrencyWithDetails(amount, details) {
 }
 
 export function StoreProvider({ children }) {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const [cart, setCart] = useState(() => load("gemora.cart", []));
-  const [wishlist, setWishlist] = useState(() => load("gemora.wishlist", []));
-  const [currency, setCurrency] = useState(() => {
-    const saved = load("gemora.currency", null);
-    if (saved) return saved;
-    const storeCur = load("gemora.storeCurrency", null);
-    return storeCur?.currency || "INR";
-  });
-  const [storeCurrency, setStoreCurrency] = useState(() => load("gemora.storeCurrency", null));
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
+  const [cart, setCart] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const [currency, setCurrency] = useState("INR");
+  const [storeCurrency, setStoreCurrency] = useState(null);
   const [user, setUser] = useState(null);
+  const [generalSettings, setGeneralSettings] = useState(null);
+  const [socialMedia, setSocialMedia] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [policies, setPolicies] = useState([]);
+  const [faqs, setFaqs] = useState([]);
+  const [banners, setBanners] = useState([]);
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
 
-  // On mount: Clean up any legacy user storage and securely restore session from backend using customer token
+  // On mount: Purge all items from localStorage except customer_token and customer_id, and verify token
   useEffect(() => {
-    localStorage.removeItem("gemora.user");
-    localStorage.removeItem("gemora.customer_id");
-    localStorage.removeItem("gemora.token");
-    localStorage.removeItem("gemora.token_expiry");
-    localStorage.removeItem("gemora.loggedOut");
+    const allowed = ["customer_id", "customer_token"];
+    try {
+      Object.keys(localStorage).forEach((key) => {
+        if (!allowed.includes(key)) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch {
+      // ignore
+    }
 
     const token = localStorage.getItem("customer_token");
-    const encryptedId = localStorage.getItem(CUSTOMER_TOKEN_NAME);
+    const customerId = localStorage.getItem("customer_id");
 
-    if (!token || !encryptedId) {
+    if (!token || !customerId) {
       setUser(null);
       return;
     }
@@ -198,17 +194,16 @@ export function StoreProvider({ children }) {
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && data.customer) {
-          const customerId = data.customer_id || data.customer._id;
+          const resolvedId = data.customer_id || data.customer._id;
           setUser({
             ...data.customer,
-            _id: customerId,
-            id: customerId,
+            _id: resolvedId,
+            id: resolvedId,
             fullname: data.customer.fullname,
             email: data.customer.email,
             phone: data.customer.phone || ""
           });
         } else {
-          removeEncryptedCustomerId();
           localStorage.removeItem("customer_token");
           localStorage.removeItem("customer_id");
           setUser(null);
@@ -218,17 +213,6 @@ export function StoreProvider({ children }) {
         setUser(null);
       });
   }, [backendUrl]);
-  const [generalSettings, setGeneralSettings] = useState(() => load("gemora.settings", null));
-  const [socialMedia, setSocialMedia] = useState(() => load("gemora.socialMedia", []));
-  const [products, setProducts] = useState(() => load("gemora.products", []));
-  const [categories, setCategories] = useState(() => load("gemora.categories", []));
-  const [policies, setPolicies] = useState(() => load("gemora.policies", []));
-  const [faqs, setFaqs] = useState(() => load("gemora.faqs", []));
-  const [banners, setBanners] = useState(() => load("gemora.banners", []));
-  const [settingsLoading, setSettingsLoading] = useState(false);
-  const [productsLoading, setProductsLoading] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState(null);
 
   const notify = useCallback((title, description = "") => {
     setToastMessage({ title, description });
@@ -239,19 +223,21 @@ export function StoreProvider({ children }) {
 
   const changeCurrency = useCallback((newCode) => {
     setCurrency(newCode);
-    localStorage.setItem("gemora.currency", JSON.stringify(newCode));
   }, []);
 
   const logout = useCallback(() => {
     setUser(null);
-    removeEncryptedCustomerId();
     localStorage.removeItem("customer_token");
     localStorage.removeItem("customer_id");
-    localStorage.removeItem("gemora.user");
-    localStorage.removeItem("gemora.customer_id");
-    localStorage.removeItem("gemora.token");
-    localStorage.removeItem("gemora.token_expiry");
-    localStorage.removeItem("gemora.loggedOut");
+    try {
+      Object.keys(localStorage).forEach((key) => {
+        if (key !== "customer_token" && key !== "customer_id") {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch {
+      // ignore
+    }
     notify("Logged Out", "You have successfully signed out of your account.");
   }, [notify]);
 
@@ -273,7 +259,6 @@ export function StoreProvider({ children }) {
         const token = data.token;
 
         if (customerId) {
-          storeEncryptedCustomerId(customerId);
           localStorage.setItem("customer_id", customerId);
         }
         if (token) {
@@ -319,7 +304,6 @@ export function StoreProvider({ children }) {
         const token = data.token;
 
         if (customerId) {
-          storeEncryptedCustomerId(customerId);
           localStorage.setItem("customer_id", customerId);
         }
         if (token) {
@@ -364,17 +348,13 @@ export function StoreProvider({ children }) {
             if (!isMounted || !data) return;
             if (data.generalSetting) {
               setGeneralSettings(data.generalSetting);
-              localStorage.setItem("gemora.settings", JSON.stringify(data.generalSetting));
             }
             if (Array.isArray(data.socialMedia)) {
               setSocialMedia(data.socialMedia);
-              localStorage.setItem("gemora.socialMedia", JSON.stringify(data.socialMedia));
             }
             if (data.currency) {
               setStoreCurrency(data.currency);
-              localStorage.setItem("gemora.storeCurrency", JSON.stringify(data.currency));
-              const saved = localStorage.getItem("gemora.currency");
-              if (!saved && data.currency.currency) {
+              if (data.currency.currency) {
                 setCurrency(data.currency.currency);
               }
             }
@@ -388,7 +368,6 @@ export function StoreProvider({ children }) {
             if (!isMounted || !Array.isArray(data)) return;
             const mapped = data.map(mapBackendItem);
             setProducts(mapped);
-            localStorage.setItem("gemora.products", JSON.stringify(mapped));
           })
           .catch((err) => console.warn("Failed to fetch products:", err))
           .finally(() => {
@@ -401,7 +380,6 @@ export function StoreProvider({ children }) {
           .then((data) => {
             if (!isMounted || !Array.isArray(data)) return;
             setCategories(data);
-            localStorage.setItem("gemora.categories", JSON.stringify(data));
           })
           .catch((err) => console.warn("Failed to fetch categories:", err));
 
@@ -411,7 +389,6 @@ export function StoreProvider({ children }) {
           .then((data) => {
             if (!isMounted || !Array.isArray(data)) return;
             setPolicies(data);
-            localStorage.setItem("gemora.policies", JSON.stringify(data));
           })
           .catch((err) => console.warn("Failed to fetch policies:", err));
 
@@ -422,7 +399,6 @@ export function StoreProvider({ children }) {
             if (!isMounted || !data) return;
             const list = Array.isArray(data) ? data : [data];
             setFaqs(list);
-            localStorage.setItem("gemora.faqs", JSON.stringify(list));
           })
           .catch((err) => console.warn("Failed to fetch FAQs:", err));
 
@@ -432,7 +408,6 @@ export function StoreProvider({ children }) {
           .then((data) => {
             if (!isMounted || !Array.isArray(data)) return;
             setBanners(data);
-            localStorage.setItem("gemora.banners", JSON.stringify(data));
           })
           .catch((err) => console.warn("Failed to fetch banners:", err));
       } finally {
@@ -446,18 +421,6 @@ export function StoreProvider({ children }) {
       isMounted = false;
     };
   }, [backendUrl]);
-
-  useEffect(() => {
-    localStorage.setItem("gemora.cart", JSON.stringify(cart));
-  }, [cart]);
-
-  useEffect(() => {
-    localStorage.setItem("gemora.wishlist", JSON.stringify(wishlist));
-  }, [wishlist]);
-
-  useEffect(() => {
-    localStorage.setItem("gemora.currency", JSON.stringify(currency));
-  }, [currency]);
 
 
 
@@ -616,9 +579,7 @@ export function StoreProvider({ children }) {
         generalSettings,
         socialMedia,
         storeCurrency,
-        settingsLoading,
-        getDecryptedCustomerId,
-        CUSTOMER_TOKEN_NAME
+        settingsLoading
       }}
     >
       {children}
