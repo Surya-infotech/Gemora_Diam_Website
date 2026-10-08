@@ -55,7 +55,7 @@ export default function HomePage() {
       {/* 5. Infinite Outline Typography Marquee */}
       <OutlineMarquee />
 
-      {/* 6. Shop The Look Section with Hotspots */}
+      {/* 6. Shop The Look Section */}
       <ShopTheLookSection onQuickView={setQuickViewProduct} />
 
 
@@ -1063,19 +1063,13 @@ function OutlineMarquee() {
    ========================================================================= */
 function ShopTheLookSection({ onQuickView }) {
   const { products: dynamicProducts } = useStore();
-  const hotspotPositions = [
-    { top: "48%", left: "50%" },
-    { top: "50%", left: "52%" },
-    { top: "46%", left: "48%" }
-  ];
 
   const products = dynamicProducts || [];
   const looks = products
     .filter((item) => item.image || item.galleryImages?.[0])
     .slice(0, 3)
-    .map((item, idx) => ({
+    .map((item) => ({
       img: item.galleryImages?.[0] || item.image,
-      hotspot: hotspotPositions[idx % hotspotPositions.length],
       product: item
     }));
 
@@ -1130,38 +1124,17 @@ function ShopTheLookSection({ onQuickView }) {
               <img
                 src={item.img}
                 alt={item.product?.name || "Product"}
+                onClick={() => onQuickView && onQuickView(item.product)}
                 style={{
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
+                  cursor: "pointer",
                   transition: "transform 0.5s ease"
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
                 onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               />
-
-              {/* Interactive Pulsing Hotspot Pin */}
-              <div
-                className="hotspot-pin"
-                onClick={() => onQuickView && onQuickView(item.product)}
-                style={{
-                  position: "absolute",
-                  top: item.hotspot.top,
-                  left: item.hotspot.left,
-                  width: "22px",
-                  height: "22px",
-                  borderRadius: "50%",
-                  backgroundColor: "#ffffff",
-                  border: "2px solid var(--primary)",
-                  cursor: "pointer",
-                  display: "grid",
-                  placeItems: "center",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.25)"
-                }}
-                title={`Quick View: ${item.product?.name}`}
-              >
-                <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--primary)" }} />
-              </div>
 
               {/* Floating Bottom Pill Product Card */}
               <div
