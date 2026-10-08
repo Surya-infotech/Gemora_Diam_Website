@@ -515,7 +515,6 @@ function SignInView() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullname, setFullname] = useState("");
-  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -531,7 +530,7 @@ function SignInView() {
         setLoading(false);
         return;
       }
-      const res = await signup({ fullname, email, password, phone });
+      const res = await signup({ fullname, email, password });
       setLoading(false);
       if (!res.success) {
         setErrorMsg(res.error || "Failed to create account.");
@@ -615,20 +614,6 @@ function SignInView() {
             />
           </div>
 
-          {isRegister && (
-            <div>
-              <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666", display: "block", marginBottom: "6px" }}>
-                Phone Number (Optional)
-              </label>
-              <input
-                style={fieldStyle}
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+1 234 567 8900"
-              />
-            </div>
-          )}
 
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
