@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Award, Trash2, LogOut } from "lucide-react";
+import { Trash2, LogOut } from "lucide-react";
 import { useStore } from "../lib/store";
 import { ORDERS } from "../lib/orders";
 import { StatusBadge } from "../components/StatusBadge";
@@ -18,7 +18,7 @@ const fieldStyle = {
 export default function ProfilePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get("tab") || "overview";
-  const { user, logout, login } = useStore();
+  const { user, logout } = useStore();
 
   const setTab = (tab) => {
     setSearchParams({ tab });
@@ -125,7 +125,7 @@ export default function ProfilePage() {
 }
 
 function OverviewTab() {
-  const { user, format } = useStore();
+  const { user, format, getProduct } = useStore();
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>

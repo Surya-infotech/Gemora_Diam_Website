@@ -5,7 +5,7 @@ import { useStore } from "../lib/store";
 import { StatusBadge } from "../components/StatusBadge";
 
 export default function OrdersPage() {
-  const { format, getProduct } = useStore();
+  const { format } = useStore();
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const active = ORDERS.filter((o) => o.status !== "Delivered");
