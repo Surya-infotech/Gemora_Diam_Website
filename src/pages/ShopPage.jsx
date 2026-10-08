@@ -5,7 +5,6 @@ import { useStore } from "../lib/store";
 export default function ShopPage() {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category") || null;
-  const high = searchParams.get("high") === "true";
   const search = searchParams.get("search")?.toLowerCase().trim() || null;
 
   const { products, categories, productsLoading } = useStore();
@@ -14,7 +13,9 @@ export default function ShopPage() {
   const allProducts = products || [];
 
   // Active categories from Admin Panel
-  const activeCategories = (categories || []).map((c) => c.categoryname).filter(Boolean);
+  const activeCategories = (categories || []).filter(
+    (c) => c && (c.categoryname || typeof c === "string")
+  );
 
   const list = allProducts.filter((p) => {
     if (search) {
@@ -25,21 +26,28 @@ export default function ShopPage() {
         (p.sku || "").toLowerCase().includes(search);
       if (!match) return false;
     }
-    if (high) return p.highJewelry;
     if (category) {
-      return (
-        (p.category || "").toLowerCase() === category.toLowerCase() ||
-        String(p.categoryid) === String(category)
-      );
+      const catTrim = category.trim().toLowerCase();
+      const matchName = (p.category || "").trim().toLowerCase() === catTrim;
+      const matchId = p.categoryid && String(p.categoryid) === String(category);
+      if (!matchName && !matchId) return false;
     }
     return true;
   });
 
-  const title = search
-    ? `Search: "${searchParams.get("search")}"`
-    : high
-      ? "High Jewelry"
-      : category ?? "All Jewelry";
+  const currentCategoryObj = activeCategories.find((c) => {
+    const cName = typeof c === "string" ? c : c.categoryname;
+    return (
+      cName?.trim().toLowerCase() === category?.trim().toLowerCase() ||
+      (c.categoryid && String(c.categoryid) === String(category)) ||
+      (c._id && String(c._id) === String(category))
+    );
+  });
+  const displayTitle = currentCategoryObj
+    ? (typeof currentCategoryObj === "string" ? currentCategoryObj : currentCategoryObj.categoryname)
+    : category || "All Jewelry";
+
+  const title = search ? `Search: "${searchParams.get("search")}"` : displayTitle;
 
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
@@ -64,9 +72,9 @@ export default function ShopPage() {
           className="eyebrow"
           style={{
             border: "1px solid",
-            borderColor: !category && !high && !search ? "var(--primary)" : "var(--border)",
-            backgroundColor: !category && !high && !search ? "var(--primary)" : "transparent",
-            color: !category && !high && !search ? "var(--primary-foreground)" : "var(--foreground)",
+            borderColor: !category && !search ? "var(--primary)" : "var(--border)",
+            backgroundColor: !category && !search ? "var(--primary)" : "transparent",
+            color: !category && !search ? "var(--primary-foreground)" : "var(--foreground)",
             padding: "10px 18px",
             borderRadius: "2px",
             transition: "all 0.15s ease"
@@ -75,40 +83,33 @@ export default function ShopPage() {
           All
         </Link>
 
-        {activeCategories.map((c) => (
-          <Link
-            key={c}
-            to={`/shop?category=${encodeURIComponent(c)}`}
-            className="eyebrow"
-            style={{
-              border: "1px solid",
-              borderColor: category?.toLowerCase() === c.toLowerCase() ? "var(--primary)" : "var(--border)",
-              backgroundColor: category?.toLowerCase() === c.toLowerCase() ? "var(--primary)" : "transparent",
-              color: category?.toLowerCase() === c.toLowerCase() ? "var(--primary-foreground)" : "var(--foreground)",
-              padding: "10px 18px",
-              borderRadius: "2px",
-              transition: "all 0.15s ease"
-            }}
-          >
-            {c}
-          </Link>
-        ))}
+        {activeCategories.map((c) => {
+          const catName = typeof c === "string" ? c : c.categoryname;
+          const isSelected =
+            category &&
+            (category.trim().toLowerCase() === catName.trim().toLowerCase() ||
+              (c.categoryid && String(c.categoryid) === String(category)) ||
+              (c._id && String(c._id) === String(category)));
 
-        <Link
-          to="/shop?high=true"
-          className="eyebrow"
-          style={{
-            border: "1px solid",
-            borderColor: high ? "var(--primary)" : "var(--border)",
-            backgroundColor: high ? "var(--primary)" : "transparent",
-            color: high ? "var(--primary-foreground)" : "var(--foreground)",
-            padding: "10px 18px",
-            borderRadius: "2px",
-            transition: "all 0.15s ease"
-          }}
-        >
-          High Jewelry
-        </Link>
+          return (
+            <Link
+              key={c._id || c.categoryid || catName}
+              to={`/shop?category=${encodeURIComponent(catName)}`}
+              className="eyebrow"
+              style={{
+                border: "1px solid",
+                borderColor: isSelected ? "var(--primary)" : "var(--border)",
+                backgroundColor: isSelected ? "var(--primary)" : "transparent",
+                color: isSelected ? "var(--primary-foreground)" : "var(--foreground)",
+                padding: "10px 18px",
+                borderRadius: "2px",
+                transition: "all 0.15s ease"
+              }}
+            >
+              {catName}
+            </Link>
+          );
+        })}
       </div>
 
       <p style={{ marginTop: "24px", fontSize: "0.82rem", color: "var(--muted-foreground)" }}>

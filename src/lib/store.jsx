@@ -465,8 +465,15 @@ export function StoreProvider({ children }) {
         fetch(`${backendUrl}/Attributes/GetActiveCategories`)
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
-            if (!isMounted || !Array.isArray(data)) return;
-            setCategories(data);
+            if (!isMounted || !data) return;
+            const list = Array.isArray(data)
+              ? data
+              : Array.isArray(data.categories)
+              ? data.categories
+              : Array.isArray(data.value)
+              ? data.value
+              : [];
+            setCategories(list);
           })
           .catch((err) => console.warn("Failed to fetch categories:", err));
 

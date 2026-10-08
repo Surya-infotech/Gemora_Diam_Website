@@ -265,7 +265,7 @@ function AccountMenu() {
 }
 
 export function Header() {
-  const { cartCount, wishlist, setCartOpen, generalSettings, products: dynamicProducts, format, user, logout } = useStore();
+  const { cartCount, wishlist, setCartOpen, generalSettings, categories, products: dynamicProducts, format, user, logout } = useStore();
   const [mobile, setMobile] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
@@ -456,7 +456,7 @@ export function Header() {
               </Link>
 
               <Link
-                to="/shop?category=Rings"
+                to="/shop"
                 style={{
                   fontSize: "0.82rem",
                   fontWeight: 600,
@@ -635,20 +635,18 @@ export function Header() {
               >
                 Shop All
               </Link>
-              <Link
-                to="/shop?category=Rings"
-                onClick={() => setMobile(false)}
-                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
-              >
-                Rings &amp; Diamonds
-              </Link>
-              <Link
-                to="/shop?category=Necklaces"
-                onClick={() => setMobile(false)}
-                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
-              >
-                Necklaces &amp; Charms
-              </Link>
+              {categories && categories.length > 0 ? (
+                categories.map((c) => (
+                  <Link
+                    key={c._id || c.categoryid || c.categoryname}
+                    to={`/shop?category=${encodeURIComponent(c.categoryname)}`}
+                    onClick={() => setMobile(false)}
+                    style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+                  >
+                    {c.categoryname}
+                  </Link>
+                ))
+              ) : null}
               <Link
                 to="/about"
                 onClick={() => setMobile(false)}
