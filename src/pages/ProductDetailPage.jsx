@@ -905,13 +905,9 @@ function ProductDetailContent({ product }) {
           <div style={{ padding: "32px 0", maxWidth: "800px", lineHeight: 1.8, fontSize: "0.94rem", color: "var(--muted-foreground)" }}>
             {activeTab === "description" && (
               <div>
-                <p style={{ marginBottom: "16px" }}>
+                <p>
                   {product.description ||
                     `${product.name} embodies the utmost in Haute Joaillerie excellence, meticulously shaped by master diamond setters using ethical gemstones and high-grade precious metals.`}
-                </p>
-                <p>
-                  Each diamond and gemstone is strictly checked for cut, symmetry, and brilliance to guarantee optimal light refraction.
-                  Delivered in our bespoke signature velvet jewelry box with an official certificate of appraisal.
                 </p>
               </div>
             )}
