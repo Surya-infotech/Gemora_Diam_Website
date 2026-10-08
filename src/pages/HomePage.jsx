@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -1617,17 +1617,46 @@ function QuickViewModal({ product, onClose }) {
   const [metal, setMetal] = useState(availableMetals[0] || "");
   const [ringSize, setRingSize] = useState(product?.ringSizes?.[0] || "");
 
-  const activeCaratPrices =
-    product?.pricing?.priceType === "metal_with_stone_diamond_carat"
-      ? (
+  const matchedPricing = useMemo(() => {
+    if (product?.pricing?.priceType === "metal_with_stone_diamond_carat") {
+      return (
         product.pricing.metalWithStoneDiamondCaratPrices?.find(
           (m) => (m.metalname || "").toLowerCase() === (metal || "").toLowerCase()
         ) || product.pricing.metalWithStoneDiamondCaratPrices?.[0]
-      )?.caratPrices || []
-      : [];
+      );
+    }
+    return null;
+  }, [product, metal]);
+
+  const activeCaratPrices = matchedPricing?.caratPrices || [];
 
   const [carat, setCarat] = useState(() => activeCaratPrices[0]?.diamondsize || "");
+
+  useEffect(() => {
+    if (activeCaratPrices.length > 0) {
+      if (!activeCaratPrices.some((c) => c.diamondsize === carat)) {
+        setCarat(activeCaratPrices[0]?.diamondsize || "");
+      }
+    } else {
+      setCarat("");
+    }
+  }, [metal, activeCaratPrices]);
+
   const currentPrice = getItemPrice(product, metal, carat);
+
+  const allMedia = useMemo(() => {
+    const list = [];
+    if (product?.image) list.push({ type: "image", url: product.image });
+    if (Array.isArray(product?.galleryImages)) {
+      product.galleryImages.forEach((url) => {
+        if (url && url !== product.image) list.push({ type: "image", url });
+      });
+    }
+    if (product?.video) list.push({ type: "video", url: product.video });
+    return list;
+  }, [product]);
+
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
 
   return (
     <div
@@ -1648,7 +1677,7 @@ function QuickViewModal({ product, onClose }) {
       <div
         style={{
           backgroundColor: "#ffffff",
-          maxWidth: "860px",
+          maxWidth: "880px",
           width: "100%",
           maxHeight: "90vh",
           overflowY: "auto",
@@ -1665,20 +1694,66 @@ function QuickViewModal({ product, onClose }) {
         <button
           onClick={onClose}
           aria-label="Close"
-          style={{ position: "absolute", top: "18px", right: "18px", color: "#181818", background: "none", border: "none", cursor: "pointer" }}
+          style={{ position: "absolute", top: "18px", right: "18px", color: "#181818", background: "none", border: "none", cursor: "pointer", zIndex: 10 }}
         >
           <X size={22} />
         </button>
 
-        {/* Left: Product Image */}
-        <div style={{ backgroundColor: "#f8f8f8", borderRadius: "2px", overflow: "hidden", display: "grid", placeItems: "center", minHeight: "340px" }}>
-          <img src={product.image} alt={product.name} style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }} />
+        {/* Left: Product Image & Gallery */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div style={{ backgroundColor: "#f8f8f8", borderRadius: "2px", overflow: "hidden", display: "grid", placeItems: "center", minHeight: "340px", maxHeight: "380px" }}>
+            {allMedia[activeMediaIndex]?.type === "video" ? (
+              <video
+                src={allMedia[activeMediaIndex].url}
+                controls
+                autoPlay
+                muted
+                style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
+              />
+            ) : (
+              <img
+                src={allMedia[activeMediaIndex]?.url || product.image}
+                alt={product.name}
+                style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
+              />
+            )}
+          </div>
+
+          {allMedia.length > 1 && (
+            <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
+              {allMedia.map((m, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveMediaIndex(idx)}
+                  style={{
+                    width: "54px",
+                    height: "54px",
+                    flexShrink: 0,
+                    borderRadius: "2px",
+                    border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid #ddd",
+                    padding: 0,
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    backgroundColor: "#f5f5f5"
+                  }}
+                >
+                  {m.type === "video" ? (
+                    <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", fontSize: "0.68rem", fontWeight: 700, backgroundColor: "#222", color: "#fff" }}>
+                      PLAY
+                    </div>
+                  ) : (
+                    <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right: Info */}
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <span style={{ fontSize: "0.75rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--primary)", fontWeight: 600 }}>
-            {product.category || (generalSettings?.softwarename || "Gemora Diam")} {product.sku ? `• SKU: ${product.sku}` : ""}
+            {product.category || (generalSettings?.softwarename || "Gemora Diam")}{product.subcategory ? ` • ${product.subcategory}` : ""} {product.sku ? `• SKU: ${product.sku}` : ""}
           </span>
 
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.6rem", margin: "8px 0 12px 0", lineHeight: 1.3 }}>
@@ -1694,6 +1769,14 @@ function QuickViewModal({ product, onClose }) {
               {product.description}
             </p>
           ) : null}
+
+          {/* Stone Information for Selected Metal if available */}
+          {matchedPricing?.stonename && (
+            <div style={{ marginBottom: "14px", fontSize: "0.82rem", color: "#444" }}>
+              <span style={{ fontWeight: 600 }}>Stone:</span> {matchedPricing.stonename}
+              {matchedPricing.stonePricingType === "fixed" && " • Fixed Price"}
+            </div>
+          )}
 
           {/* Diamond Carat Sizes from Backend */}
           {activeCaratPrices.length > 0 && (
@@ -1796,6 +1879,11 @@ function QuickViewModal({ product, onClose }) {
             {product.diamondColors?.map((dc) => (
               <span key={dc} style={{ fontSize: "0.75rem", backgroundColor: "#f5f5f5", padding: "4px 8px", borderRadius: "2px" }}>
                 Color: {dc}
+              </span>
+            ))}
+            {product.styles?.map((sy) => (
+              <span key={sy} style={{ fontSize: "0.75rem", backgroundColor: "#f5f5f5", padding: "4px 8px", borderRadius: "2px" }}>
+                Style: {sy}
               </span>
             ))}
           </div>

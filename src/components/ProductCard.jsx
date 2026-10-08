@@ -51,19 +51,46 @@ export function ProductCard({ product }) {
   const [metal, setMetal] = useState(availableMetals[0] || "");
   const [ringSize, setRingSize] = useState(product.ringSizes?.[0] || "");
 
-  const activeCaratPrices = useMemo(() => {
-    if (product.pricing?.priceType === "metal_with_stone_diamond_carat") {
-      const match =
+  const matchedPricing = useMemo(() => {
+    if (product?.pricing?.priceType === "metal_with_stone_diamond_carat") {
+      return (
         product.pricing.metalWithStoneDiamondCaratPrices?.find(
           (m) => (m.metalname || "").toLowerCase() === (metal || "").toLowerCase()
-        ) || product.pricing.metalWithStoneDiamondCaratPrices?.[0];
-      return match?.caratPrices || [];
+        ) || product.pricing.metalWithStoneDiamondCaratPrices?.[0]
+      );
     }
-    return [];
+    return null;
   }, [product, metal]);
 
+  const activeCaratPrices = matchedPricing?.caratPrices || [];
+
   const [carat, setCarat] = useState(() => activeCaratPrices[0]?.diamondsize || "");
+
+  useEffect(() => {
+    if (activeCaratPrices.length > 0) {
+      if (!activeCaratPrices.some((c) => c.diamondsize === carat)) {
+        setCarat(activeCaratPrices[0]?.diamondsize || "");
+      }
+    } else {
+      setCarat("");
+    }
+  }, [metal, activeCaratPrices]);
+
   const currentPrice = getItemPrice(product, metal, carat);
+
+  const allMedia = useMemo(() => {
+    const list = [];
+    if (product?.image) list.push({ type: "image", url: product.image });
+    if (Array.isArray(product?.galleryImages)) {
+      product.galleryImages.forEach((url) => {
+        if (url && url !== product.image) list.push({ type: "image", url });
+      });
+    }
+    if (product?.video) list.push({ type: "video", url: product.video });
+    return list;
+  }, [product]);
+
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
 
   const [quick, setQuick] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -240,15 +267,59 @@ export function ProductCard({ product }) {
               <X size={20} strokeWidth={1.4} />
             </button>
 
-            <img
-              src={product.image}
-              alt={product.name}
-              style={{ width: "100%", height: "100%", minHeight: "360px", objectFit: "contain", backgroundColor: "#f7f7f7" }}
-            />
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", padding: "20px" }}>
+              <div style={{ width: "100%", minHeight: "340px", maxHeight: "380px", display: "grid", placeItems: "center", backgroundColor: "#f7f7f7", borderRadius: "2px", overflow: "hidden" }}>
+                {allMedia[activeMediaIndex]?.type === "video" ? (
+                  <video
+                    src={allMedia[activeMediaIndex].url}
+                    controls
+                    autoPlay
+                    muted
+                    style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
+                  />
+                ) : (
+                  <img
+                    src={allMedia[activeMediaIndex]?.url || product.image}
+                    alt={product.name}
+                    style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
+                  />
+                )}
+              </div>
+
+              {allMedia.length > 1 && (
+                <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
+                  {allMedia.map((m, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveMediaIndex(idx)}
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        flexShrink: 0,
+                        borderRadius: "2px",
+                        border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid var(--border)",
+                        padding: 0,
+                        overflow: "hidden",
+                        cursor: "pointer",
+                        backgroundColor: "#f5f5f5"
+                      }}
+                    >
+                      {m.type === "video" ? (
+                        <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", fontSize: "0.65rem", fontWeight: 700, backgroundColor: "#222", color: "#fff" }}>
+                          PLAY
+                        </div>
+                      ) : (
+                        <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div style={{ padding: "36px", display: "flex", flexDirection: "column" }}>
               <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-                {product.category} {product.sku ? `• SKU: ${product.sku}` : ""}
+                {product.category}{product.subcategory ? ` • ${product.subcategory}` : ""} {product.sku ? `• SKU: ${product.sku}` : ""}
               </p>
               <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: "8px 0 10px 0" }}>
                 {product.name}
@@ -257,10 +328,18 @@ export function ProductCard({ product }) {
                 {format(currentPrice)}
               </p>
               {product.description ? (
-                <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", lineHeight: 1.7, margin: "0 0 20px 0" }}>
+                <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", lineHeight: 1.7, margin: "0 0 16px 0" }}>
                   {product.description}
                 </p>
               ) : null}
+
+              {/* Stone Information for Selected Metal */}
+              {matchedPricing?.stonename && (
+                <div style={{ marginBottom: "14px", fontSize: "0.82rem", color: "var(--muted-foreground)" }}>
+                  <span style={{ fontWeight: 600, color: "var(--foreground)" }}>Stone:</span> {matchedPricing.stonename}
+                  {matchedPricing.stonePricingType === "fixed" && " • Fixed Price"}
+                </div>
+              )}
 
               {/* Diamond Carat Size Options from Backend */}
               {activeCaratPrices.length > 0 && (
