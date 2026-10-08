@@ -1,459 +1,1668 @@
-import React, { useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Gem, Leaf, ShieldCheck, Sparkles, Star, Check } from "lucide-react";
-import hero from "../assets/hero.jpg";
-import atelier from "../assets/atelier.jpg";
-import { PRODUCTS, images, getProduct } from "../lib/products";
-import { ProductCard } from "../components/ProductCard";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Heart,
+  Eye,
+  ShoppingBag,
+  Repeat,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  ArrowUp,
+  X,
+  Check,
+  Quote
+} from "lucide-react";
 import { useStore } from "../lib/store";
 
+// Asset imports from downloaded Vemus assets
+import slider6 from "../assets/vemus/slider_slider-6.jpg";
+import slider4 from "../assets/vemus/slider_slider-4.jpg";
+import slider5 from "../assets/vemus/slider_slider-5.jpg";
+import sliderItem from "../assets/vemus/slider_img-item.jpg";
+
+import promo1 from "../assets/vemus/collections_promo-1.jpg";
+import promo2 from "../assets/vemus/collections_promo-2.jpg";
+import promo3 from "../assets/vemus/collections_promo-3.jpg";
+
+import banner5 from "../assets/vemus/banner_banner-5.jpg";
+import banner6 from "../assets/vemus/banner_banner-6.jpg";
+
+import p39 from "../assets/vemus/products_product-39.jpg";
+import p40 from "../assets/vemus/products_product-40.jpg";
+import p41 from "../assets/vemus/products_product-41.jpg";
+import p42 from "../assets/vemus/products_product-42.jpg";
+import p43 from "../assets/vemus/products_product-43.jpg";
+import p44 from "../assets/vemus/products_product-44.jpg";
+import p45 from "../assets/vemus/products_product-45.jpg";
+import p46 from "../assets/vemus/products_product-46.jpg";
+import p52 from "../assets/vemus/products_product-52.jpg";
+import p53 from "../assets/vemus/products_product-53.jpg";
+import p66 from "../assets/vemus/products_product-66.jpg";
+import p67 from "../assets/vemus/products_product-67.jpg";
+import p68 from "../assets/vemus/products_product-68.jpg";
+
+import tes4 from "../assets/vemus/testimonial_tes-4.jpg";
+import tes5 from "../assets/vemus/testimonial_tes-5.jpg";
+import avt1 from "../assets/vemus/avatar_avt-1.jpg";
+import avt2 from "../assets/vemus/avatar_avt-2.jpg";
+
+import gal1 from "../assets/vemus/gallery_gallery-1.jpg";
+import gal2 from "../assets/vemus/gallery_gallery-2.jpg";
+import gal3 from "../assets/vemus/gallery_gallery-3.jpg";
+import gal4 from "../assets/vemus/gallery_gallery-4.jpg";
+import gal5 from "../assets/vemus/gallery_gallery-5.jpg";
+import gal6 from "../assets/vemus/gallery_gallery-6.jpg";
+
 export default function HomePage() {
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <main>
-      <Hero />
-      <Collections />
-      <BestSellers />
-      <Craft />
-      <Press />
-      <Lookbook />
-    </main>
+    <div style={{ backgroundColor: "#ffffff", color: "#181818", overflowX: "hidden" }}>
+      {/* 1. Hero Section Slider */}
+      <HeroSlider onQuickView={setQuickViewProduct} />
+
+      {/* 2. Three Circular Promo Cards */}
+      <CircularCategories />
+
+      {/* 3. Best Seller Section with Tab Filter */}
+      <BestSellerSection onQuickView={setQuickViewProduct} />
+
+      {/* 4. Split Collection Banners: The Modern Bride & The Art of Stack */}
+      <SplitCollectionBanners />
+
+      {/* 5. Infinite Outline Typography Marquee */}
+      <OutlineMarquee />
+
+      {/* 6. Shop The Look Section with Hotspots */}
+      <ShopTheLookSection onQuickView={setQuickViewProduct} />
+
+      {/* 7. Testimonials / Editorial Reviews */}
+      <TestimonialsSection onQuickView={setQuickViewProduct} />
+
+      {/* 8. Just For You Curated 6-Tile Gallery */}
+      <JustForYouGallery />
+
+      {/* 9. Newsletter 15% Off Banner */}
+      <NewsletterBanner />
+
+      {/* Quick View Modal */}
+      {quickViewProduct && (
+        <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+      )}
+
+      {/* Floating Back to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          aria-label="Back to top"
+          style={{
+            position: "fixed",
+            bottom: "32px",
+            right: "32px",
+            width: "44px",
+            height: "44px",
+            borderRadius: "4px",
+            backgroundColor: "#ffffff",
+            color: "var(--primary)",
+            border: "1px solid #e0d7c3",
+            boxShadow: "0 4px 14px rgba(0,0,0,0.12)",
+            display: "grid",
+            placeItems: "center",
+            cursor: "pointer",
+            zIndex: 99,
+            transition: "all 0.2s"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--primary)";
+            e.currentTarget.style.color = "#ffffff";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "#ffffff";
+            e.currentTarget.style.color = "var(--primary)";
+          }}
+        >
+          <ArrowUp size={20} />
+        </button>
+      )}
+    </div>
   );
 }
 
-function Hero() {
+/* =========================================================================
+   1. HERO SLIDER
+   ========================================================================= */
+function HeroSlider() {
+  const slides = [
+    {
+      img: slider6,
+      tag: "TRENDING",
+      headingLine1: "UNVEIL YOUR",
+      headingLine2: "SIGNATURE LOOK",
+      desc: "Explore our stunning collection of handcrafted jewelry that blends timeless elegance with modern style. Each piece is designed to empower your individuality—make your statement today!"
+    },
+    {
+      img: slider4,
+      tag: "NEW ARRIVALS",
+      headingLine1: "TIMELESS RADIANCE",
+      headingLine2: "FOR GENERATIONS",
+      desc: "Discover bespoke solitaires and sculptured fine jewelry forged with conflict-free Kimberley diamonds and 18k solid gold alloys."
+    },
+    {
+      img: slider5,
+      tag: "HIGH JEWELRY",
+      headingLine1: "THE ART OF",
+      headingLine2: "MODERN LUXE",
+      desc: "Indulge in couture bridal suites, fluid tennis bracelets, and diamond pavé heirlooms handcrafted to breathtaking perfection."
+    }
+  ];
+
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActive((prev) => (prev + 1) % slides.length);
+    }, 6500);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const prevSlide = () => setActive((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  const nextSlide = () => setActive((prev) => (prev + 1) % slides.length);
+
+  const cur = slides[active];
+
   return (
     <section
       style={{
         position: "relative",
         height: "88vh",
-        minHeight: "560px",
+        minHeight: "620px",
+        maxHeight: "860px",
         overflow: "hidden",
-        backgroundColor: "var(--obsidian)"
+        backgroundColor: "#181818"
       }}
     >
+      {/* Background Image with smooth fade */}
       <img
-        src={hero}
-        alt="Gemora Diam fine jewelry on silk"
+        src={cur.img}
+        alt={cur.headingLine2}
         style={{
           position: "absolute",
           inset: 0,
           width: "100%",
           height: "100%",
-          objectFit: "cover"
+          objectFit: "cover",
+          objectPosition: "center",
+          transition: "opacity 0.8s ease-in-out, transform 8s ease-out",
+          transform: "scale(1.03)"
         }}
       />
 
+      {/* Dark Subtle Vignette Gradient Overlay */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(90deg, rgba(24,31,19,0.85) 0%, rgba(24,31,19,0.4) 50%, transparent 100%)"
+          background: "linear-gradient(to right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.3) 100%)"
         }}
       />
 
+      {/* Content Container */}
       <div
         className="container-luxury"
         style={{
           position: "relative",
           height: "100%",
           display: "flex",
-          alignItems: "center"
+          alignItems: "center",
+          justifyContent: "space-between"
         }}
       >
-        <div style={{ maxWidth: "620px", color: "#ffffff" }}>
-          <p className="eyebrow" style={{ color: "var(--gold)" }}>
-            Haute Joaillerie Atelier &bull; Since 1987
-          </p>
+        <div style={{ maxWidth: "640px", color: "#ffffff", paddingLeft: "10px" }}>
+          {/* Eyebrow */}
+          <span
+            style={{
+              fontSize: "0.85rem",
+              letterSpacing: "0.22em",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              color: "#ffffff",
+              display: "inline-block",
+              marginBottom: "16px"
+            }}
+          >
+            {cur.tag}
+          </span>
 
+          {/* Heading */}
           <h1
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: "clamp(2.8rem, 5.5vw, 4.6rem)",
-              lineHeight: 1.1,
-              marginTop: "16px",
-              marginBottom: "20px",
-              color: "#ffffff"
+              fontSize: "clamp(2.8rem, 6vw, 5.2rem)",
+              fontWeight: 400,
+              textTransform: "uppercase",
+              lineHeight: 1.08,
+              color: "#ffffff",
+              margin: "0 0 24px 0",
+              letterSpacing: "0.02em"
             }}
           >
-            Heirloom jewelry for <em>generations</em> to come
+            {cur.headingLine1} <br />
+            <em style={{ fontStyle: "italic", fontWeight: 400 }}>{cur.headingLine2}</em>
           </h1>
 
+          {/* Subtitle */}
           <p
             style={{
-              fontSize: "1.05rem",
+              fontSize: "0.98rem",
               lineHeight: 1.7,
-              color: "rgba(255,255,255,0.8)",
+              color: "rgba(255,255,255,0.9)",
+              maxWidth: "520px",
               marginBottom: "36px"
             }}
           >
-            Discover the timeless radiance of ethical diamonds and bespoke high jewelry, handcrafted in our atelier with uncompromising brilliance.
+            {cur.desc}
           </p>
 
-          <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+          {/* Buttons */}
+          <div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap" }}>
             <Link
               to="/shop"
-              className="eyebrow"
               style={{
-                backgroundColor: "var(--primary)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "16px 36px",
+                backgroundColor: "rgba(24, 24, 24, 0.9)",
                 color: "#ffffff",
-                padding: "16px 32px",
-                borderRadius: "2px",
-                boxShadow: "0 4px 20px rgba(85, 104, 50, 0.4)",
-                transition: "transform 0.2s ease"
+                border: "1px solid rgba(255,255,255,0.4)",
+                fontSize: "0.82rem",
+                letterSpacing: "0.18em",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--primary)";
+                e.currentTarget.style.borderColor = "var(--primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(24, 24, 24, 0.9)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)";
               }}
             >
-              Discover the Collection
+              SHOP NOW <ArrowRight size={16} />
             </Link>
 
             <Link
-              to="/contact"
-              className="eyebrow"
+              to="/about"
               style={{
-                border: "1px solid rgba(255,255,255,0.7)",
+                fontSize: "0.82rem",
+                letterSpacing: "0.18em",
+                fontWeight: 600,
+                textTransform: "uppercase",
                 color: "#ffffff",
-                padding: "16px 32px",
-                borderRadius: "2px",
-                transition: "all 0.2s ease"
+                textDecoration: "underline",
+                textUnderlineOffset: "6px"
               }}
             >
-              Book an Appointment
+              EXPLORE MORE
             </Link>
           </div>
-
-          {/* Quick Metrics */}
-          <div
-            style={{
-              display: "flex",
-              gap: "36px",
-              marginTop: "50px",
-              borderTop: "1px solid rgba(255,255,255,0.2)",
-              paddingTop: "24px"
-            }}
-          >
-            <div>
-              <strong style={{ fontSize: "1.2rem", display: "block" }}>100%</strong>
-              <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                Conflict-Free
-              </span>
-            </div>
-            <div>
-              <strong style={{ fontSize: "1.2rem", display: "block" }}>120+ hrs</strong>
-              <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                Per Masterpiece
-              </span>
-            </div>
-            <div>
-              <strong style={{ fontSize: "1.2rem", display: "block" }}>GIA / IGI</strong>
-              <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                Master Grading
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function SectionHead({ eyebrow, title, children }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "flex-end",
-        justifyContent: "space-between",
-        gap: "24px",
-        marginBottom: "48px"
-      }}
-    >
-      <div>
-        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>{eyebrow}</p>
-        <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.4rem, 4vw, 3.4rem)", marginTop: "10px", lineHeight: 1.15 }}>
-          {title}
-        </h2>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function Collections() {
-  const tiles = [
-    { name: "Rings", img: images.ring, span: "2 / span 2" },
-    { name: "Necklaces", img: images.necklace },
-    { name: "Earrings", img: images.earrings },
-    { name: "Bracelets", img: images.bracelet },
-    { name: "Bespoke Solitaires", img: images.solitaire }
-  ];
-
-  return (
-    <section className="container-luxury" style={{ paddingTop: "100px" }}>
-      <SectionHead eyebrow="Curated Collections" title="Find your signature" />
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          gap: "16px"
-        }}
-      >
-        {tiles.map((t, idx) => (
-          <Link
-            key={t.name}
-            to={`/shop?category=${encodeURIComponent(t.name)}`}
-            style={{
-              position: "relative",
-              overflow: "hidden",
-              height: idx === 0 ? "460px" : "360px",
-              backgroundColor: "var(--muted)",
-              display: "block"
-            }}
-          >
-            <img
-              src={t.img}
-              alt={t.name}
-              loading="lazy"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                transition: "transform 1.2s ease"
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.06)"}
-              onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-            />
-
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: "linear-gradient(180deg, transparent 40%, rgba(24,31,19,0.75) 100%)"
-              }}
-            />
-
-            <div style={{ position: "absolute", bottom: "24px", left: "24px", color: "var(--ivory)" }}>
-              <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.85rem", margin: 0 }}>{t.name}</h3>
-              <span className="eyebrow" style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginTop: "8px", opacity: 0.9 }}>
-                Discover <ArrowRight size={12} />
-              </span>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function BestSellers() {
-  const ref = useRef(null);
-  const scroll = (d) => ref.current?.scrollBy({ left: d * 360, behavior: "smooth" });
-
-  return (
-    <section className="container-luxury" style={{ paddingTop: "110px" }}>
-      <SectionHead eyebrow="Most Coveted" title="Best Sellers">
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            aria-label="Previous"
-            onClick={() => scroll(-1)}
-            style={{
-              width: "44px",
-              height: "44px",
-              border: "1px solid var(--border)",
-              display: "grid",
-              placeItems: "center",
-              cursor: "pointer"
-            }}
-          >
-            <ArrowLeft size={16} strokeWidth={1.4} />
-          </button>
-          <button
-            aria-label="Next"
-            onClick={() => scroll(1)}
-            style={{
-              width: "44px",
-              height: "44px",
-              border: "1px solid var(--border)",
-              display: "grid",
-              placeItems: "center",
-              cursor: "pointer"
-            }}
-          >
-            <ArrowRight size={16} strokeWidth={1.4} />
-          </button>
-        </div>
-      </SectionHead>
-
-      <div
-        ref={ref}
-        style={{
-          display: "flex",
-          gap: "24px",
-          overflowX: "auto",
-          scrollSnapType: "x mandatory",
-          paddingBottom: "16px",
-          scrollbarWidth: "none"
-        }}
-      >
-        {PRODUCTS.slice(0, 9).map((p) => (
-          <div key={p.id} style={{ width: "320px", flexShrink: 0, scrollSnapAlign: "start" }}>
-            <ProductCard product={p} />
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Craft() {
-  const pillars = [
-    { icon: Sparkles, t: "Artisan Craftsmanship", d: "Over 120 hours of meticulous handwork in every high jewelry piece." },
-    { icon: Leaf, t: "Ethical Sourcing", d: "100% recycled gold and fully traceable, conflict-free gemstones." },
-    { icon: Gem, t: "Certified Diamonds", d: "Every stone graded by the Gemological Institute of America (GIA)." },
-    { icon: ShieldCheck, t: "Lifetime Guarantee", d: "Complimentary ultrasonic cleaning, resizing and repairs, forever." }
-  ];
-
-  return (
-    <section
-      style={{
-        marginTop: "110px",
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-        backgroundColor: "var(--secondary)"
-      }}
-    >
-      <img
-        src={atelier}
-        alt="Master jeweler setting a diamond"
-        loading="lazy"
-        style={{ width: "100%", maxHeight: "760px", objectFit: "cover" }}
-      />
-
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "60px 40px" }}>
-        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-          Heritage &bull; Since 1987
-        </p>
-
-        <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.4rem, 4.5vw, 3.6rem)", marginTop: "14px", lineHeight: 1.15 }}>
-          The hand behind <em>every</em> facet
-        </h2>
-
-        <p style={{ marginTop: "24px", maxWidth: "520px", fontSize: "0.92rem", lineHeight: 1.8, color: "var(--muted-foreground)" }}>
-          In our atelier, twelve master jewelers carry forward techniques passed down across generations — from meticulous wax carving to the final mirror hand polish under stereoscopic microscopes.
-        </p>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "36px", marginTop: "44px" }}>
-          {pillars.map(({ icon: I, t, d }) => (
-            <div key={t}>
-              <I size={24} color="var(--primary)" strokeWidth={1.4} />
-              <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", marginTop: "12px", marginBottom: "8px" }}>
-                {t}
-              </h3>
-              <p style={{ fontSize: "0.82rem", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
-                {d}
-              </p>
-            </div>
-          ))}
         </div>
 
-        <Link
-          to="/about"
-          className="eyebrow"
+        {/* Floating Detail Inset Card (Bottom Right) */}
+        <div
           style={{
-            alignSelf: "flex-start",
-            marginTop: "44px",
-            borderBottom: "1px solid var(--foreground)",
-            paddingBottom: "4px"
+            position: "absolute",
+            right: "40px",
+            bottom: "40px",
+            width: "200px",
+            backgroundColor: "#ffffff",
+            boxShadow: "0 12px 30px rgba(0,0,0,0.25)",
+            overflow: "hidden",
+            display: "none"
           }}
+          className="desktop-only-nav"
         >
-          Our Story &rarr;
-        </Link>
+          <img
+            src={sliderItem}
+            alt="Handcrafted Jewelry Detail"
+            style={{ width: "100%", height: "180px", objectFit: "cover" }}
+          />
+        </div>
+      </div>
+
+      {/* Prev / Next Slide Arrows */}
+      <button
+        onClick={prevSlide}
+        aria-label="Previous Slide"
+        style={{
+          position: "absolute",
+          left: "24px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: "48px",
+          height: "48px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(255,255,255,0.15)",
+          backdropFilter: "blur(4px)",
+          color: "#ffffff",
+          display: "grid",
+          placeItems: "center",
+          transition: "background 0.2s"
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)")}
+      >
+        <ChevronLeft size={24} />
+      </button>
+
+      <button
+        onClick={nextSlide}
+        aria-label="Next Slide"
+        style={{
+          position: "absolute",
+          right: "24px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: "48px",
+          height: "48px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(255,255,255,0.15)",
+          backdropFilter: "blur(4px)",
+          color: "#ffffff",
+          display: "grid",
+          placeItems: "center",
+          transition: "background 0.2s"
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)")}
+      >
+        <ChevronRight size={24} />
+      </button>
+
+      {/* Slider Pagination Dots */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "24px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: "10px"
+        }}
+      >
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            aria-label={`Slide ${i + 1}`}
+            style={{
+              width: i === active ? "28px" : "8px",
+              height: "8px",
+              borderRadius: "4px",
+              backgroundColor: i === active ? "var(--primary)" : "rgba(255,255,255,0.5)",
+              transition: "all 0.3s ease"
+            }}
+          />
+        ))}
       </div>
     </section>
   );
 }
 
-function Press() {
-  const press = ["VOGUE", "Harper's BAZAAR", "ELLE", "TATLER", "Vanity Fair"];
-  const reviews = [
+/* =========================================================================
+   2. THREE CIRCULAR CATEGORY PROMO CARDS
+   ========================================================================= */
+function CircularCategories() {
+  const cards = [
     {
-      q: "The Éternelle ring is even more breathtaking in person. The concierge team made the entire acquisition effortless.",
-      n: "James R., New York"
+      img: promo1,
+      title: "Timeless Classics",
+      desc: "Elegant designs that never go out of style, perfect for every occasion.",
+      link: "/shop?category=Rings"
     },
     {
-      q: "I've collected fine jewelry for 20 years. Gemora's optical finishing rivals the grand maisons of Place Vendôme.",
-      n: "Priya M., Mumbai"
+      img: promo2,
+      title: "Modern Luxe",
+      desc: "Chic and contemporary pieces for the trendsetters of today",
+      link: "/shop?category=Necklaces"
     },
     {
-      q: "My Riviera bracelet arrived beautifully packaged, insured, and with a hand-signed GIA certificate dossier.",
-      n: "Charlotte D., London"
+      img: promo3,
+      title: "Special Moments",
+      desc: "Exquisite jewelry to celebrate love, commitment, and life’s milestones.",
+      link: "/shop?category=Bracelets"
     }
   ];
 
   return (
-    <section className="container-luxury" style={{ paddingTop: "110px" }}>
-      {/* Logos Strip */}
+    <section style={{ padding: "90px 0 70px 0", backgroundColor: "#ffffff" }}>
+      <div className="container-luxury">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "36px",
+            justifyContent: "center"
+          }}
+        >
+          {cards.map((c, i) => (
+            <div
+              key={i}
+              style={{
+                position: "relative",
+                borderRadius: "50%",
+                border: "1px solid #e8e3d6",
+                padding: "60px 40px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                aspectRatio: "1/1",
+                justifyContent: "center",
+                transition: "all 0.3s ease",
+                cursor: "pointer",
+                backgroundColor: "#fcfbfa"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--primary)";
+                e.currentTarget.style.boxShadow = "0 10px 30px rgba(174,135,62,0.12)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#e8e3d6";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              {/* Pill-shaped thumbnail image */}
+              <div
+                style={{
+                  width: "110px",
+                  height: "64px",
+                  borderRadius: "32px",
+                  overflow: "hidden",
+                  marginBottom: "20px",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.08)"
+                }}
+              >
+                <img
+                  src={c.img}
+                  alt={c.title}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+
+              {/* Title */}
+              <h3
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "1.7rem",
+                  color: "#957127",
+                  marginBottom: "12px",
+                  fontWeight: 500
+                }}
+              >
+                {c.title}
+              </h3>
+
+              {/* Description */}
+              <p
+                style={{
+                  fontSize: "0.85rem",
+                  color: "#666666",
+                  lineHeight: 1.6,
+                  maxWidth: "260px",
+                  marginBottom: "22px"
+                }}
+              >
+                {c.desc}
+              </p>
+
+              {/* Link */}
+              <Link
+                to={c.link}
+                style={{
+                  fontSize: "0.78rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  color: "#181818",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px"
+                }}
+              >
+                SHOP NOW <ArrowUpRight size={14} />
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================================
+   3. BEST SELLER SECTION WITH TAB FILTERS
+   ========================================================================= */
+function BestSellerSection({ onQuickView }) {
+  const [activeTab, setActiveTab] = useState("all");
+  const { addToCart, toggleWishlist, wishlist, notify } = useStore();
+
+  const products = [
+    {
+      id: "halo-engagement-ring",
+      name: "Emerald-cut Halo Engagement Ring with a Diamond Platinum Band",
+      price: 3370,
+      oldPrice: null,
+      category: "rings",
+      image: p39,
+      badgeType: "sizes",
+      badgeText: "3 sizes are available",
+      desc: "An emerald-cut diamond surrounded by a halo of micro-pavé diamonds on a platinum band."
+    },
+    {
+      id: "small-earrings-gold",
+      name: "Small Earrings In Gold with Diamond",
+      price: 3370,
+      oldPrice: 3899,
+      category: "earrings",
+      image: p40,
+      badgeType: "countdown",
+      badgeText: "11d : 11h : 54m : 12s",
+      desc: "Delicate 18k yellow gold huggies encrusted with shimmering brilliant-cut solitaire diamonds."
+    },
+    {
+      id: "sixteen-stone-earrings",
+      name: "Sixteen Stone Narrow Earrings",
+      price: 2499,
+      oldPrice: 2899,
+      category: "earrings",
+      image: p41,
+      badgeType: "flash",
+      badgeText: "30% OFF ⚡ Selling fast ⚡ 30% OFF",
+      desc: "Sixteen round brilliant diamonds hand-set in platinum for unmatched sparkle and comfort."
+    },
+    {
+      id: "moon-star-studs",
+      name: "Sparkling Moon & Star Stud Earrings",
+      price: 2499,
+      oldPrice: null,
+      category: "earrings",
+      image: p42,
+      badgeType: "notify",
+      badgeText: "Notify Me When Available",
+      desc: "Celestial moon and star studs adorned with fine pave diamonds and white gold mounts."
+    },
+    {
+      id: "riviera-tennis-bracelets",
+      name: "Riviera Tennis Bracelet in White Gold",
+      price: 7600,
+      oldPrice: 8400,
+      category: "bracelets",
+      image: p43,
+      badgeType: "sizes",
+      badgeText: "2 sizes available",
+      desc: "Fifty-two hand-selected diamonds set in a continuous line of fluid light."
+    },
+    {
+      id: "heart-bangle",
+      name: "Organically Shaped Heart Bangle",
+      price: 2499,
+      oldPrice: null,
+      category: "bracelets",
+      image: p44,
+      badgeType: "sizes",
+      badgeText: "One size fits all",
+      desc: "Sculptural gold bangle with organic contours and double safety clasp."
+    },
+    {
+      id: "yellow-gold-engagement",
+      name: "Engagement Ring in 18k Yellow Gold",
+      price: 2499,
+      oldPrice: 2899,
+      category: "rings",
+      image: p45,
+      badgeType: "sizes",
+      badgeText: "4 sizes available",
+      desc: "Solitaire diamond held aloft in a whisper-thin four-claw 18k yellow gold setting."
+    },
+    {
+      id: "april-birthstone-necklace",
+      name: "April Birthstone Chain Necklace",
+      price: 2399,
+      oldPrice: 3499,
+      category: "necklaces",
+      image: p67,
+      badgeType: "flash",
+      badgeText: "30% OFF ⚡ Selling fast",
+      desc: "Fine curb chain with shimmering diamond pendant crafted for effortless everyday luxury."
+    }
+  ];
+
+  const filtered =
+    activeTab === "all"
+      ? products.slice(0, 4)
+      : products.filter((p) => p.category === activeTab);
+
+  return (
+    <section style={{ padding: "50px 0 90px 0", backgroundColor: "#ffffff" }}>
+      <div className="container-luxury">
+        {/* Title */}
+        <h2
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2rem, 4vw, 2.8rem)",
+            textAlign: "center",
+            marginBottom: "28px",
+            fontWeight: 400
+          }}
+        >
+          Best Seller
+        </h2>
+
+        {/* Category Tabs */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "32px",
+            marginBottom: "48px",
+            borderBottom: "1px solid #ebebeb",
+            paddingBottom: "12px"
+          }}
+        >
+          {[
+            { id: "all", label: "all" },
+            { id: "rings", label: "rings" },
+            { id: "bracelets", label: "bracelets" },
+            { id: "necklaces", label: "necklaces" },
+            { id: "earrings", label: "earrings" }
+          ].map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id)}
+              style={{
+                fontSize: "0.85rem",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                color: activeTab === t.id ? "var(--primary)" : "#777777",
+                borderBottom: activeTab === t.id ? "2px solid var(--primary)" : "none",
+                paddingBottom: "12px",
+                marginBottom: "-13px",
+                transition: "all 0.2s"
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* 4 Column Product Grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            gap: "28px"
+          }}
+        >
+          {filtered.map((item) => {
+            const isLiked = wishlist.includes(item.id);
+
+            return (
+              <div
+                key={item.id}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  position: "relative",
+                  transition: "transform 0.3s ease"
+                }}
+              >
+                {/* Product Image Frame */}
+                <div
+                  style={{
+                    position: "relative",
+                    aspectRatio: "1/1",
+                    backgroundColor: "#f7f7f7",
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                  className="product-card-hover"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      transition: "transform 0.5s ease"
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  />
+
+                  {/* Hover Quick Action Buttons */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: "12px",
+                      top: "12px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
+                      zIndex: 2
+                    }}
+                  >
+                    <button
+                      onClick={() => toggleWishlist(item.id)}
+                      aria-label="Wishlist"
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        backgroundColor: "#ffffff",
+                        display: "grid",
+                        placeItems: "center",
+                        color: isLiked ? "var(--primary)" : "#333",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+                    >
+                      <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
+                    </button>
+
+                    <button
+                      onClick={() => onQuickView(item)}
+                      aria-label="Quick View"
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        backgroundColor: "#ffffff",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "#333",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+                    >
+                      <Eye size={16} />
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        addToCart(item, 1, "18k Yellow Gold");
+                        notify("Added to Bag", item.name);
+                      }}
+                      aria-label="Add to Cart"
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        backgroundColor: "#ffffff",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "#333",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+                    >
+                      <ShoppingBag size={16} />
+                    </button>
+
+                    <button
+                      onClick={() => notify("Compare", `Added ${item.name} to comparison list`)}
+                      aria-label="Compare"
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        backgroundColor: "#ffffff",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "#333",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                        transition: "all 0.2s"
+                      }}
+                    >
+                      <Repeat size={16} />
+                    </button>
+                  </div>
+
+                  {/* Bottom Image Badge Bar */}
+                  {item.badgeType === "sizes" && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: "#c7c7c7",
+                        color: "#181818",
+                        fontSize: "0.76rem",
+                        padding: "6px 12px",
+                        textAlign: "center",
+                        fontWeight: 500
+                      }}
+                    >
+                      {item.badgeText}
+                    </div>
+                  )}
+
+                  {item.badgeType === "countdown" && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: "12px",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #e0d7c3",
+                        color: "#AE873E",
+                        fontSize: "0.82rem",
+                        fontWeight: 700,
+                        padding: "6px 16px",
+                        borderRadius: "2px",
+                        whiteSpace: "nowrap",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.06)"
+                      }}
+                    >
+                      {item.badgeText}
+                    </div>
+                  )}
+
+                  {item.badgeType === "flash" && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: "#8C763B",
+                        color: "#ffffff",
+                        fontSize: "0.75rem",
+                        padding: "7px 12px",
+                        textAlign: "center",
+                        fontWeight: 600,
+                        letterSpacing: "0.04em"
+                      }}
+                    >
+                      {item.badgeText}
+                    </div>
+                  )}
+
+                  {item.badgeType === "notify" && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: "#1F1F1F",
+                        color: "#ffffff",
+                        fontSize: "0.78rem",
+                        padding: "8px 12px",
+                        textAlign: "center",
+                        fontWeight: 500,
+                        cursor: "pointer"
+                      }}
+                      onClick={() => notify("Notification Saved", "We will alert you once back in stock!")}
+                    >
+                      {item.badgeText}
+                    </div>
+                  )}
+                </div>
+
+                {/* Details */}
+                <div style={{ paddingTop: "14px" }}>
+                  <h4
+                    style={{
+                      fontSize: "0.92rem",
+                      fontWeight: 400,
+                      lineHeight: 1.4,
+                      color: "#181818",
+                      marginBottom: "6px",
+                      cursor: "pointer"
+                    }}
+                    onClick={() => onQuickView(item)}
+                  >
+                    {item.name}
+                  </h4>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span
+                      style={{
+                        fontSize: "0.95rem",
+                        fontWeight: 600,
+                        color: item.oldPrice ? "#F43B3B" : "#181818"
+                      }}
+                    >
+                      ${item.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                    </span>
+                    {item.oldPrice && (
+                      <span
+                        style={{
+                          fontSize: "0.85rem",
+                          color: "#888888",
+                          textDecoration: "line-through"
+                        }}
+                      >
+                        ${item.oldPrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================================
+   4. SPLIT COLLECTION BANNERS: THE MODERN BRIDE & THE ART OF STACK
+   ========================================================================= */
+function SplitCollectionBanners() {
+  return (
+    <section style={{ backgroundColor: "#ffffff", margin: "20px 0" }}>
+      {/* Banner 1: The Modern Bride Collection */}
       <div
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "space-around",
-          gap: "32px",
-          borderTop: "1px solid var(--border)",
-          borderBottom: "1px solid var(--border)",
-          padding: "36px 0",
-          fontFamily: "var(--font-serif)",
-          fontSize: "1.8rem",
-          letterSpacing: "0.2em",
-          color: "var(--muted-foreground)"
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+          alignItems: "center"
         }}
       >
-        {press.map((p) => (
-          <span key={p}>{p}</span>
-        ))}
+        <div style={{ height: "100%", minHeight: "440px", overflow: "hidden" }}>
+          <img
+            src={banner5}
+            alt="The Modern Bride Collection"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </div>
+
+        <div style={{ padding: "60px clamp(24px, 6vw, 90px)" }}>
+          <span
+            style={{
+              fontSize: "0.82rem",
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              fontWeight: 600,
+              color: "var(--primary)",
+              display: "inline-block",
+              marginBottom: "16px"
+            }}
+          >
+            OURS STORY
+          </span>
+          <h2
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(2.2rem, 4.5vw, 3.6rem)",
+              lineHeight: 1.15,
+              fontWeight: 400,
+              marginBottom: "20px"
+            }}
+          >
+            The Modern Bride Collection
+          </h2>
+          <p
+            style={{
+              fontSize: "0.95rem",
+              lineHeight: 1.7,
+              color: "#666666",
+              maxWidth: "480px",
+              marginBottom: "32px"
+            }}
+          >
+            Redefining bridal elegance with contemporary designs that radiate sophistication. Celebrate your big day with jewelry as unique as your love story.
+          </p>
+          <Link
+            to="/shop"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "0.82rem",
+              fontWeight: 600,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#957127"
+            }}
+          >
+            SHOP NOW <ArrowRight size={16} />
+          </Link>
+        </div>
       </div>
 
-      {/* Quote */}
-      <blockquote style={{ maxWidth: "760px", margin: "70px auto 0 auto", textAlign: "center" }}>
-        <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.6rem, 3vw, 2.3rem)", fontStyle: "italic", lineHeight: 1.4 }}>
-          "Gemora Diam is quietly redefining modern heirloom jewelry — restrained, radiant and impeccably made."
-        </p>
-        <footer className="eyebrow" style={{ color: "var(--gold-deep)", marginTop: "24px" }}>
-          — Vogue
-        </footer>
-      </blockquote>
+      {/* Banner 2: The Art of Stack Collection */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+          alignItems: "center"
+        }}
+      >
+        <div style={{ padding: "60px clamp(24px, 6vw, 90px)", order: 1 }}>
+          <h2
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(2.2rem, 4.5vw, 3.6rem)",
+              lineHeight: 1.15,
+              fontWeight: 400,
+              marginBottom: "20px"
+            }}
+          >
+            The Art of <br />Stack Collection
+          </h2>
+          <p
+            style={{
+              fontSize: "0.95rem",
+              lineHeight: 1.7,
+              color: "#666666",
+              maxWidth: "480px",
+              marginBottom: "32px"
+            }}
+          >
+            Express your individuality with stackable rings, bracelets, and necklaces. Mix, match, and layer to create a style that's entirely your own.
+          </p>
+          <Link
+            to="/shop"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "0.82rem",
+              fontWeight: 600,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#957127"
+            }}
+          >
+            SHOP NOW <ArrowRight size={16} />
+          </Link>
+        </div>
 
-      {/* Reviews Cards */}
+        <div style={{ height: "100%", minHeight: "440px", overflow: "hidden", order: 2 }}>
+          <img
+            src={banner6}
+            alt="The Art of Stack Collection"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================================
+   5. INFINITE OUTLINE TYPOGRAPHY MARQUEE
+   ========================================================================= */
+function OutlineMarquee() {
+  return (
+    <div
+      style={{
+        borderTop: "1px solid #ebebeb",
+        borderBottom: "1px solid #ebebeb",
+        padding: "24px 0",
+        overflow: "hidden",
+        backgroundColor: "#faf9f7"
+      }}
+    >
+      <div className="animate-marquee" style={{ display: "inline-flex", alignItems: "center", gap: "50px" }}>
+        <span
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
+            fontWeight: 800,
+            WebkitTextStroke: "1px #555555",
+            color: "transparent",
+            letterSpacing: "0.08em"
+          }}
+        >
+          NOW, PAY LATER
+        </span>
+        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+        <span
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
+            fontWeight: 800,
+            color: "#333333",
+            letterSpacing: "0.08em"
+          }}
+        >
+          APPLE PAY
+        </span>
+        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+        <span
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
+            fontWeight: 800,
+            WebkitTextStroke: "1px #555555",
+            color: "transparent",
+            letterSpacing: "0.08em"
+          }}
+        >
+          SHOP NOW
+        </span>
+        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+        <span
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
+            fontWeight: 800,
+            color: "#333333",
+            letterSpacing: "0.08em"
+          }}
+        >
+          FREE SHIPPING
+        </span>
+        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+        <span
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
+            fontWeight: 800,
+            WebkitTextStroke: "1px #555555",
+            color: "transparent",
+            letterSpacing: "0.08em"
+          }}
+        >
+          100% CERTIFIED
+        </span>
+        <span style={{ color: "#AE873E", fontSize: "1.6rem" }}>✦</span>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   6. SHOP THE LOOK SECTION
+   ========================================================================= */
+function ShopTheLookSection({ onQuickView }) {
+  const looks = [
+    {
+      img: gal1,
+      hotspot: { top: "68%", left: "52%" },
+      product: {
+        id: "tapered-huggie-earrings",
+        name: "Tapered Huggie Earrings",
+        price: 1799,
+        oldPrice: 2899,
+        image: p66,
+        desc: "Sculpted tapered huggies adorned with pavé diamonds in solid yellow gold."
+      }
+    },
+    {
+      img: gal2,
+      hotspot: { top: "50%", left: "48%" },
+      product: {
+        id: "april-birthstone-chain-necklace",
+        name: "April Birthstone Chain Necklace",
+        price: 2399,
+        oldPrice: 3499,
+        image: p67,
+        desc: "April birthstone chain necklace featuring a luminous round brilliant diamond pendant."
+      }
+    },
+    {
+      img: gal3,
+      hotspot: { top: "54%", left: "74%" },
+      product: {
+        id: "nura-round-pearl-ring",
+        name: "Nura Round Pearl Ring",
+        price: 2499,
+        oldPrice: 2899,
+        image: p68,
+        desc: "Freshwater luminous pearl crowned with sparkling diamonds in a modern platinum band."
+      }
+    }
+  ];
+
+  return (
+    <section style={{ padding: "80px 0 90px 0", backgroundColor: "#ffffff" }}>
+      <div className="container-luxury">
+        <h2
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2rem, 4vw, 2.8rem)",
+            textAlign: "center",
+            marginBottom: "44px",
+            fontWeight: 400
+          }}
+        >
+          Shop the Look
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "28px"
+          }}
+        >
+          {looks.map((item, idx) => (
+            <div
+              key={idx}
+              style={{
+                position: "relative",
+                height: "520px",
+                overflow: "hidden",
+                borderRadius: "2px",
+                boxShadow: "0 4px 18px rgba(0,0,0,0.06)"
+              }}
+            >
+              {/* Main Model Image */}
+              <img
+                src={item.img}
+                alt={item.product.name}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+
+              {/* Interactive Pulsing Hotspot Pin */}
+              <div
+                className="hotspot-pin"
+                onClick={() => onQuickView(item.product)}
+                style={{
+                  position: "absolute",
+                  top: item.hotspot.top,
+                  left: item.hotspot.left,
+                  width: "22px",
+                  height: "22px",
+                  borderRadius: "50%",
+                  backgroundColor: "#ffffff",
+                  border: "2px solid var(--primary)",
+                  cursor: "pointer",
+                  display: "grid",
+                  placeItems: "center"
+                }}
+              >
+                <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--primary)" }} />
+              </div>
+
+              {/* Floating Bottom Pill Product Card */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "20px",
+                  left: "20px",
+                  right: "20px",
+                  backgroundColor: "rgba(255, 255, 255, 0.92)",
+                  backdropFilter: "blur(8px)",
+                  borderRadius: "4px",
+                  padding: "12px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "12px",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
+                  <img
+                    src={item.product.image}
+                    alt={item.product.name}
+                    style={{
+                      width: "48px",
+                      height: "48px",
+                      borderRadius: "2px",
+                      objectFit: "cover",
+                      backgroundColor: "#f5f5f5",
+                      flexShrink: 0
+                    }}
+                  />
+                  <div style={{ minWidth: 0 }}>
+                    <h5
+                      style={{
+                        fontSize: "0.88rem",
+                        fontWeight: 600,
+                        margin: 0,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}
+                    >
+                      {item.product.name}
+                    </h5>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "3px" }}>
+                      <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "#181818" }}>
+                        ${item.product.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                      </span>
+                      {item.product.oldPrice && (
+                        <span style={{ fontSize: "0.78rem", color: "#888", textDecoration: "line-through" }}>
+                          ${item.product.oldPrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => onQuickView(item.product)}
+                  aria-label="Quick View"
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    border: "1px solid #d5c8b2",
+                    display: "grid",
+                    placeItems: "center",
+                    color: "var(--primary)",
+                    flexShrink: 0,
+                    cursor: "pointer",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "var(--primary)";
+                    e.currentTarget.style.color = "#ffffff";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "var(--primary)";
+                  }}
+                >
+                  <Eye size={16} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================================
+   7. TESTIMONIAL / EDITORIAL REVIEWS
+   ========================================================================= */
+function TestimonialsSection({ onQuickView }) {
+  const reviews = [
+    {
+      title: "RECOMMEND!",
+      quote:
+        "“THE QUALITY OF THE JEWELRY EXCEEDED MY EXPECTATIONS. EVERY PIECE FEELS PREMIUM, AND THE DESIGNS ARE SO TRENDY. I'M OBSESSED WITH MY NEW JEWELRY ADDITIONS!”",
+      author: "PATRICK JOHN",
+      avatar: avt1,
+      modelImg: tes4,
+      product: {
+        id: "crystal-birthstone-charm",
+        name: "Crystal Birthstone Eternity Circle Charm",
+        price: 2499,
+        image: p53,
+        desc: "Handcrafted crystal birthstone pendant set in fine sterling & white gold."
+      }
+    },
+    {
+      title: "LOVE IT!",
+      quote:
+        "“I WAS BLOWN AWAY BY THE QUALITY OF THESE HANDCRAFTED PIECES. EVERY ITEM FEELS LUXURIOUS AND THE STYLES ARE INCREDIBLY MODERN. I CAN’T GET ENOUGH OF MY NEW FINDS!”",
+      author: "EMILY TRAN",
+      avatar: avt2,
+      modelImg: tes5,
+      product: {
+        id: "twisted-pearl-ring",
+        name: "Twisted Gold Statement Pearl Ring",
+        price: 2499,
+        image: p52,
+        desc: "Architectural twisted 18k gold band holding a natural white pearl."
+      }
+    }
+  ];
+
+  const [active, setActive] = useState(0);
+  const cur = reviews[active];
+
+  return (
+    <section style={{ backgroundColor: "#FAF9F6", padding: "80px 0" }}>
+      <div className="container-luxury">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+            gap: "50px",
+            alignItems: "center"
+          }}
+        >
+          {/* Left: Model image with floating product badge */}
+          <div style={{ position: "relative", minHeight: "440px", overflow: "hidden", borderRadius: "2px" }}>
+            <img
+              src={cur.modelImg}
+              alt={cur.author}
+              style={{ width: "100%", height: "100%", objectFit: "cover", minHeight: "440px" }}
+            />
+
+            {/* Floating Product Badge on Image */}
+            <div
+              onClick={() => onQuickView(cur.product)}
+              style={{
+                position: "absolute",
+                bottom: "28px",
+                left: "24px",
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                padding: "12px 18px",
+                borderRadius: "4px",
+                display: "flex",
+                alignItems: "center",
+                gap: "14px",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                cursor: "pointer",
+                maxWidth: "320px"
+              }}
+            >
+              <img
+                src={cur.product.image}
+                alt={cur.product.name}
+                style={{ width: "48px", height: "48px", objectFit: "cover", backgroundColor: "#f5f5f5" }}
+              />
+              <div style={{ minWidth: 0 }}>
+                <h5 style={{ fontSize: "0.85rem", fontWeight: 600, margin: 0, lineHeight: 1.3 }}>
+                  {cur.product.name}
+                </h5>
+                <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--primary)" }}>
+                  ${cur.product.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+              <ArrowRight size={18} style={{ color: "#181818" }} />
+            </div>
+          </div>
+
+          {/* Right: Editorial quote */}
+          <div style={{ padding: "20px 10px" }}>
+            {/* Quote icon */}
+            <Quote size={40} style={{ color: "#d2b984", marginBottom: "20px" }} />
+
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(2.4rem, 5vw, 3.8rem)",
+                color: "#AE873E",
+                letterSpacing: "0.04em",
+                fontWeight: 500,
+                margin: "0 0 24px 0"
+              }}
+            >
+              {cur.title}
+            </h2>
+
+            <p
+              style={{
+                fontSize: "1.05rem",
+                lineHeight: 1.8,
+                color: "#444444",
+                fontWeight: 400,
+                marginBottom: "36px"
+              }}
+            >
+              {cur.quote}
+            </p>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "36px" }}>
+              <img
+                src={cur.avatar}
+                alt={cur.author}
+                style={{ width: "46px", height: "46px", borderRadius: "50%", objectFit: "cover" }}
+              />
+              <span style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                {cur.author}
+              </span>
+            </div>
+
+            {/* Pagination Dots */}
+            <div style={{ display: "flex", gap: "10px" }}>
+              {reviews.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  aria-label={`Testimonial ${i + 1}`}
+                  style={{
+                    width: i === active ? "24px" : "8px",
+                    height: "8px",
+                    borderRadius: "4px",
+                    backgroundColor: i === active ? "#181818" : "#ccc",
+                    transition: "all 0.3s ease"
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================================
+   8. JUST FOR YOU CURATED 6-TILE GALLERY
+   ========================================================================= */
+function JustForYouGallery() {
+  const tiles = [
+    { img: gal1, title: "Golden Glow Essentials", desc: "Discover jewelry that defines every moment." },
+    { img: gal2, title: "Timeless Beauty Collection", desc: "Adorn yourself with elegance that lasts a lifetime." },
+    { img: gal3, title: "Radiant Spark Jewelry", desc: "Jewelry that mirrors your inner brilliance." },
+    { img: gal4, title: "Luxe Grace Designs", desc: "Celebrate life’s sparkle with every piece you wear." },
+    { img: gal5, title: "Shine Within You", desc: "Designs that embrace beauty, forever." },
+    { img: gal6, title: "Elegant Moments Only", desc: "Let every gem tell your story." }
+  ];
+
+  return (
+    <section style={{ padding: "80px 0 0 0", backgroundColor: "#ffffff" }}>
+      <div className="container-luxury">
+        <h2
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2rem, 4vw, 2.8rem)",
+            textAlign: "center",
+            marginBottom: "40px",
+            fontWeight: 400
+          }}
+        >
+          Just For You
+        </h2>
+      </div>
+
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "24px",
-          marginTop: "70px"
+          gap: "2px",
+          width: "100%"
         }}
       >
-        {reviews.map((r) => (
+        {tiles.map((t, idx) => (
           <div
-            key={r.n}
+            key={idx}
             style={{
-              border: "1px solid var(--border)",
-              backgroundColor: "var(--card)",
-              padding: "32px",
-              boxShadow: "var(--shadow-soft)"
+              position: "relative",
+              height: "360px",
+              overflow: "hidden",
+              cursor: "pointer"
             }}
           >
-            <div style={{ display: "flex", gap: "4px", color: "var(--gold)", marginBottom: "16px" }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} size={14} fill="currentColor" />
-              ))}
+            <img
+              src={t.img}
+              alt={t.title}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                transition: "transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)"
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            />
+
+            {/* Hover overlay with Title & Shop Now */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundColor: "rgba(0,0,0,0.4)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                color: "#ffffff",
+                padding: "24px",
+                opacity: 0,
+                transition: "opacity 0.3s ease"
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
+            >
+              <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.4rem", color: "#ffffff", marginBottom: "6px" }}>
+                {t.title}
+              </h4>
+              <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.85)", marginBottom: "16px", maxWidth: "240px" }}>
+                {t.desc}
+              </p>
+              <Link
+                to="/shop"
+                style={{
+                  fontSize: "0.76rem",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  color: "#ffffff",
+                  borderBottom: "1.5px solid #ffffff",
+                  paddingBottom: "4px"
+                }}
+              >
+                Shop Now
+              </Link>
             </div>
-            <p style={{ fontSize: "0.9rem", lineHeight: 1.7, color: "var(--foreground)" }}>
-              "{r.q}"
-            </p>
-            <p className="eyebrow" style={{ marginTop: "24px", color: "var(--muted-foreground)" }}>
-              {r.n} &bull; Verified Collector
-            </p>
           </div>
         ))}
       </div>
@@ -461,111 +1670,222 @@ function Press() {
   );
 }
 
-function Lookbook() {
-  const { addToCart, format } = useStore();
-  const [activePopover, setActivePopover] = useState(null);
+/* =========================================================================
+   9. NEWSLETTER 15% OFF BANNER
+   ========================================================================= */
+function NewsletterBanner() {
+  const [email, setEmail] = useState("");
+  const { notify } = useStore();
 
-  const looks = [
-    { img: images.lifestyle, id: "stacking-trio" },
-    { img: images.necklace, id: "verdant-drop" },
-    { img: images.bracelet, id: "riviera-tennis" },
-    { img: images.earrings, id: "perle-lumiere" },
-    { img: images.solitaire, id: "oceane-sapphire" },
-    { img: images.ring, id: "eternelle-solitaire" }
-  ];
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (!email || !email.includes("@")) {
+      alert("Please enter a valid email address");
+      return;
+    }
+    notify("Welcome to Vemus!", "Enjoy 15% off your first order: VEMUS15");
+    setEmail("");
+  };
 
   return (
-    <section className="container-luxury" style={{ paddingTop: "110px" }}>
-      <SectionHead eyebrow="@gemoradiam" title="The Lookbook" />
+    <section style={{ padding: "80px 20px", textAlign: "center", backgroundColor: "#ffffff" }}>
+      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
+        <h2
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2rem, 4.5vw, 3rem)",
+            fontWeight: 400,
+            marginBottom: "12px"
+          }}
+        >
+          Get 15% Off Your First Order
+        </h2>
+        <p style={{ fontSize: "0.95rem", color: "#666666", lineHeight: 1.6, marginBottom: "32px" }}>
+          Join us today and enjoy 15% off your first order. Discover timeless elegance at irresistible prices!
+        </p>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: "12px"
-        }}
-      >
-        {looks.map((l, i) => {
-          const p = getProduct(l.id);
-          if (!p) return null;
-
-          return (
-            <div
-              key={i}
-              style={{
-                position: "relative",
-                aspectRatio: "1/1",
-                overflow: "hidden",
-                backgroundColor: "var(--muted)"
-              }}
-            >
-              <img
-                src={l.img}
-                alt={p.name}
-                loading="lazy"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  transition: "transform 0.7s ease"
-                }}
-              />
-
-              <button
-                onClick={() => setActivePopover(activePopover === i ? null : i)}
-                className="eyebrow glass"
-                style={{
-                  position: "absolute",
-                  bottom: "12px",
-                  left: "12px",
-                  padding: "8px 12px",
-                  fontSize: "0.62rem",
-                  borderRadius: "2px",
-                  cursor: "pointer",
-                  color: "var(--foreground)"
-                }}
-              >
-                Shop the Look
-              </button>
-
-              {activePopover === i && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "48px",
-                    left: "12px",
-                    right: "12px",
-                    backgroundColor: "var(--background)",
-                    border: "1px solid var(--border)",
-                    padding: "16px",
-                    boxShadow: "var(--shadow-soft)",
-                    zIndex: 20
-                  }}
-                >
-                  <p className="font-serif" style={{ fontSize: "1.1rem", margin: 0 }}>{p.name}</p>
-                  <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", margin: "4px 0 10px 0" }}>{format(p.price)}</p>
-                  <button
-                    onClick={() => {
-                      addToCart(p.id, "18k Yellow Gold");
-                      setActivePopover(null);
-                    }}
-                    className="eyebrow"
-                    style={{
-                      width: "100%",
-                      backgroundColor: "var(--primary)",
-                      color: "var(--primary-foreground)",
-                      padding: "10px",
-                      borderRadius: "2px"
-                    }}
-                  >
-                    Add to Bag
-                  </button>
-                </div>
-              )}
-            </div>
-          );
-        })}
+        <form onSubmit={handleSubscribe} style={{ display: "flex", gap: "0", maxWidth: "480px", margin: "0 auto", border: "1px solid #dcdcdc" }}>
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email address"
+            style={{
+              flex: 1,
+              padding: "16px 20px",
+              border: "none",
+              outline: "none",
+              fontSize: "0.88rem",
+              backgroundColor: "#ffffff"
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              padding: "16px 24px",
+              backgroundColor: "#181818",
+              color: "#ffffff",
+              fontSize: "0.78rem",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              fontWeight: 600,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              cursor: "pointer",
+              transition: "background 0.2s"
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#181818")}
+          >
+            SIGN UP NOW <ArrowRight size={14} />
+          </button>
+        </form>
       </div>
     </section>
+  );
+}
+
+/* =========================================================================
+   10. INTERACTIVE QUICK VIEW MODAL
+   ========================================================================= */
+function QuickViewModal({ product, onClose }) {
+  const { addToCart, notify, format } = useStore();
+  const [qty, setQty] = useState(1);
+  const [metal, setMetal] = useState("18k Yellow Gold");
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        backgroundColor: "rgba(0,0,0,0.65)",
+        backdropFilter: "blur(4px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "20px",
+        animation: "fadeIn 0.2s ease-out"
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          maxWidth: "860px",
+          width: "100%",
+          maxHeight: "90vh",
+          overflowY: "auto",
+          borderRadius: "4px",
+          boxShadow: "0 20px 50px rgba(0,0,0,0.25)",
+          position: "relative",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: "36px",
+          padding: "36px"
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          style={{ position: "absolute", top: "18px", right: "18px", color: "#181818" }}
+        >
+          <X size={22} />
+        </button>
+
+        {/* Left: Product Image */}
+        <div style={{ backgroundColor: "#f8f8f8", borderRadius: "2px", overflow: "hidden", display: "grid", placeItems: "center" }}>
+          <img src={product.image} alt={product.name} style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }} />
+        </div>
+
+        {/* Right: Info */}
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <span style={{ fontSize: "0.75rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--primary)", fontWeight: 600 }}>
+            Vemus Haute Joaillerie
+          </span>
+
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.6rem", margin: "8px 0 14px 0", lineHeight: 1.3 }}>
+            {product.name}
+          </h3>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
+            {[1, 2, 3, 4, 5].map((s) => (
+              <Star key={s} size={14} fill="#AE873E" stroke="#AE873E" />
+            ))}
+            <span style={{ fontSize: "0.8rem", color: "#777", marginLeft: "6px" }}>(24 reviews)</span>
+          </div>
+
+          <div style={{ fontSize: "1.4rem", fontWeight: 700, color: "var(--primary)", marginBottom: "16px" }}>
+            ${product.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+          </div>
+
+          <p style={{ fontSize: "0.88rem", color: "#666", lineHeight: 1.6, marginBottom: "24px" }}>
+            {product.desc || "Exquisitely hand-set in 18k solid gold alloys with conflict-free diamonds and GIA documentation."}
+          </p>
+
+          {/* Metal Choice */}
+          <div style={{ marginBottom: "24px" }}>
+            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "8px" }}>
+              Metal: {metal}
+            </label>
+            <div style={{ display: "flex", gap: "10px" }}>
+              {["18k Yellow Gold", "Rose Gold", "Platinum"].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setMetal(m)}
+                  style={{
+                    padding: "6px 14px",
+                    border: metal === m ? "1.5px solid var(--primary)" : "1px solid #ddd",
+                    fontSize: "0.8rem",
+                    borderRadius: "2px",
+                    backgroundColor: metal === m ? "var(--primary-soft)" : "transparent"
+                  }}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Quantity & Add to Cart */}
+          <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+            <div style={{ display: "flex", border: "1px solid #ddd", borderRadius: "2px" }}>
+              <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={{ padding: "10px 14px" }}>
+                -
+              </button>
+              <span style={{ padding: "10px 14px", fontWeight: 600, fontSize: "0.9rem" }}>{qty}</span>
+              <button onClick={() => setQty((q) => q + 1)} style={{ padding: "10px 14px" }}>
+                +
+              </button>
+            </div>
+
+            <button
+              onClick={() => {
+                addToCart(product, qty, metal);
+                notify("Added to Bag", `${qty}x ${product.name}`);
+                onClose();
+              }}
+              style={{
+                flex: 1,
+                padding: "14px 28px",
+                backgroundColor: "var(--primary)",
+                color: "#ffffff",
+                fontSize: "0.82rem",
+                fontWeight: 600,
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                borderRadius: "2px",
+                transition: "background 0.2s"
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
+            >
+              Add To Bag
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

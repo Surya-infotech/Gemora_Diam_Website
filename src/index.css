@@ -1,46 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
   --radius: 0.25rem;
+  --white: #ffffff;
+  --black: #000000;
   --ivory: #fafbf8;
   --obsidian: #181f13;
-  --background: #fafbf8;
-  --foreground: #181f13;
+  --background: #ffffff;
+  --foreground: #1f1f1f;
   --card: #ffffff;
-  --card-foreground: #181f13;
+  --card-foreground: #1f1f1f;
 
-  /* Primary Theme Color: #556832 requested by user */
-  --primary: #556832;
-  --primary-hover: #445427;
+  /* Vemus Royal Gold Palette */
+  --primary: #AE873E;
+  --primary-hover: #957127;
   --primary-foreground: #ffffff;
-  --primary-soft: #f4f6f0;
+  --primary-soft: #faf5ed;
+  --gold: #AE873E;
+  --gold-deep: #957127;
+  --gold-bar: #b0894f;
 
-  --secondary: #f2f4ed;
-  --secondary-foreground: #181f13;
-  --muted: #f2f4ed;
+  /* Vemus Grays & Backgrounds */
+  --main-dark: #1F1F1F;
+  --main-darker: #181818;
+  --main-muted: #717171;
+  --main-subtle: #8F8F8F;
+  --secondary: #F5F2E9;
+  --secondary-foreground: #1F1F1F;
+  --muted: #F5F2E9;
   --muted-foreground: #6b7562;
+  --cream-bg: #F5F2E9;
+  --champagne: #F5F2E9;
+  --border: #e8e8e8;
+  --border-subtle: #eeeeee;
+  --destructive: #d32f2f;
 
-  --accent: #c5a059;
-  --accent-foreground: #ffffff;
-  --gold: #c5a059;
-  --gold-deep: #9e7d38;
-  --champagne: #f4f0e6;
-  --blush: #e8a999;
-  --destructive: #b91c1c;
-
-  --border: #e6e9e0;
-  --input: #dce1d4;
-  --shadow-soft: 0 20px 50px -25px rgba(24, 31, 19, 0.25);
-
-  --font-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  /* Typography */
+  --font-serif: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Jost", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border-color: var(--border);
 }
 
 html {
@@ -57,7 +60,7 @@ body {
   line-height: 1.6;
 }
 
-h1, h2, h3, h4, .font-serif {
+h1, h2, h3, h4, h5, h6, .font-serif {
   font-family: var(--font-serif);
   font-weight: 400;
   letter-spacing: -0.01em;
@@ -92,18 +95,6 @@ img {
   font-weight: 600;
 }
 
-/* Glassmorphism */
-.glass {
-  background: rgba(250, 251, 248, 0.82);
-  backdrop-filter: blur(16px) saturate(1.4);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
-}
-
-/* Shadows */
-.shadow-soft {
-  box-shadow: var(--shadow-soft);
-}
-
 /* Container */
 .container-luxury {
   width: 100%;
@@ -121,10 +112,46 @@ img {
   }
 }
 
-/* Modal and Drawer Transitions */
+/* Marquee Animations */
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Pulse animation for hotspot pins */
+@keyframes pulsePin {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(174, 135, 62, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 12px rgba(174, 135, 62, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(174, 135, 62, 0);
+  }
+}
+
+.hotspot-pin {
+  animation: pulsePin 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* Slide and Fade Transitions */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideInRight {
@@ -143,10 +170,10 @@ img {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f4f6f0;
+  background: #f7f5f0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c3cbba;
+  background: #d8cebc;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {

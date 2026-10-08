@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Heart,
@@ -7,6 +7,14 @@ import {
   ShoppingBag,
   User,
   X,
+  ChevronDown,
+  Phone,
+  MapPin,
+  Truck,
+  CreditCard,
+  RotateCcw,
+  Headphones,
+  ArrowRight,
   ShieldCheck,
   Gem,
   Lock
@@ -15,31 +23,39 @@ import { useStore } from "../lib/store";
 import { CURRENCIES, PRODUCTS } from "../lib/products";
 import { CartLines } from "./CartLines";
 
-const NAV = [
-  { label: "Shop", to: "/shop" },
-  { label: "Collections", to: "/shop?category=Rings" },
-  { label: "High Jewelry", to: "/shop?high=true" },
-  { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" }
-];
+import visaSvg from "../assets/vemus/payment_visa.svg";
+import masterSvg from "../assets/vemus/payment_master.svg";
+import applePaySvg from "../assets/vemus/payment_apple-pay.svg";
+import amexSvg from "../assets/vemus/payment_am-ex.svg";
+import discoverSvg from "../assets/vemus/payment_discover.svg";
 
 export function Logo() {
   return (
-    <Link to="/" style={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: 1 }}>
+    <Link to="/" style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", textDecoration: "none" }}>
       <span
         style={{
-          fontFamily: "var(--font-serif)",
-          fontSize: "1.9rem",
-          letterSpacing: "0.32em",
-          paddingLeft: "0.32em",
+          fontFamily: "'Playfair Display', serif",
+          fontSize: "2.3rem",
+          fontWeight: 600,
+          fontStyle: "italic",
+          letterSpacing: "0.03em",
           color: "var(--foreground)",
-          fontWeight: 500
+          lineHeight: 1
         }}
       >
-        GEMORA
+        Vemus
       </span>
-      <span className="eyebrow" style={{ fontSize: "0.55rem", color: "var(--gold-deep)", marginTop: "4px" }}>
-        Haute Joaillerie
+      <span
+        style={{
+          fontSize: "0.58rem",
+          letterSpacing: "0.26em",
+          textTransform: "uppercase",
+          color: "var(--primary)",
+          fontWeight: 600,
+          marginTop: "2px"
+        }}
+      >
+        Fine Jewelry
       </span>
     </Link>
   );
@@ -51,18 +67,19 @@ function Badge({ n }) {
     <span
       style={{
         position: "absolute",
-        top: "-6px",
-        right: "-6px",
+        top: "-7px",
+        right: "-8px",
         backgroundColor: "var(--primary)",
         color: "#ffffff",
-        fontSize: "0.6rem",
+        fontSize: "0.62rem",
         fontWeight: 700,
-        height: "16px",
-        minWidth: "16px",
+        height: "17px",
+        minWidth: "17px",
         borderRadius: "50%",
         display: "grid",
         placeItems: "center",
-        padding: "0 2px"
+        padding: "0 3px",
+        border: "1.5px solid #ffffff"
       }}
     >
       {n}
@@ -72,59 +89,158 @@ function Badge({ n }) {
 
 export function Header() {
   const { cartCount, wishlist, currency, setCurrency, setCartOpen } = useStore();
-  const [bar, setBar] = useState(true);
   const [mobile, setMobile] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Top countdown timer simulation
+  const [timeLeft, setTimeLeft] = useState({ d: 11, h: 11, m: 54, s: 52 });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.s > 0) return { ...prev, s: prev.s - 1 };
+        if (prev.m > 0) return { ...prev, m: prev.m - 1, s: 59 };
+        if (prev.h > 0) return { ...prev, h: prev.h - 1, m: 59, s: 59 };
+        if (prev.d > 0) return { ...prev, d: prev.d - 1, h: 23, m: 59, s: 59 };
+        return prev;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const results = q
     ? PRODUCTS.filter((p) => (p.name + p.category).toLowerCase().includes(q.toLowerCase()))
     : PRODUCTS.slice(0, 4);
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (q.trim()) {
+      setSearch(false);
+      navigate(`/shop?search=${encodeURIComponent(q.trim())}`);
+    }
+  };
+
   return (
     <>
-      {/* Announcement Bar */}
-      {bar && (
-        <div
-          style={{
-            position: "relative",
-            backgroundColor: "var(--primary)",
-            color: "var(--primary-foreground)",
-            padding: "9px 40px",
-            textAlign: "center",
-            fontSize: "0.72rem",
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
-            fontWeight: 500
-          }}
-        >
-          <span>✦ Complimentary insured worldwide delivery &amp; GIA certification dossier</span>
-          <button
-            onClick={() => setBar(false)}
-            aria-label="Dismiss bar"
-            style={{
-              position: "absolute",
-              right: "16px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "rgba(255,255,255,0.7)"
-            }}
-          >
-            <X size={14} />
-          </button>
+      {/* 1. Black Top Announcement Bar Marquee */}
+      <div
+        style={{
+          backgroundColor: "#181818",
+          color: "#ffffff",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+          fontSize: "0.72rem",
+          letterSpacing: "0.15em",
+          padding: "8px 0",
+          textTransform: "uppercase",
+          borderBottom: "1px solid rgba(255,255,255,0.08)"
+        }}
+      >
+        <div className="animate-marquee" style={{ display: "inline-flex", gap: "60px" }}>
+          <span>FREE SHIPPING ON ALL ORDERS OVER $200</span>
+          <span>&mdash;</span>
+          <span>VIP MEMBERS GET EXTRA DISCOUNTS &ndash; <Link to="/contact" style={{ textDecoration: "underline", color: "var(--primary)" }}>JOIN TODAY!</Link></span>
+          <span>&mdash;</span>
+          <span>HASSLE-FREE RETURNS ON ALL ORDERS</span>
+          <span>&mdash;</span>
+          <span>FREE SHIPPING ON ALL ORDERS OVER $200</span>
+          <span>&mdash;</span>
+          <span>VIP MEMBERS GET EXTRA DISCOUNTS &ndash; <Link to="/contact" style={{ textDecoration: "underline", color: "var(--primary)" }}>JOIN TODAY!</Link></span>
+          <span>&mdash;</span>
+          <span>HASSLE-FREE RETURNS ON ALL ORDERS</span>
+          <span>&mdash;</span>
         </div>
-      )}
+      </div>
 
-      {/* Main Header */}
+      {/* 2. Secondary Gold Header Bar */}
+      <div
+        style={{
+          backgroundColor: "var(--gold-bar)",
+          color: "#ffffff",
+          fontSize: "0.76rem",
+          fontWeight: 500,
+          padding: "8px 24px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "12px"
+        }}
+      >
+        {/* Left: Phone & Store */}
+        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          <a
+            href="tel:85332453"
+            style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#ffffff" }}
+          >
+            <Phone size={13} />
+            <span>(61) 8533 2453</span>
+          </a>
+          <span style={{ opacity: 0.5 }}>|</span>
+          <Link
+            to="/contact"
+            style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#ffffff" }}
+          >
+            <MapPin size={13} />
+            <span>Our Store</span>
+          </Link>
+        </div>
+
+        {/* Center: Countdown Sale */}
+        <div style={{ textAlign: "center", letterSpacing: "0.02em" }}>
+          Get 30% off and FREE SHIPPING. Sale ends in{" "}
+          <strong style={{ fontWeight: 700, letterSpacing: "0.05em" }}>
+            {timeLeft.d}d : {timeLeft.h}h : {timeLeft.m}m : {timeLeft.s}s
+          </strong>{" "}
+          -{" "}
+          <Link to="/shop" style={{ textDecoration: "underline", fontWeight: 600, color: "#ffffff" }}>
+            SHOP NOW
+          </Link>
+        </div>
+
+        {/* Right: Currency & Language */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              aria-label="Currency"
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "#ffffff",
+                fontSize: "0.76rem",
+                fontWeight: 500,
+                outline: "none",
+                cursor: "pointer"
+              }}
+            >
+              {Object.keys(CURRENCIES).map((c) => (
+                <option key={c} value={c} style={{ color: "#181818" }}>
+                  United States {c} (${CURRENCIES[c].symbol})
+                </option>
+              ))}
+            </select>
+          </div>
+          <span style={{ opacity: 0.5 }}>|</span>
+          <span style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "3px" }}>
+            EN <ChevronDown size={12} />
+          </span>
+        </div>
+      </div>
+
+      {/* 3. Main Navigation Header */}
       <header
         style={{
           position: "sticky",
           top: 0,
           zIndex: 100,
-          backgroundColor: "var(--background)",
-          borderBottom: "1px solid var(--border)",
-          transition: "all 0.3s ease"
+          backgroundColor: "#ffffff",
+          borderBottom: "1px solid #ebebeb",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.03)"
         }}
       >
         <div
@@ -133,78 +249,192 @@ export function Header() {
             display: "grid",
             gridTemplateColumns: "1fr auto 1fr",
             alignItems: "center",
-            height: "84px"
+            height: "82px",
+            gap: "20px"
           }}
         >
           {/* Left: Desktop Nav / Mobile Toggle */}
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
             <button
               aria-label="Menu"
               onClick={() => setMobile(true)}
-              style={{ display: "flex", alignItems: "center" }}
+              style={{ display: "flex", alignItems: "center", color: "#181818" }}
               className="mobile-only-btn"
             >
-              <Menu size={22} strokeWidth={1.4} />
+              <Menu size={24} strokeWidth={1.5} />
             </button>
 
-            <nav style={{ display: "flex", gap: "28px" }} className="desktop-only-nav">
-              {NAV.map((n) => (
-                <Link
-                  key={n.label}
-                  to={n.to}
-                  className="eyebrow"
-                  style={{
-                    color: location.pathname === n.to.split("?")[0] ? "var(--primary)" : "var(--foreground)",
-                    transition: "color 0.2s ease"
-                  }}
-                >
-                  {n.label}
-                </Link>
-              ))}
+            <nav
+              style={{ display: "flex", gap: "26px", alignItems: "center" }}
+              className="desktop-only-nav"
+            >
+              <Link
+                to="/"
+                style={{
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: location.pathname === "/" ? "var(--primary)" : "#181818",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  transition: "color 0.2s"
+                }}
+              >
+                HOME <ChevronDown size={12} />
+              </Link>
+
+              <Link
+                to="/shop"
+                style={{
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: location.pathname === "/shop" ? "var(--primary)" : "#181818",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  transition: "color 0.2s"
+                }}
+              >
+                SHOP <ChevronDown size={12} />
+              </Link>
+
+              <Link
+                to="/shop?category=Rings"
+                style={{
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "#181818",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  transition: "color 0.2s"
+                }}
+              >
+                PRODUCTS <ChevronDown size={12} />
+              </Link>
+
+              <Link
+                to="/about"
+                style={{
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: location.pathname === "/about" ? "var(--primary)" : "#181818",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  transition: "color 0.2s"
+                }}
+              >
+                PAGES <ChevronDown size={12} />
+              </Link>
+
+              <Link
+                to="/contact"
+                style={{
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: location.pathname === "/contact" ? "var(--primary)" : "#181818",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  transition: "color 0.2s"
+                }}
+              >
+                BLOGS <ChevronDown size={12} />
+              </Link>
             </nav>
           </div>
 
           {/* Center: Brand Logo */}
-          <Logo />
+          <div style={{ textAlign: "center" }}>
+            <Logo />
+          </div>
 
-          {/* Right: Currency & Actions */}
+          {/* Right: Search Pill & User/Wishlist/Cart Icons */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "18px" }}>
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              aria-label="Currency"
+            {/* Pill Search Input */}
+            <form
+              onSubmit={handleSearchSubmit}
               style={{
-                background: "transparent",
-                border: "none",
-                fontSize: "0.75rem",
-                letterSpacing: "0.15em",
-                fontWeight: 600,
-                outline: "none",
-                cursor: "pointer",
-                color: "var(--foreground)"
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                maxWidth: "240px",
+                width: "100%"
               }}
               className="desktop-only-nav"
             >
-              {Object.keys(CURRENCIES).map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search for anything..."
+                style={{
+                  width: "100%",
+                  padding: "9px 18px 9px 38px",
+                  borderRadius: "50px",
+                  border: "1px solid #dcdcdc",
+                  fontSize: "0.82rem",
+                  outline: "none",
+                  backgroundColor: "#fafafa",
+                  transition: "border-color 0.2s"
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                onBlur={(e) => (e.target.style.borderColor = "#dcdcdc")}
+              />
+              <Search
+                size={16}
+                strokeWidth={1.5}
+                style={{ position: "absolute", left: "14px", color: "#888888", pointerEvents: "none" }}
+              />
+            </form>
 
-            <button aria-label="Search" onClick={() => setSearch(true)}>
-              <Search size={19} strokeWidth={1.4} />
+            {/* Mobile Search Icon Button */}
+            <button
+              aria-label="Search"
+              onClick={() => setSearch(true)}
+              style={{ color: "#181818" }}
+              className="mobile-only-btn"
+            >
+              <Search size={22} strokeWidth={1.4} />
             </button>
 
-            <Link to="/profile?tab=wishlist" aria-label="Wishlist" style={{ position: "relative" }} className="desktop-only-nav">
-              <Heart size={19} strokeWidth={1.4} />
+            {/* Account Icon */}
+            <Link
+              to="/profile"
+              aria-label="Account"
+              style={{ color: "#181818", display: "inline-flex", alignItems: "center" }}
+              className="desktop-only-nav"
+            >
+              <User size={22} strokeWidth={1.4} />
+            </Link>
+
+            {/* Wishlist Icon with Badge */}
+            <Link
+              to="/profile?tab=wishlist"
+              aria-label="Wishlist"
+              style={{ position: "relative", color: "#181818", display: "inline-flex", alignItems: "center" }}
+            >
+              <Heart size={22} strokeWidth={1.4} />
               <Badge n={wishlist.length} />
             </Link>
 
-            <Link to="/profile?tab=overview" aria-label="Account" className="desktop-only-nav">
-              <User size={19} strokeWidth={1.4} />
-            </Link>
-
-            <button aria-label="Bag" onClick={() => setCartOpen(true)} style={{ position: "relative" }}>
-              <ShoppingBag size={19} strokeWidth={1.4} />
+            {/* Cart Bag Icon with Badge */}
+            <button
+              aria-label="Shopping Bag"
+              onClick={() => setCartOpen(true)}
+              style={{ position: "relative", color: "#181818", display: "inline-flex", alignItems: "center" }}
+            >
+              <ShoppingBag size={22} strokeWidth={1.4} />
               <Badge n={cartCount} />
             </button>
           </div>
@@ -218,18 +448,18 @@ export function Header() {
             position: "fixed",
             inset: 0,
             zIndex: 9999,
-            backgroundColor: "rgba(24, 31, 19, 0.6)",
+            backgroundColor: "rgba(0,0,0,0.5)",
             backdropFilter: "blur(4px)"
           }}
           onClick={() => setMobile(false)}
         >
           <div
             style={{
-              width: "80%",
+              width: "82%",
               maxWidth: "340px",
               height: "100%",
-              backgroundColor: "var(--background)",
-              padding: "36px 24px",
+              backgroundColor: "#ffffff",
+              padding: "32px 24px",
               display: "flex",
               flexDirection: "column",
               gap: "24px",
@@ -238,48 +468,65 @@ export function Header() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span className="font-serif" style={{ fontSize: "1.6rem" }}>Menu</span>
-              <button onClick={() => setMobile(false)}>
-                <X size={22} strokeWidth={1.4} />
+              <Logo />
+              <button onClick={() => setMobile(false)} style={{ color: "#181818" }}>
+                <X size={24} strokeWidth={1.5} />
               </button>
             </div>
 
-            <nav style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "16px" }}>
-              {NAV.map((n) => (
-                <Link
-                  key={n.label}
-                  to={n.to}
-                  onClick={() => setMobile(false)}
-                  className="font-serif"
-                  style={{ fontSize: "1.45rem", color: "var(--foreground)" }}
-                >
-                  {n.label}
-                </Link>
-              ))}
+            <nav style={{ display: "flex", flexDirection: "column", gap: "18px", marginTop: "16px" }}>
               <Link
-                to="/orders"
+                to="/"
                 onClick={() => setMobile(false)}
-                className="font-serif"
-                style={{ fontSize: "1.45rem", color: "var(--foreground)" }}
+                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
               >
-                Orders &amp; Tracking
+                Home
               </Link>
               <Link
-                to="/profile"
+                to="/shop"
                 onClick={() => setMobile(false)}
-                className="font-serif"
-                style={{ fontSize: "1.45rem", color: "var(--foreground)" }}
+                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
               >
-                My Account
+                Shop All
+              </Link>
+              <Link
+                to="/shop?category=Rings"
+                onClick={() => setMobile(false)}
+                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+              >
+                Rings &amp; Diamonds
+              </Link>
+              <Link
+                to="/shop?category=Necklaces"
+                onClick={() => setMobile(false)}
+                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+              >
+                Necklaces &amp; Charms
+              </Link>
+              <Link
+                to="/about"
+                onClick={() => setMobile(false)}
+                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+              >
+                About Us
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setMobile(false)}
+                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+              >
+                Contact &amp; Stores
               </Link>
             </nav>
 
-            <div style={{ marginTop: "auto", borderTop: "1px solid var(--border)", paddingTop: "20px" }}>
-              <label style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>Currency</label>
+            <div style={{ marginTop: "auto", borderTop: "1px solid #eee", paddingTop: "20px" }}>
+              <label style={{ fontSize: "0.75rem", color: "#888", display: "block", marginBottom: "6px" }}>
+                Currency
+              </label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                style={{ width: "100%", padding: "10px", border: "1px solid var(--border)", background: "transparent" }}
+                style={{ width: "100%", padding: "10px", border: "1px solid #ddd", background: "transparent" }}
               >
                 {Object.keys(CURRENCIES).map((c) => (
                   <option key={c} value={c}>{c}</option>
@@ -297,7 +544,7 @@ export function Header() {
             position: "fixed",
             inset: 0,
             zIndex: 9999,
-            backgroundColor: "rgba(24, 31, 19, 0.75)",
+            backgroundColor: "rgba(0,0,0,0.75)",
             backdropFilter: "blur(6px)",
             display: "flex",
             justifyContent: "center",
@@ -308,70 +555,76 @@ export function Header() {
         >
           <div
             style={{
-              backgroundColor: "var(--background)",
+              backgroundColor: "#ffffff",
               maxWidth: "680px",
               width: "100%",
               padding: "36px",
-              borderRadius: "2px",
+              borderRadius: "4px",
               alignSelf: "flex-start",
-              boxShadow: "var(--shadow-soft)"
+              boxShadow: "0 20px 40px rgba(0,0,0,0.2)"
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <span className="eyebrow" style={{ color: "var(--gold-deep)" }}>Maison Vault Search</span>
+              <span className="eyebrow" style={{ color: "var(--primary)" }}>Search Vemus Jewelry</span>
               <button onClick={() => setSearch(false)}>
                 <X size={20} strokeWidth={1.4} />
               </button>
             </div>
 
-            <input
-              autoFocus
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search rings, necklaces, solitaires..."
-              style={{
-                width: "100%",
-                borderBottom: "1.5px solid var(--primary)",
-                borderTop: "none",
-                borderLeft: "none",
-                borderRight: "none",
-                background: "transparent",
-                paddingBottom: "12px",
-                fontFamily: "var(--font-serif)",
-                fontSize: "1.8rem",
-                outline: "none"
-              }}
-            />
+            <form onSubmit={handleSearchSubmit}>
+              <input
+                autoFocus
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search rings, necklaces, solitaires..."
+                style={{
+                  width: "100%",
+                  borderBottom: "2px solid var(--primary)",
+                  borderTop: "none",
+                  borderLeft: "none",
+                  borderRight: "none",
+                  background: "transparent",
+                  paddingBottom: "12px",
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "1.8rem",
+                  outline: "none"
+                }}
+              />
+            </form>
 
-            <p className="eyebrow" style={{ marginTop: "24px", color: "var(--muted-foreground)" }}>
+            <p className="eyebrow" style={{ marginTop: "24px", color: "#888" }}>
               {q ? `${results.length} matching pieces` : "Popular Creations"}
             </p>
 
-            <ul style={{ listStyle: "none", padding: 0, marginTop: "12px", maxHeight: "320px", overflowY: "auto" }}>
-              {results.map((p) => (
-                <li key={p.id}>
-                  <Link
-                    to={`/shop?category=${p.category}`}
-                    onClick={() => setSearch(false)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "16px",
-                      padding: "12px 8px",
-                      borderBottom: "1px solid var(--border)",
-                      transition: "background 0.15s ease"
-                    }}
-                  >
-                    <img src={p.image} alt={p.name} style={{ width: "56px", height: "56px", objectFit: "cover" }} />
-                    <span style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem" }}>{p.name}</span>
-                    <span style={{ marginLeft: "auto", fontSize: "0.8rem", color: "var(--muted-foreground)" }}>
-                      {p.category}
-                    </span>
-                  </Link>
-                </li>
+            <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
+              {results.slice(0, 4).map((p) => (
+                <div
+                  key={p.id}
+                  onClick={() => {
+                    setSearch(false);
+                    navigate(`/shop?item=${p.id}`);
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "16px",
+                    padding: "8px",
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                    transition: "background 0.2s"
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  <img src={p.image} alt={p.name} style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "2px" }} />
+                  <div>
+                    <h4 style={{ fontSize: "0.95rem", margin: 0, fontWeight: 500 }}>{p.name}</h4>
+                    <span style={{ fontSize: "0.8rem", color: "var(--primary)", fontWeight: 600 }}>${p.price}</span>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       )}
@@ -382,8 +635,8 @@ export function Header() {
   );
 }
 
-export function CartDrawer() {
-  const { cartOpen, setCartOpen, cart, subtotal, format } = useStore();
+function CartDrawer() {
+  const { cart, cartOpen, setCartOpen, cartCount, subtotal, format } = useStore();
   const navigate = useNavigate();
 
   if (!cartOpen) return null;
@@ -394,49 +647,53 @@ export function CartDrawer() {
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        backgroundColor: "rgba(24, 31, 19, 0.65)",
-        backdropFilter: "blur(4px)",
-        display: "flex",
-        justifyContent: "flex-end"
+        backgroundColor: "rgba(0,0,0,0.5)",
+        backdropFilter: "blur(4px)"
       }}
       onClick={() => setCartOpen(false)}
     >
       <div
         style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
           width: "100%",
           maxWidth: "460px",
           height: "100%",
-          backgroundColor: "var(--background)",
+          backgroundColor: "#ffffff",
           display: "flex",
           flexDirection: "column",
-          animation: "slideInRight 0.25s ease-out",
-          boxShadow: "var(--shadow-soft)"
+          animation: "slideInRight 0.3s ease-out",
+          boxShadow: "-10px 0 30px rgba(0,0,0,0.15)"
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Drawer Header */}
         <div
           style={{
-            padding: "28px",
-            borderBottom: "1px solid var(--border)",
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center"
+            alignItems: "center",
+            padding: "24px 28px",
+            borderBottom: "1px solid #eee"
           }}
         >
-          <h3 className="font-serif" style={{ fontSize: "1.85rem", margin: 0 }}>Your Bag</h3>
-          <button onClick={() => setCartOpen(false)}>
-            <X size={20} strokeWidth={1.4} />
+          <div>
+            <h3 style={{ fontSize: "1.3rem", margin: 0, fontFamily: "var(--font-serif)" }}>Shopping Bag</h3>
+            <span style={{ fontSize: "0.75rem", color: "#888" }}>{cartCount} {cartCount === 1 ? "item" : "items"}</span>
+          </div>
+          <button onClick={() => setCartOpen(false)} style={{ color: "#181818" }}>
+            <X size={22} strokeWidth={1.5} />
           </button>
         </div>
 
         {/* Drawer Body */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "0 28px" }}>
-          {cart.length ? (
-            <CartLines compact />
-          ) : (
-            <div style={{ padding: "80px 20px", textAlign: "center" }}>
-              <p className="font-serif" style={{ fontSize: "1.5rem" }}>Your bag is empty</p>
+        <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px" }}>
+          {cart.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px 0", color: "#888" }}>
+              <ShoppingBag size={48} strokeWidth={1} style={{ margin: "0 auto 16px auto", opacity: 0.4 }} />
+              <p style={{ fontSize: "1rem", fontWeight: 500, color: "#333" }}>Your bag is empty</p>
+              <p style={{ fontSize: "0.85rem", marginTop: "6px" }}>Explore our fine jewelry collection to add pieces.</p>
               <Link
                 to="/shop"
                 onClick={() => setCartOpen(false)}
@@ -444,25 +701,29 @@ export function CartDrawer() {
                 style={{
                   display: "inline-block",
                   marginTop: "20px",
-                  borderBottom: "1px solid var(--foreground)",
-                  paddingBottom: "4px"
+                  padding: "12px 28px",
+                  backgroundColor: "var(--primary)",
+                  color: "#ffffff",
+                  borderRadius: "2px"
                 }}
               >
-                Discover the collection
+                Discover Collection
               </Link>
             </div>
+          ) : (
+            <CartLines />
           )}
         </div>
 
         {/* Drawer Footer */}
         {cart.length > 0 && (
-          <div style={{ borderTop: "1px solid var(--border)", padding: "28px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1rem" }}>
+          <div style={{ borderTop: "1px solid #eee", padding: "24px 28px", backgroundColor: "#fafafa" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.05rem" }}>
               <span>Subtotal</span>
               <span style={{ fontWeight: 600 }}>{format(subtotal)}</span>
             </div>
-            <p style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", marginTop: "6px" }}>
-              Complimentary insured shipping &amp; GIA documentation.
+            <p style={{ fontSize: "0.75rem", color: "#777", marginTop: "6px" }}>
+              Complimentary insured worldwide shipping &amp; 30-day returns.
             </p>
             <button
               onClick={() => {
@@ -472,11 +733,12 @@ export function CartDrawer() {
               className="eyebrow"
               style={{
                 width: "100%",
-                marginTop: "20px",
+                marginTop: "18px",
                 backgroundColor: "var(--primary)",
-                color: "var(--primary-foreground)",
+                color: "#ffffff",
                 padding: "16px",
-                borderRadius: "2px"
+                borderRadius: "2px",
+                textAlign: "center"
               }}
             >
               View Bag &amp; Checkout
@@ -492,130 +754,269 @@ export function Footer() {
   const [email, setEmail] = useState("");
   const { notify } = useStore();
 
-  const cols = [
-    { title: "Shop", links: [["Rings", "/shop?category=Rings"], ["Necklaces", "/shop?category=Necklaces"], ["High Jewelry", "/shop?high=true"], ["Bespoke", "/contact"]] },
-    { title: "Customer Service", links: [["Contact", "/contact"], ["My Orders", "/orders"], ["My Account", "/profile"], ["Book an Appointment", "/contact"]] },
-    { title: "Legal", links: [["Privacy Policy", "/privacy-policy"], ["Terms of Service", "/terms"], ["About Gemora", "/about"]] }
-  ];
-
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       alert("Please enter a valid email address");
       return;
     }
-    notify("Welcome to Gemora Diam", "Your 10% collector code: GEMORA10");
+    notify("Thank you for joining the Vemus Tribe!", "Enjoy 15% off your first purchase: VEMUS15");
     setEmail("");
   };
 
   return (
-    <footer style={{ marginTop: "120px", backgroundColor: "var(--primary)", color: "var(--primary-foreground)" }}>
+    <footer style={{ backgroundColor: "#ffffff", color: "#181818" }}>
+      {/* 1. Value Badges Bar (#F5F2E9 Cream Background) */}
+      <div style={{ backgroundColor: "#F5F2E9", borderTop: "1px solid #eae5d8", padding: "36px 0" }}>
+        <div
+          className="container-luxury"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "28px",
+            alignItems: "center"
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ width: "48px", height: "48px", borderRadius: "50%", border: "1px solid var(--primary)", display: "grid", placeItems: "center", color: "var(--primary)", flexShrink: 0 }}>
+              <Truck size={22} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0 }}>Free Shipping</h4>
+              <p style={{ fontSize: "0.78rem", color: "#666", margin: "2px 0 0 0" }}>Enjoy free shipping on all orders</p>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ width: "48px", height: "48px", borderRadius: "50%", border: "1px solid var(--primary)", display: "grid", placeItems: "center", color: "var(--primary)", flexShrink: 0 }}>
+              <CreditCard size={22} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0 }}>Flexible Payment</h4>
+              <p style={{ fontSize: "0.78rem", color: "#666", margin: "2px 0 0 0" }}>Pay with Multiple Credit Cards</p>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ width: "48px", height: "48px", borderRadius: "50%", border: "1px solid var(--primary)", display: "grid", placeItems: "center", color: "var(--primary)", flexShrink: 0 }}>
+              <RotateCcw size={22} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0 }}>14 - Days Return</h4>
+              <p style={{ fontSize: "0.78rem", color: "#666", margin: "2px 0 0 0" }}>Free return/exchange within 30 days</p>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ width: "48px", height: "48px", borderRadius: "50%", border: "1px solid var(--primary)", display: "grid", placeItems: "center", color: "var(--primary)", flexShrink: 0 }}>
+              <Headphones size={22} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0 }}>Premium Support</h4>
+              <p style={{ fontSize: "0.78rem", color: "#666", margin: "2px 0 0 0" }}>Enjoy our premium support</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Category Navigation Links Strip */}
+      <div style={{ borderBottom: "1px solid #eee", padding: "22px 0", backgroundColor: "#ffffff" }}>
+        <div
+          className="container-luxury"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "16px",
+            alignItems: "center"
+          }}
+        >
+          {["NEW COLLECTION", "ALL JEWELRY", "CHARMS", "BRACELETS", "RINGS", "EARRINGS", "GIFTS", "COLLECTIONS"].map((cat) => (
+            <Link
+              key={cat}
+              to="/shop"
+              style={{
+                fontSize: "0.78rem",
+                fontWeight: 600,
+                letterSpacing: "0.14em",
+                color: "#222222",
+                transition: "color 0.2s"
+              }}
+              onMouseEnter={(e) => (e.target.style.color = "var(--primary)")}
+              onMouseLeave={(e) => (e.target.style.color = "#222222")}
+            >
+              {cat}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* 3. Main Footer 4 Columns */}
       <div
         className="container-luxury"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
           gap: "48px",
-          paddingTop: "80px",
-          paddingBottom: "80px"
+          paddingTop: "70px",
+          paddingBottom: "60px"
         }}
       >
-        {/* Col 1: Maison Bio */}
-        <div style={{ gridColumn: "span 2" }}>
-          <p className="font-serif" style={{ fontSize: "2.4rem", letterSpacing: "0.3em", margin: 0, color: "#ffffff" }}>
-            GEMORA
-          </p>
-          <p style={{ marginTop: "18px", maxWidth: "380px", fontSize: "0.88rem", lineHeight: 1.7, color: "rgba(255,255,255,0.7)" }}>
-            Since 1987, Gemora Diam has crafted heirloom jewelry in our atelier — ethically sourced, meticulously finished, and made to be passed down across generations.
+        {/* Col 1: Join the Tribe */}
+        <div>
+          <span style={{ fontSize: "0.75rem", letterSpacing: "0.2em", fontWeight: 700, textTransform: "uppercase", color: "var(--primary)" }}>
+            JOIN THE #VEMUS TRIBE
+          </span>
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", marginTop: "12px", marginBottom: "8px" }}>
+            Shiny Things Await - 10% Off Inside!
+          </h3>
+          <p style={{ fontSize: "0.85rem", color: "#666", lineHeight: 1.6 }}>
+            Get early access to new products, exclusive deals &amp; more.
           </p>
 
-          <form onSubmit={handleSubscribe} style={{ marginTop: "32px" }}>
-            <p className="eyebrow" style={{ color: "var(--gold)" }}>
-              Receive 10% off your first order
-            </p>
-            <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.3)", marginTop: "12px", maxWidth: "360px" }}>
+          <form onSubmit={handleSubscribe} style={{ marginTop: "24px" }}>
+            <div style={{ display: "flex", borderBottom: "1.5px solid #181818", paddingBottom: "8px" }}>
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email address"
+                placeholder="Enter your email..."
                 style={{
                   flex: 1,
-                  background: "transparent",
                   border: "none",
-                  padding: "10px 0",
+                  outline: "none",
                   fontSize: "0.85rem",
-                  color: "#ffffff",
-                  outline: "none"
+                  background: "transparent"
                 }}
               />
-              <button type="submit" className="eyebrow" style={{ color: "#ffffff" }}>
-                Subscribe
+              <button type="submit" aria-label="Subscribe" style={{ color: "var(--primary)" }}>
+                <ArrowRight size={18} />
               </button>
             </div>
           </form>
+
+          {/* Socials */}
+          <div style={{ display: "flex", gap: "14px", marginTop: "24px" }}>
+            {["facebook", "instagram", "twitter", "pinterest"].map((net) => (
+              <span
+                key={net}
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                  border: "1px solid #ddd",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  color: "#555",
+                  cursor: "pointer"
+                }}
+              >
+                {net[0].toUpperCase()}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* Links Columns */}
-        {cols.map((c) => (
-          <div key={c.title}>
-            <p className="eyebrow" style={{ color: "var(--gold)", marginBottom: "20px" }}>
-              {c.title}
-            </p>
-            <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
-              {c.links.map(([l, to]) => (
-                <li key={l}>
-                  <Link to={to} style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.75)", transition: "color 0.15s ease" }}>
-                    {l}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-
-        {/* Social */}
+        {/* Col 2: Find Us */}
         <div>
-          <p className="eyebrow" style={{ color: "var(--gold)", marginBottom: "20px" }}>Follow</p>
-          <div style={{ display: "flex", gap: "16px", color: "rgba(255,255,255,0.8)" }}>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" style={{ color: "inherit", transition: "color 0.2s" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem", letterSpacing: "0.08em", marginBottom: "20px" }}>
+            FIND US
+          </h4>
+          <p style={{ fontSize: "0.85rem", color: "#666", marginBottom: "14px" }}>
+            Find a location nearest you.
+          </p>
+          <p style={{ fontSize: "0.85rem", marginBottom: "10px" }}>
+            <a
+              href="https://www.google.com/maps?q=123+Yarran+st,Punchbowl,NSW+202196,Australia"
+              target="_blank"
+              rel="noreferrer"
+              style={{ textDecoration: "underline", color: "#181818", fontWeight: 500 }}
+            >
+              See Our Stores
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" style={{ color: "inherit", transition: "color 0.2s" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </p>
+          <p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>
+            <a href="tel:6483441233" style={{ color: "#666" }}>
+              (64) 8344 1233
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter" style={{ color: "inherit", transition: "color 0.2s" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+          </p>
+          <p style={{ fontSize: "0.85rem" }}>
+            <a href="mailto:hello@vemus.com" style={{ color: "#666" }}>
+              hello@vemus.com
             </a>
-          </div>
+          </p>
+        </div>
+
+        {/* Col 3: Help */}
+        <div>
+          <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem", letterSpacing: "0.08em", marginBottom: "20px" }}>
+            HELP
+          </h4>
+          <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
+            {[
+              ["Shipping", "/terms"],
+              ["Returns", "/terms"],
+              ["Privacy Policy", "/privacy-policy"],
+              ["My Wishlist", "/profile?tab=wishlist"],
+              ["Compare", "/shop"],
+              ["FAQ's", "/contact"]
+            ].map(([label, to]) => (
+              <li key={label}>
+                <Link to={to} style={{ fontSize: "0.85rem", color: "#666", transition: "color 0.2s" }} onMouseEnter={(e) => (e.target.style.color = "var(--primary)")} onMouseLeave={(e) => (e.target.style.color = "#666")}>
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Col 4: About Us */}
+        <div>
+          <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem", letterSpacing: "0.08em", marginBottom: "20px" }}>
+            ABOUT US
+          </h4>
+          <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
+            {[
+              ["Our Story", "/about"],
+              ["Visit Our Store", "/contact"],
+              ["Contact Us", "/contact"],
+              ["Account", "/profile"]
+            ].map(([label, to]) => (
+              <li key={label}>
+                <Link to={to} style={{ fontSize: "0.85rem", color: "#666", transition: "color 0.2s" }} onMouseEnter={(e) => (e.target.style.color = "var(--primary)")} onMouseLeave={(e) => (e.target.style.color = "#666")}>
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)", padding: "24px 0" }}>
+      {/* 4. Bottom Bar: Copyright & Payment icons */}
+      <div style={{ borderTop: "1px solid #ebebeb", padding: "20px 0" }}>
         <div
           className="container-luxury"
           style={{
             display: "flex",
-            flexWrap: "wrap",
             justifyContent: "space-between",
             alignItems: "center",
+            flexWrap: "wrap",
             gap: "16px",
-            fontSize: "0.75rem",
-            color: "rgba(255,255,255,0.6)"
+            fontSize: "0.8rem",
+            color: "#777"
           }}
         >
-          <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
-            <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <ShieldCheck size={16} color="var(--gold)" /> BIS Hallmarked
-            </span>
-            <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Gem size={16} color="var(--gold)" /> Conflict-Free Diamonds
-            </span>
-            <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Lock size={16} color="var(--gold)" /> 256-bit Secure Checkout
-            </span>
+          <p style={{ margin: 0 }}>All Rights Reserved 2026 VEMUS Fine Jewelry.</p>
+
+          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            <img src={visaSvg} alt="Visa" style={{ height: "22px", objectFit: "contain" }} />
+            <img src={masterSvg} alt="Mastercard" style={{ height: "22px", objectFit: "contain" }} />
+            <img src={applePaySvg} alt="Apple Pay" style={{ height: "22px", objectFit: "contain" }} />
+            <img src={amexSvg} alt="Amex" style={{ height: "22px", objectFit: "contain" }} />
+            <img src={discoverSvg} alt="Discover" style={{ height: "22px", objectFit: "contain" }} />
           </div>
-          <p>© {new Date().getFullYear()} Gemora Diam Haute Joaillerie. All rights reserved.</p>
         </div>
       </div>
     </footer>
