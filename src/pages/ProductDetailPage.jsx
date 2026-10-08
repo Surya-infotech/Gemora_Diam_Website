@@ -702,19 +702,6 @@ function ProductDetailContent({ product }) {
               Description & Craftsmanship
             </button>
             <button
-              onClick={() => setActiveTab("specifications")}
-              style={{
-                paddingBottom: "14px",
-                fontSize: "0.92rem",
-                fontWeight: activeTab === "specifications" ? 600 : 400,
-                color: activeTab === "specifications" ? "var(--primary)" : "var(--muted-foreground)",
-                borderBottom: activeTab === "specifications" ? "2px solid var(--primary)" : "2px solid transparent",
-                cursor: "pointer"
-              }}
-            >
-              Specifications
-            </button>
-            <button
               onClick={() => setActiveTab("delivery")}
               style={{
                 paddingBottom: "14px",
@@ -740,47 +727,6 @@ function ProductDetailContent({ product }) {
                   Each diamond and gemstone is strictly checked for cut, symmetry, and brilliance to guarantee optimal light refraction.
                   Delivered in our bespoke signature velvet jewelry box with an official certificate of appraisal.
                 </p>
-              </div>
-            )}
-
-            {activeTab === "specifications" && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", fontSize: "0.88rem" }}>
-                <div style={{ padding: "10px 14px", backgroundColor: "#fafbf8", border: "1px solid var(--border-subtle)" }}>
-                  <strong style={{ color: "var(--foreground)" }}>SKU:</strong> {product.sku || "N/A"}
-                </div>
-                <div style={{ padding: "10px 14px", backgroundColor: "#fafbf8", border: "1px solid var(--border-subtle)" }}>
-                  <strong style={{ color: "var(--foreground)" }}>Category:</strong> {product.category}
-                </div>
-                {product.subcategory && (
-                  <div style={{ padding: "10px 14px", backgroundColor: "#fafbf8", border: "1px solid var(--border-subtle)" }}>
-                    <strong style={{ color: "var(--foreground)" }}>Subcategory:</strong> {product.subcategory}
-                  </div>
-                )}
-                {metal && (
-                  <div style={{ padding: "10px 14px", backgroundColor: "#fafbf8", border: "1px solid var(--border-subtle)" }}>
-                    <strong style={{ color: "var(--foreground)" }}>Metal:</strong> {metal}
-                  </div>
-                )}
-                {carat && (
-                  <div style={{ padding: "10px 14px", backgroundColor: "#fafbf8", border: "1px solid var(--border-subtle)" }}>
-                    <strong style={{ color: "var(--foreground)" }}>Diamond Size:</strong> {carat}
-                  </div>
-                )}
-                {product.shapes?.length > 0 && (
-                  <div style={{ padding: "10px 14px", backgroundColor: "#fafbf8", border: "1px solid var(--border-subtle)" }}>
-                    <strong style={{ color: "var(--foreground)" }}>Shapes:</strong> {product.shapes.join(", ")}
-                  </div>
-                )}
-                {product.clarities?.length > 0 && (
-                  <div style={{ padding: "10px 14px", backgroundColor: "#fafbf8", border: "1px solid var(--border-subtle)" }}>
-                    <strong style={{ color: "var(--foreground)" }}>Clarities:</strong> {product.clarities.join(", ")}
-                  </div>
-                )}
-                {product.stones?.length > 0 && (
-                  <div style={{ padding: "10px 14px", backgroundColor: "#fafbf8", border: "1px solid var(--border-subtle)" }}>
-                    <strong style={{ color: "var(--foreground)" }}>Stones:</strong> {product.stones.join(", ")}
-                  </div>
-                )}
               </div>
             )}
 
