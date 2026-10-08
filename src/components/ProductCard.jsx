@@ -127,7 +127,11 @@ export function ProductCard({ product }) {
 
         {/* Wishlist Button */}
         <button
-          onClick={() => toggleWishlist(product.id)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleWishlist(product.id);
+          }}
           aria-label="Toggle wishlist"
           className="glass"
           style={{

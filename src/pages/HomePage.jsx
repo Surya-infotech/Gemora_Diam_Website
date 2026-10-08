@@ -752,7 +752,11 @@ function BestSellerSection({ onQuickView }) {
                       }}
                     >
                       <button
-                        onClick={() => toggleWishlist(item.id)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleWishlist(item.id);
+                        }}
                         aria-label="Wishlist"
                         style={{
                           width: "36px",

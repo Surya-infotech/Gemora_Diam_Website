@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 export function mapBackendItem(item) {
@@ -147,7 +148,8 @@ export function formatCurrencyWithDetails(amount, details) {
 }
 
 export function StoreProvider({ children }) {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
+  const navigate = useNavigate();
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const customerTokenKey = import.meta.env.VITE_CUSTOMERTOKEN_NAME;
   const customerIdKey = import.meta.env.VITE_CUSTOMERID_NAME;
   const [cart, setCart] = useState([]);
@@ -555,6 +557,11 @@ export function StoreProvider({ children }) {
   };
 
   const toggleWishlist = (id) => {
+    if (!user) {
+      notify("Sign In Required", "Please sign in to save items to your wishlist.");
+      navigate("/profile");
+      return;
+    }
     const p = getProduct(id);
     setWishlist((w) => {
       const exists = w.includes(id);
