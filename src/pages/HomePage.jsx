@@ -1169,7 +1169,7 @@ function OutlineMarquee() {
    6. SHOP THE LOOK SECTION
    ========================================================================= */
 function ShopTheLookSection({ onQuickView }) {
-  const { format, products: dynamicProducts } = useStore();
+  const { products: dynamicProducts } = useStore();
   const fallbackGallery = [gal1, gal2, gal3];
   const hotspotPositions = [
     { top: "48%", left: "50%" },
@@ -1318,16 +1318,6 @@ function ShopTheLookSection({ onQuickView }) {
                     >
                       {item.product?.name}
                     </h5>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "3px" }}>
-                      <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "#181818" }}>
-                        {format(item.product?.price || 0)}
-                      </span>
-                      {item.product?.oldPrice && (
-                        <span style={{ fontSize: "0.78rem", color: "#888", textDecoration: "line-through" }}>
-                          {format(item.product.oldPrice)}
-                        </span>
-                      )}
-                    </div>
                   </div>
                 </div>
 
