@@ -410,7 +410,7 @@ export function Header() {
                   transition: "color 0.2s"
                 }}
               >
-                HOME <ChevronDown size={12} />
+                HOME
               </Link>
 
               <Link
@@ -444,7 +444,7 @@ export function Header() {
                   transition: "color 0.2s"
                 }}
               >
-                BLOGS <ChevronDown size={12} />
+                BLOGS
               </Link>
             </nav>
           </div>
