@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Lock, Gift } from "lucide-react";
 import { useStore } from "../lib/store";
 import { CartLines } from "../components/CartLines";
@@ -11,7 +11,8 @@ const CODES = {
 };
 
 export default function CartPage() {
-  const { cart, subtotal, format, clearCart, showToast } = useStore();
+  const navigate = useNavigate();
+  const { cart, subtotal, format, clearCart, showToast, user } = useStore();
   const [code, setCode] = useState("");
   const [applied, setApplied] = useState(null);
   const [codeErr, setCodeErr] = useState("");
@@ -216,6 +217,11 @@ export default function CartPage() {
           {/* Checkout Button */}
           <button
             onClick={() => {
+              if (!user) {
+                showToast("Please sign in to your account to proceed to checkout.", "error");
+                navigate("/profile");
+                return;
+              }
               showToast("Order placed successfully! A confirmation is on its way to your email.", "success");
               clearCart();
             }}
