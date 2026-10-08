@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Trash2, LogOut } from "lucide-react";
 import { useStore } from "../lib/store";
-import { ORDERS } from "../lib/orders";
-import { StatusBadge } from "../components/StatusBadge";
 
 const fieldStyle = {
   width: "100%",
@@ -17,7 +15,8 @@ const fieldStyle = {
 
 export default function ProfilePage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentTab = searchParams.get("tab") || "overview";
+  const rawTab = searchParams.get("tab");
+  const currentTab = rawTab === "settings" ? "settings" : "wishlist";
   const { user, logout } = useStore();
 
   const setTab = (tab) => {
@@ -29,7 +28,6 @@ export default function ProfilePage() {
   }
 
   const tabs = [
-    { id: "overview", label: "Overview" },
     { id: "wishlist", label: "Wishlist" },
     { id: "settings", label: "Security & Settings" },
   ];
@@ -116,96 +114,8 @@ export default function ProfilePage() {
       </div>
 
       <div style={{ marginTop: "40px" }}>
-        {currentTab === "overview" && <OverviewTab />}
         {currentTab === "wishlist" && <WishlistTab />}
         {currentTab === "settings" && <SettingsTab />}
-      </div>
-    </div>
-  );
-}
-
-function OverviewTab() {
-  const { user, format, getProduct } = useStore();
-
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
-      {/* Welcome Card in Brand Green (#556832) */}
-      <div
-        style={{
-          gridColumn: "1 / -1",
-          backgroundColor: "var(--primary)",
-          color: "var(--primary-foreground)",
-          padding: "40px",
-          borderRadius: "2px"
-        }}
-      >
-        <p className="eyebrow" style={{ color: "var(--gold)" }}>Welcome Back</p>
-        <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2rem, 3.5vw, 2.8rem)", marginTop: "12px" }}>
-          Welcome to your account
-        </h2>
-        <p style={{ marginTop: "14px", fontSize: "0.92rem", lineHeight: 1.6, opacity: 0.85, maxWidth: "560px" }}>
-          Enjoy easy access to our jewelry collections, your saved items, and dedicated customer support.
-        </p>
-        <Link
-          to="/shop?high=true"
-          className="eyebrow"
-          style={{
-            marginTop: "28px",
-            display: "inline-block",
-            backgroundColor: "var(--gold)",
-            color: "#1c2211",
-            padding: "12px 24px",
-            fontWeight: 600
-          }}
-        >
-          Explore Jewelry
-        </Link>
-      </div>
-
-      {/* Recent Orders Section */}
-      <div style={{ gridColumn: "1 / -1", marginTop: "20px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem" }}>Recent Orders</h3>
-          <Link to="/orders" className="eyebrow" style={{ borderBottom: "1px solid var(--foreground)", paddingBottom: "2px" }}>
-            View All Orders
-          </Link>
-        </div>
-
-        {ORDERS.length === 0 ? (
-          <p style={{ marginTop: "16px", color: "var(--muted-foreground)", fontSize: "0.9rem" }}>
-            No recent orders placed yet.
-          </p>
-        ) : (
-          <div style={{ marginTop: "16px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px" }}>
-            {ORDERS.slice(0, 2).map((o) => {
-              const firstProduct = getProduct(o.items[0]?.productId);
-              return (
-                <div
-                  key={o.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                    border: "1px solid var(--border)",
-                    backgroundColor: "var(--card)",
-                    padding: "20px"
-                  }}
-                >
-                  <img
-                    src={firstProduct?.image}
-                    alt=""
-                    style={{ width: "64px", height: "64px", objectFit: "cover", borderRadius: "2px" }}
-                  />
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem" }}>{o.id}</p>
-                    <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>{format(o.total)}</p>
-                  </div>
-                  <StatusBadge s={o.status} />
-                </div>
-              );
-            })}
-          </div>
-        )}
       </div>
     </div>
   );

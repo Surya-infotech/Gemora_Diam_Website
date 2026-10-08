@@ -154,7 +154,7 @@ function AccountMenu() {
 
               <div style={{ padding: "6px 0" }}>
                 <Link
-                  to="/profile?tab=overview"
+                  to="/profile?tab=wishlist"
                   onClick={() => setOpen(false)}
                   style={{
                     display: "block",
@@ -166,7 +166,7 @@ function AccountMenu() {
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                 >
-                  My Account Overview
+                  My Wishlist
                 </Link>
 
                 <Link
