@@ -1,4 +1,3 @@
-import React from "react";
 import { Minus, Plus, X } from "lucide-react";
 import { getProduct } from "../lib/products";
 import { useStore } from "../lib/store";

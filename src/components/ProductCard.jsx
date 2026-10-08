@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Heart, Eye, X } from "lucide-react";
 import { METALS } from "../lib/products";
 import { useStore } from "../lib/store";

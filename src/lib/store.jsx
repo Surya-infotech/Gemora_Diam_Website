@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { CURRENCIES, getProduct } from "./products";
 
 const defaultUser = {
@@ -41,12 +41,11 @@ function load(key, fallback) {
 }
 
 export function StoreProvider({ children }) {
-  const [cart, setCart] = useState([]);
-  const [wishlist, setWishlist] = useState(["eternelle-solitaire", "verdant-drop"]);
-  const [currency, setCurrency] = useState("USD");
-  const [user, setUser] = useState(defaultUser);
+  const [cart, setCart] = useState(() => load("gemora.cart", []));
+  const [wishlist, setWishlist] = useState(() => load("gemora.wishlist", ["eternelle-solitaire", "verdant-drop"]));
+  const [currency, setCurrency] = useState(() => load("gemora.currency", "USD"));
+  const [user, setUser] = useState(() => load("gemora.user", defaultUser));
   const [cartOpen, setCartOpen] = useState(false);
-  const [ready, setReady] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
   const notify = (title, description = "") => {
@@ -57,28 +56,20 @@ export function StoreProvider({ children }) {
   };
 
   useEffect(() => {
-    setCart(load("gemora.cart", []));
-    setWishlist(load("gemora.wishlist", ["eternelle-solitaire", "verdant-drop"]));
-    setCurrency(load("gemora.currency", "USD"));
-    setUser(load("gemora.user", defaultUser));
-    setReady(true);
-  }, []);
+    localStorage.setItem("gemora.cart", JSON.stringify(cart));
+  }, [cart]);
 
   useEffect(() => {
-    if (ready) localStorage.setItem("gemora.cart", JSON.stringify(cart));
-  }, [cart, ready]);
+    localStorage.setItem("gemora.wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
 
   useEffect(() => {
-    if (ready) localStorage.setItem("gemora.wishlist", JSON.stringify(wishlist));
-  }, [wishlist, ready]);
+    localStorage.setItem("gemora.currency", JSON.stringify(currency));
+  }, [currency]);
 
   useEffect(() => {
-    if (ready) localStorage.setItem("gemora.currency", JSON.stringify(currency));
-  }, [currency, ready]);
-
-  useEffect(() => {
-    if (ready) localStorage.setItem("gemora.user", JSON.stringify(user));
-  }, [user, ready]);
+    localStorage.setItem("gemora.user", JSON.stringify(user));
+  }, [user]);
 
   const format = (usd) => {
     const c = CURRENCIES[currency] || CURRENCIES.USD;
@@ -205,6 +196,7 @@ export function StoreProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useStore() {
   const c = useContext(Ctx);
   if (!c) throw new Error("useStore must be used within StoreProvider");

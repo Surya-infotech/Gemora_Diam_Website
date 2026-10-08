@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { MapPin, Clock, Phone, Mail, MessageCircle, CalendarDays, X, Check } from "lucide-react";
+import { useState } from "react";
+import { MapPin, Clock, Phone, Mail, MessageCircle, CalendarDays, X } from "lucide-react";
 import { useStore } from "../lib/store";
 
 const validate = (f) => ({

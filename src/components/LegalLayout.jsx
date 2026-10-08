@@ -1,5 +1,3 @@
-import React from "react";
-
 export function LegalLayout({ title, updated, sections }) {
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>

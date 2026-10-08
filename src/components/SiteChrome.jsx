@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Heart,
@@ -14,10 +14,7 @@ import {
   CreditCard,
   RotateCcw,
   Headphones,
-  ArrowRight,
-  ShieldCheck,
-  Gem,
-  Lock
+  ArrowRight
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import { CURRENCIES, PRODUCTS } from "../lib/products";

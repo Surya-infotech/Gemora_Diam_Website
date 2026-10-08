@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Link } from "react-router-dom";
 import { StoreProvider } from "./lib/store";
 import { Header, Footer } from "./components/SiteChrome";

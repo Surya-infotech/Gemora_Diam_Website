@@ -1,5 +1,3 @@
-import React from "react";
-
 export function StatusBadge({ s }) {
   const getStyle = () => {
     switch (s) {

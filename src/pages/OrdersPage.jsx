@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Check, Download, X } from "lucide-react";
 import { ORDERS, STATUSES } from "../lib/orders";
 import { getProduct } from "../lib/products";

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   Heart,
@@ -13,7 +12,6 @@ import {
   ChevronRight,
   ArrowUp,
   X,
-  Check,
   Quote
 } from "lucide-react";
 import { useStore } from "../lib/store";
@@ -38,7 +36,6 @@ import p42 from "../assets/vemus/products_product-42.jpg";
 import p43 from "../assets/vemus/products_product-43.jpg";
 import p44 from "../assets/vemus/products_product-44.jpg";
 import p45 from "../assets/vemus/products_product-45.jpg";
-import p46 from "../assets/vemus/products_product-46.jpg";
 import p52 from "../assets/vemus/products_product-52.jpg";
 import p53 from "../assets/vemus/products_product-53.jpg";
 import p66 from "../assets/vemus/products_product-66.jpg";
@@ -1749,7 +1746,7 @@ function NewsletterBanner() {
    10. INTERACTIVE QUICK VIEW MODAL
    ========================================================================= */
 function QuickViewModal({ product, onClose }) {
-  const { addToCart, notify, format } = useStore();
+  const { addToCart, notify } = useStore();
   const [qty, setQty] = useState(1);
   const [metal, setMetal] = useState("18k Yellow Gold");
 

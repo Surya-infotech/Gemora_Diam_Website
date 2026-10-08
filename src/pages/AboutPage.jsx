@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import atelier from "../assets/atelier.jpg";
 import { images } from "../lib/products";
 

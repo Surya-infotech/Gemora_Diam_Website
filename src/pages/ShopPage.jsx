@@ -1,4 +1,3 @@
-import React from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { CATEGORIES, PRODUCTS } from "../lib/products";
 import { ProductCard } from "../components/ProductCard";
