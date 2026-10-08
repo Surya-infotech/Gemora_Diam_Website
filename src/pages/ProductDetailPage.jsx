@@ -383,13 +383,6 @@ function ProductDetailContent({ product }) {
               </div>
             </div>
 
-            {/* Short Description */}
-            {product.description && (
-              <p style={{ fontSize: "0.95rem", color: "var(--muted-foreground)", lineHeight: 1.7 }}>
-                {product.description}
-              </p>
-            )}
-
             <div style={{ height: "1px", backgroundColor: "var(--border-subtle)" }} />
 
             {/* Metal Selector */}
