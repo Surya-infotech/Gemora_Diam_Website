@@ -189,7 +189,12 @@ export function StoreProvider({ children }) {
     const raw = load("gemora.wishlist", []);
     return Array.isArray(raw) ? raw.filter((id) => id !== "eternelle-solitaire" && id !== "verdant-drop") : [];
   });
-  const [currency, setCurrency] = useState(() => load("gemora.currency", "USD"));
+  const [currency, setCurrency] = useState(() => {
+    const saved = load("gemora.currency", null);
+    if (saved) return saved;
+    const storeCur = load("gemora.storeCurrency", null);
+    return storeCur?.currency || "INR";
+  });
   const [storeCurrency, setStoreCurrency] = useState(() => load("gemora.storeCurrency", null));
   const [user, setUser] = useState(() => load("gemora.user", defaultUser));
   const [generalSettings, setGeneralSettings] = useState(() => load("gemora.settings", null));
@@ -209,6 +214,21 @@ export function StoreProvider({ children }) {
     setTimeout(() => {
       setToastMessage(null);
     }, 3500);
+  }, []);
+
+  const changeCurrency = useCallback((newCode) => {
+    setCurrency(newCode);
+    localStorage.setItem("gemora.currency", JSON.stringify(newCode));
+    const meta = CURRENCIES[newCode];
+    if (meta) {
+      setStoreCurrency((prev) => ({
+        ...prev,
+        countryname: meta.country,
+        currency: newCode,
+        currencysymbol: meta.symbol,
+        currencyposition: meta.symbol === "₹" ? "right" : "left"
+      }));
+    }
   }, []);
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
@@ -238,6 +258,10 @@ export function StoreProvider({ children }) {
             if (data.currency) {
               setStoreCurrency(data.currency);
               localStorage.setItem("gemora.storeCurrency", JSON.stringify(data.currency));
+              const saved = localStorage.getItem("gemora.currency");
+              if (!saved && data.currency.currency) {
+                setCurrency(data.currency.currency);
+              }
             }
           })
           .catch((err) => console.warn("Failed to fetch settings:", err));
@@ -457,7 +481,7 @@ export function StoreProvider({ children }) {
         banners,
         cartOpen,
         setCartOpen,
-        setCurrency,
+        setCurrency: changeCurrency,
         addToCart,
         updateQty,
         removeItem,

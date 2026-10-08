@@ -16,8 +16,8 @@ export const PRODUCTS = [];
 export const getProduct = () => null;
 
 export const CURRENCIES = {
-  USD: { symbol: "$", rate: 1 },
-  EUR: { symbol: "€", rate: 0.92 },
-  GBP: { symbol: "£", rate: 0.79 },
-  INR: { symbol: "₹", rate: 83 }
+  INR: { symbol: "₹", rate: 83, country: "India", code: "in", flagEmoji: "🇮🇳" },
+  USD: { symbol: "$", rate: 1, country: "United States", code: "us", flagEmoji: "🇺🇸" },
+  EUR: { symbol: "€", rate: 0.92, country: "European Union", code: "eu", flagEmoji: "🇪🇺" },
+  GBP: { symbol: "£", rate: 0.79, country: "United Kingdom", code: "gb", flagEmoji: "🇬🇧" }
 };
