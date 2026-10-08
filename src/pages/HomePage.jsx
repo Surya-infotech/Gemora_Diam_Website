@@ -681,7 +681,7 @@ function BestSellerSection() {
                       cursor: "pointer"
                     }}
                     className="product-card-hover"
-                    onClick={() => navigate(`/product/${item.id}`)}
+                    onClick={() => navigate(`/product/${item._id || item.id}`)}
                   >
                     <img
                       src={item.image}
@@ -777,7 +777,7 @@ function BestSellerSection() {
                         cursor: "pointer",
                         fontFamily: "var(--font-serif)"
                       }}
-                      onClick={() => navigate(`/product/${item.id}`)}
+                      onClick={() => navigate(`/product/${item._id || item.id}`)}
                     >
                       {item.name}
                     </h4>
@@ -1086,7 +1086,7 @@ function ShopTheLookSection() {
           {looks.map((item, idx) => (
             <div
               key={item.product?.id || idx}
-              onClick={() => item.product?.id && navigate(`/product/${item.product.id}`)}
+              onClick={() => (item.product?._id || item.product?.id) && navigate(`/product/${item.product._id || item.product.id}`)}
               style={{
                 position: "relative",
                 height: "520px",
@@ -1188,7 +1188,7 @@ function JustForYouGallery() {
           img: p.image,
           title: p.name || "Handcrafted Jewelry",
           desc: p.description?.trim() || `${p.category || "Fine Jewelry"} Collection`,
-          link: `/product/${p.id}`
+          link: `/product/${p._id || p.id}`
         });
       }
     });
@@ -1205,7 +1205,7 @@ function JustForYouGallery() {
                 img: gImg,
                 title: p.name || "Exclusive Detail",
                 desc: `${p.category || "Fine Jewelry"} Detail`,
-                link: `/product/${p.id}`
+                link: `/product/${p._id || p.id}`
               });
             }
           });

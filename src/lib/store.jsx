@@ -32,10 +32,15 @@ function mapBackendItem(item) {
   const gallery = (item.galleryimages || []).map((g) => g.imageUrl).filter(Boolean);
   const mainImage = item.image || gallery[0] || "";
 
+  const mongoId = item._id ? String(item._id) : "";
+  const numericId = item.itemid !== undefined && item.itemid !== null ? String(item.itemid) : "";
+  const primaryId = mongoId || numericId;
+
   return {
-    id: String(item.itemid || item._id),
+    id: primaryId,
+    _id: mongoId || primaryId,
+    itemid: numericId,
     rawId: item.itemid,
-    _id: item._id,
     sku: item.sku || "",
     name: item.itemname,
     category: item.categoryname || "Jewelry",
@@ -673,9 +678,14 @@ export function StoreProvider({ children }) {
   const getProduct = useCallback(
     (id) => {
       if (!id) return null;
+      const strId = String(id).trim();
       return (
         products.find(
-          (p) => String(p.id) === String(id) || String(p.rawId) === String(id) || String(p._id) === String(id)
+          (p) =>
+            (p._id && String(p._id) === strId) ||
+            (p.id && String(p.id) === strId) ||
+            (p.rawId !== undefined && String(p.rawId) === strId) ||
+            (p.itemid !== undefined && String(p.itemid) === strId)
         ) || null
       );
     },

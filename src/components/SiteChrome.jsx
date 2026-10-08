@@ -803,7 +803,7 @@ export function Header() {
                   key={p.id}
                   onClick={() => {
                     setSearch(false);
-                    navigate(`/shop?item=${p.id}`);
+                    navigate(`/product/${p._id || p.id}`);
                   }}
                   style={{
                     display: "flex",

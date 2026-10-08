@@ -803,8 +803,8 @@ function ProductDetailContent({ product }) {
             >
               {relatedProducts.map((rel) => (
                 <div
-                  key={rel.id}
-                  onClick={() => navigate(`/product/${rel.id}`)}
+                  key={rel._id || rel.id}
+                  onClick={() => navigate(`/product/${rel._id || rel.id}`)}
                   style={{
                     cursor: "pointer",
                     display: "flex",
@@ -897,15 +897,24 @@ export default function ProductDetailPage() {
 
   const product = useMemo(() => {
     if (!products || products.length === 0) return null;
+    const strId = String(id).trim();
     return (
       products.find(
         (p) =>
-          String(p.id) === String(id) ||
-          String(p._id) === String(id) ||
-          String(p.rawId) === String(id)
+          (p._id && String(p._id) === strId) ||
+          (p.id && String(p.id) === strId) ||
+          (p.rawId !== undefined && String(p.rawId) === strId) ||
+          (p.itemid !== undefined && String(p.itemid) === strId)
       ) || null
     );
   }, [products, id]);
+
+  // If accessed via numeric itemid (e.g. /product/1), smoothly replace URL with /product/_id
+  useEffect(() => {
+    if (product && product._id && String(id) !== String(product._id)) {
+      navigate(`/product/${product._id}`, { replace: true });
+    }
+  }, [product, id, navigate]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });

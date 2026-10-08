@@ -108,7 +108,7 @@ export function ProductCard({ product }) {
           borderRadius: "2px"
         }}
       >
-        <Link to={`/product/${product.id}`} style={{ display: "block", width: "100%", height: "100%" }}>
+        <Link to={`/product/${product._id || product.id}`} style={{ display: "block", width: "100%", height: "100%" }}>
           <img
             src={product.image}
             alt={product.name}
@@ -203,7 +203,7 @@ export function ProductCard({ product }) {
             {product.category}
           </p>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.3rem", marginTop: "4px", lineHeight: 1.25 }}>
-            <Link to={`/product/${product.id}`} style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
+            <Link to={`/product/${product._id || product.id}`} style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
               {product.name}
             </Link>
           </h3>
