@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Award, Trash2 } from "lucide-react";
+import { Award, Trash2, LogOut } from "lucide-react";
 import { useStore } from "../lib/store";
 import { ORDERS } from "../lib/orders";
 import { StatusBadge } from "../components/StatusBadge";
@@ -18,11 +18,15 @@ const fieldStyle = {
 export default function ProfilePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get("tab") || "overview";
-  const { user } = useStore();
+  const { user, logout, login } = useStore();
 
   const setTab = (tab) => {
     setSearchParams({ tab });
   };
+
+  if (!user) {
+    return <SignInView onLogin={login} />;
+  }
 
   const tabs = [
     { id: "overview", label: "Overview" },
@@ -33,41 +37,105 @@ export default function ProfilePage() {
 
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
-      <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>My Account</p>
-      <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.6rem, 5vw, 3.8rem)", marginTop: "12px" }}>
-        Bonjour, {user.name.split(" ")[0]}
-      </h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "20px" }}>
+        <div>
+          <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>My Account</p>
+          <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.6rem, 5vw, 3.8rem)", marginTop: "12px" }}>
+            Bonjour, {user.name ? user.name.split(" ")[0] : "Client"}
+          </h1>
+        </div>
+        <button
+          onClick={logout}
+          className="eyebrow"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+            backgroundColor: "transparent",
+            color: "#555",
+            border: "1px solid var(--border)",
+            padding: "10px 22px",
+            borderRadius: "2px",
+            cursor: "pointer",
+            transition: "all 0.2s ease"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "#c33";
+            e.currentTarget.style.color = "#c33";
+            e.currentTarget.style.backgroundColor = "#fff8f8";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "var(--border)";
+            e.currentTarget.style.color = "#555";
+            e.currentTarget.style.backgroundColor = "transparent";
+          }}
+        >
+          <LogOut size={15} />
+          Log Out
+        </button>
+      </div>
 
       {/* Tabs Navigation */}
       <div
         style={{
           display: "flex",
-          gap: "24px",
-          overflowX: "auto",
+          justifyContent: "space-between",
+          alignItems: "center",
           borderBottom: "1px solid var(--border)",
           marginTop: "36px",
-          scrollbarWidth: "none"
+          gap: "24px"
         }}
       >
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className="eyebrow"
-            style={{
-              background: "none",
-              border: "none",
-              borderBottom: currentTab === t.id ? "2px solid var(--primary)" : "2px solid transparent",
-              paddingBottom: "14px",
-              color: currentTab === t.id ? "var(--foreground)" : "var(--muted-foreground)",
-              cursor: "pointer",
-              transition: "all 0.15s ease",
-              whiteSpace: "nowrap"
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
+        <div
+          style={{
+            display: "flex",
+            gap: "24px",
+            overflowX: "auto",
+            scrollbarWidth: "none"
+          }}
+        >
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className="eyebrow"
+              style={{
+                background: "none",
+                border: "none",
+                borderBottom: currentTab === t.id ? "2px solid var(--primary)" : "2px solid transparent",
+                paddingBottom: "14px",
+                color: currentTab === t.id ? "var(--foreground)" : "var(--muted-foreground)",
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={logout}
+          className="eyebrow"
+          style={{
+            background: "none",
+            border: "none",
+            color: "#888",
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            paddingBottom: "14px",
+            whiteSpace: "nowrap",
+            fontSize: "0.76rem"
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#c33")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
+        >
+          <LogOut size={14} />
+          Log Out
+        </button>
       </div>
 
       <div style={{ marginTop: "40px" }}>
@@ -430,7 +498,7 @@ function WishlistTab() {
 }
 
 function SettingsTab() {
-  const { user, setUser, showToast } = useStore();
+  const { user, setUser, showToast, logout } = useStore();
   const [profileData, setProfileData] = useState({ name: user.name, email: user.email, phone: user.phone });
   const [passData, setPassData] = useState({ current: "", next: "", confirm: "" });
 
@@ -563,6 +631,215 @@ function SettingsTab() {
             />
           </label>
         ))}
+      </div>
+      {/* Account Session & Logout */}
+      <div
+        style={{
+          gridColumn: "1 / -1",
+          marginTop: "16px",
+          padding: "28px 32px",
+          backgroundColor: "#fffdfb",
+          border: "1px solid #f2ded9",
+          borderRadius: "2px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "20px"
+        }}
+      >
+        <div>
+          <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, color: "var(--gold-deep)" }}>
+            Session Management
+          </span>
+          <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", color: "#181818", margin: "6px 0 4px 0" }}>
+            Account Session &amp; Sign Out
+          </h4>
+          <p style={{ fontSize: "0.88rem", color: "#666", margin: 0 }}>
+            Currently signed in as <strong style={{ color: "#181818" }}>{user?.name}</strong> ({user?.email}).
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={logout}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "10px",
+            backgroundColor: "#a83232",
+            color: "#ffffff",
+            padding: "14px 28px",
+            border: "none",
+            borderRadius: "2px",
+            fontSize: "0.78rem",
+            fontWeight: 600,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            cursor: "pointer",
+            transition: "background 0.2s ease"
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#882323")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#a83232")}
+        >
+          <LogOut size={16} />
+          Log Out Account
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SignInView({ onLogin }) {
+  const [isRegister, setIsRegister] = useState(false);
+  const [email, setEmail] = useState("isabella@example.com");
+  const [password, setPassword] = useState("password123");
+  const [name, setName] = useState("Isabella Laurent");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email) return;
+    onLogin({ email, name: isRegister ? name : (name || email.split("@")[0]) });
+  };
+
+  const handleDemoLogin = () => {
+    onLogin({
+      name: "Isabella Laurent",
+      email: "isabella@example.com",
+      phone: "+1 212 555 0198"
+    });
+  };
+
+  return (
+    <div className="container-luxury" style={{ paddingTop: "70px", paddingBottom: "110px", maxWidth: "540px", margin: "0 auto" }}>
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          border: "1px solid var(--border)",
+          padding: "44px 40px",
+          borderRadius: "2px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
+          textAlign: "center"
+        }}
+      >
+        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Maison Gemora</p>
+        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.4rem", marginTop: "12px", color: "var(--foreground)" }}>
+          {isRegister ? "Create Account" : "Client Sign In"}
+        </h1>
+        <p style={{ marginTop: "10px", fontSize: "0.9rem", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
+          {isRegister
+            ? "Join our exclusive salon for bespoke consultations, priority vault releases, and personal styling."
+            : "Sign in to access your private salon, order archives, and personal bespoke jewelry collections."}
+        </p>
+
+        <form onSubmit={handleSubmit} style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "16px", textAlign: "left" }}>
+          {isRegister && (
+            <div>
+              <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666", display: "block", marginBottom: "6px" }}>
+                Full Name
+              </label>
+              <input
+                style={fieldStyle}
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Isabella Laurent"
+                required
+              />
+            </div>
+          )}
+
+          <div>
+            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666", display: "block", marginBottom: "6px" }}>
+              Email Address
+            </label>
+            <input
+              style={fieldStyle}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="client@gemoradiam.com"
+              required
+            />
+          </div>
+
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+              <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666" }}>
+                Password
+              </label>
+            </div>
+            <input
+              style={fieldStyle}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="eyebrow"
+            style={{
+              marginTop: "12px",
+              backgroundColor: "var(--primary)",
+              color: "#ffffff",
+              padding: "14px",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: 600,
+              letterSpacing: "0.15em",
+              textAlign: "center"
+            }}
+          >
+            {isRegister ? "Create Salon Account" : "Sign In"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            className="eyebrow"
+            style={{
+              backgroundColor: "transparent",
+              color: "var(--foreground)",
+              border: "1px solid var(--border)",
+              padding: "12px",
+              cursor: "pointer",
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textAlign: "center"
+            }}
+          >
+            Sign In with Demo Account
+          </button>
+        </form>
+
+        <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid var(--border)", fontSize: "0.85rem", color: "#666" }}>
+          {isRegister ? (
+            <>
+              Already have an account?{" "}
+              <button
+                type="button"
+                onClick={() => setIsRegister(false)}
+                style={{ background: "none", border: "none", color: "var(--primary)", fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}
+              >
+                Sign In
+              </button>
+            </>
+          ) : (
+            <>
+              Don't have an account yet?{" "}
+              <button
+                type="button"
+                onClick={() => setIsRegister(true)}
+                style={{ background: "none", border: "none", color: "var(--primary)", fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}
+              >
+                Create Account
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -196,7 +196,11 @@ export function StoreProvider({ children }) {
     return storeCur?.currency || "INR";
   });
   const [storeCurrency, setStoreCurrency] = useState(() => load("gemora.storeCurrency", null));
-  const [user, setUser] = useState(() => load("gemora.user", defaultUser));
+  const [user, setUser] = useState(() => {
+    const isLoggedOut = localStorage.getItem("gemora.loggedOut");
+    if (isLoggedOut === "true") return null;
+    return load("gemora.user", defaultUser);
+  });
   const [generalSettings, setGeneralSettings] = useState(() => load("gemora.settings", null));
   const [socialMedia, setSocialMedia] = useState(() => load("gemora.socialMedia", []));
   const [products, setProducts] = useState(() => load("gemora.products", []));
@@ -230,6 +234,30 @@ export function StoreProvider({ children }) {
       }));
     }
   }, []);
+
+  const logout = useCallback(() => {
+    setUser(null);
+    localStorage.removeItem("gemora.user");
+    localStorage.setItem("gemora.loggedOut", "true");
+    notify("Logged Out", "You have successfully signed out of your account.");
+  }, [notify]);
+
+  const login = useCallback(
+    (credentials) => {
+      localStorage.removeItem("gemora.loggedOut");
+      const loggedInUser = {
+        ...defaultUser,
+        name: credentials?.name || (credentials?.email ? credentials.email.split("@")[0] : defaultUser.name),
+        email: credentials?.email || defaultUser.email,
+        phone: credentials?.phone || defaultUser.phone
+      };
+      setUser(loggedInUser);
+      localStorage.setItem("gemora.user", JSON.stringify(loggedInUser));
+      notify("Welcome Back", `Signed in as ${loggedInUser.name}`);
+      return loggedInUser;
+    },
+    [notify]
+  );
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
 
@@ -345,7 +373,13 @@ export function StoreProvider({ children }) {
   }, [currency]);
 
   useEffect(() => {
-    localStorage.setItem("gemora.user", JSON.stringify(user));
+    if (user) {
+      localStorage.setItem("gemora.user", JSON.stringify(user));
+      localStorage.removeItem("gemora.loggedOut");
+    } else {
+      localStorage.removeItem("gemora.user");
+      localStorage.setItem("gemora.loggedOut", "true");
+    }
   }, [user]);
 
   const getProduct = useCallback(
@@ -488,6 +522,8 @@ export function StoreProvider({ children }) {
         clearCart,
         toggleWishlist,
         setUser,
+        login,
+        logout,
         getProduct,
         getItemPrice,
         format,

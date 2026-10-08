@@ -14,7 +14,8 @@ import {
   CreditCard,
   RotateCcw,
   Headphones,
-  ArrowRight
+  ArrowRight,
+  LogOut
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import { CartLines } from "./CartLines";
@@ -85,8 +86,200 @@ function Badge({ n }) {
   );
 }
 
+function AccountMenu() {
+  const { user, logout } = useStore();
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  return (
+    <div style={{ position: "relative" }} ref={menuRef} className="desktop-only-nav">
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        aria-label="Account Menu"
+        style={{
+          background: "none",
+          border: "none",
+          color: "#181818",
+          display: "inline-flex",
+          alignItems: "center",
+          cursor: "pointer",
+          padding: "4px"
+        }}
+      >
+        <User size={22} strokeWidth={1.4} />
+      </button>
+
+      {open && (
+        <div
+          style={{
+            position: "absolute",
+            top: "calc(100% + 12px)",
+            right: 0,
+            backgroundColor: "#ffffff",
+            color: "#181818",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+            borderRadius: "2px",
+            border: "1px solid #ebebeb",
+            padding: "10px 0",
+            minWidth: "220px",
+            zIndex: 9999,
+            animation: "fadeIn 0.15s ease-out"
+          }}
+        >
+          {user ? (
+            <>
+              <div style={{ padding: "8px 18px 12px", borderBottom: "1px solid #f0f0f0" }}>
+                <div style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--gold-deep)", fontWeight: 700 }}>
+                  Client Salon
+                </div>
+                <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818", marginTop: "2px" }}>
+                  {user.name}
+                </div>
+                <div style={{ fontSize: "0.76rem", color: "#888", marginTop: "1px" }}>
+                  {user.email}
+                </div>
+              </div>
+
+              <div style={{ padding: "6px 0" }}>
+                <Link
+                  to="/profile?tab=overview"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "8px 18px",
+                    fontSize: "0.82rem",
+                    color: "#333",
+                    textDecoration: "none"
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  My Account Overview
+                </Link>
+                <Link
+                  to="/profile?tab=addresses"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "8px 18px",
+                    fontSize: "0.82rem",
+                    color: "#333",
+                    textDecoration: "none"
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  Saved Addresses
+                </Link>
+                <Link
+                  to="/profile?tab=settings"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "8px 18px",
+                    fontSize: "0.82rem",
+                    color: "#333",
+                    textDecoration: "none"
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  Security &amp; Settings
+                </Link>
+                <Link
+                  to="/orders"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "8px 18px",
+                    fontSize: "0.82rem",
+                    color: "#333",
+                    textDecoration: "none"
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  Order History
+                </Link>
+              </div>
+
+              <div style={{ borderTop: "1px solid #f0f0f0", paddingTop: "6px" }}>
+                <button
+                  onClick={() => {
+                    logout();
+                    setOpen(false);
+                  }}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "8px 18px",
+                    background: "none",
+                    border: "none",
+                    color: "#c33",
+                    fontSize: "0.82rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    textAlign: "left"
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff5f5")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  <LogOut size={14} />
+                  Log Out
+                </button>
+              </div>
+            </>
+          ) : (
+            <div style={{ padding: "8px 18px" }}>
+              <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "#181818" }}>
+                Maison Gemora
+              </div>
+              <p style={{ fontSize: "0.78rem", color: "#888", margin: "4px 0 12px" }}>
+                Sign in to view your orders, saved pieces, and salon details.
+              </p>
+              <Link
+                to="/profile"
+                onClick={() => setOpen(false)}
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  backgroundColor: "var(--primary)",
+                  color: "#ffffff",
+                  padding: "9px 12px",
+                  fontSize: "0.78rem",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  borderRadius: "2px",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase"
+                }}
+              >
+                Sign In
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Header() {
-  const { cartCount, wishlist, setCartOpen, generalSettings, products: dynamicProducts, format } = useStore();
+  const { cartCount, wishlist, setCartOpen, generalSettings, products: dynamicProducts, format, user, logout } = useStore();
   const [mobile, setMobile] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
@@ -382,15 +575,8 @@ export function Header() {
               <Search size={22} strokeWidth={1.4} />
             </button>
 
-            {/* Account Icon */}
-            <Link
-              to="/profile"
-              aria-label="Account"
-              style={{ color: "#181818", display: "inline-flex", alignItems: "center" }}
-              className="desktop-only-nav"
-            >
-              <User size={22} strokeWidth={1.4} />
-            </Link>
+            {/* Account Menu & Logout */}
+            <AccountMenu />
 
             {/* Wishlist Icon with Badge */}
             <Link
@@ -492,6 +678,85 @@ export function Header() {
                 Contact &amp; Stores
               </Link>
             </nav>
+
+            <div style={{ marginTop: "auto", borderTop: "1px solid #eee", paddingTop: "24px" }}>
+              {user ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        backgroundColor: "var(--primary)",
+                        color: "#fff",
+                        display: "grid",
+                        placeItems: "center",
+                        fontWeight: 700,
+                        fontSize: "0.9rem"
+                      }}
+                    >
+                      {user.name ? user.name[0] : "U"}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818" }}>{user.name}</div>
+                      <div style={{ fontSize: "0.76rem", color: "#888" }}>{user.email}</div>
+                    </div>
+                  </div>
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobile(false)}
+                    style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--foreground)" }}
+                  >
+                    My Account &amp; Settings
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobile(false);
+                    }}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      color: "#c33",
+                      fontSize: "0.9rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      textAlign: "left"
+                    }}
+                  >
+                    <LogOut size={16} />
+                    Log Out
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/profile"
+                  onClick={() => setMobile(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    padding: "12px",
+                    backgroundColor: "var(--primary)",
+                    color: "#ffffff",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                    borderRadius: "2px",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase"
+                  }}
+                >
+                  <User size={16} />
+                  Sign In to Account
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       )}
