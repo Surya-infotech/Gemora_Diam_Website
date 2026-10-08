@@ -451,7 +451,9 @@ function HeroSlider() {
    2. THREE CIRCULAR CATEGORY PROMO CARDS
    ========================================================================= */
 function CircularCategories() {
-  const cards = [
+  const { categories } = useStore();
+
+  const defaultCards = [
     {
       img: promo1,
       title: "Timeless Classics",
@@ -471,6 +473,16 @@ function CircularCategories() {
       link: "/shop?category=Bracelets"
     }
   ];
+
+  const cards =
+    categories && categories.length > 0
+      ? categories.slice(0, 3).map((c, i) => ({
+          img: i === 0 ? promo1 : i === 1 ? promo2 : promo3,
+          title: c.categoryname,
+          desc: `Exquisite handcrafted ${c.categoryname.toLowerCase()} sculpted with certified Kimberley diamonds and solid gold.`,
+          link: `/shop?category=${encodeURIComponent(c.categoryname)}`
+        }))
+      : defaultCards;
 
   return (
     <section style={{ padding: "90px 0 70px 0", backgroundColor: "#ffffff" }}>
@@ -583,9 +595,17 @@ function CircularCategories() {
    ========================================================================= */
 function BestSellerSection({ onQuickView }) {
   const [activeTab, setActiveTab] = useState("all");
-  const { addToCart, toggleWishlist, wishlist, notify } = useStore();
+  const {
+    addToCart,
+    toggleWishlist,
+    wishlist,
+    notify,
+    format,
+    products: dynamicProducts,
+    categories: dynamicCategories
+  } = useStore();
 
-  const products = [
+  const fallbackProducts = [
     {
       id: "halo-engagement-ring",
       name: "Emerald-cut Halo Engagement Ring with a Diamond Platinum Band",
@@ -676,10 +696,33 @@ function BestSellerSection({ onQuickView }) {
     }
   ];
 
+  // Prioritize dynamic products from admin panel
+  const combinedProducts = [
+    ...(dynamicProducts || []),
+    ...fallbackProducts.filter(
+      (fb) => !(dynamicProducts || []).some((dp) => dp.id === fb.id || dp.name === fb.name)
+    )
+  ];
+
+  const categoryTabs = [
+    { id: "all", label: "all" },
+    ...(dynamicCategories && dynamicCategories.length > 0
+      ? dynamicCategories.map((c) => ({
+          id: (c.categoryname || "").toLowerCase(),
+          label: (c.categoryname || "").toLowerCase()
+        }))
+      : [
+          { id: "rings", label: "rings" },
+          { id: "bracelets", label: "bracelets" },
+          { id: "necklaces", label: "necklaces" },
+          { id: "earrings", label: "earrings" }
+        ])
+  ];
+
   const filtered =
     activeTab === "all"
-      ? products.slice(0, 4)
-      : products.filter((p) => p.category === activeTab);
+      ? combinedProducts.slice(0, 8)
+      : combinedProducts.filter((p) => (p.category || "").toLowerCase() === activeTab.toLowerCase());
 
   return (
     <section style={{ padding: "50px 0 90px 0", backgroundColor: "#ffffff" }}>
@@ -705,16 +748,11 @@ function BestSellerSection({ onQuickView }) {
             gap: "32px",
             marginBottom: "48px",
             borderBottom: "1px solid #ebebeb",
-            paddingBottom: "12px"
+            paddingBottom: "12px",
+            flexWrap: "wrap"
           }}
         >
-          {[
-            { id: "all", label: "all" },
-            { id: "rings", label: "rings" },
-            { id: "bracelets", label: "bracelets" },
-            { id: "necklaces", label: "necklaces" },
-            { id: "earrings", label: "earrings" }
-          ].map((t) => (
+          {categoryTabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
@@ -727,7 +765,9 @@ function BestSellerSection({ onQuickView }) {
                 borderBottom: activeTab === t.id ? "2px solid var(--primary)" : "none",
                 paddingBottom: "12px",
                 marginBottom: "-13px",
-                transition: "all 0.2s"
+                transition: "all 0.2s",
+                background: "none",
+                cursor: "pointer"
               }}
             >
               {t.label}
@@ -836,8 +876,7 @@ function BestSellerSection({ onQuickView }) {
 
                     <button
                       onClick={() => {
-                        addToCart(item, 1, "18k Yellow Gold");
-                        notify("Added to Bag", item.name);
+                        addToCart(item.id, item.metals?.[0] || "18k Yellow Gold");
                       }}
                       aria-label="Add to Cart"
                       style={{
@@ -984,7 +1023,7 @@ function BestSellerSection({ onQuickView }) {
                         color: item.oldPrice ? "#F43B3B" : "#181818"
                       }}
                     >
-                      ${item.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                      {format(item.price)}
                     </span>
                     {item.oldPrice && (
                       <span
@@ -994,7 +1033,7 @@ function BestSellerSection({ onQuickView }) {
                           textDecoration: "line-through"
                         }}
                       >
-                        ${item.oldPrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                        {format(item.oldPrice)}
                       </span>
                     )}
                   </div>
@@ -1694,16 +1733,18 @@ function JustForYouGallery() {
    ========================================================================= */
 function NewsletterBanner() {
   const [email, setEmail] = useState("");
-  const { notify } = useStore();
+  const { subscribeNewsletter, notify } = useStore();
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
-      alert("Please enter a valid email address");
+      notify("Invalid Email", "Please enter a valid email address");
       return;
     }
-    notify("Welcome to Vemus!", "Enjoy 15% off your first order: VEMUS15");
-    setEmail("");
+    const res = await subscribeNewsletter(email);
+    if (res.success) {
+      setEmail("");
+    }
   };
 
   return (
@@ -1768,9 +1809,9 @@ function NewsletterBanner() {
    10. INTERACTIVE QUICK VIEW MODAL
    ========================================================================= */
 function QuickViewModal({ product, onClose }) {
-  const { addToCart, notify } = useStore();
+  const { addToCart, notify, format, generalSettings } = useStore();
   const [qty, setQty] = useState(1);
-  const [metal, setMetal] = useState("18k Yellow Gold");
+  const [metal, setMetal] = useState(product?.metals?.[0] || "18k Yellow Gold");
 
   return (
     <div
@@ -1808,7 +1849,7 @@ function QuickViewModal({ product, onClose }) {
         <button
           onClick={onClose}
           aria-label="Close"
-          style={{ position: "absolute", top: "18px", right: "18px", color: "#181818" }}
+          style={{ position: "absolute", top: "18px", right: "18px", color: "#181818", background: "none", border: "none", cursor: "pointer" }}
         >
           <X size={22} />
         </button>
@@ -1821,7 +1862,7 @@ function QuickViewModal({ product, onClose }) {
         {/* Right: Info */}
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <span style={{ fontSize: "0.75rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--primary)", fontWeight: 600 }}>
-            Vemus Haute Joaillerie
+            {generalSettings?.softwarename || "Gemora Diam"} Haute Joaillerie
           </span>
 
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.6rem", margin: "8px 0 14px 0", lineHeight: 1.3 }}>
@@ -1836,7 +1877,7 @@ function QuickViewModal({ product, onClose }) {
           </div>
 
           <div style={{ fontSize: "1.4rem", fontWeight: 700, color: "var(--primary)", marginBottom: "16px" }}>
-            ${product.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            {format(product.price)}
           </div>
 
           <p style={{ fontSize: "0.88rem", color: "#666", lineHeight: 1.6, marginBottom: "24px" }}>

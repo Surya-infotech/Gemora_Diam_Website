@@ -1,18 +1,21 @@
 import { useState } from "react";
 import atelier from "../assets/atelier.jpg";
 import { images } from "../lib/products";
+import { useStore } from "../lib/store";
 
 const MILESTONES = [
   { y: "1987", t: "The first atelier", d: "Élise Moreau opens a two-bench workshop on Rue de la Paix, Paris, hand-forging bespoke solitaire rings for European collectors." },
   { y: "1998", t: "The Éternelle ring", d: "Our signature four-claw solitaire is born and immediately becomes an internationally revered modern classic." },
-  { y: "2009", t: "Ethical pledge", d: "GEMORA DIAM commits to 100% Kimberley Process–certified, traceable stones and certified conflict-free mines." },
+  { y: "2009", t: "Ethical pledge", d: "Committed to 100% Kimberley Process–certified, traceable stones and certified conflict-free mines." },
   { y: "2016", t: "London & New York", d: "Flagship salons open on Bond Street and Madison Avenue, bringing Parisian high jewelry to transatlantic patrons." },
-  { y: "2021", t: "Recycled gold", d: "Every single gram of GEMORA DIAM gold is refined from reclaimed sources, reducing mining carbon footprints by over 90%." },
+  { y: "2021", t: "Recycled gold", d: "Every single gram of our gold is refined from reclaimed sources, reducing mining carbon footprints by over 90%." },
   { y: "2026", t: "Global maison", d: "Twelve boutiques across four continents, yet one solitary, meticulous atelier philosophy at heart." },
 ];
 
 export default function AboutPage() {
   const [active, setActive] = useState(0);
+  const { generalSettings } = useStore();
+  const brandName = generalSettings?.softwarename || "GEMORA DIAM";
 
   return (
     <div>
@@ -23,7 +26,7 @@ export default function AboutPage() {
           Jewelry that outlives <em style={{ fontStyle: "italic", fontFamily: "var(--font-serif)" }}>us all</em>
         </h1>
         <p style={{ marginTop: "28px", fontSize: "1.05rem", lineHeight: 1.8, color: "var(--muted-foreground)" }}>
-          GEMORA DIAM began with a simple conviction: that a piece of jewelry should hold a memory for a hundred years. Our vision is to make heirlooms with an uncompromising conscience — beautiful, honest, and enduring.
+          {brandName} began with a simple conviction: that a piece of jewelry should hold a memory for a hundred years. Our vision is to make heirlooms with an uncompromising conscience — beautiful, honest, and enduring.
         </p>
       </section>
 

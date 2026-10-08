@@ -1,19 +1,49 @@
 import { useSearchParams, Link } from "react-router-dom";
-import { CATEGORIES, PRODUCTS } from "../lib/products";
+import { CATEGORIES as DEFAULT_CATEGORIES, PRODUCTS as DEFAULT_PRODUCTS } from "../lib/products";
 import { ProductCard } from "../components/ProductCard";
+import { useStore } from "../lib/store";
 
 export default function ShopPage() {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category") || null;
   const high = searchParams.get("high") === "true";
+  const search = searchParams.get("search")?.toLowerCase().trim() || null;
 
-  const list = PRODUCTS.filter((p) => {
+  const { products, categories, productsLoading } = useStore();
+
+  // Combine dynamic products from Admin Panel with default fallback if empty
+  const allProducts = products && products.length > 0 ? products : DEFAULT_PRODUCTS;
+
+  // Active categories from Admin Panel
+  const activeCategories =
+    categories && categories.length > 0
+      ? categories.map((c) => c.categoryname)
+      : DEFAULT_CATEGORIES;
+
+  const list = allProducts.filter((p) => {
+    if (search) {
+      const match =
+        (p.name || "").toLowerCase().includes(search) ||
+        (p.category || "").toLowerCase().includes(search) ||
+        (p.description || "").toLowerCase().includes(search) ||
+        (p.sku || "").toLowerCase().includes(search);
+      if (!match) return false;
+    }
     if (high) return p.highJewelry;
-    if (category) return p.category === category;
+    if (category) {
+      return (
+        (p.category || "").toLowerCase() === category.toLowerCase() ||
+        String(p.categoryid) === String(category)
+      );
+    }
     return true;
   });
 
-  const title = high ? "High Jewelry" : category ?? "All Jewelry";
+  const title = search
+    ? `Search: "${searchParams.get("search")}"`
+    : high
+    ? "High Jewelry"
+    : category ?? "All Jewelry";
 
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
@@ -38,9 +68,9 @@ export default function ShopPage() {
           className="eyebrow"
           style={{
             border: "1px solid",
-            borderColor: !category && !high ? "var(--primary)" : "var(--border)",
-            backgroundColor: !category && !high ? "var(--primary)" : "transparent",
-            color: !category && !high ? "var(--primary-foreground)" : "var(--foreground)",
+            borderColor: !category && !high && !search ? "var(--primary)" : "var(--border)",
+            backgroundColor: !category && !high && !search ? "var(--primary)" : "transparent",
+            color: !category && !high && !search ? "var(--primary-foreground)" : "var(--foreground)",
             padding: "10px 18px",
             borderRadius: "2px",
             transition: "all 0.15s ease"
@@ -49,16 +79,16 @@ export default function ShopPage() {
           All
         </Link>
 
-        {CATEGORIES.map((c) => (
+        {activeCategories.map((c) => (
           <Link
             key={c}
             to={`/shop?category=${encodeURIComponent(c)}`}
             className="eyebrow"
             style={{
               border: "1px solid",
-              borderColor: category === c ? "var(--primary)" : "var(--border)",
-              backgroundColor: category === c ? "var(--primary)" : "transparent",
-              color: category === c ? "var(--primary-foreground)" : "var(--foreground)",
+              borderColor: category?.toLowerCase() === c.toLowerCase() ? "var(--primary)" : "var(--border)",
+              backgroundColor: category?.toLowerCase() === c.toLowerCase() ? "var(--primary)" : "transparent",
+              color: category?.toLowerCase() === c.toLowerCase() ? "var(--primary-foreground)" : "var(--foreground)",
               padding: "10px 18px",
               borderRadius: "2px",
               transition: "all 0.15s ease"
@@ -86,22 +116,40 @@ export default function ShopPage() {
       </div>
 
       <p style={{ marginTop: "24px", fontSize: "0.82rem", color: "var(--muted-foreground)" }}>
-        {list.length} pieces available
+        {productsLoading ? "Loading collection..." : `${list.length} pieces available`}
       </p>
 
       {/* Grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: "40px 24px",
-          marginTop: "24px"
-        }}
-      >
-        {list.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+      {list.length === 0 ? (
+        <div style={{ padding: "60px 0", textAlign: "center", color: "var(--muted-foreground)" }}>
+          <p style={{ fontSize: "1.1rem" }}>No pieces found in this category.</p>
+          <Link
+            to="/shop"
+            style={{
+              marginTop: "16px",
+              display: "inline-block",
+              color: "var(--primary)",
+              textDecoration: "underline",
+              fontSize: "0.9rem"
+            }}
+          >
+            Browse all jewelry
+          </Link>
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "40px 24px",
+            marginTop: "24px"
+          }}
+        >
+          {list.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

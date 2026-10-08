@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { CURRENCIES, getProduct } from "./products";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { CURRENCIES, PRODUCTS as FALLBACK_PRODUCTS } from "./products";
 
 const defaultUser = {
   name: "Isabella Laurent",
@@ -29,6 +29,49 @@ const defaultUser = {
   ]
 };
 
+export function mapBackendItem(item) {
+  let basePrice = 0;
+  if (item.pricing?.priceType === "metal_wise") {
+    basePrice = item.pricing.metalWisePrices?.[0]?.price || 0;
+  } else if (item.pricing?.priceType === "metal_with_stone_diamond_carat") {
+    const p = item.pricing.metalWithStoneDiamondCaratPrices?.[0];
+    basePrice = p?.price || p?.caratPrices?.[0]?.price || 0;
+  }
+
+  const metals = (item.pricing?.metalWisePrices || [])
+    .map((m) => m.metalname)
+    .filter(Boolean);
+
+  const gallery = (item.galleryimages || []).map((g) => g.imageUrl).filter(Boolean);
+  const mainImage = item.image || gallery[0] || "";
+
+  return {
+    id: String(item.itemid || item._id),
+    rawId: item.itemid,
+    _id: item._id,
+    sku: item.sku || "",
+    name: item.itemname,
+    category: item.categoryname || "Jewelry",
+    categoryid: item.categoryid,
+    subcategory: item.subcategoryname || "",
+    price: basePrice,
+    image: mainImage,
+    galleryImages: gallery,
+    video: item.video || item.galleryvideos?.[0]?.videoUrl || "",
+    description: item.description || "",
+    metals: metals.length > 0 ? metals : ["18k Yellow Gold", "14k White Gold", "Rose Gold", "Platinum"],
+    ringSizes: item.ringsizes || [],
+    shapes: item.shapes || [],
+    clarities: item.clarities || [],
+    colors: item.diamondcolors || [],
+    stones: item.stones || [],
+    styles: item.styles || [],
+    pricing: item.pricing,
+    status: item.status,
+    bestseller: true
+  };
+}
+
 const Ctx = createContext(null);
 
 function load(key, fallback) {
@@ -47,49 +90,115 @@ export function StoreProvider({ children }) {
   const [user, setUser] = useState(() => load("gemora.user", defaultUser));
   const [generalSettings, setGeneralSettings] = useState(() => load("gemora.settings", null));
   const [socialMedia, setSocialMedia] = useState(() => load("gemora.socialMedia", []));
+  const [products, setProducts] = useState(() => load("gemora.products", []));
+  const [categories, setCategories] = useState(() => load("gemora.categories", []));
+  const [policies, setPolicies] = useState(() => load("gemora.policies", []));
+  const [faqs, setFaqs] = useState(() => load("gemora.faqs", []));
+  const [banners, setBanners] = useState(() => load("gemora.banners", []));
   const [settingsLoading, setSettingsLoading] = useState(false);
+  const [productsLoading, setProductsLoading] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
-  const notify = (title, description = "") => {
+  const notify = useCallback((title, description = "") => {
     setToastMessage({ title, description });
     setTimeout(() => {
       setToastMessage(null);
     }, 3500);
-  };
+  }, []);
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
+
+  // Fetch all Admin Panel data
   useEffect(() => {
     let isMounted = true;
-    const fetchSettings = async () => {
+
+    const fetchAllData = async () => {
       try {
         setSettingsLoading(true);
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
-        const res = await fetch(`${backendUrl}/System/GetGeneralSetting_landingpage`);
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted) {
+        setProductsLoading(true);
+
+        // 1. General Settings
+        fetch(`${backendUrl}/System/GetGeneralSetting_landingpage`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (!isMounted || !data) return;
             if (data.generalSetting) {
               setGeneralSettings(data.generalSetting);
               localStorage.setItem("gemora.settings", JSON.stringify(data.generalSetting));
             }
-            if (data.socialMedia && Array.isArray(data.socialMedia)) {
+            if (Array.isArray(data.socialMedia)) {
               setSocialMedia(data.socialMedia);
               localStorage.setItem("gemora.socialMedia", JSON.stringify(data.socialMedia));
             }
-          }
-        }
-      } catch (err) {
-        console.warn("Could not fetch general settings from backend, using defaults:", err);
+          })
+          .catch((err) => console.warn("Failed to fetch settings:", err));
+
+        // 2. Products (Active items)
+        fetch(`${backendUrl}/Products/GetActiveItems`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (!isMounted || !Array.isArray(data)) return;
+            const mapped = data.map(mapBackendItem);
+            setProducts(mapped);
+            localStorage.setItem("gemora.products", JSON.stringify(mapped));
+          })
+          .catch((err) => console.warn("Failed to fetch products:", err))
+          .finally(() => {
+            if (isMounted) setProductsLoading(false);
+          });
+
+        // 3. Categories
+        fetch(`${backendUrl}/Attributes/GetActiveCategories`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (!isMounted || !Array.isArray(data)) return;
+            setCategories(data);
+            localStorage.setItem("gemora.categories", JSON.stringify(data));
+          })
+          .catch((err) => console.warn("Failed to fetch categories:", err));
+
+        // 4. Policies
+        fetch(`${backendUrl}/Support/GetActivePolicies`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (!isMounted || !Array.isArray(data)) return;
+            setPolicies(data);
+            localStorage.setItem("gemora.policies", JSON.stringify(data));
+          })
+          .catch((err) => console.warn("Failed to fetch policies:", err));
+
+        // 5. FAQs
+        fetch(`${backendUrl}/Support/GetActiveFAQs`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (!isMounted || !data) return;
+            const list = Array.isArray(data) ? data : [data];
+            setFaqs(list);
+            localStorage.setItem("gemora.faqs", JSON.stringify(list));
+          })
+          .catch((err) => console.warn("Failed to fetch FAQs:", err));
+
+        // 6. Banners
+        fetch(`${backendUrl}/Support/GetActiveBanners`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (!isMounted || !Array.isArray(data)) return;
+            setBanners(data);
+            localStorage.setItem("gemora.banners", JSON.stringify(data));
+          })
+          .catch((err) => console.warn("Failed to fetch banners:", err));
       } finally {
         if (isMounted) setSettingsLoading(false);
       }
     };
 
-    fetchSettings();
+    fetchAllData();
+
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [backendUrl]);
 
   useEffect(() => {
     localStorage.setItem("gemora.cart", JSON.stringify(cart));
@@ -107,10 +216,26 @@ export function StoreProvider({ children }) {
     localStorage.setItem("gemora.user", JSON.stringify(user));
   }, [user]);
 
-  const format = (usd) => {
-    const c = CURRENCIES[currency] || CURRENCIES.USD;
-    return c.symbol + Math.round(usd * c.rate).toLocaleString(currency === "INR" ? "en-IN" : "en-US");
-  };
+  const getProduct = useCallback(
+    (id) => {
+      if (!id) return null;
+      const found = products.find(
+        (p) => String(p.id) === String(id) || String(p.rawId) === String(id) || String(p._id) === String(id)
+      );
+      if (found) return found;
+      return FALLBACK_PRODUCTS.find((p) => String(p.id) === String(id));
+    },
+    [products]
+  );
+
+  const format = useCallback(
+    (usd) => {
+      const c = CURRENCIES[currency] || CURRENCIES.USD;
+      const amount = typeof usd === "number" ? usd : 0;
+      return c.symbol + Math.round(amount * c.rate).toLocaleString(currency === "INR" ? "en-IN" : "en-US");
+    },
+    [currency]
+  );
 
   const addToCart = (productId, metal = "18k Yellow Gold", size) => {
     const key = `${productId}|${metal}|${size ?? ""}`;
@@ -121,7 +246,7 @@ export function StoreProvider({ children }) {
         ? c.map((i) => (i.key === key ? { ...i, qty: i.qty + 1 } : i))
         : [...c, { key, productId, metal, size, qty: 1 }];
     });
-    notify("Added to Bag", `${p?.name} • ${metal}`);
+    notify("Added to Bag", `${p?.name || "Jewelry Piece"} • ${metal}`);
     setCartOpen(true);
   };
 
@@ -155,6 +280,46 @@ export function StoreProvider({ children }) {
   const subtotal = cart.reduce((s, i) => s + (getProduct(i.productId)?.price ?? 0) * i.qty, 0);
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
 
+  // Send Contact Us inquiry to backend Admin Panel
+  const submitContactUs = async ({ name, email, message }) => {
+    try {
+      const res = await fetch(`${backendUrl}/Support/AddContactUs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to submit message");
+      }
+      notify("Message Received", "Our concierge will reply within 24 hours.");
+      return { success: true, data };
+    } catch (err) {
+      notify("Submission Error", err.message || "Could not send message. Please try again.");
+      return { success: false, error: err };
+    }
+  };
+
+  // Subscribe Newsletter to backend Admin Panel
+  const subscribeNewsletter = async (email) => {
+    try {
+      const res = await fetch(`${backendUrl}/Support/SubscribeNewsletter`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Subscription failed");
+      }
+      notify("Subscribed Successfully", data.message || "Welcome to Gemora Diam!");
+      return { success: true, data };
+    } catch (err) {
+      notify("Subscription Error", err.message || "Could not subscribe. Please try again.");
+      return { success: false, error: err };
+    }
+  };
+
   return (
     <Ctx.Provider
       value={{
@@ -162,6 +327,12 @@ export function StoreProvider({ children }) {
         wishlist,
         currency,
         user,
+        products,
+        productsLoading,
+        categories,
+        policies,
+        faqs,
+        banners,
         cartOpen,
         setCartOpen,
         setCurrency,
@@ -171,11 +342,14 @@ export function StoreProvider({ children }) {
         clearCart,
         toggleWishlist,
         setUser,
+        getProduct,
         format,
         cartCount,
         subtotal,
         notify,
         showToast: notify,
+        submitContactUs,
+        subscribeNewsletter,
         generalSettings,
         socialMedia,
         settingsLoading

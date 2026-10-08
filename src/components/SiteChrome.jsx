@@ -87,7 +87,7 @@ function Badge({ n }) {
 }
 
 export function Header() {
-  const { cartCount, wishlist, currency, setCurrency, setCartOpen, generalSettings } = useStore();
+  const { cartCount, wishlist, currency, setCurrency, setCartOpen, generalSettings, products: dynamicProducts, format } = useStore();
   const [mobile, setMobile] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
@@ -110,9 +110,14 @@ export function Header() {
     return () => clearInterval(timer);
   }, []);
 
+  const searchPool = [
+    ...(dynamicProducts || []),
+    ...PRODUCTS.filter((fb) => !(dynamicProducts || []).some((dp) => dp.id === fb.id || dp.name === fb.name))
+  ];
+
   const results = q
-    ? PRODUCTS.filter((p) => (p.name + p.category).toLowerCase().includes(q.toLowerCase()))
-    : PRODUCTS.slice(0, 4);
+    ? searchPool.filter((p) => (p.name + " " + (p.category || "")).toLowerCase().includes(q.toLowerCase()))
+    : searchPool.slice(0, 4);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -625,7 +630,7 @@ export function Header() {
                   <img src={p.image} alt={p.name} style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "2px" }} />
                   <div>
                     <h4 style={{ fontSize: "0.95rem", margin: 0, fontWeight: 500 }}>{p.name}</h4>
-                    <span style={{ fontSize: "0.8rem", color: "var(--primary)", fontWeight: 600 }}>${p.price}</span>
+                    <span style={{ fontSize: "0.8rem", color: "var(--primary)", fontWeight: 600 }}>{format(p.price)}</span>
                   </div>
                 </div>
               ))}
@@ -757,17 +762,42 @@ function CartDrawer() {
 
 export function Footer() {
   const [email, setEmail] = useState("");
-  const { notify, generalSettings, socialMedia } = useStore();
+  const [subscribing, setSubscribing] = useState(false);
+  const { notify, generalSettings, socialMedia, categories, subscribeNewsletter } = useStore();
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       alert("Please enter a valid email address");
       return;
     }
-    notify(generalSettings?.softwarename ? `Thank you for joining the ${generalSettings.softwarename} Circle!` : "Thank you for subscribing!", "Enjoy 15% off your first purchase.");
-    setEmail("");
+    setSubscribing(true);
+    const res = await subscribeNewsletter(email);
+    setSubscribing(false);
+    if (res.ok) {
+      notify(generalSettings?.softwarename ? `Thank you for joining the ${generalSettings.softwarename} Circle!` : "Thank you for subscribing!", "Enjoy 15% off your first purchase.");
+      setEmail("");
+    } else {
+      notify("Subscription status", res.message || "Email submitted.");
+      setEmail("");
+    }
   };
+
+  const navCategories = categories && categories.length > 0
+    ? categories.map((c) => ({
+        label: c.categoryname.toUpperCase(),
+        to: `/shop?category=${encodeURIComponent(c.categoryname)}`
+      }))
+    : [
+        { label: "NEW COLLECTION", to: "/shop" },
+        { label: "ALL JEWELRY", to: "/shop" },
+        { label: "CHARMS", to: "/shop?category=Charms" },
+        { label: "BRACELETS", to: "/shop?category=Bracelets" },
+        { label: "RINGS", to: "/shop?category=Rings" },
+        { label: "EARRINGS", to: "/shop?category=Earrings" },
+        { label: "GIFTS", to: "/shop" },
+        { label: "COLLECTIONS", to: "/shop" }
+      ];
 
   return (
     <footer style={{ backgroundColor: "#ffffff", color: "#181818" }}>
@@ -830,16 +860,16 @@ export function Footer() {
           className="container-luxury"
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             flexWrap: "wrap",
-            gap: "16px",
+            gap: "24px",
             alignItems: "center"
           }}
         >
-          {["NEW COLLECTION", "ALL JEWELRY", "CHARMS", "BRACELETS", "RINGS", "EARRINGS", "GIFTS", "COLLECTIONS"].map((cat) => (
+          {navCategories.map((cat) => (
             <Link
-              key={cat}
-              to="/shop"
+              key={cat.label}
+              to={cat.to}
               style={{
                 fontSize: "0.78rem",
                 fontWeight: 600,
@@ -850,7 +880,7 @@ export function Footer() {
               onMouseEnter={(e) => (e.target.style.color = "var(--primary)")}
               onMouseLeave={(e) => (e.target.style.color = "#222222")}
             >
-              {cat}
+              {cat.label}
             </Link>
           ))}
         </div>
@@ -1004,11 +1034,11 @@ export function Footer() {
           <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
             {[
               ["Shipping", "/terms"],
-              ["Returns", "/terms"],
+              ["Returns", "/returns"],
               ["Privacy Policy", "/privacy-policy"],
               ["My Wishlist", "/profile?tab=wishlist"],
               ["Compare", "/shop"],
-              ["FAQ's", "/contact"]
+              ["FAQ's", "/faq"]
             ].map(([label, to]) => (
               <li key={label}>
                 <Link to={to} style={{ fontSize: "0.85rem", color: "#666", transition: "color 0.2s" }} onMouseEnter={(e) => (e.target.style.color = "var(--primary)")} onMouseLeave={(e) => (e.target.style.color = "#666")}>
@@ -1056,7 +1086,7 @@ export function Footer() {
           }}
         >
           <p style={{ margin: 0 }}>
-            {generalSettings?.copyright}
+            {generalSettings?.copyright || `© ${new Date().getFullYear()} ${generalSettings?.softwarename || "Gemora Diam"}. All Rights Reserved.`}
           </p>
 
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>

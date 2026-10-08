@@ -5,14 +5,22 @@ import { useStore } from "../lib/store";
 
 const metalSwatch = {
   "18k Yellow Gold": "#c5a059",
+  "14k Yellow Gold": "#d4af37",
+  "Yellow Gold": "#c5a059",
   "Rose Gold": "#e8a999",
-  Platinum: "#dce1d4"
+  "14k Rose Gold": "#e8a999",
+  "18k Rose Gold": "#d98f7e",
+  Platinum: "#dce1d4",
+  "14k White Gold": "#e5e8e8",
+  "18k White Gold": "#e5e8e8",
+  "White Gold": "#e5e8e8",
+  Silver: "#c0c0c0"
 };
 
-export function MetalPills({ value, onChange }) {
+export function MetalPills({ value, onChange, metals = METALS }) {
   return (
-    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-      {METALS.map((m) => (
+    <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+      {metals.map((m) => (
         <button
           key={m}
           aria-label={m}
@@ -37,7 +45,8 @@ export function MetalPills({ value, onChange }) {
 
 export function ProductCard({ product }) {
   const { addToCart, toggleWishlist, wishlist, format } = useStore();
-  const [metal, setMetal] = useState("18k Yellow Gold");
+  const availableMetals = product.metals && product.metals.length > 0 ? product.metals : METALS;
+  const [metal, setMetal] = useState(availableMetals[0] || "18k Yellow Gold");
   const [quick, setQuick] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const liked = wishlist.includes(product.id);
@@ -156,7 +165,7 @@ export function ProductCard({ product }) {
       </div>
 
       <div style={{ marginTop: "12px", display: "flex", alignItems: "center", gap: "10px" }}>
-        <MetalPills value={metal} onChange={setMetal} />
+        <MetalPills value={metal} onChange={setMetal} metals={availableMetals} />
         <span style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>
           {metal}
         </span>
@@ -246,10 +255,23 @@ export function ProductCard({ product }) {
                 </div>
               )}
 
+              {product.ringSizes && product.ringSizes.length > 0 && (
+                <div style={{ marginBottom: "16px" }}>
+                  <p className="eyebrow" style={{ marginBottom: "6px" }}>Available Sizes</p>
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    {product.ringSizes.map((s) => (
+                      <span key={s} style={{ fontSize: "0.75rem", border: "1px solid var(--border)", padding: "2px 8px", borderRadius: "2px" }}>
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <p className="eyebrow" style={{ marginBottom: "10px" }}>
                 Precious Metal — {metal}
               </p>
-              <MetalPills value={metal} onChange={setMetal} />
+              <MetalPills value={metal} onChange={setMetal} metals={availableMetals} />
 
               <div style={{ marginTop: "auto", paddingTop: "28px" }}>
                 <button

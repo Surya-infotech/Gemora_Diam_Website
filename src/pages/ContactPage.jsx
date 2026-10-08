@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MapPin, Clock, Phone, Mail, MessageCircle, CalendarDays, X } from "lucide-react";
+import { MapPin, Clock, Phone, Mail, MessageCircle, CalendarDays, X, ChevronDown, ChevronUp } from "lucide-react";
 import { useStore } from "../lib/store";
 
 const validate = (f) => ({
@@ -11,10 +11,12 @@ const validate = (f) => ({
 });
 
 export default function ContactPage() {
-  const { showToast, generalSettings } = useStore();
+  const { showToast, generalSettings, submitContactUs, faqs } = useStore();
   const [f, setF] = useState({ name: "", email: "", phone: "", reason: "", message: "" });
   const [touched, setTouched] = useState({});
   const [bookModalOpen, setBookModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
   const errs = validate(f);
 
@@ -23,17 +25,27 @@ export default function ContactPage() {
     setTouched((prev) => ({ ...prev, [key]: true }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setTouched({ name: true, email: true, phone: true, reason: true, message: true });
     if (Object.values(errs).some(Boolean)) {
       showToast("Please correct highlighted fields before submitting", "error");
       return;
     }
-    showToast("Message received — A concierge will reply within 24 hours.", "success");
-    setF({ name: "", email: "", phone: "", reason: "", message: "" });
-    setTouched({});
+    setIsSubmitting(true);
+    const fullMessage = `${f.reason ? `[${f.reason}] ` : ""}${f.phone ? `Phone: ${f.phone} - ` : ""}${f.message}`;
+    const res = await submitContactUs({
+      name: f.name,
+      email: f.email,
+      message: fullMessage
+    });
+    setIsSubmitting(false);
+    if (res.success) {
+      setF({ name: "", email: "", phone: "", reason: "", message: "" });
+      setTouched({});
+    }
   };
+
 
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
@@ -334,7 +346,95 @@ export default function ContactPage() {
         </aside>
       </div>
 
+      {/* Frequently Asked Questions (from Admin Panel) */}
+      {faqs && faqs.length > 0 && (
+        <section style={{ marginTop: "100px", borderTop: "1px solid var(--border)", paddingTop: "70px" }}>
+          <div style={{ maxWidth: "860px", margin: "0 auto" }}>
+            <p className="eyebrow" style={{ color: "var(--gold-deep)", textAlign: "center" }}>
+              Common Inquiries
+            </p>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(2.2rem, 4.5vw, 3.2rem)",
+                textAlign: "center",
+                marginTop: "10px",
+                marginBottom: "48px"
+              }}
+            >
+              Frequently Asked Questions
+            </h2>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {faqs.map((faq, idx) => {
+                const isOpen = openFaqIndex === idx;
+                return (
+                  <div
+                    key={faq.faqid || faq._id || idx}
+                    style={{
+                      border: "1px solid var(--border)",
+                      backgroundColor: isOpen ? "var(--muted)" : "transparent",
+                      borderRadius: "2px",
+                      overflow: "hidden",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "20px 24px",
+                        background: "none",
+                        border: "none",
+                        textAlign: "left",
+                        cursor: "pointer",
+                        color: "var(--foreground)",
+                        gap: "16px"
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "var(--font-serif)",
+                          fontSize: "1.15rem",
+                          fontWeight: 500
+                        }}
+                      >
+                        {faq.question}
+                      </span>
+                      {isOpen ? (
+                        <ChevronUp size={20} style={{ color: "var(--primary)", flexShrink: 0 }} />
+                      ) : (
+                        <ChevronDown size={20} style={{ color: "var(--muted-foreground)", flexShrink: 0 }} />
+                      )}
+                    </button>
+
+                    {isOpen && (
+                      <div
+                        style={{
+                          padding: "0 24px 24px 24px",
+                          fontSize: "0.92rem",
+                          lineHeight: 1.8,
+                          color: "var(--muted-foreground)",
+                          whiteSpace: "pre-line"
+                        }}
+                      >
+                        {faq.answer}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Booking Dialog Modal */}
+
       {bookModalOpen && (
         <BookingDialog
           onClose={() => setBookModalOpen(false)}
