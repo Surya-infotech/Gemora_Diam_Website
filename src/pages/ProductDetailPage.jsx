@@ -33,6 +33,44 @@ function getMetalGradient(metalName = "") {
   return "linear-gradient(135deg, #f3db7b 0%, #d4af37 50%, #a88722 100%)";
 }
 
+function getMetalTextColor(metalName = "") {
+  const lower = (metalName || "").toLowerCase();
+  if (lower.includes("rose")) return "#4a221b";
+  if (lower.includes("white") || lower.includes("plat") || lower.includes("silver") || lower.includes("sliver")) {
+    return "#1f272a";
+  }
+  return "#3b2e04";
+}
+
+function getMetalType(metalName = "", product = null) {
+  if (product?.pricing) {
+    const list1 = product.pricing.metalWithStoneDiamondCaratPrices || [];
+    const found1 = list1.find(
+      (m) => (m.metalname || "").trim().toLowerCase() === metalName.trim().toLowerCase()
+    );
+    if (found1?.metaltype && String(found1.metaltype).trim()) {
+      return String(found1.metaltype).trim();
+    }
+
+    const list2 = product.pricing.metalWisePrices || [];
+    const found2 = list2.find(
+      (m) => (m.metalname || "").trim().toLowerCase() === metalName.trim().toLowerCase()
+    );
+    if (found2?.metaltype && String(found2.metaltype).trim()) {
+      return String(found2.metaltype).trim();
+    }
+  }
+
+  const match = metalName.match(/(10k|14k|18k|22k|24k|925|pt|plat|silver|gold)/i);
+  if (match) {
+    const val = match[1].toUpperCase();
+    if (val === "PLAT") return "PT";
+    if (val === "SILVER") return "SL";
+    return val;
+  }
+  return metalName.split(" ")[0] || metalName.slice(0, 3).toUpperCase();
+}
+
 function ProductDetailContent({ product }) {
   const navigate = useNavigate();
   const {
@@ -426,8 +464,8 @@ function ProductDetailContent({ product }) {
                           title={m}
                           aria-label={m}
                           style={{
-                            width: "36px",
-                            height: "36px",
+                            width: "40px",
+                            height: "40px",
                             borderRadius: "50%",
                             background: getMetalGradient(m),
                             border: "1px solid rgba(0,0,0,0.18)",
@@ -439,9 +477,18 @@ function ProductDetailContent({ product }) {
                             transform: isSelected || isHovered ? "scale(1.08)" : "scale(1)",
                             cursor: "pointer",
                             transition: "all 0.18s cubic-bezier(0.4, 0, 0.2, 1)",
-                            outline: "none"
+                            outline: "none",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: getMetalTextColor(m),
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            letterSpacing: "0.02em"
                           }}
-                        />
+                        >
+                          {getMetalType(m, product)}
+                        </button>
                         {/* Hover Tooltip with metal name */}
                         {isHovered && (
                           <div
