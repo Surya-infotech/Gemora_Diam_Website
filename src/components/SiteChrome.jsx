@@ -984,19 +984,15 @@ export function Footer() {
   };
 
   const navCategories = categories && categories.length > 0
-    ? categories.map((c) => ({
-        label: c.categoryname.toUpperCase(),
-        to: `/shop?category=${encodeURIComponent(c.categoryname)}`
-      }))
-    : [
-        { label: "NEW COLLECTION", to: "/shop" },
+    ? [
         { label: "ALL JEWELRY", to: "/shop" },
-        { label: "CHARMS", to: "/shop?category=Charms" },
-        { label: "BRACELETS", to: "/shop?category=Bracelets" },
-        { label: "RINGS", to: "/shop?category=Rings" },
-        { label: "EARRINGS", to: "/shop?category=Earrings" },
-        { label: "GIFTS", to: "/shop" },
-        { label: "COLLECTIONS", to: "/shop" }
+        ...categories.map((c) => ({
+          label: c.categoryname.toUpperCase(),
+          to: `/shop?category=${encodeURIComponent(c.categoryname)}`
+        }))
+      ]
+    : [
+        { label: "ALL JEWELRY", to: "/shop" }
       ];
 
   return (

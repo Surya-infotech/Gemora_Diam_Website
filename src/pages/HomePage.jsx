@@ -25,19 +25,6 @@ import banner5 from "../assets/vemus/banner_banner-5.jpg";
 import banner6 from "../assets/vemus/banner_banner-6.jpg";
 
 
-
-import tes4 from "../assets/vemus/testimonial_tes-4.jpg";
-import tes5 from "../assets/vemus/testimonial_tes-5.jpg";
-import avt1 from "../assets/vemus/avatar_avt-1.jpg";
-import avt2 from "../assets/vemus/avatar_avt-2.jpg";
-
-import gal1 from "../assets/vemus/gallery_gallery-1.jpg";
-import gal2 from "../assets/vemus/gallery_gallery-2.jpg";
-import gal3 from "../assets/vemus/gallery_gallery-3.jpg";
-import gal4 from "../assets/vemus/gallery_gallery-4.jpg";
-import gal5 from "../assets/vemus/gallery_gallery-5.jpg";
-import gal6 from "../assets/vemus/gallery_gallery-6.jpg";
-
 export default function HomePage() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -74,8 +61,6 @@ export default function HomePage() {
       {/* 6. Shop The Look Section with Hotspots */}
       <ShopTheLookSection onQuickView={setQuickViewProduct} />
 
-      {/* 7. Testimonials / Editorial Reviews */}
-      <TestimonialsSection onQuickView={setQuickViewProduct} />
 
       {/* 8. Just For You Curated 6-Tile Gallery */}
       <JustForYouGallery onQuickView={setQuickViewProduct} />
@@ -442,36 +427,16 @@ function HeroSlider() {
 function CircularCategories() {
   const { categories } = useStore();
 
-  const defaultCards = [
-    {
-      img: promo1,
-      title: "Timeless Classics",
-      desc: "Elegant designs that never go out of style, perfect for every occasion.",
-      link: "/shop?category=Rings"
-    },
-    {
-      img: promo2,
-      title: "Modern Luxe",
-      desc: "Chic and contemporary pieces for the trendsetters of today",
-      link: "/shop?category=Necklaces"
-    },
-    {
-      img: promo3,
-      title: "Special Moments",
-      desc: "Exquisite jewelry to celebrate love, commitment, and life’s milestones.",
-      link: "/shop?category=Bracelets"
-    }
-  ];
+  if (!categories || categories.length === 0) {
+    return null;
+  }
 
-  const cards =
-    categories && categories.length > 0
-      ? categories.map((c, i) => ({
-        img: c.image || c.categoryimage || (i % 3 === 0 ? promo1 : i % 3 === 1 ? promo2 : promo3),
-        title: c.categoryname,
-        desc: c.description || `Exquisite handcrafted ${c.categoryname.toLowerCase()} sculpted with certified Kimberley diamonds and solid gold.`,
-        link: `/shop?category=${encodeURIComponent(c.categoryname)}`
-      }))
-      : defaultCards;
+  const cards = categories.map((c, i) => ({
+    img: c.image || c.categoryimage || (i % 3 === 0 ? promo1 : i % 3 === 1 ? promo2 : promo3),
+    title: c.categoryname,
+    desc: c.description || `Handcrafted ${c.categoryname.toLowerCase()} sculpted with certified conflict-free diamonds and gold.`,
+    link: `/shop?category=${encodeURIComponent(c.categoryname)}`
+  }));
 
   return (
     <section style={{ padding: "80px 0 60px 0", backgroundColor: "#ffffff" }}>
@@ -865,12 +830,25 @@ function BestSellerSection({ onQuickView }) {
 }
 
 /* =========================================================================
-   4. SPLIT COLLECTION BANNERS: THE MODERN BRIDE & THE ART OF STACK
+   4. SPLIT COLLECTION BANNERS (FROM BACKEND CATEGORIES)
    ========================================================================= */
 function SplitCollectionBanners() {
+  const { categories, products } = useStore();
+
+  if (!categories || categories.length < 2) {
+    return null;
+  }
+
+  const cat1 = categories[0];
+  const cat2 = categories[1];
+  const prod1 = products?.find((p) => (p.category || "").toLowerCase() === cat1.categoryname?.toLowerCase());
+  const prod2 = products?.find((p) => (p.category || "").toLowerCase() === cat2.categoryname?.toLowerCase());
+  const img1 = cat1.image || prod1?.image || banner5;
+  const img2 = cat2.image || prod2?.image || banner6;
+
   return (
     <section style={{ backgroundColor: "#ffffff", margin: "20px 0" }}>
-      {/* Banner 1: The Modern Bride Collection */}
+      {/* Banner 1: Backend Category 1 */}
       <div
         style={{
           display: "grid",
@@ -880,8 +858,8 @@ function SplitCollectionBanners() {
       >
         <div style={{ height: "100%", minHeight: "440px", overflow: "hidden" }}>
           <img
-            src={banner5}
-            alt="The Modern Bride Collection"
+            src={img1}
+            alt={cat1.categoryname}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         </div>
@@ -898,7 +876,7 @@ function SplitCollectionBanners() {
               marginBottom: "16px"
             }}
           >
-            OURS STORY
+            FEATURED COLLECTION
           </span>
           <h2
             style={{
@@ -909,7 +887,7 @@ function SplitCollectionBanners() {
               marginBottom: "20px"
             }}
           >
-            The Modern Bride Collection
+            {cat1.categoryname} Collection
           </h2>
           <p
             style={{
@@ -920,10 +898,10 @@ function SplitCollectionBanners() {
               marginBottom: "32px"
             }}
           >
-            Redefining bridal elegance with contemporary designs that radiate sophistication. Celebrate your big day with jewelry as unique as your love story.
+            {cat1.description || `Explore our signature handcrafted ${cat1.categoryname.toLowerCase()} pieces designed for elegance and timeless charm.`}
           </p>
           <Link
-            to="/shop"
+            to={`/shop?category=${encodeURIComponent(cat1.categoryname)}`}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -940,7 +918,7 @@ function SplitCollectionBanners() {
         </div>
       </div>
 
-      {/* Banner 2: The Art of Stack Collection */}
+      {/* Banner 2: Backend Category 2 */}
       <div
         style={{
           display: "grid",
@@ -958,7 +936,7 @@ function SplitCollectionBanners() {
               marginBottom: "20px"
             }}
           >
-            The Art of <br />Stack Collection
+            {cat2.categoryname} Collection
           </h2>
           <p
             style={{
@@ -969,10 +947,10 @@ function SplitCollectionBanners() {
               marginBottom: "32px"
             }}
           >
-            Express your individuality with stackable rings, bracelets, and necklaces. Mix, match, and layer to create a style that's entirely your own.
+            {cat2.description || `Celebrate special moments with our exquisite ${cat2.categoryname.toLowerCase()} sculpted with certified stones.`}
           </p>
           <Link
-            to="/shop"
+            to={`/shop?category=${encodeURIComponent(cat2.categoryname)}`}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -990,8 +968,8 @@ function SplitCollectionBanners() {
 
         <div style={{ height: "100%", minHeight: "440px", overflow: "hidden", order: 2 }}>
           <img
-            src={banner6}
-            alt="The Art of Stack Collection"
+            src={img2}
+            alt={cat2.categoryname}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         </div>
@@ -1088,7 +1066,6 @@ function OutlineMarquee() {
    ========================================================================= */
 function ShopTheLookSection({ onQuickView }) {
   const { products: dynamicProducts } = useStore();
-  const fallbackGallery = [gal1, gal2, gal3];
   const hotspotPositions = [
     { top: "48%", left: "50%" },
     { top: "50%", left: "52%" },
@@ -1096,18 +1073,18 @@ function ShopTheLookSection({ onQuickView }) {
   ];
 
   const products = dynamicProducts || [];
-  if (products.length === 0) {
-    return null;
-  }
-
-  const looks = products.slice(0, 3).map((item, idx) => {
-    const bgImage = item.galleryImages?.[0] || item.image || fallbackGallery[idx % fallbackGallery.length];
-    return {
-      img: bgImage,
+  const looks = products
+    .filter((item) => item.image || item.galleryImages?.[0])
+    .slice(0, 3)
+    .map((item, idx) => ({
+      img: item.galleryImages?.[0] || item.image,
       hotspot: hotspotPositions[idx % hotspotPositions.length],
       product: item
-    };
-  });
+    }));
+
+  if (looks.length === 0) {
+    return null;
+  }
 
   return (
     <section style={{ padding: "80px 0 90px 0", backgroundColor: "#ffffff" }}>
@@ -1276,172 +1253,11 @@ function ShopTheLookSection({ onQuickView }) {
 }
 
 /* =========================================================================
-   7. TESTIMONIAL / EDITORIAL REVIEWS
-   ========================================================================= */
-function TestimonialsSection({ onQuickView }) {
-  const { format, products: dynamicProducts } = useStore();
-  const prod0 = dynamicProducts?.[0] || null;
-  const prod1 = dynamicProducts?.[1] || dynamicProducts?.[0] || null;
-  const reviews = [
-    {
-      title: "RECOMMEND!",
-      quote:
-        "“THE QUALITY OF THE JEWELRY EXCEEDED MY EXPECTATIONS. EVERY PIECE FEELS PREMIUM, AND THE DESIGNS ARE SO TRENDY. I'M OBSESSED WITH MY NEW JEWELRY ADDITIONS!”",
-      author: "PATRICK JOHN",
-      avatar: avt1,
-      modelImg: tes4,
-      product: prod0
-    },
-    {
-      title: "LOVE IT!",
-      quote:
-        "“I WAS BLOWN AWAY BY THE QUALITY OF THESE HANDCRAFTED PIECES. EVERY ITEM FEELS LUXURIOUS AND THE STYLES ARE INCREDIBLY MODERN. I CAN’T GET ENOUGH OF MY NEW FINDS!”",
-      author: "EMILY TRAN",
-      avatar: avt2,
-      modelImg: tes5,
-      product: prod1
-    }
-  ];
-
-  const [active, setActive] = useState(0);
-  const cur = reviews[active];
-
-  return (
-    <section style={{ backgroundColor: "#FAF9F6", padding: "80px 0" }}>
-      <div className="container-luxury">
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
-            gap: "50px",
-            alignItems: "center"
-          }}
-        >
-          {/* Left: Model image with floating product badge */}
-          <div style={{ position: "relative", minHeight: "440px", overflow: "hidden", borderRadius: "2px" }}>
-            <img
-              src={cur.modelImg}
-              alt={cur.author}
-              style={{ width: "100%", height: "100%", objectFit: "cover", minHeight: "440px" }}
-            />
-
-            {/* Floating Product Badge on Image */}
-            {cur.product && (
-              <div
-                onClick={() => onQuickView(cur.product)}
-                style={{
-                  position: "absolute",
-                  bottom: "28px",
-                  left: "24px",
-                  backgroundColor: "rgba(255, 255, 255, 0.95)",
-                  padding: "12px 18px",
-                  borderRadius: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "14px",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-                  cursor: "pointer",
-                  maxWidth: "320px"
-                }}
-              >
-                <img
-                  src={cur.product.image}
-                  alt={cur.product.name}
-                  style={{ width: "48px", height: "48px", objectFit: "contain", backgroundColor: "#f5f5f5" }}
-                />
-                <div style={{ minWidth: 0 }}>
-                  <h5 style={{ fontSize: "0.85rem", fontWeight: 600, margin: 0, lineHeight: 1.3 }}>
-                    {cur.product.name}
-                  </h5>
-                  <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--primary)" }}>
-                    {format(cur.product.price)}
-                  </span>
-                </div>
-                <ArrowRight size={18} style={{ color: "#181818" }} />
-              </div>
-            )}
-          </div>
-
-          {/* Right: Editorial quote */}
-          <div style={{ padding: "20px 10px" }}>
-            {/* Quote icon */}
-            <Quote size={40} style={{ color: "#d2b984", marginBottom: "20px" }} />
-
-            <h2
-              style={{
-                fontFamily: "var(--font-serif)",
-                fontSize: "clamp(2.4rem, 5vw, 3.8rem)",
-                color: "var(--primary)",
-                letterSpacing: "0.04em",
-                fontWeight: 500,
-                margin: "0 0 24px 0"
-              }}
-            >
-              {cur.title}
-            </h2>
-
-            <p
-              style={{
-                fontSize: "1.05rem",
-                lineHeight: 1.8,
-                color: "#444444",
-                fontWeight: 400,
-                marginBottom: "36px"
-              }}
-            >
-              {cur.quote}
-            </p>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "36px" }}>
-              <img
-                src={cur.avatar}
-                alt={cur.author}
-                style={{ width: "46px", height: "46px", borderRadius: "50%", objectFit: "cover" }}
-              />
-              <span style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase" }}>
-                {cur.author}
-              </span>
-            </div>
-
-            {/* Pagination Dots */}
-            <div style={{ display: "flex", gap: "10px" }}>
-              {reviews.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  aria-label={`Testimonial ${i + 1}`}
-                  style={{
-                    width: i === active ? "24px" : "8px",
-                    height: "8px",
-                    borderRadius: "4px",
-                    backgroundColor: i === active ? "#181818" : "#ccc",
-                    transition: "all 0.3s ease"
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* =========================================================================
-   8. JUST FOR YOU CURATED 6-TILE GALLERY
+   7. JUST FOR YOU CURATED GALLERY (FROM BACKEND PRODUCTS)
    ========================================================================= */
 function JustForYouGallery({ onQuickView }) {
   const { products } = useStore();
   const navigate = useNavigate();
-
-  const defaultTiles = [
-    { img: gal1, title: "Golden Glow Essentials", desc: "Discover jewelry that defines every moment.", link: "/shop" },
-    { img: gal2, title: "Timeless Beauty Collection", desc: "Adorn yourself with elegance that lasts a lifetime.", link: "/shop" },
-    { img: gal3, title: "Radiant Spark Jewelry", desc: "Jewelry that mirrors your inner brilliance.", link: "/shop" },
-    { img: gal4, title: "Luxe Grace Designs", desc: "Celebrate life’s sparkle with every piece you wear.", link: "/shop" },
-    { img: gal5, title: "Shine Within You", desc: "Designs that embrace beauty, forever.", link: "/shop" },
-    { img: gal6, title: "Elegant Moments Only", desc: "Let every gem tell your story.", link: "/shop" }
-  ];
 
   // Dynamically build tiles from backend products and their uploaded gallery images
   const dynamicTiles = useMemo(() => {
@@ -1485,7 +1301,11 @@ function JustForYouGallery({ onQuickView }) {
     return list.slice(0, 6);
   }, [products]);
 
-  const tiles = dynamicTiles.length > 0 ? dynamicTiles : defaultTiles;
+  if (!dynamicTiles || dynamicTiles.length === 0) {
+    return null;
+  }
+
+  const tiles = dynamicTiles;
 
   return (
     <section style={{ padding: "80px 0 0 0", backgroundColor: "#ffffff" }}>
