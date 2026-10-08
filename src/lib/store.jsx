@@ -279,7 +279,7 @@ export function StoreProvider({ children }) {
 
         setUser(customerUser);
 
-        notify("Account Created", `Welcome to Maison Gemora, ${customerUser.fullname}!`);
+        notify("Account Created", `Welcome to Gemora Diam, ${customerUser.fullname}!`);
         return { success: true, customer: customerUser, token, customer_id: customerId };
       } catch (err) {
         notify("Registration Error", err.message || "Could not register account");

@@ -187,7 +187,7 @@ function OrderDetailModal({ order, onClose }) {
         </head>
         <body>
           <h1>GEMORA DIAM</h1>
-          <p style="font-size: 14px; color: #666;">Official Atelier Invoice</p>
+          <p style="font-size: 14px; color: #666;">Official Order Invoice</p>
           <p style="margin-top: 24px; font-size: 13px;"><strong>Order ID:</strong> ${order.id}<br><strong>Date:</strong> ${order.date}<br><strong>Tracking:</strong> ${order.tracking || "Insured Courier"}</p>
           <table>
             <thead>
@@ -255,7 +255,7 @@ function OrderDetailModal({ order, onClose }) {
           <X size={20} />
         </button>
 
-        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Atelier Dispatch</p>
+        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Order Details</p>
         <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2.2rem", marginTop: "4px" }}>
           Order {order.id}
         </h2>

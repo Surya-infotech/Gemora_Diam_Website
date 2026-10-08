@@ -28,8 +28,8 @@ export default function PrivacyPolicyPage() {
           id: "data-collection",
           title: "Data Collection",
           body: [
-            "We collect information you provide directly — such as your name, email, shipping address, phone number, and ring size — when you place an order, create an account, or contact our client concierge.",
-            "We also collect limited technical telemetry (device type, browser, anonymized pages viewed) to maintain exceptional salon experience and website performance."
+            "We collect information you provide directly — such as your name, email, shipping address, phone number, and ring size — when you place an order, create an account, or contact our customer support team.",
+            "We also collect limited technical information (device type, browser, pages viewed) to maintain exceptional shopping experience and website performance."
           ]
         },
         {
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
           title: "Security Standards",
           body: [
             "All data is transmitted exclusively over 256-bit TLS bank-grade encryption. Payment credentials are tokenized by PCI-DSS Level 1 certified processors (Stripe, Apple Pay) and are never stored on our servers.",
-            "Access to personal client data is strictly restricted to authorized concierge personnel under non-disclosure obligations."
+            "Access to personal customer data is strictly restricted to authorized support staff under strict privacy policies."
           ]
         },
         {

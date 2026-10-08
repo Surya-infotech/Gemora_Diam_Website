@@ -214,7 +214,7 @@ export default function ContactPage() {
           {/* Atelier / Flagship Card */}
           <div style={{ border: "1px solid var(--border)", backgroundColor: "var(--card)", padding: "32px", borderRadius: "2px" }}>
             <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-              {generalSettings?.cityname ? `${generalSettings.cityname} Flagship & Atelier` : "Flagship & Atelier"}
+              {generalSettings?.cityname ? `${generalSettings.cityname} Flagship Store` : "Flagship Store & Showroom"}
             </p>
             {generalSettings?.address && (
               <p style={{ display: "flex", gap: "12px", alignItems: "flex-start", marginTop: "18px", fontSize: "0.92rem", color: "var(--foreground)" }}>
@@ -252,7 +252,7 @@ export default function ContactPage() {
               onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
             >
               <CalendarDays size={18} />
-              Book an Atelier Appointment
+              Book a Store Appointment
             </button>
           </div>
 
@@ -260,7 +260,7 @@ export default function ContactPage() {
           {generalSettings?.address && (
             <div style={{ width: "100%", height: "240px", border: "1px solid var(--border)", overflow: "hidden" }}>
               <iframe
-                title={`${generalSettings?.softwarename || "Atelier"} Location Map`}
+                title={`${generalSettings?.softwarename || "Store"} Location Map`}
                 style={{ width: "100%", height: "100%", border: "none", filter: "grayscale(85%) contrast(1.1)" }}
                 loading="lazy"
                 src={`https://maps.google.com/maps?q=${encodeURIComponent(
@@ -439,7 +439,7 @@ export default function ContactPage() {
         <BookingDialog
           onClose={() => setBookModalOpen(false)}
           onSuccess={(date, time) => {
-            showToast(`Appointment requested for ${date} at ${time}. Our salon will confirm shortly.`, "success");
+            showToast(`Appointment requested for ${date} at ${time}. Our team will confirm shortly.`, "success");
             setBookModalOpen(false);
           }}
         />
@@ -516,12 +516,12 @@ function BookingDialog({ onClose, onSuccess }) {
           <X size={20} />
         </button>
 
-        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Private Salon Consultation</p>
+        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Store Consultation</p>
         <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", marginTop: "6px" }}>
-          Book Atelier Appointment
+          Book an Appointment
         </h2>
         <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", marginTop: "6px" }}>
-          {generalSettings?.description || "Reserve dedicated time with our master gemologists for a personalized fine jewelry consultation."}
+          {generalSettings?.description || "Reserve dedicated time with our jewelry specialists for a personalized consultation."}
         </p>
 
         {/* Date Selection */}

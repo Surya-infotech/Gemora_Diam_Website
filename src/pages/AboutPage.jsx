@@ -7,9 +7,9 @@ const MILESTONES = [
   { y: "1987", t: "The first atelier", d: "Élise Moreau opens a two-bench workshop on Rue de la Paix, Paris, hand-forging bespoke solitaire rings for European collectors." },
   { y: "1998", t: "The Éternelle ring", d: "Our signature four-claw solitaire is born and immediately becomes an internationally revered modern classic." },
   { y: "2009", t: "Ethical pledge", d: "Committed to 100% Kimberley Process–certified, traceable stones and certified conflict-free mines." },
-  { y: "2016", t: "London & New York", d: "Flagship salons open on Bond Street and Madison Avenue, bringing Parisian high jewelry to transatlantic patrons." },
+  { y: "2016", t: "London & New York", d: "Flagship stores open on Bond Street and Madison Avenue, bringing Parisian high jewelry to international patrons." },
   { y: "2021", t: "Recycled gold", d: "Every single gram of our gold is refined from reclaimed sources, reducing mining carbon footprints by over 90%." },
-  { y: "2026", t: "Global maison", d: "Twelve boutiques across four continents, yet one solitary, meticulous atelier philosophy at heart." },
+  { y: "2026", t: "Global presence", d: "Twelve boutiques across four continents, yet one solitary, meticulous craftsmanship philosophy at heart." },
 ];
 
 export default function AboutPage() {
@@ -45,7 +45,7 @@ export default function AboutPage() {
             {[
               ["We draw by hand.", "Every design starts as a pencil sketch, never an algorithmic template or generic mold."],
               ["We set by hand.", "One dedicated master jeweler sees each individual piece through from initial wax to final lustrous polish."],
-              ["We stand behind it.", "A lifetime atelier guarantee, complimentary prong checkups and cleaning — because true heirlooms are forever."]
+              ["We stand behind it.", "A lifetime craftsmanship guarantee, complimentary prong checkups and cleaning — because true heirlooms are forever."]
             ].map(([t, d]) => (
               <div key={t} style={{ borderLeft: "1px solid rgba(197, 160, 89, 0.4)", paddingLeft: "24px" }}>
                 <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", color: "var(--gold)", marginBottom: "14px" }}>

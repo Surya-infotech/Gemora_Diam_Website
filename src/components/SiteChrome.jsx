@@ -142,7 +142,7 @@ function AccountMenu() {
             <>
               <div style={{ padding: "8px 18px 12px", borderBottom: "1px solid #f0f0f0" }}>
                 <div style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--gold-deep)", fontWeight: 700 }}>
-                  Client Salon
+                  My Account
                 </div>
                 <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818", marginTop: "2px" }}>
                   {user.fullname}
@@ -232,10 +232,10 @@ function AccountMenu() {
           ) : (
             <div style={{ padding: "8px 18px" }}>
               <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "#181818" }}>
-                Maison Gemora
+                Gemora Diam
               </div>
               <p style={{ fontSize: "0.78rem", color: "#888", margin: "4px 0 12px" }}>
-                Sign in to view your orders, saved pieces, and salon details.
+                Sign in to view your orders, saved items, and account details.
               </p>
               <Link
                 to="/profile"

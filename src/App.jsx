@@ -38,10 +38,10 @@ function NotFoundPage() {
       <div style={{ maxWidth: "480px" }}>
         <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>404 Not Found</p>
         <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.5rem, 5vw, 3.6rem)", marginTop: "12px" }}>
-          This piece is not in our vault
+          Page Not Found
         </h1>
         <p style={{ marginTop: "16px", fontSize: "0.95rem", color: "var(--muted-foreground)" }}>
-          The atelier creation or salon page you are looking for may have been archived or moved.
+          The page or jewelry item you are looking for may have been moved or is unavailable.
         </p>
         <Link
           to="/"
@@ -54,7 +54,7 @@ function NotFoundPage() {
             padding: "16px 36px"
           }}
         >
-          Return to Maison
+          Return to Home
         </Link>
       </div>
     </div>

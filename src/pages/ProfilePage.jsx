@@ -40,7 +40,7 @@ export default function ProfilePage() {
         <div>
           <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>My Account</p>
           <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.6rem, 5vw, 3.8rem)", marginTop: "12px" }}>
-            Bonjour, {user.fullname ? user.fullname.split(" ")[0] : "Client"}
+            Welcome, {user.fullname ? user.fullname.split(" ")[0] : "Customer"}
           </h1>
         </div>
         <button
@@ -141,10 +141,10 @@ function OverviewTab() {
       >
         <p className="eyebrow" style={{ color: "var(--gold)" }}>Welcome Back</p>
         <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2rem, 3.5vw, 2.8rem)", marginTop: "12px" }}>
-          Your private salon awaits
+          Welcome to your account
         </h2>
         <p style={{ marginTop: "14px", fontSize: "0.92rem", lineHeight: 1.6, opacity: 0.85, maxWidth: "560px" }}>
-          Enjoy priority preview access to rare natural gemstone releases, private atelier viewings, and complimentary jewelry care services.
+          Enjoy easy access to our jewelry collections, your saved items, and dedicated customer support.
         </p>
         <Link
           to="/shop?high=true"
@@ -158,7 +158,7 @@ function OverviewTab() {
             fontWeight: 600
           }}
         >
-          Preview High Jewelry
+          Explore Jewelry
         </Link>
       </div>
 
@@ -220,7 +220,7 @@ function WishlistTab() {
       <div style={{ textAlign: "center", padding: "60px 20px" }}>
         <p style={{ fontFamily: "var(--font-serif)", fontSize: "2.2rem" }}>Your wishlist is empty</p>
         <p style={{ marginTop: "10px", fontSize: "0.9rem", color: "var(--muted-foreground)" }}>
-          Explore our fine jewelry vaults and save pieces that speak to you.
+          Browse our jewelry collections and save your favorite items.
         </p>
         <Link
           to="/shop"
@@ -538,14 +538,14 @@ function SignInView() {
           textAlign: "center"
         }}
       >
-        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Maison Gemora</p>
+        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Gemora Diam</p>
         <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.4rem", marginTop: "12px", color: "var(--foreground)" }}>
-          {isRegister ? "Create Account" : "Client Sign In"}
+          {isRegister ? "Create Account" : "Sign In"}
         </h1>
         <p style={{ marginTop: "10px", fontSize: "0.9rem", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
           {isRegister
-            ? "Join our exclusive salon for bespoke consultations, priority vault releases, and personal styling."
-            : "Sign in to access your private salon, order archives, and personal bespoke jewelry collections."}
+            ? "Create your account to view order history, save items to your wishlist, and enjoy a personalized shopping experience."
+            : "Sign in to access your account, track orders, and view your saved jewelry."}
         </p>
 
         {errorMsg && (
@@ -630,7 +630,7 @@ function SignInView() {
               opacity: loading ? 0.75 : 1
             }}
           >
-            {loading ? "Processing..." : isRegister ? "Create Salon Account" : "Sign In"}
+            {loading ? "Processing..." : isRegister ? "Create Account" : "Sign In"}
           </button>
         </form>
 

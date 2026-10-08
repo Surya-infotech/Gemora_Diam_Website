@@ -33,7 +33,7 @@ export default function TermsPage() {
           id: "acceptance",
           title: "Acceptance of Terms",
           body: [
-            "By accessing, browsing, or purchasing from GEMORA DIAM Fine Jewelry, you unconditionally agree to these Terms of Service. If you do not accept these terms, please refrain from utilizing our online salon and bespoke services."
+            "By accessing, browsing, or purchasing from GEMORA DIAM Fine Jewelry, you agree to these Terms of Service. If you do not accept these terms, please refrain from using our website and online services."
           ]
         },
         {
@@ -54,10 +54,10 @@ export default function TermsPage() {
         },
         {
           id: "warranty",
-          title: "Lifetime Atelier Warranty",
+          title: "Lifetime Jewelry Warranty",
           body: [
             "Every authentic GEMORA DIAM piece carries a comprehensive lifetime warranty covering manufacturing craftsmanship defects, including complimentary annual ultrasonic cleaning, prong inspection, and re-polishing.",
-            "The warranty does not cover accidental loss, catastrophic impact damage, or unauthorized alterations performed outside of our Paris atelier."
+            "The warranty does not cover accidental loss, catastrophic impact damage, or unauthorized alterations performed outside of our official service centers."
           ]
         },
         {
@@ -65,7 +65,7 @@ export default function TermsPage() {
           title: "Returns & Exchanges",
           body: [
             "Unworn items in immaculate original condition may be returned within 30 days of receipt. Custom bespoke designs, tailored band resizings, and personalized hand-engraved heirlooms are final sale.",
-            "Refunds are credited to the original payment instrument within 10 business days of rigorous gemological inspection by our atelier staff."
+            "Refunds are credited to the original payment instrument within 10 business days of thorough inspection by our jewelry team."
           ]
         },
         {
