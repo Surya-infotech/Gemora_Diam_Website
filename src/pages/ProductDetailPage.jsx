@@ -152,6 +152,12 @@ function ProductDetailContent({ product }) {
     return getItemPrice(product, metal, activeStone, carat);
   }, [getItemPrice, product, metal, activeStone, carat]);
 
+  const hasDescription = Boolean(product?.description && product.description.trim());
+  const currentTab = useMemo(() => {
+    if (!hasDescription) return "delivery";
+    return activeTab === "delivery" ? "delivery" : "description";
+  }, [hasDescription, activeTab]);
+
   const allMedia = useMemo(() => {
     if (!product) return [];
     const list = [];
@@ -836,27 +842,29 @@ function ProductDetailContent({ product }) {
         {/* Detailed Tabs: Story, Specifications, Shipping */}
         <div style={{ marginTop: "70px", borderTop: "1px solid var(--border)" }}>
           <div style={{ display: "flex", gap: "32px", borderBottom: "1px solid var(--border-subtle)", paddingTop: "20px" }}>
-            <button
-              onClick={() => setActiveTab("description")}
-              style={{
-                paddingBottom: "14px",
-                fontSize: "0.92rem",
-                fontWeight: activeTab === "description" ? 600 : 400,
-                color: activeTab === "description" ? "var(--primary)" : "var(--muted-foreground)",
-                borderBottom: activeTab === "description" ? "2px solid var(--primary)" : "2px solid transparent",
-                cursor: "pointer"
-              }}
-            >
-              Description & Craftsmanship
-            </button>
+            {hasDescription && (
+              <button
+                onClick={() => setActiveTab("description")}
+                style={{
+                  paddingBottom: "14px",
+                  fontSize: "0.92rem",
+                  fontWeight: currentTab === "description" ? 600 : 400,
+                  color: currentTab === "description" ? "var(--primary)" : "var(--muted-foreground)",
+                  borderBottom: currentTab === "description" ? "2px solid var(--primary)" : "2px solid transparent",
+                  cursor: "pointer"
+                }}
+              >
+                Description & Craftsmanship
+              </button>
+            )}
             <button
               onClick={() => setActiveTab("delivery")}
               style={{
                 paddingBottom: "14px",
                 fontSize: "0.92rem",
-                fontWeight: activeTab === "delivery" ? 600 : 400,
-                color: activeTab === "delivery" ? "var(--primary)" : "var(--muted-foreground)",
-                borderBottom: activeTab === "delivery" ? "2px solid var(--primary)" : "2px solid transparent",
+                fontWeight: currentTab === "delivery" ? 600 : 400,
+                color: currentTab === "delivery" ? "var(--primary)" : "var(--muted-foreground)",
+                borderBottom: currentTab === "delivery" ? "2px solid var(--primary)" : "2px solid transparent",
                 cursor: "pointer"
               }}
             >
@@ -865,7 +873,7 @@ function ProductDetailContent({ product }) {
           </div>
 
           <div style={{ padding: "32px 0", maxWidth: "800px", lineHeight: 1.8, fontSize: "0.94rem", color: "var(--muted-foreground)" }}>
-            {activeTab === "description" && (
+            {hasDescription && currentTab === "description" && (
               <div>
                 <p>
                   {product.description}
@@ -873,7 +881,7 @@ function ProductDetailContent({ product }) {
               </div>
             )}
 
-            {activeTab === "delivery" && (
+            {currentTab === "delivery" && (
               <div>
                 <ul style={{ paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
                   <li><strong>Complimentary Insured Delivery:</strong> Shipped securely via armoured courier with signature confirmation required upon delivery.</li>
