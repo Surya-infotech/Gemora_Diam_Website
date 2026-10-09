@@ -400,6 +400,7 @@ export function StoreProvider({ children }) {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "x-user": "true",
             ...(token ? { Authorization: `Bearer ${token}` } : {})
           },
           body: JSON.stringify(payload)
@@ -446,6 +447,7 @@ export function StoreProvider({ children }) {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "x-user": "true",
             ...(token ? { Authorization: `Bearer ${token}` } : {})
           },
           body: JSON.stringify({ currentPassword, newPassword })
@@ -471,7 +473,13 @@ export function StoreProvider({ children }) {
       try {
         const id = customerId || user?.customerid;
         if (!id) return [];
-        const res = await fetch(`${backendUrl}/Customer/GetAddresses/${id}`);
+        const token = localStorage.getItem(customerTokenKey);
+        const res = await fetch(`${backendUrl}/Customer/GetAddresses/${id}`, {
+          headers: {
+            "x-user": "true",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          }
+        });
         const data = await res.json();
         if (res.ok && Array.isArray(data.addresses)) {
           return data.addresses;
@@ -482,7 +490,7 @@ export function StoreProvider({ children }) {
         return [];
       }
     },
-    [backendUrl, user]
+    [backendUrl, customerTokenKey, user]
   );
 
   const addAddress = useCallback(
@@ -494,6 +502,7 @@ export function StoreProvider({ children }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "x-user": "true",
             ...(token ? { Authorization: `Bearer ${token}` } : {})
           },
           body: JSON.stringify({
@@ -523,6 +532,7 @@ export function StoreProvider({ children }) {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "x-user": "true",
             ...(token ? { Authorization: `Bearer ${token}` } : {})
           },
           body: JSON.stringify(addressData)
@@ -548,6 +558,7 @@ export function StoreProvider({ children }) {
         const res = await fetch(`${backendUrl}/Customer/DeleteAddress/${addressId}`, {
           method: "DELETE",
           headers: {
+            "x-user": "true",
             ...(token ? { Authorization: `Bearer ${token}` } : {})
           }
         });
@@ -572,6 +583,7 @@ export function StoreProvider({ children }) {
         const res = await fetch(`${backendUrl}/Customer/SetDefaultAddress/${addressId}`, {
           method: "PUT",
           headers: {
+            "x-user": "true",
             ...(token ? { Authorization: `Bearer ${token}` } : {})
           }
         });
