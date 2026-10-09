@@ -808,23 +808,28 @@ export default function CartPage() {
         {/* Right Column: Order Summary Sidebar */}
         <aside
           style={{
-            border: "1px solid var(--border)",
-            backgroundColor: "var(--card)",
+            border: "1px solid #EDE8DE",
+            backgroundColor: "#FAF9F6",
             padding: "36px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.03)",
+            boxShadow: "0 8px 30px rgba(0,0,0,0.04)",
+            borderRadius: "6px",
             position: "sticky",
             top: "100px",
             maxWidth: "440px"
           }}
         >
-          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem" }}>
+          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", fontWeight: 400, margin: 0 }}>
             Order Summary
           </h2>
 
           <div style={{ marginTop: "24px", display: "flex", flexDirection: "column", gap: "14px", fontSize: "0.92rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--muted-foreground)" }}>Subtotal</span>
-              <span>{format(subtotal)}</span>
+              <span style={{ fontWeight: 600 }}>{format(subtotal)}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: "var(--muted-foreground)" }}>Insured Global Delivery</span>
+              <span style={{ color: "var(--primary)", fontWeight: 600 }}>Complimentary</span>
             </div>
           </div>
 
@@ -832,16 +837,17 @@ export default function CartPage() {
           <div
             style={{
               marginTop: "24px",
-              borderTop: "1px solid var(--border)",
+              borderTop: "1px solid #EDE8DE",
               paddingTop: "20px",
               display: "flex",
               justifyContent: "space-between",
+              alignItems: "baseline",
               fontFamily: "var(--font-serif)",
-              fontSize: "1.8rem"
+              fontSize: "1.9rem"
             }}
           >
             <span>Total</span>
-            <span>{format(total)}</span>
+            <span style={{ color: "var(--primary)", fontWeight: 700 }}>{format(total)}</span>
           </div>
 
           {/* Selected Delivery Address Preview Box */}
@@ -849,9 +855,9 @@ export default function CartPage() {
             style={{
               marginTop: "24px",
               padding: "16px",
-              borderRadius: "3px",
-              backgroundColor: selectedAddress ? "var(--primary-soft)" : "#fffbf0",
-              border: selectedAddress ? "1px solid var(--primary-light)" : "1px solid #fde68a",
+              borderRadius: "4px",
+              backgroundColor: selectedAddress ? "var(--primary-soft)" : "#FFFBF0",
+              border: selectedAddress ? "1px solid var(--primary-light)" : "1px solid #FDE68A",
               fontSize: "0.84rem"
             }}
           >
@@ -859,7 +865,7 @@ export default function CartPage() {
               <div>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
                   <span style={{ fontWeight: 600, color: "var(--primary)", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <CheckCircle2 size={15} /> Delivering to: {selectedAddress.title}
+                    <CheckCircle2 size={16} /> Delivering to: {selectedAddress.title}
                   </span>
                   <button
                     type="button"
@@ -894,11 +900,11 @@ export default function CartPage() {
                 </p>
               </div>
             ) : (
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", color: "#92400e" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", color: "#92400E" }}>
                 <AlertCircle size={16} style={{ flexShrink: 0, marginTop: "2px" }} />
                 <div>
                   <div style={{ fontWeight: 600, fontSize: "0.82rem" }}>Address Selection Required</div>
-                  <div style={{ fontSize: "0.76rem", marginTop: "2px", color: "#b45309" }}>
+                  <div style={{ fontSize: "0.76rem", marginTop: "2px", color: "#B45309" }}>
                     Please select a single delivery address from the list before placing your order.
                   </div>
                 </div>
@@ -913,24 +919,35 @@ export default function CartPage() {
             className="eyebrow"
             style={{
               width: "100%",
-              marginTop: "18px",
+              marginTop: "20px",
+              height: "54px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "8px",
+              gap: "10px",
               backgroundColor: "var(--primary)",
-              color: "var(--primary-foreground)",
-              padding: "16px",
-              border: "none",
+              color: "#ffffff",
+              border: "1px solid rgba(197, 160, 89, 0.4)",
+              borderRadius: "4px",
               cursor: submittingOrder ? "not-allowed" : "pointer",
               opacity: submittingOrder ? 0.75 : 1,
-              transition: "opacity 0.2s ease"
+              letterSpacing: "0.18em",
+              fontWeight: 600,
+              fontSize: "0.82rem",
+              boxShadow: "0 6px 22px rgba(85, 104, 50, 0.3)",
+              transition: "all 0.25s ease"
             }}
             onMouseEnter={(e) => {
-              if (!submittingOrder) e.currentTarget.style.opacity = "0.9";
+              if (!submittingOrder) {
+                e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }
             }}
             onMouseLeave={(e) => {
-              if (!submittingOrder) e.currentTarget.style.opacity = "1";
+              if (!submittingOrder) {
+                e.currentTarget.style.backgroundColor = "var(--primary)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }
             }}
           >
             <Lock size={15} /> {submittingOrder ? "Processing Order..." : "Proceed to Secure Checkout"}

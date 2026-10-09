@@ -2,64 +2,68 @@ export default function OutlineMarquee() {
   return (
     <div
       style={{
-        borderTop: "1px solid #ebebeb",
-        borderBottom: "1px solid #ebebeb",
-        padding: "24px 0",
+        borderTop: "1px solid #EAE3D5",
+        borderBottom: "1px solid #EAE3D5",
+        padding: "26px 0",
         overflow: "hidden",
-        backgroundColor: "#faf9f7"
+        backgroundColor: "#FAF9F6"
       }}
     >
-      <div className="animate-marquee" style={{ display: "inline-flex", alignItems: "center", gap: "50px" }}>
+      <div className="animate-marquee" style={{ display: "inline-flex", alignItems: "center", gap: "60px" }}>
         <span
           style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
-            fontWeight: 800,
-            WebkitTextStroke: "1px #555555",
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2rem, 4vw, 3rem)",
+            fontWeight: 400,
+            WebkitTextStroke: "1px #708447",
             color: "transparent",
-            letterSpacing: "0.08em"
+            letterSpacing: "0.06em",
+            textTransform: "uppercase"
           }}
         >
-          NOW, PAY LATER
+          Bespoke Atelier
         </span>
-        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
+        <span style={{ color: "var(--gold)", fontSize: "1.4rem" }}>✦</span>
         <span
           style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
-            fontWeight: 800,
-            color: "#333333",
-            letterSpacing: "0.08em"
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2rem, 4vw, 3rem)",
+            fontWeight: 400,
+            color: "var(--foreground)",
+            letterSpacing: "0.06em",
+            textTransform: "uppercase"
           }}
         >
-          SHOP NOW
+          Ethical Lab Diamonds
         </span>
-        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
+        <span style={{ color: "var(--gold)", fontSize: "1.4rem" }}>✦</span>
         <span
           style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
-            fontWeight: 800,
-            WebkitTextStroke: "1px #555555",
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2rem, 4vw, 3rem)",
+            fontWeight: 400,
+            WebkitTextStroke: "1px #708447",
             color: "transparent",
-            letterSpacing: "0.08em"
+            letterSpacing: "0.06em",
+            textTransform: "uppercase"
           }}
         >
-          FREE SHIPPING
+          Insured Worldwide Delivery
         </span>
-        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
+        <span style={{ color: "var(--gold)", fontSize: "1.4rem" }}>✦</span>
         <span
           style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
-            fontWeight: 800,
-            color: "#333333",
-            letterSpacing: "0.08em"
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2rem, 4vw, 3rem)",
+            fontWeight: 400,
+            color: "var(--foreground)",
+            letterSpacing: "0.06em",
+            textTransform: "uppercase"
           }}
         >
-          100% CERTIFIED
+          Certified Authenticity
         </span>
-        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
+        <span style={{ color: "var(--gold)", fontSize: "1.4rem" }}>✦</span>
       </div>
     </div>
   );

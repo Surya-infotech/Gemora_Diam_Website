@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useStore } from "../../lib/store";
 
 export default function ShopTheLookSection() {
   const navigate = useNavigate();
-  const { products: dynamicProducts } = useStore();
+  const { products: dynamicProducts, format } = useStore();
 
   const products = dynamicProducts || [];
   const looks = products
@@ -19,31 +20,50 @@ export default function ShopTheLookSection() {
   }
 
   return (
-    <section style={{ padding: "80px 0 90px 0", backgroundColor: "#ffffff" }}>
+    <section style={{ padding: "90px 0 100px 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
-        <h2
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(2rem, 4vw, 2.8rem)",
-            textAlign: "center",
-            marginBottom: "44px",
-            fontWeight: 400
-          }}
-        >
-          Shop the Look
-        </h2>
+        <div style={{ textAlign: "center", maxWidth: "640px", margin: "0 auto 48px auto" }}>
+          <span
+            className="eyebrow"
+            style={{
+              color: "var(--primary)",
+              letterSpacing: "0.26em",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px"
+            }}
+          >
+            <span>✦</span>
+            <span>ATELIER LOOKBOOK</span>
+            <span>✦</span>
+          </span>
+          <h2
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(2.2rem, 4.2vw, 3.2rem)",
+              fontWeight: 400,
+              marginTop: "12px",
+              lineHeight: 1.15
+            }}
+          >
+            Curated Ensembles
+          </h2>
+          <p style={{ fontSize: "0.95rem", color: "var(--muted-foreground)", marginTop: "12px", lineHeight: 1.6 }}>
+            Discover how our master jewelers layer and harmonize timeless solitaire and bridal pieces.
+          </p>
+        </div>
 
         <div
           style={{
             display: "grid",
             gridTemplateColumns:
               looks.length === 1
-                ? "minmax(320px, 440px)"
+                ? "minmax(320px, 460px)"
                 : looks.length === 2
                   ? "repeat(auto-fit, minmax(320px, 480px))"
-                  : "repeat(auto-fit, minmax(300px, 1fr))",
+                  : "repeat(auto-fit, minmax(320px, 1fr))",
             justifyContent: "center",
-            gap: "28px"
+            gap: "32px"
           }}
         >
           {looks.map((item, idx) => (
@@ -52,14 +72,12 @@ export default function ShopTheLookSection() {
               onClick={() => (item.product?._id || item.product?.id) && navigate(`/product/${item.product._id || item.product.id}`)}
               style={{
                 position: "relative",
-                height: "520px",
+                height: "560px",
                 overflow: "hidden",
-                borderRadius: "2px",
-                boxShadow: "0 4px 18px rgba(0,0,0,0.06)",
-                backgroundColor: "#f7f7f7",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                borderRadius: "6px",
+                boxShadow: "0 8px 30px rgba(0,0,0,0.06)",
+                border: "1px solid #EAE3D5",
+                backgroundColor: "#FAF9F6",
                 cursor: "pointer"
               }}
             >
@@ -71,13 +89,23 @@ export default function ShopTheLookSection() {
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  transition: "transform 0.5s ease"
+                  transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)"
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
                 onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               />
 
-              {/* Floating Bottom Pill Product Card */}
+              {/* Dark subtle bottom vignette */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(to top, rgba(16, 22, 13, 0.6) 0%, rgba(0,0,0,0) 45%)",
+                  pointerEvents: "none"
+                }}
+              />
+
+              {/* Floating Bottom Frosted Pill Product Card */}
               <div
                 style={{
                   position: "absolute",
@@ -85,41 +113,69 @@ export default function ShopTheLookSection() {
                   left: "20px",
                   right: "20px",
                   backgroundColor: "rgba(255, 255, 255, 0.94)",
-                  backdropFilter: "blur(8px)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
                   borderRadius: "4px",
-                  padding: "12px 16px",
+                  padding: "14px 18px",
                   display: "flex",
                   alignItems: "center",
                   gap: "14px",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+                  border: "1px solid rgba(255, 255, 255, 0.6)",
+                  transition: "transform 0.2s ease"
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
               >
                 <img
                   src={item.product?.image || item.img}
                   alt={item.product?.name || ""}
                   style={{
-                    width: "48px",
-                    height: "48px",
-                    borderRadius: "2px",
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "3px",
                     objectFit: "contain",
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: "#ffffff",
+                    border: "1px solid #ECE7DD",
                     flexShrink: 0
                   }}
                 />
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <h5
                     style={{
-                      fontSize: "0.92rem",
-                      fontWeight: 600,
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "1rem",
+                      fontWeight: 500,
                       margin: 0,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
-                      color: "#181818"
+                      color: "var(--foreground)"
                     }}
                   >
                     {item.product?.name}
                   </h5>
+                  {item.product?.price && (
+                    <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--primary)", marginTop: "2px" }}>
+                      {format(item.product.price)}
+                    </div>
+                  )}
+                </div>
+
+                <div
+                  className="eyebrow"
+                  style={{
+                    fontSize: "0.72rem",
+                    color: "var(--primary)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    fontWeight: 600,
+                    flexShrink: 0
+                  }}
+                >
+                  <span>VIEW</span>
+                  <ArrowRight size={14} />
                 </div>
               </div>
             </div>

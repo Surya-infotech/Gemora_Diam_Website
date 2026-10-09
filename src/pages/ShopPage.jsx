@@ -1,6 +1,7 @@
 import { useSearchParams, Link } from "react-router-dom";
 import { ProductCard } from "../components/ProductCard";
 import { useStore } from "../lib/store";
+import { Sparkles } from "lucide-react";
 
 export default function ShopPage() {
   const [searchParams] = useSearchParams();
@@ -45,26 +46,53 @@ export default function ShopPage() {
   });
   const displayTitle = currentCategoryObj
     ? (typeof currentCategoryObj === "string" ? currentCategoryObj : currentCategoryObj.categoryname)
-    : category || "All Jewelry";
+    : category || "All Fine Jewelry";
 
   const title = search ? `Search: "${searchParams.get("search")}"` : displayTitle;
 
   return (
-    <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
-      <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>The Collection</p>
-      <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.8rem, 5vw, 4.4rem)", marginTop: "12px", lineHeight: 1.1 }}>
-        {title}
-      </h1>
+    <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "120px" }}>
+      {/* Page Header */}
+      <div style={{ maxWidth: "700px" }}>
+        <span
+          className="eyebrow"
+          style={{
+            color: "var(--primary)",
+            letterSpacing: "0.26em",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px"
+          }}
+        >
+          <span>✦</span>
+          <span>THE ATELIER ARCHIVE</span>
+          <span>✦</span>
+        </span>
+        <h1
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2.6rem, 5vw, 4.2rem)",
+            marginTop: "12px",
+            lineHeight: 1.1,
+            fontWeight: 400
+          }}
+        >
+          {title}
+        </h1>
+        <p style={{ marginTop: "12px", fontSize: "0.95rem", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
+          Discover ethical lab-grown diamond creations, handcrafted to order in 14K, 18K solid gold, and platinum.
+        </p>
+      </div>
 
-      {/* Filter Tabs */}
+      {/* Filter Tabs Bar */}
       <div
         style={{
           display: "flex",
-          gap: "8px",
+          gap: "10px",
           flexWrap: "wrap",
-          borderBottom: "1px solid var(--border)",
+          borderBottom: "1px solid #EDE8DE",
           paddingBottom: "24px",
-          marginTop: "36px"
+          marginTop: "40px"
         }}
       >
         <Link
@@ -72,15 +100,18 @@ export default function ShopPage() {
           className="eyebrow"
           style={{
             border: "1px solid",
-            borderColor: !category && !search ? "var(--primary)" : "var(--border)",
-            backgroundColor: !category && !search ? "var(--primary)" : "transparent",
-            color: !category && !search ? "var(--primary-foreground)" : "var(--foreground)",
-            padding: "10px 18px",
-            borderRadius: "2px",
-            transition: "all 0.15s ease"
+            borderColor: !category && !search ? "var(--primary)" : "#E5DFD3",
+            backgroundColor: !category && !search ? "var(--primary)" : "#FAF8F5",
+            color: !category && !search ? "#ffffff" : "var(--foreground)",
+            padding: "10px 22px",
+            borderRadius: "50px",
+            fontSize: "0.76rem",
+            letterSpacing: "0.16em",
+            transition: "all 0.25s ease",
+            boxShadow: !category && !search ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
           }}
         >
-          All
+          All Pieces
         </Link>
 
         {activeCategories.map((c) => {
@@ -98,12 +129,15 @@ export default function ShopPage() {
               className="eyebrow"
               style={{
                 border: "1px solid",
-                borderColor: isSelected ? "var(--primary)" : "var(--border)",
-                backgroundColor: isSelected ? "var(--primary)" : "transparent",
-                color: isSelected ? "var(--primary-foreground)" : "var(--foreground)",
-                padding: "10px 18px",
-                borderRadius: "2px",
-                transition: "all 0.15s ease"
+                borderColor: isSelected ? "var(--primary)" : "#E5DFD3",
+                backgroundColor: isSelected ? "var(--primary)" : "#FAF8F5",
+                color: isSelected ? "#ffffff" : "var(--foreground)",
+                padding: "10px 22px",
+                borderRadius: "50px",
+                fontSize: "0.76rem",
+                letterSpacing: "0.16em",
+                transition: "all 0.25s ease",
+                boxShadow: isSelected ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
               }}
             >
               {catName}
@@ -112,22 +146,28 @@ export default function ShopPage() {
         })}
       </div>
 
-      <p style={{ marginTop: "24px", fontSize: "0.82rem", color: "var(--muted-foreground)" }}>
-        {productsLoading ? "Loading collection..." : `${list.length} pieces available`}
+      {/* Piece Count Indicator */}
+      <p style={{ marginTop: "24px", fontSize: "0.84rem", color: "var(--muted-foreground)" }}>
+        {productsLoading ? "Loading collection..." : `${list.length} ${list.length === 1 ? "piece" : "pieces"} available`}
       </p>
 
-      {/* Grid */}
+      {/* Product Grid */}
       {list.length === 0 ? (
-        <div style={{ padding: "60px 0", textAlign: "center", color: "var(--muted-foreground)" }}>
-          <p style={{ fontSize: "1.1rem" }}>No pieces found in this category.</p>
+        <div style={{ padding: "80px 0", textAlign: "center", color: "var(--muted-foreground)" }}>
+          <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.4rem", color: "var(--foreground)" }}>
+            No pieces found in this category
+          </p>
           <Link
             to="/shop"
+            className="eyebrow"
             style={{
-              marginTop: "16px",
+              marginTop: "20px",
               display: "inline-block",
-              color: "var(--primary)",
-              textDecoration: "underline",
-              fontSize: "0.9rem"
+              backgroundColor: "var(--primary)",
+              color: "#ffffff",
+              padding: "12px 28px",
+              borderRadius: "2px",
+              letterSpacing: "0.16em"
             }}
           >
             Browse all jewelry
@@ -138,8 +178,8 @@ export default function ShopPage() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: "40px 24px",
-            marginTop: "24px"
+            gap: "36px 28px",
+            marginTop: "28px"
           }}
         >
           {list.map((p) => (

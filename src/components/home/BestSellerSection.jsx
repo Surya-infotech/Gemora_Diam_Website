@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, Eye, Sparkles } from "lucide-react";
 import { useStore } from "../../lib/store";
 
 export default function BestSellerSection() {
@@ -16,15 +16,14 @@ export default function BestSellerSection() {
     categories: dynamicCategories
   } = useStore();
 
-  // Only use products from backend
   const products = dynamicProducts || [];
 
   const categoryTabs = [
-    { id: "all", label: "all" },
+    { id: "all", label: "All Pieces" },
     ...(dynamicCategories && dynamicCategories.length > 0
       ? dynamicCategories.map((c) => ({
         id: (c.categoryname || "").toLowerCase(),
-        label: (c.categoryname || "").toLowerCase()
+        label: c.categoryname || ""
       }))
       : [])
   ];
@@ -39,55 +38,89 @@ export default function BestSellerSection() {
       );
 
   return (
-    <section style={{ padding: "50px 0 90px 0", backgroundColor: "#ffffff" }}>
+    <section style={{ padding: "80px 0 100px 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
-        {/* Title */}
-        <h2
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(2rem, 4vw, 2.8rem)",
-            textAlign: "center",
-            marginBottom: "28px",
-            fontWeight: 400
-          }}
-        >
-          Best Seller
-        </h2>
+        {/* Section Header */}
+        <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 40px auto" }}>
+          <span
+            className="eyebrow"
+            style={{
+              color: "var(--primary)",
+              letterSpacing: "0.26em",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px"
+            }}
+          >
+            <span>✦</span>
+            <span>TIMELESS ATELIER ICONS</span>
+            <span>✦</span>
+          </span>
+          <h2
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(2.2rem, 4.5vw, 3.2rem)",
+              fontWeight: 400,
+              marginTop: "12px",
+              lineHeight: 1.15
+            }}
+          >
+            Most Coveted Creations
+          </h2>
+          <p style={{ fontSize: "0.95rem", color: "var(--muted-foreground)", marginTop: "12px", lineHeight: 1.6 }}>
+            Bespoke rings, bracelets, and fine jewelry sculpted to perfection with ethical lab-grown diamonds.
+          </p>
+        </div>
 
-        {/* Category Tabs */}
+        {/* Category Filter Tabs */}
         {categoryTabs.length > 1 && (
           <div
             style={{
               display: "flex",
               justifyContent: "center",
-              gap: "32px",
+              gap: "10px",
               marginBottom: "48px",
-              borderBottom: "1px solid #ebebeb",
-              paddingBottom: "12px",
               flexWrap: "wrap"
             }}
           >
-            {categoryTabs.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => setActiveTab(t.id)}
-                style={{
-                  fontSize: "0.85rem",
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  fontWeight: 600,
-                  color: activeTab === t.id ? "var(--primary)" : "#777777",
-                  borderBottom: activeTab === t.id ? "2px solid var(--primary)" : "none",
-                  paddingBottom: "12px",
-                  marginBottom: "-13px",
-                  transition: "all 0.2s",
-                  background: "none",
-                  cursor: "pointer"
-                }}
-              >
-                {t.label}
-              </button>
-            ))}
+            {categoryTabs.map((t) => {
+              const isActive = activeTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveTab(t.id)}
+                  className="eyebrow"
+                  style={{
+                    fontSize: "0.76rem",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    fontWeight: 600,
+                    color: isActive ? "#ffffff" : "var(--foreground)",
+                    backgroundColor: isActive ? "var(--primary)" : "#FAF8F5",
+                    border: isActive ? "1px solid var(--primary)" : "1px solid #E5DFD3",
+                    padding: "10px 22px",
+                    borderRadius: "50px",
+                    transition: "all 0.25s ease",
+                    cursor: "pointer",
+                    boxShadow: isActive ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.borderColor = "var(--primary)";
+                      e.currentTarget.style.color = "var(--primary)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.borderColor = "#E5DFD3";
+                      e.currentTarget.style.color = "var(--foreground)";
+                    }
+                  }}
+                >
+                  {t.label}
+                </button>
+              );
+            })}
           </div>
         )}
 
@@ -95,9 +128,9 @@ export default function BestSellerSection() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 320px))",
-            gap: "28px",
-            justifyContent: "flex-start"
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "32px",
+            justifyContent: "center"
           }}
         >
           {filtered.length === 0 ? (
@@ -105,11 +138,16 @@ export default function BestSellerSection() {
               style={{
                 gridColumn: "1 / -1",
                 textAlign: "center",
-                padding: "60px 20px",
-                color: "#888888"
+                padding: "80px 20px",
+                color: "var(--muted-foreground)"
               }}
             >
-              <p style={{ fontSize: "1rem" }}>No pieces found in this collection.</p>
+              <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.4rem", color: "var(--foreground)" }}>
+                No pieces found in this category
+              </p>
+              <p style={{ fontSize: "0.9rem", marginTop: "8px" }}>
+                Browse other collections or speak with our atelier concierge.
+              </p>
             </div>
           ) : (
             filtered.map((item) => {
@@ -121,23 +159,37 @@ export default function BestSellerSection() {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    position: "relative",
-                    transition: "transform 0.3s ease"
+                    backgroundColor: "#FAF9F6",
+                    borderRadius: "4px",
+                    overflow: "hidden",
+                    border: "1px solid #EDE7DC",
+                    transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                    boxShadow: "0 4px 18px rgba(0,0,0,0.03)"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = "var(--primary)";
+                    e.currentTarget.style.boxShadow = "0 14px 34px rgba(85, 104, 50, 0.12)";
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "#EDE7DC";
+                    e.currentTarget.style.boxShadow = "0 4px 18px rgba(0,0,0,0.03)";
+                    e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
-                  {/* Product Image Frame */}
+                  {/* Product Image Stage */}
                   <div
                     style={{
                       position: "relative",
                       aspectRatio: "1/1",
-                      backgroundColor: "#f7f7f7",
+                      backgroundColor: "#ffffff",
                       overflow: "hidden",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      cursor: "pointer"
+                      cursor: "pointer",
+                      borderBottom: "1px solid #F0EBE0"
                     }}
-                    className="product-card-hover"
                     onClick={() => navigate(`/product/${item._id || item.id}`)}
                   >
                     <img
@@ -147,18 +199,19 @@ export default function BestSellerSection() {
                         width: "100%",
                         height: "100%",
                         objectFit: "contain",
-                        transition: "transform 0.5s ease"
+                        padding: "16px",
+                        transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
                       onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                     />
 
-                    {/* Hover Quick Action Buttons */}
+                    {/* Quick Floating Action Icons */}
                     <div
                       style={{
                         position: "absolute",
-                        right: "12px",
                         top: "12px",
+                        right: "12px",
                         display: "flex",
                         flexDirection: "column",
                         gap: "8px",
@@ -173,20 +226,22 @@ export default function BestSellerSection() {
                         }}
                         aria-label="Wishlist"
                         style={{
-                          width: "36px",
-                          height: "36px",
+                          width: "38px",
+                          height: "38px",
                           borderRadius: "50%",
                           backgroundColor: "#ffffff",
                           display: "grid",
                           placeItems: "center",
-                          color: isLiked ? "var(--primary)" : "#333",
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                          transition: "all 0.2s"
+                          color: isLiked ? "var(--primary)" : "var(--foreground)",
+                          boxShadow: "0 3px 10px rgba(0,0,0,0.08)",
+                          border: "1px solid #ECE7DD",
+                          transition: "all 0.2s ease",
+                          cursor: "pointer"
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
                       >
-                        <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
+                        <Heart size={16} fill={isLiked ? "currentColor" : "none"} strokeWidth={1.5} />
                       </button>
 
                       <button
@@ -196,58 +251,87 @@ export default function BestSellerSection() {
                           addToCart(item.id, item.metals?.[0] || "", "", "", item.price);
                           notify("Added to Bag", `1x ${item.name} (${format(item.price)})`);
                         }}
-                        aria-label="Add to Cart"
+                        aria-label="Add to Bag"
                         style={{
-                          width: "36px",
-                          height: "36px",
+                          width: "38px",
+                          height: "38px",
                           borderRadius: "50%",
                           backgroundColor: "#ffffff",
                           display: "grid",
                           placeItems: "center",
-                          color: "#333",
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                          transition: "all 0.2s"
+                          color: "var(--foreground)",
+                          boxShadow: "0 3px 10px rgba(0,0,0,0.08)",
+                          border: "1px solid #ECE7DD",
+                          transition: "all 0.2s ease",
+                          cursor: "pointer"
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = "var(--primary)";
+                          e.currentTarget.style.color = "#ffffff";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = "#ffffff";
+                          e.currentTarget.style.color = "var(--foreground)";
+                        }}
                       >
-                        <ShoppingBag size={16} />
+                        <ShoppingBag size={16} strokeWidth={1.5} />
                       </button>
                     </div>
                   </div>
 
-                  {/* Item Details According to Backend */}
-                  <div style={{ paddingTop: "14px", display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#888888", fontWeight: 600 }}>
-                        {item.category || "Jewelry"} {item.sku ? `• ${item.sku}` : ""}
+                  {/* Item Details */}
+                  <div style={{ padding: "20px 22px 24px", display: "flex", flexDirection: "column", flex: 1 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                      <span className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem", letterSpacing: "0.14em" }}>
+                        {item.category || "Jewelry"} {item.sku ? `&bull; ${item.sku}` : ""}
                       </span>
+                      {item.metals && item.metals.length > 0 && (
+                        <span style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>
+                          {item.metals.length} {item.metals.length === 1 ? "metal" : "metals"}
+                        </span>
+                      )}
                     </div>
 
                     <h4
                       style={{
-                        fontSize: "1rem",
+                        fontSize: "1.1rem",
                         fontWeight: 500,
                         lineHeight: 1.3,
-                        color: "#181818",
-                        margin: "2px 0 0 0",
+                        color: "var(--foreground)",
+                        margin: "0 0 10px 0",
                         cursor: "pointer",
-                        fontFamily: "var(--font-serif)"
+                        fontFamily: "var(--font-serif)",
+                        transition: "color 0.2s"
                       }}
                       onClick={() => navigate(`/product/${item._id || item.id}`)}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
                     >
                       {item.name}
                     </h4>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "6px" }}>
-                      <span style={{ fontSize: "0.96rem", fontWeight: 700, color: "var(--primary)" }}>
+                    <div style={{ marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: "8px" }}>
+                      <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--primary)" }}>
                         {format(item.price)}
                       </span>
-                      {item.metals && item.metals.length > 0 && (
-                        <span style={{ fontSize: "0.74rem", color: "#777777" }}>
-                          {item.metals.length} {item.metals.length === 1 ? "metal" : "metals"}
-                        </span>
-                      )}
+
+                      <button
+                        onClick={() => navigate(`/product/${item._id || item.id}`)}
+                        className="eyebrow"
+                        style={{
+                          fontSize: "0.72rem",
+                          letterSpacing: "0.12em",
+                          color: "var(--foreground)",
+                          textDecoration: "underline",
+                          textUnderlineOffset: "3px",
+                          cursor: "pointer",
+                          transition: "color 0.2s"
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
+                      >
+                        View Details
+                      </button>
                     </div>
                   </div>
                 </div>

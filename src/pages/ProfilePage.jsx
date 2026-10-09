@@ -6,12 +6,14 @@ import { useStore } from "../lib/store";
 
 const fieldStyle = {
   width: "100%",
-  border: "1px solid var(--border)",
-  backgroundColor: "transparent",
-  padding: "10px 14px",
-  fontSize: "0.88rem",
+  border: "1px solid #EDE8DE",
+  backgroundColor: "#ffffff",
+  padding: "12px 16px",
+  fontSize: "0.9rem",
   color: "var(--foreground)",
-  outline: "none"
+  borderRadius: "3px",
+  outline: "none",
+  transition: "all 0.2s ease"
 };
 
 export default function ProfilePage() {
@@ -29,19 +31,25 @@ export default function ProfilePage() {
   }
 
   const tabs = [
-    { id: "wishlist", label: "Wishlist" },
-    { id: "settings", label: "Security & Settings" },
-    { id: "addresses", label: "Address Details" }
+    { id: "wishlist", label: "Wishlist Atelier" },
+    { id: "settings", label: "Security & Profile" },
+    { id: "addresses", label: "Delivery Addresses" }
   ];
 
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "20px" }}>
         <div>
-          <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>My Account</p>
-          <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.6rem, 5vw, 3.8rem)", marginTop: "12px" }}>
-            Welcome, {user.fullname ? user.fullname.split(" ")[0] : "Customer"}
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "var(--gold)" }} />
+            <p className="eyebrow" style={{ color: "var(--gold-deep)", margin: 0 }}>Private Client Portal</p>
+          </div>
+          <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.5rem, 5vw, 3.6rem)", margin: "8px 0 0 0", letterSpacing: "-0.01em" }}>
+            Welcome, {user.fullname ? user.fullname.split(" ")[0] : "Client"}
           </h1>
+          <p style={{ color: "var(--muted-foreground)", fontSize: "0.92rem", marginTop: "8px", margin: 0 }}>
+            Manage your fine jewelry wishlist, bespoke preferences, and global delivery destinations.
+          </p>
         </div>
         <button
           onClick={logout}
@@ -50,12 +58,14 @@ export default function ProfilePage() {
             display: "inline-flex",
             alignItems: "center",
             gap: "8px",
-            backgroundColor: "transparent",
-            color: "#555",
-            border: "1px solid var(--border)",
-            padding: "10px 22px",
-            borderRadius: "2px",
+            backgroundColor: "#FAF9F6",
+            color: "#666",
+            border: "1px solid #EDE8DE",
+            padding: "11px 22px",
+            borderRadius: "3px",
             cursor: "pointer",
+            fontWeight: 600,
+            letterSpacing: "0.12em",
             transition: "all 0.2s ease"
           }}
           onMouseEnter={(e) => {
@@ -64,13 +74,13 @@ export default function ProfilePage() {
             e.currentTarget.style.backgroundColor = "#fff8f8";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "var(--border)";
-            e.currentTarget.style.color = "#555";
-            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.borderColor = "#EDE8DE";
+            e.currentTarget.style.color = "#666";
+            e.currentTarget.style.backgroundColor = "#FAF9F6";
           }}
         >
           <LogOut size={15} />
-          Log Out
+          Sign Out
         </button>
       </div>
 
@@ -78,17 +88,15 @@ export default function ProfilePage() {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderBottom: "1px solid var(--border)",
-          marginTop: "36px",
-          gap: "24px"
+          borderBottom: "1px solid #EDE8DE",
+          marginTop: "40px",
+          gap: "8px"
         }}
       >
         <div
           style={{
             display: "flex",
-            gap: "24px",
+            gap: "32px",
             overflowX: "auto",
             scrollbarWidth: "none"
           }}
@@ -101,11 +109,13 @@ export default function ProfilePage() {
               style={{
                 background: "none",
                 border: "none",
-                borderBottom: currentTab === t.id ? "2px solid var(--primary)" : "2px solid transparent",
-                paddingBottom: "14px",
+                borderBottom: currentTab === t.id ? "2.5px solid var(--primary)" : "2.5px solid transparent",
+                padding: "0 4px 14px 4px",
                 color: currentTab === t.id ? "var(--foreground)" : "var(--muted-foreground)",
+                fontWeight: currentTab === t.id ? 700 : 500,
+                letterSpacing: "0.12em",
                 cursor: "pointer",
-                transition: "all 0.15s ease",
+                transition: "all 0.2s ease",
                 whiteSpace: "nowrap"
               }}
             >
@@ -130,76 +140,181 @@ function WishlistTab() {
 
   if (!wishlist.length) {
     return (
-      <div style={{ textAlign: "center", padding: "60px 20px" }}>
-        <p style={{ fontFamily: "var(--font-serif)", fontSize: "2.2rem" }}>Your wishlist is empty</p>
-        <p style={{ marginTop: "10px", fontSize: "0.9rem", color: "var(--muted-foreground)" }}>
-          Browse our jewelry collections and save your favorite items.
+      <div
+        style={{
+          textAlign: "center",
+          padding: "80px 24px",
+          backgroundColor: "#FAF9F6",
+          border: "1px solid #EDE8DE",
+          borderRadius: "6px"
+        }}
+      >
+        <div
+          style={{
+            width: "68px",
+            height: "68px",
+            borderRadius: "50%",
+            backgroundColor: "var(--primary-soft)",
+            display: "grid",
+            placeItems: "center",
+            margin: "0 auto 20px",
+            color: "var(--primary)"
+          }}
+        >
+          <Sparkles size={30} strokeWidth={1.5} />
+        </div>
+        <p style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: "0 0 10px 0", color: "var(--foreground)" }}>
+          Your Atelier Wishlist is Empty
+        </p>
+        <p style={{ fontSize: "0.92rem", color: "var(--muted-foreground)", maxWidth: "440px", margin: "0 auto 28px" }}>
+          Explore our signature collections to save your favorite lab grown diamond pieces and bridal sets.
         </p>
         <Link
           to="/shop"
           className="eyebrow"
           style={{
-            marginTop: "24px",
             display: "inline-block",
-            borderBottom: "1px solid var(--foreground)",
-            paddingBottom: "4px"
+            padding: "13px 32px",
+            backgroundColor: "var(--primary)",
+            color: "#ffffff",
+            borderRadius: "2px",
+            textDecoration: "none",
+            fontWeight: 600,
+            letterSpacing: "0.14em"
           }}
         >
-          Explore Collection
+          Explore Collection ✦
         </Link>
       </div>
     );
   }
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "24px" }}>
-      {wishlist.map((id) => {
-        const p = getProduct(id);
-        if (!p) return null;
-        return (
-          <div key={id} style={{ display: "flex", flexDirection: "column" }}>
-            <img
-              src={p.image}
-              alt={p.name}
-              style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", borderRadius: "2px" }}
-            />
-            <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.3rem", marginTop: "12px" }}>{p.name}</p>
-            <p style={{ fontSize: "0.9rem", color: "var(--muted-foreground)", marginTop: "4px" }}>{format(p.price)}</p>
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "24px" }}>
+        <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.7rem", margin: 0 }}>
+          Saved Fine Jewelry ({wishlist.length})
+        </h2>
+        <span style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>
+          Curated selection ready for commission
+        </span>
+      </div>
 
-            <div style={{ marginTop: "14px", display: "flex", gap: "8px" }}>
-              <button
-                onClick={() => {
-                  addToCart(p.id, "18k Yellow Gold");
-                  toggleWishlist(p.id);
-                }}
-                className="eyebrow"
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "24px" }}>
+        {wishlist.map((id) => {
+          const p = getProduct(id);
+          if (!p) return null;
+          return (
+            <div
+              key={id}
+              className="card-luxury"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                border: "1px solid #EDE8DE",
+                backgroundColor: "#FAF9F6",
+                borderRadius: "4px",
+                overflow: "hidden",
+                transition: "all 0.3s ease"
+              }}
+            >
+              {/* Image with zoom effect */}
+              <div
+                className="img-zoom-parent"
                 style={{
-                  flex: 1,
-                  backgroundColor: "var(--primary)",
-                  color: "var(--primary-foreground)",
-                  padding: "10px",
-                  border: "none",
-                  cursor: "pointer"
+                  width: "100%",
+                  aspectRatio: "1/1",
+                  backgroundColor: "#ffffff",
+                  position: "relative",
+                  borderBottom: "1px solid #EDE8DE"
                 }}
               >
-                Move to Bag
-              </button>
-              <button
-                onClick={() => toggleWishlist(p.id)}
-                aria-label="Remove from wishlist"
-                style={{
-                  border: "1px solid var(--border)",
-                  backgroundColor: "transparent",
-                  padding: "0 12px",
-                  cursor: "pointer"
-                }}
-              >
-                <Trash2 size={16} strokeWidth={1.4} />
-              </button>
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+
+              {/* Body */}
+              <div style={{ padding: "18px 20px 22px", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
+                <div>
+                  <span className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.68rem" }}>
+                    {p.category || "Fine Jewelry"}
+                  </span>
+                  <Link
+                    to={`/product/${p.id}`}
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "1.2rem",
+                      fontWeight: 600,
+                      color: "var(--foreground)",
+                      textDecoration: "none",
+                      display: "block",
+                      marginTop: "4px",
+                      lineHeight: 1.3
+                    }}
+                  >
+                    {p.name}
+                  </Link>
+                  <p style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--foreground)", marginTop: "8px", margin: "8px 0 0 0" }}>
+                    {format(p.price)}
+                  </p>
+                </div>
+
+                <div style={{ marginTop: "18px", display: "flex", gap: "8px" }}>
+                  <button
+                    onClick={() => {
+                      addToCart(p.id, "18k Yellow Gold");
+                      toggleWishlist(p.id);
+                    }}
+                    className="eyebrow"
+                    style={{
+                      flex: 1,
+                      backgroundColor: "var(--primary)",
+                      color: "#ffffff",
+                      padding: "11px 16px",
+                      border: "none",
+                      borderRadius: "2px",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                      letterSpacing: "0.12em",
+                      transition: "background 0.2s"
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
+                  >
+                    Move to Bag
+                  </button>
+                  <button
+                    onClick={() => toggleWishlist(p.id)}
+                    aria-label="Remove from wishlist"
+                    style={{
+                      border: "1px solid #EDE8DE",
+                      backgroundColor: "#ffffff",
+                      padding: "0 12px",
+                      borderRadius: "2px",
+                      cursor: "pointer",
+                      color: "#999",
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "#c33";
+                      e.currentTarget.style.color = "#c33";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "#EDE8DE";
+                      e.currentTarget.style.color = "#999";
+                    }}
+                  >
+                    <Trash2 size={16} strokeWidth={1.4} />
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -253,99 +368,183 @@ function SettingsTab() {
   };
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "48px" }}>
-      {/* Profile Details */}
-      <form onSubmit={handleProfileSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem" }}>Profile Details</h3>
-        <input
-          style={fieldStyle}
-          value={profileData.fullname}
-          onChange={(e) => setProfileData({ ...profileData, fullname: e.target.value })}
-          placeholder="Full name"
-          required
-        />
-        <input
-          style={fieldStyle}
-          type="email"
-          value={profileData.email}
-          onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-          placeholder="Email"
-          required
-        />
-        <input
-          style={fieldStyle}
-          value={profileData.phone}
-          onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-          placeholder="Phone"
-        />
-        <button
-          type="submit"
-          disabled={savingProfile}
-          className="eyebrow"
-          style={{
-            alignSelf: "flex-start",
-            backgroundColor: "var(--primary)",
-            color: "var(--primary-foreground)",
-            padding: "12px 24px",
-            border: "none",
-            cursor: savingProfile ? "not-allowed" : "pointer",
-            opacity: savingProfile ? 0.75 : 1
-          }}
-        >
-          {savingProfile ? "Saving..." : "Save Changes"}
-        </button>
-      </form>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px" }}>
+      {/* Profile Details Card */}
+      <div
+        style={{
+          backgroundColor: "#FAF9F6",
+          border: "1px solid #EDE8DE",
+          borderRadius: "4px",
+          padding: "32px 30px"
+        }}
+      >
+        <span className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem" }}>
+          Client Credentials
+        </span>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", margin: "6px 0 20px 0" }}>
+          Profile Details
+        </h3>
 
-      {/* Password Reset */}
-      <form onSubmit={handlePasswordSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem" }}>Security & Access</h3>
-        <input
-          type="password"
-          style={fieldStyle}
-          value={passData.current}
-          onChange={(e) => setPassData({ ...passData, current: e.target.value })}
-          placeholder="Current password"
-        />
-        <input
-          type="password"
-          style={fieldStyle}
-          value={passData.next}
-          onChange={(e) => setPassData({ ...passData, next: e.target.value })}
-          placeholder="New password (min 8 chars)"
-        />
-        <input
-          type="password"
-          style={fieldStyle}
-          value={passData.confirm}
-          onChange={(e) => setPassData({ ...passData, confirm: e.target.value })}
-          placeholder="Confirm new password"
-        />
-        <button
-          type="submit"
-          disabled={savingPassword}
-          className="eyebrow"
-          style={{
-            alignSelf: "flex-start",
-            border: "1px solid var(--foreground)",
-            backgroundColor: "transparent",
-            padding: "12px 24px",
-            cursor: savingPassword ? "not-allowed" : "pointer",
-            opacity: savingPassword ? 0.75 : 1
-          }}
-        >
-          {savingPassword ? "Updating..." : "Update Password"}
-        </button>
-      </form>
+        <form onSubmit={handleProfileSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+          <div>
+            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+              Full Name *
+            </label>
+            <input
+              style={fieldStyle}
+              value={profileData.fullname}
+              onChange={(e) => setProfileData({ ...profileData, fullname: e.target.value })}
+              placeholder="Full name"
+              required
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+              Email Address *
+            </label>
+            <input
+              style={fieldStyle}
+              type="email"
+              value={profileData.email}
+              onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+              placeholder="Email"
+              required
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+              Contact Phone
+            </label>
+            <input
+              style={fieldStyle}
+              value={profileData.phone}
+              onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+              placeholder="+1 (555) 000-0000"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={savingProfile}
+            className="eyebrow"
+            style={{
+              alignSelf: "flex-start",
+              backgroundColor: "var(--primary)",
+              color: "#ffffff",
+              padding: "12px 28px",
+              border: "none",
+              borderRadius: "2px",
+              cursor: savingProfile ? "not-allowed" : "pointer",
+              fontWeight: 600,
+              letterSpacing: "0.12em",
+              opacity: savingProfile ? 0.75 : 1,
+              marginTop: "8px"
+            }}
+          >
+            {savingProfile ? "Saving..." : "Save Profile Details"}
+          </button>
+        </form>
+      </div>
+
+      {/* Security & Access Card */}
+      <div
+        style={{
+          backgroundColor: "#FAF9F6",
+          border: "1px solid #EDE8DE",
+          borderRadius: "4px",
+          padding: "32px 30px"
+        }}
+      >
+        <span className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem" }}>
+          Atelier Protection
+        </span>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", margin: "6px 0 20px 0" }}>
+          Security &amp; Password
+        </h3>
+
+        <form onSubmit={handlePasswordSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+          <div>
+            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+              Current Password *
+            </label>
+            <input
+              type="password"
+              style={fieldStyle}
+              value={passData.current}
+              onChange={(e) => setPassData({ ...passData, current: e.target.value })}
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+              New Password (Min 8 characters) *
+            </label>
+            <input
+              type="password"
+              style={fieldStyle}
+              value={passData.next}
+              onChange={(e) => setPassData({ ...passData, next: e.target.value })}
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+              Confirm New Password *
+            </label>
+            <input
+              type="password"
+              style={fieldStyle}
+              value={passData.confirm}
+              onChange={(e) => setPassData({ ...passData, confirm: e.target.value })}
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={savingPassword}
+            className="eyebrow"
+            style={{
+              alignSelf: "flex-start",
+              border: "1px solid var(--primary)",
+              backgroundColor: "transparent",
+              color: "var(--primary)",
+              padding: "12px 28px",
+              borderRadius: "2px",
+              cursor: savingPassword ? "not-allowed" : "pointer",
+              fontWeight: 600,
+              letterSpacing: "0.12em",
+              opacity: savingPassword ? 0.75 : 1,
+              marginTop: "8px",
+              transition: "all 0.2s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--primary)";
+              e.currentTarget.style.color = "#ffffff";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "var(--primary)";
+            }}
+          >
+            {savingPassword ? "Updating..." : "Update Password"}
+          </button>
+        </form>
+      </div>
 
       {/* Account Session & Logout */}
       <div
         style={{
           gridColumn: "1 / -1",
-          marginTop: "16px",
+          marginTop: "12px",
           padding: "28px 32px",
-          backgroundColor: "#fffdfb",
-          border: "1px solid #f2ded9",
-          borderRadius: "2px",
+          backgroundColor: "#FAF9F6",
+          border: "1px solid #EDE8DE",
+          borderRadius: "4px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -357,11 +556,11 @@ function SettingsTab() {
           <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, color: "var(--gold-deep)" }}>
             Session Management
           </span>
-          <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", color: "#181818", margin: "6px 0 4px 0" }}>
+          <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", color: "var(--foreground)", margin: "6px 0 4px 0" }}>
             Account Session &amp; Sign Out
           </h4>
-          <p style={{ fontSize: "0.88rem", color: "#666", margin: 0 }}>
-            Currently signed in as <strong style={{ color: "#181818" }}>{user?.fullname}</strong> ({user?.email}).
+          <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", margin: 0 }}>
+            Currently authenticated as <strong style={{ color: "var(--foreground)" }}>{user?.fullname}</strong> ({user?.email}).
           </p>
         </div>
         <button
@@ -371,23 +570,29 @@ function SettingsTab() {
             display: "inline-flex",
             alignItems: "center",
             gap: "10px",
-            backgroundColor: "#a83232",
-            color: "#ffffff",
-            padding: "14px 28px",
-            border: "none",
+            backgroundColor: "#FAF9F6",
+            color: "#a83232",
+            border: "1px solid #e5c3c3",
+            padding: "12px 26px",
             borderRadius: "2px",
-            fontSize: "0.78rem",
+            fontSize: "0.76rem",
             fontWeight: 600,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
             cursor: "pointer",
-            transition: "background 0.2s ease"
+            transition: "all 0.2s ease"
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#882323")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#a83232")}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#a83232";
+            e.currentTarget.style.color = "#ffffff";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "#FAF9F6";
+            e.currentTarget.style.color = "#a83232";
+          }}
         >
-          <LogOut size={16} />
-          Log Out Account
+          <LogOut size={15} />
+          Sign Out of Account
         </button>
       </div>
     </div>
@@ -807,8 +1012,8 @@ function AddressesTab() {
           style={{
             position: "fixed",
             inset: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.65)",
-            backdropFilter: "blur(4px)",
+            backgroundColor: "rgba(20, 24, 14, 0.7)",
+            backdropFilter: "blur(8px)",
             zIndex: 9999,
             display: "grid",
             placeItems: "center",
@@ -819,14 +1024,15 @@ function AddressesTab() {
           <div
             style={{
               width: "100%",
-              maxWidth: "620px",
+              maxWidth: "640px",
               maxHeight: "92vh",
               overflowY: "auto",
-              backgroundColor: "var(--background)",
-              border: "1px solid var(--border)",
+              backgroundColor: "#FAF9F6",
+              border: "1px solid #EDE8DE",
               padding: "36px",
               position: "relative",
-              boxShadow: "0 20px 40px rgba(0,0,0,0.25)"
+              borderRadius: "6px",
+              boxShadow: "0 24px 60px rgba(0,0,0,0.22)"
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -837,13 +1043,27 @@ function AddressesTab() {
                 position: "absolute",
                 top: "20px",
                 right: "20px",
-                background: "none",
-                border: "none",
-                color: "var(--muted-foreground)",
-                cursor: "pointer"
+                background: "#ffffff",
+                border: "1px solid #EDE8DE",
+                width: "34px",
+                height: "34px",
+                borderRadius: "50%",
+                display: "grid",
+                placeItems: "center",
+                color: "var(--foreground)",
+                cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--primary)";
+                e.currentTarget.style.color = "var(--primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#EDE8DE";
+                e.currentTarget.style.color = "var(--foreground)";
               }}
             >
-              <X size={20} />
+              <X size={18} />
             </button>
 
             <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
@@ -1148,37 +1368,112 @@ function SignInView() {
   };
 
   return (
-    <div className="container-luxury" style={{ paddingTop: "70px", paddingBottom: "110px", maxWidth: "540px", margin: "0 auto" }}>
+    <div className="container-luxury" style={{ paddingTop: "70px", paddingBottom: "110px", maxWidth: "520px", margin: "0 auto" }}>
       <div
         style={{
-          backgroundColor: "#ffffff",
-          border: "1px solid var(--border)",
-          padding: "44px 40px",
-          borderRadius: "2px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
+          backgroundColor: "#FAF9F6",
+          border: "1px solid #EDE8DE",
+          padding: "48px 38px",
+          borderRadius: "6px",
+          boxShadow: "0 20px 50px rgba(0,0,0,0.06)",
           textAlign: "center"
         }}
       >
-        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Gemora Diam</p>
-        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.4rem", marginTop: "12px", color: "var(--foreground)" }}>
-          {isRegister ? "Create Account" : "Sign In"}
-        </h1>
-        <p style={{ marginTop: "10px", fontSize: "0.9rem", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
-          {isRegister
-            ? "Create your account to view order history, save items to your wishlist, and enjoy a personalized shopping experience."
-            : "Sign in to access your account, track orders, and view your saved jewelry."}
+        {/* Atelier Crest */}
+        <div
+          style={{
+            width: "56px",
+            height: "56px",
+            borderRadius: "50%",
+            backgroundColor: "var(--primary-soft)",
+            border: "1px solid rgba(197, 160, 89, 0.35)",
+            display: "grid",
+            placeItems: "center",
+            margin: "0 auto 16px",
+            color: "var(--primary)"
+          }}
+        >
+          <Sparkles size={24} strokeWidth={1.5} />
+        </div>
+
+        <p className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.72rem" }}>
+          Gemora Diam • Private Client Portal
         </p>
+        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.4rem", margin: "8px 0 10px 0", color: "var(--foreground)", letterSpacing: "-0.01em" }}>
+          {isRegister ? "Join The Atelier" : "Welcome Back"}
+        </h1>
+        <p style={{ fontSize: "0.9rem", color: "var(--muted-foreground)", lineHeight: 1.6, margin: "0 0 28px 0" }}>
+          {isRegister
+            ? "Create your private account to curate wishlists, view order dossiers, and commission bespoke pieces."
+            : "Sign in to access your order history, authenticated invoices, and saved fine jewelry."}
+        </p>
+
+        {/* Tab Segment Switcher */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            padding: "4px",
+            backgroundColor: "#ffffff",
+            borderRadius: "4px",
+            border: "1px solid #EDE8DE",
+            marginBottom: "24px"
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setIsRegister(false);
+              setErrorMsg("");
+            }}
+            className="eyebrow"
+            style={{
+              padding: "10px",
+              border: "none",
+              borderRadius: "3px",
+              backgroundColor: !isRegister ? "var(--primary)" : "transparent",
+              color: !isRegister ? "#ffffff" : "var(--muted-foreground)",
+              cursor: "pointer",
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              transition: "all 0.2s"
+            }}
+          >
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsRegister(true);
+              setErrorMsg("");
+            }}
+            className="eyebrow"
+            style={{
+              padding: "10px",
+              border: "none",
+              borderRadius: "3px",
+              backgroundColor: isRegister ? "var(--primary)" : "transparent",
+              color: isRegister ? "#ffffff" : "var(--muted-foreground)",
+              cursor: "pointer",
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              transition: "all 0.2s"
+            }}
+          >
+            Create Account
+          </button>
+        </div>
 
         {errorMsg && (
           <div
             style={{
-              marginTop: "20px",
+              marginBottom: "20px",
               padding: "12px 16px",
-              backgroundColor: "#fff0f0",
-              border: "1px solid #ffd0d0",
-              color: "#c33",
-              fontSize: "0.84rem",
-              borderRadius: "2px",
+              backgroundColor: "#fff2f2",
+              border: "1px solid #fedcdc",
+              color: "#a83232",
+              fontSize: "0.85rem",
+              borderRadius: "3px",
               textAlign: "left"
             }}
           >
@@ -1186,11 +1481,11 @@ function SignInView() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ marginTop: "28px", display: "flex", flexDirection: "column", gap: "16px", textAlign: "left" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px", textAlign: "left" }}>
           {isRegister && (
             <div>
-              <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666", display: "block", marginBottom: "6px" }}>
-                Full Name
+              <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+                Full Name *
               </label>
               <input
                 style={fieldStyle}
@@ -1204,8 +1499,8 @@ function SignInView() {
           )}
 
           <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666", display: "block", marginBottom: "6px" }}>
-              Email Address
+            <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+              Email Address *
             </label>
             <input
               style={fieldStyle}
@@ -1217,11 +1512,10 @@ function SignInView() {
             />
           </div>
 
-
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666" }}>
-                Password
+              <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)" }}>
+                Password *
               </label>
             </div>
             <input
@@ -1239,53 +1533,34 @@ function SignInView() {
             disabled={loading}
             className="eyebrow"
             style={{
-              marginTop: "12px",
+              marginTop: "8px",
               backgroundColor: "var(--primary)",
               color: "#ffffff",
               padding: "14px",
               border: "none",
+              borderRadius: "2px",
               cursor: loading ? "not-allowed" : "pointer",
               fontWeight: 600,
-              letterSpacing: "0.15em",
+              letterSpacing: "0.16em",
               textAlign: "center",
-              opacity: loading ? 0.75 : 1
+              opacity: loading ? 0.75 : 1,
+              transition: "background 0.2s ease",
+              boxShadow: "0 6px 18px rgba(85, 104, 50, 0.25)"
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
           >
-            {loading ? "Processing..." : isRegister ? "Create Account" : "Sign In"}
+            {loading ? "Processing..." : isRegister ? "Create Private Account" : "Access Account ✦"}
           </button>
         </form>
 
-        <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid var(--border)", fontSize: "0.85rem", color: "#666" }}>
-          {isRegister ? (
-            <>
-              Already have an account?{" "}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsRegister(false);
-                  setErrorMsg("");
-                }}
-                style={{ background: "none", border: "none", color: "var(--primary)", fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}
-              >
-                Sign In
-              </button>
-            </>
-          ) : (
-            <>
-              Don't have an account yet?{" "}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsRegister(true);
-                  setErrorMsg("");
-                }}
-                style={{ background: "none", border: "none", color: "var(--primary)", fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}
-              >
-                Create Account
-              </button>
-            </>
-          )}
-        </div>
+        <p style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid #EDE8DE", fontSize: "0.82rem", color: "var(--muted-foreground)", margin: "24px 0 0 0" }}>
+          By continuing, you acknowledge Gemora Diam's{" "}
+          <Link to="/privacy-policy" style={{ color: "var(--primary)", textDecoration: "underline" }}>
+            Privacy Protocol
+          </Link>{" "}
+          &amp; Client Terms.
+        </p>
       </div>
     </div>
   );

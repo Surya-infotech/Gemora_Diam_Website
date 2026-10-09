@@ -9,36 +9,47 @@
   --background: #ffffff;
   --card: #ffffff;
 
-  /* Gemora Diam Botanical Luxury Palette */
+  /* Gemora Diam Botanical Luxury Palette - PRESERVED PRIMARY COLOR */
   --primary: #556832;
   --primary-hover: #435226;
   --primary-foreground: #ffffff;
   --primary-soft: #eef2e6;
   --primary-light: #708447;
+  --primary-dark: #374320;
 
   /* Harmonious Luxury Accent (Champagne Gold / Antique Brass) */
   --accent: #c5a059;
   --accent-hover: #b38e46;
   --gold: #c5a059;
+  --gold-light: #e8d7a7;
   --gold-deep: #9e7d37;
   --gold-bar: #556832;
+  --gold-glow: rgba(197, 160, 89, 0.25);
 
   /* Premium Neutrals & Backgrounds */
-  --foreground: #1e2419;
-  --card-foreground: #1e2419;
-  --main-dark: #1a2216;
-  --main-darker: #131a10;
+  --foreground: #1c2217;
+  --card-foreground: #1c2217;
+  --main-dark: #151d11;
+  --main-darker: #0d130a;
   --main-muted: #626e59;
   --main-subtle: #85917c;
   --secondary: #f4f6f0;
-  --secondary-foreground: #1e2419;
+  --secondary-foreground: #1c2217;
   --muted: #edf1e7;
   --muted-foreground: #5e6b54;
-  --cream-bg: #faf9f5;
+  --cream-bg: #faf8f5;
   --champagne: #f4f1e8;
+  --stone-card: #f9f8f5;
   --border: #dfe4d8;
   --border-subtle: #edf1e8;
+  --border-gold: #e2d2b4;
   --destructive: #c0392b;
+
+  /* Shadows */
+  --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 6px 24px rgba(28, 34, 23, 0.05);
+  --shadow-hover: 0 14px 34px rgba(28, 34, 23, 0.09);
+  --shadow-luxury: 0 20px 50px rgba(15, 23, 11, 0.12);
 
   /* Typography */
   --font-serif: "Playfair Display", "Cormorant Garamond", Georgia, serif;
@@ -70,6 +81,11 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   font-weight: 400;
   letter-spacing: -0.01em;
   color: var(--foreground);
+}
+
+.font-serif-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
 }
 
 a {
@@ -112,9 +128,30 @@ img {
 
 @media (min-width: 1024px) {
   .container-luxury {
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: 44px;
+    padding-right: 44px;
   }
+}
+
+/* Luxury Interactive Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-dark {
+  background: rgba(21, 29, 17, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Shimmer & Glow Effects */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
 }
 
 /* Marquee Animations */
@@ -126,7 +163,7 @@ img {
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marqueeScroll 28s linear infinite;
+  animation: marqueeScroll 32s linear infinite;
 }
 
 .animate-marquee:hover {
@@ -135,7 +172,7 @@ img {
 
 /* Slide and Fade Transitions */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -149,6 +186,19 @@ img {
   to { transform: translateX(0); }
 }
 
+/* Luxury Image Zoom on Container Hover */
+.img-zoom-parent {
+  overflow: hidden;
+}
+
+.img-zoom-parent img {
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.img-zoom-parent:hover img {
+  transform: scale(1.06);
+}
+
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
@@ -158,7 +208,7 @@ img {
   background: #f4f6f0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cdd5c5;
+  background: #c5d0ba;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -178,17 +228,17 @@ img {
   }
 }
 
-/* Product Gallery Layout (Thumbnails vertical on left of main image) */
+/* Product Gallery Layout */
 .product-gallery-layout {
   display: flex;
   flex-direction: column-reverse;
-  gap: 14px;
+  gap: 16px;
 }
 
 .product-gallery-thumbnails {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 12px;
   overflow-x: auto;
   overflow-y: hidden;
   padding-bottom: 4px;
@@ -198,12 +248,12 @@ img {
   .product-gallery-layout {
     flex-direction: row;
     align-items: flex-start;
-    gap: 16px;
+    gap: 20px;
   }
 
   .product-gallery-thumbnails {
     flex-direction: column;
-    max-height: 520px;
+    max-height: 560px;
     overflow-x: hidden;
     overflow-y: auto;
     padding-bottom: 0;
@@ -217,11 +267,12 @@ img {
   flex: 1;
   min-width: 0;
   width: 100%;
-  height: 520px;
-  background-color: #f7f7f7;
+  height: 560px;
+  background-color: #faf9f6;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #ede8de;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -236,6 +287,7 @@ img {
   object-fit: cover !important;
   object-position: center !important;
   display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .product-main-stage video {
@@ -249,3 +301,22 @@ img {
   background-color: #0b0f0c;
 }
 
+/* Nav Link Underline Hover Effect */
+.nav-link-luxury {
+  position: relative;
+  transition: color 0.25s ease;
+}
+.nav-link-luxury::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 1.5px;
+  background-color: var(--primary);
+  transition: width 0.25s ease;
+}
+.nav-link-luxury:hover::after,
+.nav-link-luxury.active::after {
+  width: 100%;
+}

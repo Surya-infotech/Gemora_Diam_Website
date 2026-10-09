@@ -10,35 +10,36 @@ import {
   ChevronDown,
   Phone,
   MapPin,
-  Truck,
-  CreditCard,
-  RotateCcw,
-  Headphones,
+  Sparkles,
   ArrowRight,
   LogOut
 } from "lucide-react";
 import { useStore } from "../lib/store";
-import { slugifyPolicy } from "../pages/PolicyPage";
 import { CartLines } from "./CartLines";
-
-import visaSvg from "../assets/vemus/payment_visa.svg";
-import masterSvg from "../assets/vemus/payment_master.svg";
-import applePaySvg from "../assets/vemus/payment_apple-pay.svg";
-import amexSvg from "../assets/vemus/payment_am-ex.svg";
-import discoverSvg from "../assets/vemus/payment_discover.svg";
 
 export function Logo() {
   const { generalSettings } = useStore();
-  const brandName = generalSettings?.softwarename;
+  const brandName = generalSettings?.softwarename || "Gemora Diam";
   return (
-    <Link to="/" style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", textDecoration: "none" }}>
+    <Link
+      to="/"
+      style={{
+        display: "inline-flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textDecoration: "none",
+        transition: "opacity 0.2s"
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
+      onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+    >
       <span
         style={{
-          fontFamily: "'Playfair Display', serif",
-          fontSize: "2.3rem",
+          fontFamily: "var(--font-serif)",
+          fontSize: "clamp(1.9rem, 3.2vw, 2.45rem)",
           fontWeight: 600,
           fontStyle: "italic",
-          letterSpacing: "0.03em",
+          letterSpacing: "0.02em",
           color: "var(--foreground)",
           lineHeight: 1
         }}
@@ -48,14 +49,14 @@ export function Logo() {
       <span
         style={{
           fontSize: "0.58rem",
-          letterSpacing: "0.26em",
+          letterSpacing: "0.3em",
           textTransform: "uppercase",
           color: "var(--primary)",
           fontWeight: 600,
-          marginTop: "2px"
+          marginTop: "4px"
         }}
       >
-        Fine Jewelry
+        Fine Jewelry &bull; Atelier
       </span>
     </Link>
   );
@@ -67,19 +68,21 @@ function Badge({ n }) {
     <span
       style={{
         position: "absolute",
-        top: "-7px",
+        top: "-6px",
         right: "-8px",
         backgroundColor: "var(--primary)",
         color: "#ffffff",
         fontSize: "0.62rem",
         fontWeight: 700,
-        height: "17px",
-        minWidth: "17px",
-        borderRadius: "50%",
+        height: "18px",
+        minWidth: "18px",
+        borderRadius: "9px",
         display: "grid",
         placeItems: "center",
-        padding: "0 3px",
-        border: "1.5px solid #ffffff"
+        padding: "0 4px",
+        border: "1.5px solid #ffffff",
+        boxShadow: "0 2px 6px rgba(85, 104, 50, 0.4)",
+        lineHeight: 1
       }}
     >
       {n}
@@ -112,97 +115,133 @@ function AccountMenu() {
         style={{
           background: "none",
           border: "none",
-          color: "#181818",
+          color: "var(--foreground)",
           display: "inline-flex",
           alignItems: "center",
+          justifyContent: "center",
           cursor: "pointer",
-          padding: "4px"
+          padding: "6px",
+          borderRadius: "50%",
+          transition: "all 0.2s ease"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+          e.currentTarget.style.color = "var(--primary)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = "transparent";
+          e.currentTarget.style.color = "var(--foreground)";
         }}
       >
-        <User size={22} strokeWidth={1.4} />
+        <User size={21} strokeWidth={1.5} />
       </button>
 
       {open && (
         <div
           style={{
             position: "absolute",
-            top: "calc(100% + 12px)",
+            top: "calc(100% + 14px)",
             right: 0,
             backgroundColor: "#ffffff",
-            color: "#181818",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
-            borderRadius: "2px",
-            border: "1px solid #ebebeb",
-            padding: "10px 0",
-            minWidth: "220px",
+            color: "var(--foreground)",
+            boxShadow: "var(--shadow-luxury)",
+            borderRadius: "4px",
+            border: "1px solid #ebe6dc",
+            padding: "8px 0",
+            minWidth: "240px",
             zIndex: 9999,
-            animation: "fadeIn 0.15s ease-out"
+            animation: "fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
           }}
         >
           {user ? (
             <>
-              <div style={{ padding: "8px 18px 12px", borderBottom: "1px solid #f0f0f0" }}>
-                <div style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--gold-deep)", fontWeight: 700 }}>
-                  My Account
+              <div style={{ padding: "12px 20px 14px", borderBottom: "1px solid #f2eee6" }}>
+                <div style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.16em", color: "var(--gold-deep)", fontWeight: 700 }}>
+                  Client Profile
                 </div>
-                <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818", marginTop: "2px" }}>
+                <div style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)", marginTop: "3px" }}>
                   {user.fullname}
                 </div>
-                <div style={{ fontSize: "0.76rem", color: "#888", marginTop: "1px" }}>
+                <div style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "1px" }}>
                   {user.email}
                 </div>
               </div>
 
-              <div style={{ padding: "6px 0" }}>
+              <div style={{ padding: "8px 0" }}>
                 <Link
                   to="/profile?tab=wishlist"
                   onClick={() => setOpen(false)}
                   style={{
-                    display: "block",
-                    padding: "8px 18px",
-                    fontSize: "0.82rem",
-                    color: "#333",
-                    textDecoration: "none"
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "9px 20px",
+                    fontSize: "0.84rem",
+                    color: "var(--foreground)",
+                    textDecoration: "none",
+                    transition: "all 0.15s ease"
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+                    e.currentTarget.style.color = "var(--primary)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "var(--foreground)";
+                  }}
                 >
                   My Wishlist
+                </Link>
+
+                <Link
+                  to="/orders"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "9px 20px",
+                    fontSize: "0.84rem",
+                    color: "var(--foreground)",
+                    textDecoration: "none",
+                    transition: "all 0.15s ease"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+                    e.currentTarget.style.color = "var(--primary)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "var(--foreground)";
+                  }}
+                >
+                  Orders &amp; Tracking
                 </Link>
 
                 <Link
                   to="/profile?tab=settings"
                   onClick={() => setOpen(false)}
                   style={{
-                    display: "block",
-                    padding: "8px 18px",
-                    fontSize: "0.82rem",
-                    color: "#333",
-                    textDecoration: "none"
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "9px 20px",
+                    fontSize: "0.84rem",
+                    color: "var(--foreground)",
+                    textDecoration: "none",
+                    transition: "all 0.15s ease"
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                >
-                  Security &amp; Settings
-                </Link>
-                <Link
-                  to="/orders"
-                  onClick={() => setOpen(false)}
-                  style={{
-                    display: "block",
-                    padding: "8px 18px",
-                    fontSize: "0.82rem",
-                    color: "#333",
-                    textDecoration: "none"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+                    e.currentTarget.style.color = "var(--primary)";
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "var(--foreground)";
+                  }}
                 >
-                  Order History
+                  Security &amp; Addresses
                 </Link>
               </div>
 
-              <div style={{ borderTop: "1px solid #f0f0f0", paddingTop: "6px" }}>
+              <div style={{ borderTop: "1px solid #f2eee6", paddingTop: "6px" }}>
                 <button
                   onClick={() => {
                     logout();
@@ -213,49 +252,53 @@ function AccountMenu() {
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
-                    padding: "8px 18px",
+                    padding: "9px 20px",
                     background: "none",
                     border: "none",
-                    color: "#c33",
-                    fontSize: "0.82rem",
+                    color: "var(--destructive)",
+                    fontSize: "0.84rem",
                     fontWeight: 600,
                     cursor: "pointer",
-                    textAlign: "left"
+                    textAlign: "left",
+                    transition: "background-color 0.15s"
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff5f5")}
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                 >
                   <LogOut size={14} />
-                  Log Out
+                  Sign Out
                 </button>
               </div>
             </>
           ) : (
-            <div style={{ padding: "8px 18px" }}>
-              <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "#181818" }}>
-                Gemora Diam
+            <div style={{ padding: "14px 20px" }}>
+              <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "var(--foreground)" }}>
+                Sign In to Gemora Diam
               </div>
-              <p style={{ fontSize: "0.78rem", color: "#888", margin: "4px 0 12px" }}>
-                Sign in to view your orders, saved items, and account details.
+              <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", margin: "4px 0 14px", lineHeight: 1.5 }}>
+                Access saved pieces, bespoke orders, and concierge tracking.
               </p>
               <Link
                 to="/profile"
                 onClick={() => setOpen(false)}
+                className="eyebrow"
                 style={{
                   display: "block",
                   textAlign: "center",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
-                  padding: "9px 12px",
-                  fontSize: "0.78rem",
+                  padding: "10px 14px",
+                  fontSize: "0.74rem",
                   fontWeight: 600,
                   textDecoration: "none",
                   borderRadius: "2px",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase"
+                  letterSpacing: "0.14em",
+                  transition: "background-color 0.2s"
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
               >
-                Sign In
+                Sign In / Register
               </Link>
             </div>
           )}
@@ -273,8 +316,6 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
 
-
-
   const searchPool = dynamicProducts || [];
 
   const results = q
@@ -291,85 +332,126 @@ export function Header() {
 
   return (
     <>
-      {/* 1. Black Top Announcement Bar Marquee */}
+      {/* 1. Ultra-Luxurious Announcement Marquee */}
       <div
         style={{
-          backgroundColor: "#181818",
-          color: "#ffffff",
+          backgroundColor: "#161e12",
+          color: "#f5f3ee",
           overflow: "hidden",
           whiteSpace: "nowrap",
           fontSize: "0.72rem",
-          letterSpacing: "0.15em",
-          padding: "8px 0",
+          letterSpacing: "0.18em",
+          padding: "7px 0",
           textTransform: "uppercase",
-          borderBottom: "1px solid rgba(255,255,255,0.08)"
+          borderBottom: "1px solid rgba(197, 160, 89, 0.2)",
+          position: "relative",
+          zIndex: 101
         }}
       >
-        <div className="animate-marquee" style={{ display: "inline-flex", gap: "60px" }}>
-          <span>FREE SHIPPING ON ALL ORDERS OVER $200</span>
-          <span>&mdash;</span>
-          <span>VIP MEMBERS GET EXTRA DISCOUNTS &ndash; <Link to="/contact" style={{ textDecoration: "underline", color: "var(--primary)" }}>JOIN TODAY!</Link></span>
-          <span>&mdash;</span>
-          <span>HASSLE-FREE RETURNS ON ALL ORDERS</span>
-          <span>&mdash;</span>
-          <span>FREE SHIPPING ON ALL ORDERS OVER $200</span>
-          <span>&mdash;</span>
-          <span>VIP MEMBERS GET EXTRA DISCOUNTS &ndash; <Link to="/contact" style={{ textDecoration: "underline", color: "var(--primary)" }}>JOIN TODAY!</Link></span>
-          <span>&mdash;</span>
-          <span>HASSLE-FREE RETURNS ON ALL ORDERS</span>
-          <span>&mdash;</span>
+        <div className="animate-marquee" style={{ display: "inline-flex", alignItems: "center", gap: "40px" }}>
+          <span>COMPLIMENTARY INSURED WORLDWIDE DELIVERY</span>
+          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
+          <span>100% ETHICALLY CERTIFIED LAB GROWN DIAMONDS</span>
+          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
+          <span>30-DAY BESPOKE RETURNS &amp; LIFETIME POLISH</span>
+          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
+          <span>COMPLIMENTARY INSURED WORLDWIDE DELIVERY</span>
+          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
+          <span>100% ETHICALLY CERTIFIED LAB GROWN DIAMONDS</span>
+          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
+          <span>30-DAY BESPOKE RETURNS &amp; LIFETIME POLISH</span>
+          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
         </div>
       </div>
 
-      {/* 2. Secondary Gold Header Bar */}
+      {/* 2. Slender Concierge Bar */}
       <div
         style={{
-          backgroundColor: "var(--gold-bar)",
+          backgroundColor: "var(--primary)",
           color: "#ffffff",
-          fontSize: "0.76rem",
+          fontSize: "0.75rem",
           fontWeight: 500,
-          padding: "8px 24px",
+          padding: "6px 24px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
-          gap: "12px"
+          gap: "12px",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.1)"
         }}
       >
-        {/* Left: Phone & Store */}
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-          {generalSettings?.phone && (
-            <>
+        <div className="container-luxury" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 0, paddingRight: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "22px" }}>
+            {generalSettings?.phone && (
               <a
                 href={`tel:${generalSettings.phone.replace(/\s+/g, '')}`}
-                style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#ffffff" }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  color: "#ffffff",
+                  letterSpacing: "0.04em",
+                  transition: "opacity 0.2s"
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
-                <Phone size={13} />
-                <span>{generalSettings.phone}</span>
+                <Phone size={12} strokeWidth={1.8} />
+                <span>Concierge: {generalSettings.phone}</span>
               </a>
-              <span style={{ opacity: 0.5 }}>|</span>
-            </>
-          )}
-          <Link
-            to="/contact"
-            style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#ffffff" }}
-          >
-            <MapPin size={13} />
-            <span>Our Store</span>
-          </Link>
-        </div>
+            )}
+            <Link
+              to="/contact"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                color: "#ffffff",
+                letterSpacing: "0.04em",
+                transition: "opacity 0.2s"
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            >
+              <MapPin size={12} strokeWidth={1.8} />
+              <span>Bespoke Atelier Locations</span>
+            </Link>
+          </div>
 
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }} className="desktop-only-nav">
+            <span style={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "0.72rem", letterSpacing: "0.08em" }}>
+              Complimentary Ring Sizer &amp; Consultations
+            </span>
+            <Link
+              to="/contact"
+              style={{
+                color: "var(--gold-light)",
+                fontSize: "0.72rem",
+                fontWeight: 600,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                textDecoration: "underline",
+                textUnderlineOffset: "3px"
+              }}
+            >
+              Book Appointment
+            </Link>
+          </div>
+        </div>
       </div>
 
-      {/* 3. Main Navigation Header */}
+      {/* 3. Main Sticky Navigation Header */}
       <header
         style={{
           position: "sticky",
           top: 0,
           zIndex: 100,
-          backgroundColor: "#ffffff",
-          borderBottom: "1px solid #ebebeb",
-          boxShadow: "0 2px 12px rgba(0,0,0,0.03)"
+          backgroundColor: "rgba(255, 255, 255, 0.96)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          borderBottom: "1px solid #ebe5da",
+          boxShadow: "0 4px 20px rgba(28, 34, 23, 0.04)",
+          transition: "all 0.3s ease"
         }}
       >
         <div
@@ -378,93 +460,108 @@ export function Header() {
             display: "grid",
             gridTemplateColumns: "1fr auto 1fr",
             alignItems: "center",
-            height: "82px",
-            gap: "20px"
+            height: "86px",
+            gap: "24px"
           }}
         >
-          {/* Left: Desktop Nav / Mobile Toggle */}
-          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          {/* Left: Desktop Nav Links / Mobile Burger */}
+          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
             <button
-              aria-label="Menu"
+              aria-label="Toggle navigation menu"
               onClick={() => setMobile(true)}
-              style={{ display: "flex", alignItems: "center", color: "#181818" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--foreground)",
+                padding: "8px",
+                borderRadius: "4px"
+              }}
               className="mobile-only-btn"
             >
               <Menu size={24} strokeWidth={1.5} />
             </button>
 
             <nav
-              style={{ display: "flex", gap: "26px", alignItems: "center" }}
+              style={{ display: "flex", gap: "32px", alignItems: "center" }}
               className="desktop-only-nav"
             >
               <Link
                 to="/"
+                className={`nav-link-luxury ${location.pathname === "/" ? "active" : ""}`}
                 style={{
                   fontSize: "0.82rem",
                   fontWeight: 600,
-                  letterSpacing: "0.12em",
+                  letterSpacing: "0.15em",
                   textTransform: "uppercase",
-                  color: location.pathname === "/" ? "var(--primary)" : "#181818",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  transition: "color 0.2s"
+                  color: location.pathname === "/" ? "var(--primary)" : "var(--foreground)"
                 }}
               >
-                HOME
+                Home
               </Link>
 
               <Link
                 to="/shop"
+                className={`nav-link-luxury ${location.pathname === "/shop" ? "active" : ""}`}
                 style={{
                   fontSize: "0.82rem",
                   fontWeight: 600,
-                  letterSpacing: "0.12em",
+                  letterSpacing: "0.15em",
                   textTransform: "uppercase",
-                  color: location.pathname === "/shop" ? "var(--primary)" : "#181818",
+                  color: location.pathname === "/shop" ? "var(--primary)" : "var(--foreground)",
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "4px",
-                  transition: "color 0.2s"
+                  gap: "4px"
                 }}
               >
-                SHOP <ChevronDown size={12} />
+                Shop All <ChevronDown size={12} strokeWidth={1.8} />
+              </Link>
+
+              <Link
+                to="/about"
+                className={`nav-link-luxury ${location.pathname === "/about" ? "active" : ""}`}
+                style={{
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  color: location.pathname === "/about" ? "var(--primary)" : "var(--foreground)"
+                }}
+              >
+                About Us
               </Link>
 
               <Link
                 to="/contact"
+                className={`nav-link-luxury ${location.pathname === "/contact" ? "active" : ""}`}
                 style={{
                   fontSize: "0.82rem",
                   fontWeight: 600,
-                  letterSpacing: "0.12em",
+                  letterSpacing: "0.15em",
                   textTransform: "uppercase",
-                  color: location.pathname === "/contact" ? "var(--primary)" : "#181818",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  transition: "color 0.2s"
+                  color: location.pathname === "/contact" ? "var(--primary)" : "var(--foreground)"
                 }}
               >
-                BLOGS
+                Contact
               </Link>
             </nav>
           </div>
 
-          {/* Center: Brand Logo */}
+          {/* Center: Brand Identity Logo */}
           <div style={{ textAlign: "center" }}>
             <Logo />
           </div>
 
-          {/* Right: Search Pill & User/Wishlist/Cart Icons */}
+          {/* Right: Search Input + Client Icons */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "18px" }}>
-            {/* Pill Search Input */}
+            {/* Elegant Luxury Capsule Search */}
             <form
               onSubmit={handleSearchSubmit}
               style={{
                 position: "relative",
                 display: "flex",
                 alignItems: "center",
-                maxWidth: "240px",
+                maxWidth: "260px",
                 width: "100%"
               }}
               className="desktop-only-nav"
@@ -472,47 +569,108 @@ export function Header() {
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search for anything..."
+                placeholder="Search fine jewelry..."
                 style={{
                   width: "100%",
                   padding: "9px 18px 9px 38px",
                   borderRadius: "50px",
-                  border: "1px solid #dcdcdc",
+                  border: "1px solid #d8d2c4",
                   fontSize: "0.82rem",
                   outline: "none",
-                  backgroundColor: "#fafafa",
-                  transition: "border-color 0.2s"
+                  backgroundColor: "#faf8f5",
+                  color: "var(--foreground)",
+                  transition: "all 0.25s ease"
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
-                onBlur={(e) => (e.target.style.borderColor = "#dcdcdc")}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "var(--primary)";
+                  e.target.style.backgroundColor = "#ffffff";
+                  e.target.style.boxShadow = "0 0 0 3px rgba(85, 104, 50, 0.12)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#d8d2c4";
+                  e.target.style.backgroundColor = "#faf8f5";
+                  e.target.style.boxShadow = "none";
+                }}
               />
               <Search
-                size={16}
-                strokeWidth={1.5}
-                style={{ position: "absolute", left: "14px", color: "#888888", pointerEvents: "none" }}
+                size={15}
+                strokeWidth={1.7}
+                style={{ position: "absolute", left: "14px", color: "var(--primary)", pointerEvents: "none" }}
               />
             </form>
 
-            {/* Account Menu & Logout */}
+            {/* Mobile Search Button */}
+            <button
+              onClick={() => setSearch(true)}
+              aria-label="Open search"
+              style={{
+                background: "none",
+                border: "none",
+                color: "var(--foreground)",
+                padding: "6px",
+                borderRadius: "50%",
+                display: "inline-flex",
+                alignItems: "center"
+              }}
+              className="mobile-only-btn"
+            >
+              <Search size={21} strokeWidth={1.5} />
+            </button>
+
+            {/* Account Menu */}
             <AccountMenu />
 
-            {/* Wishlist Icon with Badge */}
+            {/* Wishlist Link with Luxury Count Badge */}
             <Link
               to="/profile?tab=wishlist"
               aria-label="Wishlist"
-              style={{ position: "relative", color: "#181818", display: "inline-flex", alignItems: "center" }}
+              style={{
+                position: "relative",
+                color: "var(--foreground)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "6px",
+                borderRadius: "50%",
+                transition: "all 0.2s ease"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+                e.currentTarget.style.color = "var(--primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "var(--foreground)";
+              }}
             >
-              <Heart size={22} strokeWidth={1.4} />
+              <Heart size={21} strokeWidth={1.5} />
               <Badge n={wishlist.length} />
             </Link>
 
-            {/* Cart Bag Icon with Badge */}
+            {/* Shopping Bag Button with Luxury Count Badge */}
             <button
               aria-label="Shopping Bag"
               onClick={() => setCartOpen(true)}
-              style={{ position: "relative", color: "#181818", display: "inline-flex", alignItems: "center" }}
+              style={{
+                position: "relative",
+                color: "var(--foreground)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "6px",
+                borderRadius: "50%",
+                transition: "all 0.2s ease"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+                e.currentTarget.style.color = "var(--primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "var(--foreground)";
+              }}
             >
-              <ShoppingBag size={22} strokeWidth={1.4} />
+              <ShoppingBag size={21} strokeWidth={1.5} />
               <Badge n={cartCount} />
             </button>
           </div>
@@ -526,46 +684,61 @@ export function Header() {
             position: "fixed",
             inset: 0,
             zIndex: 9999,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            backdropFilter: "blur(4px)"
+            backgroundColor: "rgba(22, 30, 18, 0.65)",
+            backdropFilter: "blur(6px)"
           }}
           onClick={() => setMobile(false)}
         >
           <div
             style={{
-              width: "82%",
-              maxWidth: "340px",
+              width: "84%",
+              maxWidth: "360px",
               height: "100%",
               backgroundColor: "#ffffff",
               padding: "32px 24px",
               display: "flex",
               flexDirection: "column",
               gap: "24px",
-              animation: "slideInLeft 0.25s ease-out"
+              animation: "slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+              boxShadow: "10px 0 35px rgba(0,0,0,0.2)"
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <Logo />
-              <button onClick={() => setMobile(false)} style={{ color: "#181818" }}>
+              <button
+                onClick={() => setMobile(false)}
+                aria-label="Close menu"
+                style={{ color: "var(--foreground)", padding: "4px" }}
+              >
                 <X size={24} strokeWidth={1.5} />
               </button>
             </div>
 
-            <nav style={{ display: "flex", flexDirection: "column", gap: "18px", marginTop: "16px" }}>
+            <nav style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "16px" }}>
               <Link
                 to="/"
                 onClick={() => setMobile(false)}
-                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+                style={{
+                  fontSize: "1.05rem",
+                  fontWeight: 600,
+                  color: location.pathname === "/" ? "var(--primary)" : "var(--foreground)",
+                  padding: "6px 0"
+                }}
               >
                 Home
               </Link>
               <Link
                 to="/shop"
                 onClick={() => setMobile(false)}
-                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+                style={{
+                  fontSize: "1.05rem",
+                  fontWeight: 600,
+                  color: location.pathname === "/shop" ? "var(--primary)" : "var(--foreground)",
+                  padding: "6px 0"
+                }}
               >
-                Shop All
+                Shop All Jewelry
               </Link>
               {categories && categories.length > 0 ? (
                 categories.map((c) => (
@@ -573,58 +746,80 @@ export function Header() {
                     key={c._id || c.categoryid || c.categoryname}
                     to={`/shop?category=${encodeURIComponent(c.categoryname)}`}
                     onClick={() => setMobile(false)}
-                    style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+                    style={{
+                      fontSize: "0.95rem",
+                      fontWeight: 500,
+                      color: "var(--muted-foreground)",
+                      paddingLeft: "14px"
+                    }}
                   >
-                    {c.categoryname}
+                    &bull; {c.categoryname}
                   </Link>
                 ))
               ) : null}
               <Link
                 to="/about"
                 onClick={() => setMobile(false)}
-                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+                style={{
+                  fontSize: "1.05rem",
+                  fontWeight: 600,
+                  color: location.pathname === "/about" ? "var(--primary)" : "var(--foreground)",
+                  padding: "6px 0"
+                }}
               >
-                About Us
+                About Our Atelier
               </Link>
               <Link
                 to="/contact"
                 onClick={() => setMobile(false)}
-                style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--foreground)" }}
+                style={{
+                  fontSize: "1.05rem",
+                  fontWeight: 600,
+                  color: location.pathname === "/contact" ? "var(--primary)" : "var(--foreground)",
+                  padding: "6px 0"
+                }}
               >
                 Contact &amp; Stores
               </Link>
             </nav>
 
-            <div style={{ marginTop: "auto", borderTop: "1px solid #eee", paddingTop: "24px" }}>
+            <div style={{ marginTop: "auto", borderTop: "1px solid #eee", paddingTop: "20px" }}>
               {user ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <div
                       style={{
-                        width: "36px",
-                        height: "36px",
+                        width: "38px",
+                        height: "38px",
                         borderRadius: "50%",
                         backgroundColor: "var(--primary)",
-                        color: "#fff",
+                        color: "#ffffff",
                         display: "grid",
                         placeItems: "center",
                         fontWeight: 700,
-                        fontSize: "0.9rem"
+                        fontSize: "0.95rem"
                       }}
                     >
-                      {user.fullname ? user.fullname[0] : "U"}
+                      {user.fullname ? user.fullname[0] : "C"}
                     </div>
                     <div>
-                      <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "#181818" }}>{user.fullname}</div>
-                      <div style={{ fontSize: "0.76rem", color: "#888" }}>{user.email}</div>
+                      <div style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)" }}>{user.fullname}</div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--muted-foreground)" }}>{user.email}</div>
                     </div>
                   </div>
                   <Link
                     to="/profile"
                     onClick={() => setMobile(false)}
-                    style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--foreground)" }}
+                    style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--foreground)", marginTop: "4px" }}
                   >
                     My Account &amp; Settings
+                  </Link>
+                  <Link
+                    to="/orders"
+                    onClick={() => setMobile(false)}
+                    style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--foreground)" }}
+                  >
+                    My Orders &amp; Tracking
                   </Link>
                   <button
                     onClick={() => {
@@ -638,34 +833,35 @@ export function Header() {
                       background: "none",
                       border: "none",
                       padding: 0,
-                      color: "#c33",
+                      color: "var(--destructive)",
                       fontSize: "0.9rem",
                       fontWeight: 600,
                       cursor: "pointer",
-                      textAlign: "left"
+                      textAlign: "left",
+                      marginTop: "6px"
                     }}
                   >
                     <LogOut size={16} />
-                    Log Out
+                    Sign Out
                   </button>
                 </div>
               ) : (
                 <Link
                   to="/profile"
                   onClick={() => setMobile(false)}
+                  className="eyebrow"
                   style={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     gap: "8px",
-                    padding: "12px",
+                    padding: "14px",
                     backgroundColor: "var(--primary)",
                     color: "#ffffff",
-                    fontSize: "0.85rem",
+                    fontSize: "0.82rem",
                     fontWeight: 600,
                     borderRadius: "2px",
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase"
+                    letterSpacing: "0.14em"
                   }}
                 >
                   <User size={16} />
@@ -684,12 +880,12 @@ export function Header() {
             position: "fixed",
             inset: 0,
             zIndex: 9999,
-            backgroundColor: "rgba(0,0,0,0.75)",
-            backdropFilter: "blur(6px)",
+            backgroundColor: "rgba(22, 30, 18, 0.75)",
+            backdropFilter: "blur(8px)",
             display: "flex",
             justifyContent: "center",
             padding: "80px 20px 20px 20px",
-            animation: "fadeIn 0.2s ease-out"
+            animation: "fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
           }}
           onClick={() => setSearch(false)}
         >
@@ -701,16 +897,21 @@ export function Header() {
               padding: "36px",
               borderRadius: "4px",
               alignSelf: "flex-start",
-              boxShadow: "0 20px 40px rgba(0,0,0,0.2)"
+              boxShadow: "var(--shadow-luxury)",
+              border: "1px solid #e8e2d5"
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <span className="eyebrow" style={{ color: "var(--primary)" }}>
-                {generalSettings?.softwarename ? `Search ${generalSettings.softwarename} Jewelry` : "Search Jewelry"}
+                {generalSettings?.softwarename ? `Search ${generalSettings.softwarename}` : "Search Gemora Diam"}
               </span>
-              <button onClick={() => setSearch(false)}>
-                <X size={20} strokeWidth={1.4} />
+              <button
+                onClick={() => setSearch(false)}
+                aria-label="Close search"
+                style={{ color: "var(--foreground)", padding: "4px" }}
+              >
+                <X size={22} strokeWidth={1.5} />
               </button>
             </div>
 
@@ -719,7 +920,7 @@ export function Header() {
                 autoFocus
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search rings, necklaces, solitaires..."
+                placeholder="Search rings, bracelets, solitaires..."
                 style={{
                   width: "100%",
                   borderBottom: "2px solid var(--primary)",
@@ -730,16 +931,17 @@ export function Header() {
                   paddingBottom: "12px",
                   fontFamily: "var(--font-serif)",
                   fontSize: "1.8rem",
+                  color: "var(--foreground)",
                   outline: "none"
                 }}
               />
             </form>
 
-            <p className="eyebrow" style={{ marginTop: "24px", color: "#888" }}>
+            <p className="eyebrow" style={{ marginTop: "24px", color: "var(--muted-foreground)" }}>
               {q ? `${results.length} matching pieces` : "Popular Creations"}
             </p>
 
-            <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>
               {results.slice(0, 4).map((p) => (
                 <div
                   key={p.id}
@@ -751,18 +953,22 @@ export function Header() {
                     display: "flex",
                     alignItems: "center",
                     gap: "16px",
-                    padding: "8px",
+                    padding: "10px 14px",
                     cursor: "pointer",
-                    borderRadius: "4px",
-                    transition: "background 0.2s"
+                    borderRadius: "3px",
+                    transition: "all 0.2s"
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                 >
-                  <img src={p.image} alt={p.name} style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "2px" }} />
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "2px", backgroundColor: "#f6f6f6" }}
+                  />
                   <div>
-                    <h4 style={{ fontSize: "0.95rem", margin: 0, fontWeight: 500 }}>{p.name}</h4>
-                    <span style={{ fontSize: "0.8rem", color: "var(--primary)", fontWeight: 600 }}>{format(p.price)}</span>
+                    <h4 style={{ fontSize: "0.95rem", margin: 0, fontWeight: 500, fontFamily: "var(--font-serif)" }}>{p.name}</h4>
+                    <span style={{ fontSize: "0.85rem", color: "var(--primary)", fontWeight: 600 }}>{format(p.price)}</span>
                   </div>
                 </div>
               ))}
@@ -789,8 +995,8 @@ function CartDrawer() {
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        backdropFilter: "blur(4px)"
+        backgroundColor: "rgba(22, 30, 18, 0.65)",
+        backdropFilter: "blur(6px)"
       }}
       onClick={() => setCartOpen(false)}
     >
@@ -800,13 +1006,13 @@ function CartDrawer() {
           top: 0,
           right: 0,
           width: "100%",
-          maxWidth: "460px",
+          maxWidth: "480px",
           height: "100%",
           backgroundColor: "#ffffff",
           display: "flex",
           flexDirection: "column",
-          animation: "slideInRight 0.3s ease-out",
-          boxShadow: "-10px 0 30px rgba(0,0,0,0.15)"
+          animation: "slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "var(--shadow-luxury)"
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -816,38 +1022,75 @@ function CartDrawer() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "24px 28px",
-            borderBottom: "1px solid #eee"
+            padding: "24px 30px",
+            borderBottom: "1px solid #ede8de",
+            backgroundColor: "#faf9f6"
           }}
         >
           <div>
-            <h3 style={{ fontSize: "1.3rem", margin: 0, fontFamily: "var(--font-serif)" }}>Shopping Bag</h3>
-            <span style={{ fontSize: "0.75rem", color: "#888" }}>{cartCount} {cartCount === 1 ? "item" : "items"}</span>
+            <h3 style={{ fontSize: "1.35rem", margin: 0, fontFamily: "var(--font-serif)", fontWeight: 500 }}>
+              Shopping Bag
+            </h3>
+            <span style={{ fontSize: "0.78rem", color: "var(--muted-foreground)" }}>
+              {cartCount} {cartCount === 1 ? "creation" : "creations"} selected
+            </span>
           </div>
-          <button onClick={() => setCartOpen(false)} style={{ color: "#181818" }}>
+          <button
+            onClick={() => setCartOpen(false)}
+            aria-label="Close bag"
+            style={{
+              color: "var(--foreground)",
+              padding: "6px",
+              borderRadius: "50%",
+              display: "grid",
+              placeItems: "center",
+              cursor: "pointer"
+            }}
+          >
             <X size={22} strokeWidth={1.5} />
           </button>
         </div>
 
         {/* Drawer Body */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px" }}>
+        <div style={{ flex: 1, overflowY: "auto", padding: "20px 30px" }}>
           {cart.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px 0", color: "#888" }}>
-              <ShoppingBag size={48} strokeWidth={1} style={{ margin: "0 auto 16px auto", opacity: 0.4 }} />
-              <p style={{ fontSize: "1rem", fontWeight: 500, color: "#333" }}>Your bag is empty</p>
-              <p style={{ fontSize: "0.85rem", marginTop: "6px" }}>Explore our fine jewelry collection to add pieces.</p>
+            <div style={{ textAlign: "center", padding: "80px 20px", color: "var(--muted-foreground)" }}>
+              <div
+                style={{
+                  width: "70px",
+                  height: "70px",
+                  borderRadius: "50%",
+                  backgroundColor: "var(--primary-soft)",
+                  display: "grid",
+                  placeItems: "center",
+                  margin: "0 auto 20px",
+                  color: "var(--primary)"
+                }}
+              >
+                <ShoppingBag size={34} strokeWidth={1.4} />
+              </div>
+              <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.4rem", color: "var(--foreground)" }}>
+                Your Bag is Empty
+              </p>
+              <p style={{ fontSize: "0.88rem", marginTop: "8px", maxWidth: "280px", marginInline: "auto", lineHeight: 1.6 }}>
+                Explore our fine jewelry collection to select your handcrafted bespoke pieces.
+              </p>
               <Link
                 to="/shop"
                 onClick={() => setCartOpen(false)}
                 className="eyebrow"
                 style={{
                   display: "inline-block",
-                  marginTop: "20px",
-                  padding: "12px 28px",
+                  marginTop: "24px",
+                  padding: "14px 32px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
-                  borderRadius: "2px"
+                  borderRadius: "2px",
+                  letterSpacing: "0.16em",
+                  transition: "background-color 0.2s"
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
               >
                 Discover Collection
               </Link>
@@ -859,13 +1102,21 @@ function CartDrawer() {
 
         {/* Drawer Footer */}
         {cart.length > 0 && (
-          <div style={{ borderTop: "1px solid #eee", padding: "24px 28px", backgroundColor: "#fafafa" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.05rem" }}>
-              <span>Subtotal</span>
-              <span style={{ fontWeight: 600 }}>{format(subtotal)}</span>
+          <div
+            style={{
+              borderTop: "1px solid #ede8de",
+              padding: "24px 30px",
+              backgroundColor: "#faf9f6"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", fontSize: "1.1rem" }}>
+              <span style={{ fontFamily: "var(--font-serif)", fontWeight: 500 }}>Subtotal</span>
+              <span style={{ fontWeight: 700, color: "var(--primary)", fontSize: "1.3rem" }}>
+                {format(subtotal)}
+              </span>
             </div>
-            <p style={{ fontSize: "0.75rem", color: "#777", marginTop: "6px" }}>
-              Complimentary insured worldwide shipping &amp; 30-day returns.
+            <p style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", marginTop: "6px", lineHeight: 1.5 }}>
+              Complimentary insured worldwide shipping &bull; 30-day effortless returns.
             </p>
             <button
               onClick={() => {
@@ -880,10 +1131,28 @@ function CartDrawer() {
                 color: "#ffffff",
                 padding: "16px",
                 borderRadius: "2px",
-                textAlign: "center"
+                textAlign: "center",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "10px",
+                letterSpacing: "0.18em",
+                fontWeight: 600,
+                boxShadow: "0 6px 20px rgba(85, 104, 50, 0.28)",
+                cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--primary)";
+                e.currentTarget.style.transform = "translateY(0)";
               }}
             >
-              View Bag &amp; Checkout
+              <span>View Bag &amp; Checkout</span>
+              <ArrowRight size={16} />
             </button>
           </div>
         )}
@@ -891,4 +1160,5 @@ function CartDrawer() {
     </div>
   );
 }
+
 export { Footer } from "./Footer";

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useStore } from "../../lib/store";
 
 import banner5 from "../../assets/vemus/banner_banner-5.jpg";
@@ -18,21 +18,21 @@ export default function SplitCollectionBanners() {
   const img2 = cat2.image || banner6;
 
   return (
-    <section style={{ backgroundColor: "#ffffff", padding: "40px 0 60px 0" }}>
-      <div className="container-luxury" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+    <section style={{ backgroundColor: "#ffffff", padding: "40px 0 80px 0" }}>
+      <div className="container-luxury" style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
         {/* Banner 1: Image Left, Content Right */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            backgroundColor: "#faf8f5",
-            borderRadius: "4px",
+            backgroundColor: "#FAF9F6",
+            borderRadius: "6px",
             overflow: "hidden",
-            boxShadow: "0 6px 24px rgba(0, 0, 0, 0.04)",
-            border: "1px solid #f0eae1"
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.04)",
+            border: "1px solid #EAE3D5"
           }}
         >
-          <div style={{ minHeight: "280px", maxHeight: "360px", height: "100%", overflow: "hidden", position: "relative" }}>
+          <div style={{ minHeight: "320px", maxHeight: "420px", height: "100%", overflow: "hidden", position: "relative" }}>
             <img
               src={img1}
               alt={cat1.categoryname}
@@ -41,57 +41,58 @@ export default function SplitCollectionBanners() {
                 height: "100%",
                 objectFit: "cover",
                 display: "block",
-                transition: "transform 0.8s ease"
+                transition: "transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)"
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
               onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             />
           </div>
 
           <div
             style={{
-              padding: "clamp(24px, 4vw, 42px)",
+              padding: "clamp(32px, 5vw, 56px)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              backgroundColor: "#faf8f5"
+              backgroundColor: "#FAF9F6"
             }}
           >
             <span
+              className="eyebrow"
               style={{
-                fontSize: "0.75rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                fontWeight: 600,
                 color: "var(--primary)",
-                marginBottom: "10px",
-                display: "inline-block"
+                letterSpacing: "0.24em",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                marginBottom: "12px"
               }}
             >
-              Featured Collection
+              <span>✦</span>
+              <span>FEATURED ATELIER</span>
             </span>
             <h2
               style={{
                 fontFamily: "var(--font-serif)",
-                fontSize: "clamp(1.7rem, 2.8vw, 2.2rem)",
-                lineHeight: 1.2,
+                fontSize: "clamp(2rem, 3.2vw, 2.6rem)",
+                lineHeight: 1.18,
                 fontWeight: 400,
-                color: "#181818",
-                marginBottom: "12px"
+                color: "var(--foreground)",
+                marginBottom: "14px"
               }}
             >
               {cat1.categoryname} Collection
             </h2>
             <p
               style={{
-                fontSize: "0.9rem",
-                lineHeight: 1.6,
-                color: "#666666",
-                maxWidth: "460px",
-                marginBottom: "22px"
+                fontSize: "0.92rem",
+                lineHeight: 1.7,
+                color: "var(--muted-foreground)",
+                maxWidth: "480px",
+                marginBottom: "28px"
               }}
             >
-              {cat1.description || `Explore our signature handcrafted ${cat1.categoryname.toLowerCase()} pieces designed for elegance and timeless charm.`}
+              {cat1.description || `Explore our signature handcrafted ${cat1.categoryname.toLowerCase()} pieces designed for elegance, brilliance, and timeless charm.`}
             </p>
             <div>
               <Link
@@ -101,25 +102,27 @@ export default function SplitCollectionBanners() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "10px",
-                  padding: "11px 26px",
+                  padding: "13px 30px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
                   borderRadius: "2px",
-                  fontSize: "0.76rem",
-                  letterSpacing: "0.16em",
+                  fontSize: "0.78rem",
+                  letterSpacing: "0.18em",
                   textDecoration: "none",
+                  boxShadow: "0 4px 16px rgba(85, 104, 50, 0.25)",
                   transition: "all 0.25s ease"
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = "0.92";
-                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                  e.currentTarget.style.transform = "translateY(-2px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.backgroundColor = "var(--primary)";
                   e.currentTarget.style.transform = "translateY(0)";
                 }}
               >
-                Shop Collection <ArrowRight size={15} />
+                <span>SHOP COLLECTION</span>
+                <ArrowRight size={15} />
               </Link>
             </div>
           </div>
@@ -130,57 +133,58 @@ export default function SplitCollectionBanners() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            backgroundColor: "#faf8f5",
-            borderRadius: "4px",
+            backgroundColor: "#FAF9F6",
+            borderRadius: "6px",
             overflow: "hidden",
-            boxShadow: "0 6px 24px rgba(0, 0, 0, 0.04)",
-            border: "1px solid #f0eae1"
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.04)",
+            border: "1px solid #EAE3D5"
           }}
         >
           <div
             style={{
-              padding: "clamp(24px, 4vw, 42px)",
+              padding: "clamp(32px, 5vw, 56px)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              backgroundColor: "#faf8f5"
+              backgroundColor: "#FAF9F6"
             }}
           >
             <span
+              className="eyebrow"
               style={{
-                fontSize: "0.75rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                fontWeight: 600,
                 color: "var(--primary)",
-                marginBottom: "10px",
-                display: "inline-block"
+                letterSpacing: "0.24em",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                marginBottom: "12px"
               }}
             >
-              Curated Craftsmanship
+              <span>✦</span>
+              <span>CURATED CRAFTSMANSHIP</span>
             </span>
             <h2
               style={{
                 fontFamily: "var(--font-serif)",
-                fontSize: "clamp(1.7rem, 2.8vw, 2.2rem)",
-                lineHeight: 1.2,
+                fontSize: "clamp(2rem, 3.2vw, 2.6rem)",
+                lineHeight: 1.18,
                 fontWeight: 400,
-                color: "#181818",
-                marginBottom: "12px"
+                color: "var(--foreground)",
+                marginBottom: "14px"
               }}
             >
               {cat2.categoryname} Collection
             </h2>
             <p
               style={{
-                fontSize: "0.9rem",
-                lineHeight: 1.6,
-                color: "#666666",
-                maxWidth: "460px",
-                marginBottom: "22px"
+                fontSize: "0.92rem",
+                lineHeight: 1.7,
+                color: "var(--muted-foreground)",
+                maxWidth: "480px",
+                marginBottom: "28px"
               }}
             >
-              {cat2.description || `Celebrate special moments with our exquisite ${cat2.categoryname.toLowerCase()} sculpted with certified stones.`}
+              {cat2.description || `Celebrate special moments with our exquisite ${cat2.categoryname.toLowerCase()} sculpted with certified stones and flawless finishing.`}
             </p>
             <div>
               <Link
@@ -190,30 +194,32 @@ export default function SplitCollectionBanners() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "10px",
-                  padding: "11px 26px",
+                  padding: "13px 30px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
                   borderRadius: "2px",
-                  fontSize: "0.76rem",
-                  letterSpacing: "0.16em",
+                  fontSize: "0.78rem",
+                  letterSpacing: "0.18em",
                   textDecoration: "none",
+                  boxShadow: "0 4px 16px rgba(85, 104, 50, 0.25)",
                   transition: "all 0.25s ease"
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = "0.92";
-                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                  e.currentTarget.style.transform = "translateY(-2px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.backgroundColor = "var(--primary)";
                   e.currentTarget.style.transform = "translateY(0)";
                 }}
               >
-                Shop Collection <ArrowRight size={15} />
+                <span>SHOP COLLECTION</span>
+                <ArrowRight size={15} />
               </Link>
             </div>
           </div>
 
-          <div style={{ minHeight: "280px", maxHeight: "360px", height: "100%", overflow: "hidden", position: "relative" }}>
+          <div style={{ minHeight: "320px", maxHeight: "420px", height: "100%", overflow: "hidden", position: "relative" }}>
             <img
               src={img2}
               alt={cat2.categoryname}
@@ -222,9 +228,9 @@ export default function SplitCollectionBanners() {
                 height: "100%",
                 objectFit: "cover",
                 display: "block",
-                transition: "transform 0.8s ease"
+                transition: "transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)"
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
               onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             />
           </div>

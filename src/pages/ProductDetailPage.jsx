@@ -268,30 +268,30 @@ function ProductDetailContent({ product }) {
   return (
     <div style={{ backgroundColor: "#ffffff", color: "var(--foreground)", paddingBottom: "100px" }}>
       {/* Breadcrumb Navigation */}
-      <div style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "#fafbf8" }}>
+      <div style={{ borderBottom: "1px solid #EDE8DE", backgroundColor: "#FAF9F6" }}>
         <div className="container-luxury" style={{ padding: "16px 20px" }}>
           <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "0.82rem", color: "var(--muted-foreground)" }}>
             <Link to="/" style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
               Home
             </Link>
-            <ChevronRight size={13} />
+            <ChevronRight size={13} style={{ color: "var(--gold-deep)" }} />
             <Link to="/shop" style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
               {product.category || "Fine Jewelry"}
             </Link>
             {product.subcategory && (
               <>
-                <ChevronRight size={13} />
+                <ChevronRight size={13} style={{ color: "var(--gold-deep)" }} />
                 <span>{product.subcategory}</span>
               </>
             )}
-            <ChevronRight size={13} />
+            <ChevronRight size={13} style={{ color: "var(--gold-deep)" }} />
             <span style={{ color: "var(--foreground)", fontWeight: 600 }}>{product.name}</span>
           </div>
         </div>
       </div>
 
       {/* Main Product Showcase Section */}
-      <div className="container-luxury" style={{ marginTop: "40px" }}>
+      <div className="container-luxury" style={{ marginTop: "44px" }}>
         <div
           style={{
             display: "grid",
@@ -322,13 +322,14 @@ function ProductDetailContent({ product }) {
                       width: "74px",
                       height: "74px",
                       flexShrink: 0,
-                      borderRadius: "3px",
-                      border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid var(--border)",
-                      backgroundColor: "#f7f7f7",
-                      padding: "2px",
+                      borderRadius: "4px",
+                      border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid #EDE8DE",
+                      backgroundColor: "#FAF9F6",
+                      padding: "3px",
                       overflow: "hidden",
                       cursor: "pointer",
-                      opacity: activeMediaIndex === idx ? 1 : 0.8,
+                      opacity: activeMediaIndex === idx ? 1 : 0.75,
+                      boxShadow: activeMediaIndex === idx ? "0 2px 8px rgba(85, 104, 50, 0.2)" : "none",
                       transition: "all 0.2s"
                     }}
                     onMouseEnter={(e) => {
@@ -339,8 +340,8 @@ function ProductDetailContent({ product }) {
                     }}
                     onMouseLeave={(e) => {
                       if (activeMediaIndex !== idx) {
-                        e.currentTarget.style.opacity = "0.8";
-                        e.currentTarget.style.borderColor = "var(--border)";
+                        e.currentTarget.style.opacity = "0.75";
+                        e.currentTarget.style.borderColor = "#EDE8DE";
                       }
                     }}
                   >
@@ -779,60 +780,66 @@ function ProductDetailContent({ product }) {
                   >
                     {product.shapes && product.shapes.length > 0 && (
                       <div>
-                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                          Shape: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedShape || product.shapes[0]}</span>
+                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                          Shape: <span style={{ fontWeight: 400, color: "var(--primary)" }}>{selectedShape || product.shapes[0]}</span>
                         </label>
                         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                          {product.shapes.map((sh) => (
-                            <button
-                              key={sh}
-                              type="button"
-                              onClick={() => setSelectedShape(sh)}
-                              style={{
-                                padding: "6px 14px",
-                                border: (selectedShape || product.shapes[0]) === sh ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                                backgroundColor: (selectedShape || product.shapes[0]) === sh ? "var(--primary-soft)" : "#ffffff",
-                                color: (selectedShape || product.shapes[0]) === sh ? "var(--primary)" : "var(--foreground)",
-                                borderRadius: "2px",
-                                fontSize: "0.82rem",
-                                fontWeight: (selectedShape || product.shapes[0]) === sh ? 600 : 400,
-                                cursor: "pointer",
-                                transition: "all 0.15s"
-                              }}
-                            >
-                              {sh}
-                            </button>
-                          ))}
+                          {product.shapes.map((sh) => {
+                            const isSelected = (selectedShape || product.shapes[0]) === sh;
+                            return (
+                              <button
+                                key={sh}
+                                type="button"
+                                onClick={() => setSelectedShape(sh)}
+                                style={{
+                                  padding: "7px 16px",
+                                  border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
+                                  backgroundColor: isSelected ? "var(--primary-soft)" : "#FAF8F5",
+                                  color: isSelected ? "var(--primary)" : "var(--foreground)",
+                                  borderRadius: "4px",
+                                  fontSize: "0.82rem",
+                                  fontWeight: isSelected ? 600 : 400,
+                                  cursor: "pointer",
+                                  transition: "all 0.2s ease"
+                                }}
+                              >
+                                {sh}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
 
                     {product.clarities && product.clarities.length > 0 && (
                       <div>
-                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                          Clarity: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedClarity || product.clarities[0]}</span>
+                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                          Clarity: <span style={{ fontWeight: 400, color: "var(--primary)" }}>{selectedClarity || product.clarities[0]}</span>
                         </label>
                         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                          {product.clarities.map((cl) => (
-                            <button
-                              key={cl}
-                              type="button"
-                              onClick={() => setSelectedClarity(cl)}
-                              style={{
-                                padding: "6px 14px",
-                                border: (selectedClarity || product.clarities[0]) === cl ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                                backgroundColor: (selectedClarity || product.clarities[0]) === cl ? "var(--primary-soft)" : "#ffffff",
-                                color: (selectedClarity || product.clarities[0]) === cl ? "var(--primary)" : "var(--foreground)",
-                                borderRadius: "2px",
-                                fontSize: "0.82rem",
-                                fontWeight: (selectedClarity || product.clarities[0]) === cl ? 600 : 400,
-                                cursor: "pointer",
-                                transition: "all 0.15s"
-                              }}
-                            >
-                              {cl}
-                            </button>
-                          ))}
+                          {product.clarities.map((cl) => {
+                            const isSelected = (selectedClarity || product.clarities[0]) === cl;
+                            return (
+                              <button
+                                key={cl}
+                                type="button"
+                                onClick={() => setSelectedClarity(cl)}
+                                style={{
+                                  padding: "7px 16px",
+                                  border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
+                                  backgroundColor: isSelected ? "var(--primary-soft)" : "#FAF8F5",
+                                  color: isSelected ? "var(--primary)" : "var(--foreground)",
+                                  borderRadius: "4px",
+                                  fontSize: "0.82rem",
+                                  fontWeight: isSelected ? 600 : 400,
+                                  cursor: "pointer",
+                                  transition: "all 0.2s ease"
+                                }}
+                              >
+                                {cl}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -857,60 +864,66 @@ function ProductDetailContent({ product }) {
                   >
                     {product.diamondColors && product.diamondColors.length > 0 && (
                       <div>
-                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                          Diamond Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedDiamondColor || product.diamondColors[0]}</span>
+                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                          Diamond Color: <span style={{ fontWeight: 400, color: "var(--primary)" }}>{selectedDiamondColor || product.diamondColors[0]}</span>
                         </label>
                         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                          {product.diamondColors.map((dc) => (
-                            <button
-                              key={dc}
-                              type="button"
-                              onClick={() => setSelectedDiamondColor(dc)}
-                              style={{
-                                padding: "6px 14px",
-                                border: (selectedDiamondColor || product.diamondColors[0]) === dc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                                backgroundColor: (selectedDiamondColor || product.diamondColors[0]) === dc ? "var(--primary-soft)" : "#ffffff",
-                                color: (selectedDiamondColor || product.diamondColors[0]) === dc ? "var(--primary)" : "var(--foreground)",
-                                borderRadius: "2px",
-                                fontSize: "0.82rem",
-                                fontWeight: (selectedDiamondColor || product.diamondColors[0]) === dc ? 600 : 400,
-                                cursor: "pointer",
-                                transition: "all 0.15s"
-                              }}
-                            >
-                              {dc}
-                            </button>
-                          ))}
+                          {product.diamondColors.map((dc) => {
+                            const isSelected = (selectedDiamondColor || product.diamondColors[0]) === dc;
+                            return (
+                              <button
+                                key={dc}
+                                type="button"
+                                onClick={() => setSelectedDiamondColor(dc)}
+                                style={{
+                                  padding: "7px 16px",
+                                  border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
+                                  backgroundColor: isSelected ? "var(--primary-soft)" : "#FAF8F5",
+                                  color: isSelected ? "var(--primary)" : "var(--foreground)",
+                                  borderRadius: "4px",
+                                  fontSize: "0.82rem",
+                                  fontWeight: isSelected ? 600 : 400,
+                                  cursor: "pointer",
+                                  transition: "all 0.2s ease"
+                                }}
+                              >
+                                {dc}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
 
                     {product.bandColors && product.bandColors.length > 0 && (
                       <div>
-                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                          Band Color: <span style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>{selectedBandColor || product.bandColors[0]}</span>
+                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                          Band Color: <span style={{ fontWeight: 400, color: "var(--primary)" }}>{selectedBandColor || product.bandColors[0]}</span>
                         </label>
                         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                          {product.bandColors.map((bc) => (
-                            <button
-                              key={bc}
-                              type="button"
-                              onClick={() => setSelectedBandColor(bc)}
-                              style={{
-                                padding: "6px 14px",
-                                border: (selectedBandColor || product.bandColors[0]) === bc ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                                backgroundColor: (selectedBandColor || product.bandColors[0]) === bc ? "var(--primary-soft)" : "#ffffff",
-                                color: (selectedBandColor || product.bandColors[0]) === bc ? "var(--primary)" : "var(--foreground)",
-                                borderRadius: "2px",
-                                fontSize: "0.82rem",
-                                fontWeight: (selectedBandColor || product.bandColors[0]) === bc ? 600 : 400,
-                                cursor: "pointer",
-                                transition: "all 0.15s"
-                              }}
-                            >
-                              {bc}
-                            </button>
-                          ))}
+                          {product.bandColors.map((bc) => {
+                            const isSelected = (selectedBandColor || product.bandColors[0]) === bc;
+                            return (
+                              <button
+                                key={bc}
+                                type="button"
+                                onClick={() => setSelectedBandColor(bc)}
+                                style={{
+                                  padding: "7px 16px",
+                                  border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
+                                  backgroundColor: isSelected ? "var(--primary-soft)" : "#FAF8F5",
+                                  color: isSelected ? "var(--primary)" : "var(--foreground)",
+                                  borderRadius: "4px",
+                                  fontSize: "0.82rem",
+                                  fontWeight: isSelected ? 600 : 400,
+                                  cursor: "pointer",
+                                  transition: "all 0.2s ease"
+                                }}
+                              >
+                                {bc}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -924,25 +937,26 @@ function ProductDetailContent({ product }) {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  border: "1px solid var(--border)",
-                  borderRadius: "2px",
-                  height: "52px"
+                  border: "1px solid #EDE8DE",
+                  borderRadius: "4px",
+                  height: "54px",
+                  backgroundColor: "#FAF9F6"
                 }}
               >
                 <button
                   type="button"
                   onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  style={{ width: "42px", height: "100%", display: "grid", placeItems: "center", cursor: "pointer", fontSize: "1.1rem" }}
+                  style={{ width: "44px", height: "100%", display: "grid", placeItems: "center", cursor: "pointer", fontSize: "1.1rem", color: "var(--foreground)" }}
                 >
                   -
                 </button>
-                <span style={{ width: "44px", textAlign: "center", fontWeight: 600, fontSize: "0.95rem" }}>
+                <span style={{ width: "44px", textAlign: "center", fontWeight: 600, fontSize: "0.95rem", color: "var(--foreground)" }}>
                   {qty}
                 </span>
                 <button
                   type="button"
                   onClick={() => setQty((q) => q + 1)}
-                  style={{ width: "42px", height: "100%", display: "grid", placeItems: "center", cursor: "pointer", fontSize: "1.1rem" }}
+                  style={{ width: "44px", height: "100%", display: "grid", placeItems: "center", cursor: "pointer", fontSize: "1.1rem", color: "var(--foreground)" }}
                 >
                   +
                 </button>
@@ -953,27 +967,34 @@ function ProductDetailContent({ product }) {
                 onClick={handleAddToCart}
                 style={{
                   flex: 1,
-                  height: "52px",
+                  height: "54px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
                   fontSize: "0.85rem",
                   fontWeight: 600,
-                  letterSpacing: "0.16em",
+                  letterSpacing: "0.18em",
                   textTransform: "uppercase",
-                  borderRadius: "2px",
+                  borderRadius: "4px",
                   cursor: "pointer",
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "10px",
-                  transition: "background-color 0.2s",
-                  boxShadow: "0 6px 20px rgba(85, 104, 50, 0.25)"
+                  transition: "all 0.25s ease",
+                  boxShadow: "0 6px 22px rgba(85, 104, 50, 0.3)",
+                  border: "1px solid rgba(197, 160, 89, 0.35)"
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--primary)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
               >
                 <ShoppingBag size={18} />
-                <span>Add To Bag • {format(currentPrice * qty)}</span>
+                <span>Add To Bag &bull; {format(currentPrice * qty)}</span>
               </button>
             </div>
 
@@ -983,28 +1004,28 @@ function ProductDetailContent({ product }) {
                 display: "grid",
                 gridTemplateColumns: "repeat(2, 1fr)",
                 gap: "16px",
-                padding: "20px",
-                backgroundColor: "#fafbf8",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: "3px",
+                padding: "22px",
+                backgroundColor: "#FAF8F5",
+                border: "1px solid #EAE4D7",
+                borderRadius: "6px",
                 marginTop: "12px"
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.82rem" }}>
                 <Truck size={18} color="var(--primary)" />
-                <span>Complimentary Insured Shipping</span>
+                <span style={{ fontWeight: 500 }}>Complimentary Insured Shipping</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.82rem" }}>
                 <ShieldCheck size={18} color="var(--primary)" />
-                <span>Certified Authenticity</span>
+                <span style={{ fontWeight: 500 }}>Certified Authenticity</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.82rem" }}>
                 <RotateCcw size={18} color="var(--primary)" />
-                <span>30-Day Effortless Returns</span>
+                <span style={{ fontWeight: 500 }}>30-Day Effortless Returns</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.82rem" }}>
                 <Sparkles size={18} color="var(--primary)" />
-                <span>Lifetime Warranty & Polish</span>
+                <span style={{ fontWeight: 500 }}>Lifetime Warranty &amp; Polish</span>
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 
 export default function HeroSlider() {
   const [slides, setSlides] = useState([]);
@@ -67,12 +67,13 @@ export default function HeroSlider() {
         minHeight: "620px",
         maxHeight: "860px",
         overflow: "hidden",
-        backgroundColor: "#181818"
+        backgroundColor: "#141c10"
       }}
     >
-      {/* Background Image with smooth fade */}
+      {/* Background Image with slow cinematic zoom */}
       {cur.img && (
         <img
+          key={cur.img + active}
           src={cur.img}
           alt={cur.headingLine2 || cur.headingLine1 || "Gemora Diam Banner"}
           style={{
@@ -82,19 +83,18 @@ export default function HeroSlider() {
             height: "100%",
             objectFit: "cover",
             objectPosition: "center",
-            transition: "opacity 0.8s ease-in-out, transform 8s ease-out",
-            transform: "scale(1.03)"
+            animation: "subtlePulse 8s ease-in-out infinite alternate"
           }}
         />
       )}
 
-      {/* Dark Subtle Vignette Gradient Overlay */}
+      {/* Cinematic Vignette Gradient Overlay */}
       {hasTextContent && (
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.3) 100%)"
+            background: "linear-gradient(to right, rgba(16, 23, 13, 0.76) 0%, rgba(16, 23, 13, 0.35) 55%, rgba(10, 14, 8, 0.6) 100%)"
           }}
         />
       )}
@@ -108,25 +108,34 @@ export default function HeroSlider() {
             height: "100%",
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between"
+            justifyContent: "space-between",
+            zIndex: 2
           }}
         >
-          <div style={{ maxWidth: "640px", color: "#ffffff", paddingLeft: "10px" }}>
+          <div style={{ maxWidth: "660px", color: "#ffffff", paddingLeft: "10px" }}>
             {/* Eyebrow */}
             {cur.tag && (
-              <span
+              <div
                 style={{
-                  fontSize: "0.85rem",
-                  letterSpacing: "0.22em",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "0.8rem",
+                  letterSpacing: "0.26em",
                   fontWeight: 600,
                   textTransform: "uppercase",
-                  color: "#ffffff",
-                  display: "inline-block",
-                  marginBottom: "16px"
+                  color: "var(--gold-light)",
+                  marginBottom: "18px",
+                  backgroundColor: "rgba(0, 0, 0, 0.25)",
+                  backdropFilter: "blur(4px)",
+                  padding: "6px 14px",
+                  borderRadius: "2px",
+                  border: "1px solid rgba(197, 160, 89, 0.3)"
                 }}
               >
-                {cur.tag}
-              </span>
+                <span>✦</span>
+                <span>{cur.tag}</span>
+              </div>
             )}
 
             {/* Heading */}
@@ -134,86 +143,109 @@ export default function HeroSlider() {
               <h1
                 style={{
                   fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(2.8rem, 6vw, 5.2rem)",
+                  fontSize: "clamp(2.9rem, 6.2vw, 5.4rem)",
                   fontWeight: 400,
                   textTransform: "uppercase",
-                  lineHeight: 1.08,
+                  lineHeight: 1.06,
                   color: "#ffffff",
                   margin: "0 0 24px 0",
-                  letterSpacing: "0.02em"
+                  letterSpacing: "0.02em",
+                  textShadow: "0 2px 20px rgba(0,0,0,0.3)"
                 }}
               >
                 {cur.headingLine1}
                 {cur.headingLine2 ? (
                   <>
-                    {" "}
                     <br />
-                    <em style={{ fontStyle: "italic", fontWeight: 400 }}>{cur.headingLine2}</em>
+                    <em
+                      style={{
+                        fontFamily: "var(--font-serif)",
+                        fontStyle: "italic",
+                        fontWeight: 400,
+                        color: "var(--gold-light)",
+                        textTransform: "none",
+                        letterSpacing: "0.01em"
+                      }}
+                    >
+                      {cur.headingLine2}
+                    </em>
                   </>
                 ) : null}
               </h1>
             )}
 
-            {/* Subtitle */}
+            {/* Subtitle Description */}
             {cur.desc && (
               <p
                 style={{
-                  fontSize: "0.98rem",
-                  lineHeight: 1.7,
-                  color: "rgba(255,255,255,0.9)",
+                  fontSize: "1rem",
+                  lineHeight: 1.75,
+                  color: "rgba(255, 255, 255, 0.92)",
                   maxWidth: "520px",
-                  marginBottom: "36px"
+                  marginBottom: "36px",
+                  fontWeight: 300,
+                  textShadow: "0 1px 10px rgba(0,0,0,0.4)"
                 }}
               >
                 {cur.desc}
               </p>
             )}
 
-            {/* Buttons */}
+            {/* Call To Action Buttons */}
             {(cur.buttonText || cur.secondaryButtonText) && (
               <div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap" }}>
                 {cur.buttonText && (
                   <Link
                     to={cur.buttonLink || "/shop"}
+                    className="eyebrow"
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: "10px",
+                      gap: "12px",
                       padding: "16px 36px",
-                      backgroundColor: "rgba(24, 24, 24, 0.9)",
+                      backgroundColor: "var(--primary)",
                       color: "#ffffff",
-                      border: "1px solid rgba(255,255,255,0.4)",
+                      border: "1px solid rgba(197, 160, 89, 0.5)",
                       fontSize: "0.82rem",
-                      letterSpacing: "0.18em",
+                      letterSpacing: "0.2em",
                       fontWeight: 600,
                       textTransform: "uppercase",
-                      transition: "all 0.2s"
+                      boxShadow: "0 6px 24px rgba(0,0,0,0.35)",
+                      transition: "all 0.25s ease"
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "var(--primary)";
-                      e.currentTarget.style.borderColor = "var(--primary)";
+                      e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.45)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "rgba(24, 24, 24, 0.9)";
-                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)";
+                      e.currentTarget.style.backgroundColor = "var(--primary)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.35)";
                     }}
                   >
-                    {cur.buttonText} <ArrowRight size={16} />
+                    <span>{cur.buttonText}</span>
+                    <ArrowRight size={16} />
                   </Link>
                 )}
 
                 {cur.secondaryButtonText && (
                   <Link
                     to={cur.secondaryButtonLink || "/about"}
+                    className="eyebrow"
                     style={{
                       fontSize: "0.82rem",
-                      letterSpacing: "0.18em",
+                      letterSpacing: "0.2em",
                       fontWeight: 600,
                       textTransform: "uppercase",
                       color: "#ffffff",
                       textDecoration: "underline",
-                      textUnderlineOffset: "6px"
+                      textUnderlineOffset: "6px",
+                      textDecorationColor: "var(--gold-light)",
+                      transition: "color 0.2s"
                     }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold-light)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#ffffff")}
                   >
                     {cur.secondaryButtonText}
                   </Link>
@@ -224,7 +256,7 @@ export default function HeroSlider() {
         </div>
       )}
 
-      {/* Prev / Next Slide Arrows */}
+      {/* Prev / Next Slide Chevrons */}
       {slides.length > 1 && (
         <>
           <button
@@ -235,18 +267,27 @@ export default function HeroSlider() {
               left: "24px",
               top: "50%",
               transform: "translateY(-50%)",
-              width: "48px",
-              height: "48px",
+              width: "50px",
+              height: "50px",
               borderRadius: "50%",
-              backgroundColor: "rgba(255,255,255,0.15)",
-              backdropFilter: "blur(4px)",
+              backgroundColor: "rgba(22, 30, 18, 0.45)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(8px)",
               color: "#ffffff",
               display: "grid",
               placeItems: "center",
-              transition: "background 0.2s"
+              cursor: "pointer",
+              transition: "all 0.2s",
+              zIndex: 3
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)")}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--primary)";
+              e.currentTarget.style.borderColor = "var(--primary)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(22, 30, 18, 0.45)";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
+            }}
           >
             <ChevronLeft size={24} />
           </button>
@@ -259,34 +300,44 @@ export default function HeroSlider() {
               right: "24px",
               top: "50%",
               transform: "translateY(-50%)",
-              width: "48px",
-              height: "48px",
+              width: "50px",
+              height: "50px",
               borderRadius: "50%",
-              backgroundColor: "rgba(255,255,255,0.15)",
-              backdropFilter: "blur(4px)",
+              backgroundColor: "rgba(22, 30, 18, 0.45)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(8px)",
               color: "#ffffff",
               display: "grid",
               placeItems: "center",
-              transition: "background 0.2s"
+              cursor: "pointer",
+              transition: "all 0.2s",
+              zIndex: 3
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)")}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--primary)";
+              e.currentTarget.style.borderColor = "var(--primary)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(22, 30, 18, 0.45)";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
+            }}
           >
             <ChevronRight size={24} />
           </button>
         </>
       )}
 
-      {/* Slider Pagination Dots */}
+      {/* Slider Pagination Pills */}
       {slides.length > 1 && (
         <div
           style={{
             position: "absolute",
-            bottom: "24px",
+            bottom: "28px",
             left: "50%",
             transform: "translateX(-50%)",
             display: "flex",
-            gap: "10px"
+            gap: "10px",
+            zIndex: 3
           }}
         >
           {slides.map((_, i) => (
@@ -295,11 +346,12 @@ export default function HeroSlider() {
               onClick={() => setActive(i)}
               aria-label={`Slide ${i + 1}`}
               style={{
-                width: i === active ? "28px" : "8px",
-                height: "8px",
-                borderRadius: "4px",
-                backgroundColor: i === active ? "var(--primary)" : "rgba(255,255,255,0.5)",
-                transition: "all 0.3s ease"
+                width: i === active ? "32px" : "10px",
+                height: "6px",
+                borderRadius: "3px",
+                backgroundColor: i === active ? "var(--gold)" : "rgba(255, 255, 255, 0.4)",
+                transition: "all 0.35s ease",
+                cursor: "pointer"
               }}
             />
           ))}

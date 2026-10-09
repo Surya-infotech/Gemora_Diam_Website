@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Heart, Eye, X, Play } from "lucide-react";
+import { Heart, Eye, X, Play, ShoppingBag } from "lucide-react";
 import { useStore } from "../lib/store";
 
 const metalSwatch = {
@@ -30,15 +30,15 @@ export function MetalPills({ value, onChange, metals = [] }) {
           title={m}
           onClick={() => onChange(m)}
           style={{
-            width: "16px",
-            height: "16px",
+            width: "18px",
+            height: "18px",
             borderRadius: "50%",
             backgroundColor: metalSwatch[m] || "#c5a059",
             border: value === m ? "2px solid var(--primary)" : "1px solid rgba(0,0,0,0.15)",
             transform: value === m ? "scale(1.2)" : "scale(1)",
-            transition: "all 0.15s ease",
+            transition: "all 0.18s cubic-bezier(0.16, 1, 0.3, 1)",
             cursor: "pointer",
-            boxShadow: value === m ? "0 0 0 2px var(--background)" : "none"
+            boxShadow: value === m ? "0 0 0 2px #FAF9F6" : "none"
           }}
         />
       ))}
@@ -47,7 +47,7 @@ export function MetalPills({ value, onChange, metals = [] }) {
 }
 
 export function ProductCard({ product }) {
-  const { addToCart, toggleWishlist, wishlist, format, getItemPrice } = useStore();
+  const { addToCart, toggleWishlist, wishlist, format, getItemPrice, notify } = useStore();
   const availableMetals = product.metals || [];
   const [metal, setMetal] = useState(availableMetals[0] || "");
 
@@ -112,28 +112,50 @@ export function ProductCard({ product }) {
   }, [product]);
 
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
-
   const [quick, setQuick] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const liked = wishlist.includes(product.id);
 
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", position: "relative" }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+        backgroundColor: "#FAF9F6",
+        borderRadius: "4px",
+        overflow: "hidden",
+        border: "1px solid #EDE7DC",
+        transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+        boxShadow: "0 4px 18px rgba(0,0,0,0.03)"
+      }}
+      onMouseEnter={(e) => {
+        setIsHovered(true);
+        e.currentTarget.style.borderColor = "var(--primary)";
+        e.currentTarget.style.boxShadow = "0 14px 34px rgba(85, 104, 50, 0.12)";
+        e.currentTarget.style.transform = "translateY(-4px)";
+      }}
+      onMouseLeave={(e) => {
+        setIsHovered(false);
+        e.currentTarget.style.borderColor = "#EDE7DC";
+        e.currentTarget.style.boxShadow = "0 4px 18px rgba(0,0,0,0.03)";
+        e.currentTarget.style.transform = "translateY(0)";
+      }}
     >
-      {/* Image container */}
+      {/* Image Stage Container */}
       <div
         style={{
           position: "relative",
-          aspectRatio: "4/5",
+          aspectRatio: "1/1",
           overflow: "hidden",
-          backgroundColor: "var(--muted)",
-          borderRadius: "2px"
+          backgroundColor: "#ffffff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderBottom: "1px solid #F0EBE0"
         }}
       >
-        <Link to={`/product/${product._id || product.id}`} style={{ display: "block", width: "100%", height: "100%" }}>
+        <Link to={`/product/${product._id || product.id}`} style={{ display: "block", width: "100%", height: "100%", padding: "16px" }}>
           <img
             src={product.image}
             alt={product.name}
@@ -141,9 +163,9 @@ export function ProductCard({ product }) {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "cover",
+              objectFit: "contain",
               transform: isHovered ? "scale(1.08)" : "scale(1)",
-              transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
+              transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
             }}
           />
         </Link>
@@ -156,7 +178,6 @@ export function ProductCard({ product }) {
             toggleWishlist(product.id);
           }}
           aria-label="Toggle wishlist"
-          className="glass"
           style={{
             position: "absolute",
             top: "12px",
@@ -167,11 +188,17 @@ export function ProductCard({ product }) {
             display: "grid",
             placeItems: "center",
             color: liked ? "var(--primary)" : "var(--foreground)",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-            transition: "all 0.2s ease"
+            boxShadow: "0 3px 10px rgba(0,0,0,0.08)",
+            backgroundColor: "#ffffff",
+            border: "1px solid #ECE7DD",
+            transition: "all 0.2s ease",
+            cursor: "pointer",
+            zIndex: 2
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
         >
-          <Heart size={16} fill={liked ? "currentColor" : "none"} strokeWidth={1.4} />
+          <Heart size={16} fill={liked ? "currentColor" : "none"} strokeWidth={1.5} />
         </button>
 
         {/* Quick Actions Bar on Hover */}
@@ -183,69 +210,136 @@ export function ProductCard({ product }) {
             right: "12px",
             display: "flex",
             gap: "8px",
-            transform: isHovered ? "translateY(0)" : "translateY(16px)",
+            transform: isHovered ? "translateY(0)" : "translateY(20px)",
             opacity: isHovered ? 1 : 0,
-            transition: "all 0.35s ease"
+            transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+            zIndex: 3
           }}
         >
           <button
-            onClick={() => addToCart(product.id, metal, "", carat, currentPrice)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addToCart(product.id, metal, "", carat, currentPrice);
+              notify("Added to Bag", `1x ${product.name} (${format(currentPrice)})`);
+            }}
             className="eyebrow"
             style={{
               flex: 1,
               backgroundColor: "var(--primary)",
-              color: "var(--primary-foreground)",
-              padding: "12px 14px",
+              color: "#ffffff",
+              padding: "11px 14px",
               textAlign: "center",
               borderRadius: "2px",
-              boxShadow: "0 4px 14px rgba(85, 104, 50, 0.35)"
+              boxShadow: "0 4px 14px rgba(85, 104, 50, 0.35)",
+              fontSize: "0.74rem",
+              letterSpacing: "0.14em",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+              cursor: "pointer",
+              transition: "background-color 0.2s"
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
           >
-            Quick Add
+            <ShoppingBag size={14} />
+            <span>Quick Add</span>
           </button>
 
           <button
-            onClick={() => setQuick(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setQuick(true);
+            }}
             aria-label="Quick view"
-            className="glass"
             style={{
-              width: "44px",
+              width: "42px",
               display: "grid",
               placeItems: "center",
               borderRadius: "2px",
-              color: "var(--foreground)"
+              backgroundColor: "#ffffff",
+              color: "var(--foreground)",
+              border: "1px solid #ECE7DD",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+              cursor: "pointer",
+              transition: "all 0.2s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+              e.currentTarget.style.color = "var(--primary)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#ffffff";
+              e.currentTarget.style.color = "var(--foreground)";
             }}
           >
-            <Eye size={16} strokeWidth={1.4} />
+            <Eye size={16} strokeWidth={1.5} />
           </button>
         </div>
       </div>
 
-      {/* Info */}
-      <div style={{ marginTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
-        <div>
-          <p className="eyebrow" style={{ color: "var(--muted-foreground)" }}>
-            {product.category}
-          </p>
-          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.3rem", marginTop: "4px", lineHeight: 1.25 }}>
-            <Link to={`/product/${product._id || product.id}`} style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
-              {product.name}
-            </Link>
-          </h3>
-        </div>
-        <p style={{ fontSize: "0.95rem", fontWeight: 600, whiteSpace: "nowrap" }}>
-          {format(currentPrice)}
+      {/* Info Details Container */}
+      <div style={{ padding: "18px 20px 22px", display: "flex", flexDirection: "column", flex: 1 }}>
+        <p className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem", letterSpacing: "0.14em", marginBottom: "4px" }}>
+          {product.category}{product.sku ? ` &bull; ${product.sku}` : ""}
         </p>
-      </div>
 
-      {availableMetals.length > 0 && (
-        <div style={{ marginTop: "12px", display: "flex", alignItems: "center", gap: "10px" }}>
-          <MetalPills value={metal} onChange={setMetal} metals={availableMetals} />
-          <span style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>
-            {metal}
+        <h3
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "1.12rem",
+            marginTop: "2px",
+            lineHeight: 1.3,
+            fontWeight: 500
+          }}
+        >
+          <Link
+            to={`/product/${product._id || product.id}`}
+            style={{ color: "var(--foreground)", transition: "color 0.2s" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
+          >
+            {product.name}
+          </Link>
+        </h3>
+
+        {/* Metal Swatches Row */}
+        {availableMetals.length > 0 && (
+          <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px" }}>
+            <MetalPills value={metal} onChange={setMetal} metals={availableMetals} />
+            <span style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>
+              {metal}
+            </span>
+          </div>
+        )}
+
+        {/* Price & View Details Link */}
+        <div style={{ marginTop: "auto", paddingTop: "14px", display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+          <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--primary)" }}>
+            {format(currentPrice)}
           </span>
+
+          <Link
+            to={`/product/${product._id || product.id}`}
+            className="eyebrow"
+            style={{
+              fontSize: "0.72rem",
+              letterSpacing: "0.12em",
+              color: "var(--foreground)",
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
+              transition: "color 0.2s"
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
+          >
+            Explore
+          </Link>
         </div>
-      )}
+      </div>
 
       {/* Quick View Modal */}
       {quick && (
@@ -254,50 +348,54 @@ export function ProductCard({ product }) {
             position: "fixed",
             inset: 0,
             zIndex: 9999,
-            backgroundColor: "rgba(24, 31, 19, 0.7)",
-            backdropFilter: "blur(6px)",
+            backgroundColor: "rgba(22, 30, 18, 0.72)",
+            backdropFilter: "blur(8px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             padding: "20px",
-            animation: "fadeIn 0.2s ease-out"
+            animation: "fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
           }}
           onClick={() => setQuick(false)}
         >
           <div
             style={{
-              backgroundColor: "var(--background)",
-              maxWidth: "780px",
+              backgroundColor: "#ffffff",
+              maxWidth: "820px",
               width: "100%",
               maxHeight: "90vh",
               overflowY: "auto",
-              borderRadius: "2px",
-              boxShadow: "var(--shadow-soft)",
+              borderRadius: "4px",
+              boxShadow: "var(--shadow-luxury)",
               position: "relative",
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))"
+              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              border: "1px solid #EAE3D5"
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setQuick(false)}
+              aria-label="Close modal"
               style={{
                 position: "absolute",
                 top: "16px",
                 right: "16px",
                 zIndex: 10,
                 color: "var(--foreground)",
-                padding: "4px",
+                padding: "6px",
                 background: "none",
                 border: "none",
-                cursor: "pointer"
+                cursor: "pointer",
+                borderRadius: "50%"
               }}
             >
-              <X size={20} strokeWidth={1.4} />
+              <X size={22} strokeWidth={1.5} />
             </button>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", padding: "20px" }}>
-              <div style={{ width: "100%", minHeight: "340px", maxHeight: "380px", display: "grid", placeItems: "center", backgroundColor: "#f7f7f7", borderRadius: "2px", overflow: "hidden" }}>
+            {/* Media Gallery Left */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", padding: "24px", backgroundColor: "#FAF9F6" }}>
+              <div style={{ width: "100%", minHeight: "340px", maxHeight: "380px", display: "grid", placeItems: "center", backgroundColor: "#ffffff", borderRadius: "3px", overflow: "hidden", border: "1px solid #ECE7DD" }}>
                 {allMedia[activeMediaIndex]?.type === "video" ? (
                   <video
                     key={allMedia[activeMediaIndex].url}
@@ -313,27 +411,27 @@ export function ProductCard({ product }) {
                     key={allMedia[activeMediaIndex]?.url || product.image}
                     src={allMedia[activeMediaIndex]?.url || product.image}
                     alt={product.name}
-                    style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
+                    style={{ width: "100%", maxHeight: "380px", objectFit: "contain", padding: "12px" }}
                   />
                 )}
               </div>
 
               {allMedia.length > 1 && (
-                <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
+                <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "4px" }}>
                   {allMedia.map((m, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveMediaIndex(idx)}
                       style={{
-                        width: "50px",
-                        height: "50px",
+                        width: "54px",
+                        height: "54px",
                         flexShrink: 0,
                         borderRadius: "2px",
-                        border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid var(--border)",
+                        border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid #DED7C8",
                         padding: 0,
                         overflow: "hidden",
                         cursor: "pointer",
-                        backgroundColor: "#f5f5f5"
+                        backgroundColor: "#ffffff"
                       }}
                     >
                       {m.type === "video" ? (
@@ -389,7 +487,7 @@ export function ProductCard({ product }) {
                           </div>
                         </div>
                       ) : (
-                        <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "4px" }} />
                       )}
                     </button>
                   ))}
@@ -397,47 +495,49 @@ export function ProductCard({ product }) {
               )}
             </div>
 
-            <div style={{ padding: "36px", display: "flex", flexDirection: "column" }}>
+            {/* Product Details & Selection Right */}
+            <div style={{ padding: "36px 32px", display: "flex", flexDirection: "column" }}>
               <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-                {product.category}{product.subcategory ? ` • ${product.subcategory}` : ""} {product.sku ? `• SKU: ${product.sku}` : ""}
+                {product.category}{product.subcategory ? ` &bull; ${product.subcategory}` : ""} {product.sku ? `&bull; SKU: ${product.sku}` : ""}
               </p>
-              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: "8px 0 10px 0" }}>
+              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: "8px 0 10px 0", lineHeight: 1.2 }}>
                 {product.name}
               </h2>
-              <p style={{ fontSize: "1.35rem", fontWeight: 700, color: "var(--primary)", margin: "0 0 16px 0" }}>
+              <p style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--primary)", margin: "0 0 16px 0" }}>
                 {format(currentPrice)}
               </p>
               {product.description ? (
-                <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", lineHeight: 1.7, margin: "0 0 16px 0" }}>
+                <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", lineHeight: 1.7, margin: "0 0 20px 0" }}>
                   {product.description}
                 </p>
               ) : null}
 
-              {/* Stone Information for Selected Metal */}
+              {/* Stone Information */}
               {matchedPricing?.stonename && (
                 <div style={{ marginBottom: "14px", fontSize: "0.82rem", color: "var(--muted-foreground)" }}>
                   <span style={{ fontWeight: 600, color: "var(--foreground)" }}>Stone:</span> {matchedPricing.stonename}
-                  {matchedPricing.stonePricingType === "fixed" && " • Fixed Price"}
+                  {matchedPricing.stonePricingType === "fixed" && " &bull; Fixed Price"}
                 </div>
               )}
 
-              {/* Diamond Carat Size Options from Backend */}
+              {/* Diamond Carat Size Options */}
               {activeCaratPrices.length > 0 && (
-                <div style={{ marginBottom: "16px" }}>
-                  <p className="eyebrow" style={{ marginBottom: "6px" }}>Diamond Size</p>
+                <div style={{ marginBottom: "18px" }}>
+                  <p className="eyebrow" style={{ marginBottom: "8px" }}>Diamond Size</p>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {activeCaratPrices.map((cp) => (
                       <button
                         key={cp.diamondsize}
                         onClick={() => setSelectedCarat(cp.diamondsize)}
                         style={{
-                          fontSize: "0.78rem",
-                          border: carat === cp.diamondsize ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: carat === cp.diamondsize ? "var(--primary-soft)" : "transparent",
+                          fontSize: "0.8rem",
+                          border: carat === cp.diamondsize ? "1.5px solid var(--primary)" : "1px solid #DED7C8",
+                          backgroundColor: carat === cp.diamondsize ? "var(--primary-soft)" : "#FAF9F6",
                           color: carat === cp.diamondsize ? "var(--primary)" : "var(--foreground)",
-                          padding: "6px 12px",
+                          padding: "6px 14px",
                           borderRadius: "2px",
-                          cursor: "pointer"
+                          cursor: "pointer",
+                          fontWeight: carat === cp.diamondsize ? 600 : 400
                         }}
                       >
                         {cp.diamondsize}
@@ -447,40 +547,11 @@ export function ProductCard({ product }) {
                 </div>
               )}
 
-
-              {/* Other Backend Attributes */}
-              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" }}>
-                {product.shapes?.map((sh) => (
-                  <span key={sh} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
-                    Shape: {sh}
-                  </span>
-                ))}
-                {product.clarities?.map((cl) => (
-                  <span key={cl} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
-                    Clarity: {cl}
-                  </span>
-                ))}
-                {product.stones?.map((st) => (
-                  <span key={st} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
-                    Stone: {st}
-                  </span>
-                ))}
-                {product.diamondColors?.map((dc) => (
-                  <span key={dc} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
-                    Diamond: {dc}
-                  </span>
-                ))}
-                {product.styles?.map((sy) => (
-                  <span key={sy} style={{ fontSize: "0.72rem", backgroundColor: "var(--muted)", padding: "4px 8px", borderRadius: "2px" }}>
-                    {sy}
-                  </span>
-                ))}
-              </div>
-
+              {/* Precious Metal Selector */}
               {availableMetals.length > 0 && (
-                <div style={{ marginBottom: "20px" }}>
+                <div style={{ marginBottom: "22px" }}>
                   <p className="eyebrow" style={{ marginBottom: "8px" }}>
-                    Precious Metal — {metal}
+                    Precious Metal: <span style={{ color: "var(--primary)" }}>{metal}</span>
                   </p>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {availableMetals.map((m) => (
@@ -488,12 +559,14 @@ export function ProductCard({ product }) {
                         key={m}
                         onClick={() => setMetal(m)}
                         style={{
-                          fontSize: "0.78rem",
-                          border: metal === m ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: metal === m ? "var(--primary-soft)" : "transparent",
-                          padding: "6px 12px",
+                          fontSize: "0.8rem",
+                          border: metal === m ? "1.5px solid var(--primary)" : "1px solid #DED7C8",
+                          backgroundColor: metal === m ? "var(--primary-soft)" : "#FAF9F6",
+                          color: metal === m ? "var(--primary)" : "var(--foreground)",
+                          padding: "6px 14px",
                           borderRadius: "2px",
-                          cursor: "pointer"
+                          cursor: "pointer",
+                          fontWeight: metal === m ? 600 : 400
                         }}
                       >
                         {m}
@@ -503,6 +576,7 @@ export function ProductCard({ product }) {
                 </div>
               )}
 
+              {/* Add to Bag Action */}
               <div style={{ marginTop: "auto", paddingTop: "20px" }}>
                 <button
                   onClick={() => {
@@ -513,13 +587,25 @@ export function ProductCard({ product }) {
                   style={{
                     width: "100%",
                     backgroundColor: "var(--primary)",
-                    color: "var(--primary-foreground)",
+                    color: "#ffffff",
                     padding: "16px",
                     borderRadius: "2px",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    fontSize: "0.82rem",
+                    letterSpacing: "0.18em",
+                    fontWeight: 600,
+                    boxShadow: "0 6px 20px rgba(85, 104, 50, 0.3)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    transition: "all 0.2s"
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
                 >
-                  Add to Bag • {format(currentPrice)}
+                  <ShoppingBag size={16} />
+                  <span>Add to Bag &bull; {format(currentPrice)}</span>
                 </button>
               </div>
             </div>

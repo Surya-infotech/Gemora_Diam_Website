@@ -15,20 +15,23 @@ export function CartLines({ compact = false }) {
             key={item.key}
             style={{
               display: "flex",
-              gap: "16px",
-              padding: "20px 0",
-              borderBottom: "1px solid var(--border)"
+              gap: "18px",
+              padding: "22px 0",
+              borderBottom: "1px solid #EDE8DE"
             }}
           >
             <img
               src={p.image}
               alt={p.name}
               style={{
-                width: compact ? "80px" : "110px",
-                height: compact ? "96px" : "130px",
-                objectFit: "cover",
-                borderRadius: "2px",
-                backgroundColor: "var(--muted)"
+                width: compact ? "84px" : "116px",
+                height: compact ? "100px" : "138px",
+                objectFit: "contain",
+                padding: "8px",
+                borderRadius: "4px",
+                backgroundColor: "#FAF9F6",
+                border: "1px solid #ECE7DD",
+                flexShrink: 0
               }}
             />
 
@@ -38,24 +41,25 @@ export function CartLines({ compact = false }) {
                   <h4
                     style={{
                       fontFamily: "var(--font-serif)",
-                      fontSize: compact ? "1.05rem" : "1.25rem",
+                      fontSize: compact ? "1.1rem" : "1.3rem",
                       lineHeight: 1.25,
-                      margin: 0
+                      margin: 0,
+                      fontWeight: 500
                     }}
                   >
                     {p.name}
                   </h4>
-                  <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "4px" }}>
+                  <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "4px", lineHeight: 1.5 }}>
                     {item.metal}
-                    {item.stone ? ` • ${item.stone}` : ""}
-                    {item.carat ? ` • ${item.carat}` : ""}
-                    {item.shape || item.shapename ? ` • ${item.shape || item.shapename}` : ""}
-                    {item.clarity || item.clarityname ? ` • ${item.clarity || item.clarityname}` : ""}
-                    {item.diamondcolor ? ` • Dia: ${item.diamondcolor}` : ""}
-                    {item.bandcolor ? ` • Band: ${item.bandcolor}` : ""}
-                    {item.size ? ` • Size ${item.size}` : ""}
+                    {item.stone ? ` &bull; ${item.stone}` : ""}
+                    {item.carat ? ` &bull; ${item.carat}` : ""}
+                    {item.shape || item.shapename ? ` &bull; ${item.shape || item.shapename}` : ""}
+                    {item.clarity || item.clarityname ? ` &bull; ${item.clarity || item.clarityname}` : ""}
+                    {item.diamondcolor ? ` &bull; Dia: ${item.diamondcolor}` : ""}
+                    {item.bandcolor ? ` &bull; Band: ${item.bandcolor}` : ""}
+                    {item.size ? ` &bull; Size: ${item.size}` : ""}
                   </p>
-                  <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "2px" }}>
+                  <p style={{ fontSize: "0.8rem", color: "var(--primary)", fontWeight: 600, marginTop: "2px" }}>
                     {format(item.price ?? p.price)} each
                   </p>
                 </div>
@@ -63,9 +67,11 @@ export function CartLines({ compact = false }) {
                 <button
                   onClick={() => removeItem(item.key)}
                   aria-label="Remove item"
-                  style={{ color: "var(--muted-foreground)", padding: "4px" }}
+                  style={{ color: "var(--muted-foreground)", padding: "4px", cursor: "pointer", transition: "color 0.2s" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--destructive)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-foreground)")}
                 >
-                  <X size={16} strokeWidth={1.4} />
+                  <X size={17} strokeWidth={1.5} />
                 </button>
               </div>
 
@@ -82,30 +88,31 @@ export function CartLines({ compact = false }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    border: "1px solid var(--border)",
-                    borderRadius: "2px"
+                    border: "1px solid #EDE8DE",
+                    borderRadius: "3px",
+                    backgroundColor: "#FAF9F6"
                   }}
                 >
                   <button
                     aria-label="Decrease quantity"
                     onClick={() => updateQty(item.key, item.qty - 1)}
-                    style={{ padding: "6px 8px", display: "flex", alignItems: "center" }}
+                    style={{ padding: "6px 10px", display: "flex", alignItems: "center", cursor: "pointer", color: "var(--foreground)" }}
                   >
                     <Minus size={12} />
                   </button>
-                  <span style={{ width: "32px", textAlign: "center", fontSize: "0.85rem", fontWeight: 600 }}>
+                  <span style={{ width: "32px", textAlign: "center", fontSize: "0.85rem", fontWeight: 600, color: "var(--foreground)" }}>
                     {item.qty}
                   </span>
                   <button
                     aria-label="Increase quantity"
                     onClick={() => updateQty(item.key, item.qty + 1)}
-                    style={{ padding: "6px 8px", display: "flex", alignItems: "center" }}
+                    style={{ padding: "6px 10px", display: "flex", alignItems: "center", cursor: "pointer", color: "var(--foreground)" }}
                   >
                     <Plus size={12} />
                   </button>
                 </div>
 
-                <span style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)" }}>
+                <span style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--primary)" }}>
                   {format((item.price ?? p.price) * item.qty)}
                 </span>
               </div>
@@ -115,20 +122,20 @@ export function CartLines({ compact = false }) {
                 style={{
                   marginTop: "12px",
                   paddingTop: "10px",
-                  borderTop: "1px dashed var(--border)"
+                  borderTop: "1px dashed #EDE8DE"
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
                   <label
                     style={{
-                      fontSize: "0.76rem",
+                      fontSize: "0.74rem",
                       fontWeight: 600,
                       color: "var(--foreground)",
                       display: "flex",
                       alignItems: "center",
                       gap: "5px",
                       textTransform: "uppercase",
-                      letterSpacing: "0.03em"
+                      letterSpacing: "0.08em"
                     }}
                   >
                     <PenLine size={12} style={{ color: "var(--primary)" }} /> Special Instruction
@@ -152,9 +159,9 @@ export function CartLines({ compact = false }) {
                     width: "100%",
                     padding: compact ? "6px 10px" : "8px 12px",
                     fontSize: "0.8rem",
-                    border: "1px solid var(--border)",
-                    borderRadius: "4px",
-                    backgroundColor: "#fafaf9",
+                    border: "1px solid #EDE8DE",
+                    borderRadius: "3px",
+                    backgroundColor: "#FAF9F6",
                     color: "var(--foreground)",
                     outline: "none",
                     boxSizing: "border-box",
@@ -165,8 +172,8 @@ export function CartLines({ compact = false }) {
                     e.target.style.backgroundColor = "#ffffff";
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = "var(--border)";
-                    e.target.style.backgroundColor = "#fafaf9";
+                    e.target.style.borderColor = "#EDE8DE";
+                    e.target.style.backgroundColor = "#FAF9F6";
                   }}
                 />
               </div>

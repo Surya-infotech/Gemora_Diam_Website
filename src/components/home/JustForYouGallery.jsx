@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { useStore } from "../../lib/store";
 
 export default function JustForYouGallery() {
@@ -57,25 +58,45 @@ export default function JustForYouGallery() {
   return (
     <section style={{ padding: "80px 0 0 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
-        <h2
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(2rem, 4vw, 2.8rem)",
-            textAlign: "center",
-            marginBottom: "40px",
-            fontWeight: 400
-          }}
-        >
-          Just For You
-        </h2>
+        <div style={{ textAlign: "center", maxWidth: "640px", margin: "0 auto 48px auto" }}>
+          <span
+            className="eyebrow"
+            style={{
+              color: "var(--primary)",
+              letterSpacing: "0.26em",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px"
+            }}
+          >
+            <span>✦</span>
+            <span>ATELIER PERSPECTIVES</span>
+            <span>✦</span>
+          </span>
+          <h2
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(2.2rem, 4.2vw, 3.2rem)",
+              fontWeight: 400,
+              marginTop: "12px",
+              lineHeight: 1.15
+            }}
+          >
+            Just For You
+          </h2>
+          <p style={{ fontSize: "0.95rem", color: "var(--muted-foreground)", marginTop: "12px", lineHeight: 1.6 }}>
+            Every angle captured with artisan fidelity and unparalleled gemstone brilliance.
+          </p>
+        </div>
       </div>
 
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "2px",
-          width: "100%"
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: "4px",
+          width: "100%",
+          padding: "0 4px"
         }}
       >
         {tiles.map((t, idx) => (
@@ -86,9 +107,10 @@ export default function JustForYouGallery() {
             }}
             style={{
               position: "relative",
-              height: "360px",
+              height: "380px",
               overflow: "hidden",
-              cursor: "pointer"
+              cursor: "pointer",
+              backgroundColor: "#FAF9F6"
             }}
           >
             <img
@@ -98,7 +120,7 @@ export default function JustForYouGallery() {
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                transition: "transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)"
+                transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)"
               }}
               onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
               onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
@@ -109,7 +131,8 @@ export default function JustForYouGallery() {
               style={{
                 position: "absolute",
                 inset: 0,
-                backgroundColor: "rgba(0,0,0,0.45)",
+                backgroundColor: "rgba(18, 25, 15, 0.62)",
+                backdropFilter: "blur(2px)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -118,32 +141,44 @@ export default function JustForYouGallery() {
                 color: "#ffffff",
                 padding: "24px",
                 opacity: 0,
-                transition: "opacity 0.3s ease"
+                transition: "opacity 0.35s ease"
               }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
             >
-              <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.4rem", color: "#ffffff", marginBottom: "6px" }}>
-                {t.title}
-              </h4>
-              <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.85)", marginBottom: "16px", maxWidth: "240px" }}>
-                {t.desc}
-              </p>
-              <Link
-                to={t.link || "/shop"}
-                onClick={(e) => e.stopPropagation()}
+              <span className="eyebrow" style={{ color: "var(--gold-light)", letterSpacing: "0.2em", marginBottom: "8px" }}>
+                ATELIER PIECE
+              </span>
+              <h4
                 style={{
-                  fontSize: "0.76rem",
-                  letterSpacing: "0.16em",
-                  textTransform: "uppercase",
-                  fontWeight: 600,
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "1.45rem",
                   color: "#ffffff",
-                  borderBottom: "1.5px solid #ffffff",
-                  paddingBottom: "4px"
+                  marginBottom: "8px",
+                  lineHeight: 1.2
                 }}
               >
-                Shop Now
-              </Link>
+                {t.title}
+              </h4>
+              <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.85)", marginBottom: "20px", maxWidth: "240px", lineHeight: 1.5 }}>
+                {t.desc}
+              </p>
+              <div
+                className="eyebrow"
+                style={{
+                  fontSize: "0.74rem",
+                  letterSpacing: "0.18em",
+                  color: "var(--gold-light)",
+                  borderBottom: "1.5px solid var(--gold-light)",
+                  paddingBottom: "4px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px"
+                }}
+              >
+                <span>DISCOVER PIECE</span>
+                <ArrowUpRight size={14} />
+              </div>
             </div>
           </div>
         ))}
