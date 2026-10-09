@@ -78,7 +78,7 @@ export function CartLines({ compact = false }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    border: "1px solid var(--input)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px"
                   }}
                 >

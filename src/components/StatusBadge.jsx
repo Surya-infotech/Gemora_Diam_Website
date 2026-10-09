@@ -8,7 +8,7 @@ export function StatusBadge({ s }) {
       case "Crafted":
         return { backgroundColor: "var(--primary-soft)", color: "var(--primary)", border: "1px solid var(--border)" };
       default:
-        return { backgroundColor: "var(--blush)", color: "#ffffff" };
+        return { backgroundColor: "var(--muted)", color: "var(--foreground)", border: "1px solid var(--border)" };
     }
   };
 

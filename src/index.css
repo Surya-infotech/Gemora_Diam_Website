@@ -133,26 +133,6 @@ img {
   animation-play-state: paused;
 }
 
-/* Pulse animation for hotspot pins */
-@keyframes pulsePin {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(85, 104, 50, 0.7);
-  }
-  70% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 12px rgba(85, 104, 50, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(85, 104, 50, 0);
-  }
-}
-
-.hotspot-pin {
-  animation: pulsePin 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
-}
-
 /* Slide and Fade Transitions */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
