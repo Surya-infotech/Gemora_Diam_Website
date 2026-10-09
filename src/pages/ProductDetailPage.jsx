@@ -89,7 +89,6 @@ function ProductDetailContent({ product }) {
   const [qty, setQty] = useState(1);
   const [metal, setMetal] = useState(availableMetals[0] || "");
   const [hoveredMetal, setHoveredMetal] = useState(null);
-  const [selectedRingSize, setSelectedRingSize] = useState("");
   const [selectedStone, setSelectedStone] = useState("");
   const [selectedCarat, setSelectedCarat] = useState("");
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
@@ -173,25 +172,6 @@ function ProductDetailContent({ product }) {
     return activeCaratPrices[0]?.diamondsize || "";
   }, [hasCarat, activeCaratPrices, selectedCarat]);
 
-  const sortedRingSizes = useMemo(() => {
-    if (!product?.ringSizes || !Array.isArray(product.ringSizes)) return [];
-    // Sort ascending (lowest size to highest size)
-    return [...product.ringSizes].sort((a, b) => {
-      const numA = parseFloat(String(a).replace(/[^0-9.]/g, "")) || 0;
-      const numB = parseFloat(String(b).replace(/[^0-9.]/g, "")) || 0;
-      if (numA !== numB) return numA - numB;
-      return String(a).localeCompare(String(b));
-    });
-  }, [product]);
-
-  const ringSize = useMemo(() => {
-    if (sortedRingSizes.length === 0) return "";
-    if (selectedRingSize && sortedRingSizes.includes(selectedRingSize)) {
-      return selectedRingSize;
-    }
-    return sortedRingSizes[0] || "";
-  }, [sortedRingSizes, selectedRingSize]);
-
   const currentPrice = useMemo(() => {
     return getItemPrice(product, metal, activeStone, carat);
   }, [getItemPrice, product, metal, activeStone, carat]);
@@ -266,7 +246,7 @@ function ProductDetailContent({ product }) {
   const handleAddToCart = () => {
     if (!product) return;
     for (let i = 0; i < qty; i++) {
-      addToCart(product.id, metal, ringSize, carat, currentPrice, activeStone);
+      addToCart(product.id, metal, "", carat, currentPrice, activeStone);
     }
     notify("Added to Bag", `${qty}x ${product.name} (${format(currentPrice * qty)})`);
   };
@@ -619,10 +599,9 @@ function ProductDetailContent({ product }) {
               </div>
             )}
 
-            {/* Stone, Diamond Size & Ring Size Dropdowns (Side by Side) */}
+            {/* Stone & Diamond Size Dropdowns (Side by Side) */}
             {(availableStones.length > 0 ||
-              (hasCarat && activeCaratPrices.length > 0) ||
-              sortedRingSizes.length > 0) && (
+              (hasCarat && activeCaratPrices.length > 0)) && (
                 <div
                   style={{
                     display: "grid",
@@ -767,73 +746,6 @@ function ProductDetailContent({ product }) {
                     </div>
                   )}
 
-                  {/* Ring Size Dropdown */}
-                  {sortedRingSizes.length > 0 && (
-                    <div>
-                      <label
-                        htmlFor="ringsize-select"
-                        style={{
-                          fontSize: "0.78rem",
-                          fontWeight: 600,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.12em",
-                          display: "block",
-                          marginBottom: "8px",
-                          color: "var(--foreground)"
-                        }}
-                      >
-                        Ring Size
-                      </label>
-                      <div style={{ position: "relative" }}>
-                        <select
-                          id="ringsize-select"
-                          value={ringSize}
-                          onChange={(e) => setSelectedRingSize(e.target.value)}
-                          style={{
-                            width: "100%",
-                            height: "44px",
-                            padding: "0 36px 0 14px",
-                            border: "1px solid var(--border)",
-                            borderRadius: "2px",
-                            backgroundColor: "#ffffff",
-                            color: "var(--foreground)",
-                            fontSize: "0.84rem",
-                            fontWeight: 500,
-                            cursor: "pointer",
-                            appearance: "none",
-                            WebkitAppearance: "none",
-                            outline: "none",
-                            transition: "all 0.2s"
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.borderColor = "var(--primary)";
-                            e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.borderColor = "var(--border)";
-                            e.currentTarget.style.boxShadow = "none";
-                          }}
-                        >
-                          {sortedRingSizes.map((s) => (
-                            <option key={s} value={s}>
-                              {s}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown
-                          size={16}
-                          style={{
-                            position: "absolute",
-                            right: "12px",
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            pointerEvents: "none",
-                            color: "var(--muted-foreground)"
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
 
