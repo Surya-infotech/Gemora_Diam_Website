@@ -1,18 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Lock, Gift } from "lucide-react";
+import { Lock } from "lucide-react";
 import { useStore } from "../lib/store";
 import { CartLines } from "../components/CartLines";
 
 export default function CartPage() {
   const navigate = useNavigate();
   const { cart, subtotal, format, clearCart, showToast, user } = useStore();
-  const [gift, setGift] = useState(false);
-  const [msg, setMsg] = useState("");
 
   const shipping = subtotal >= 500 || subtotal === 0 ? 0 : 35;
-  const wrap = gift ? 15 : 0;
-  const total = subtotal + shipping + wrap;
+  const total = subtotal + shipping;
 
   if (!cart.length) {
     return (
@@ -86,48 +83,6 @@ export default function CartPage() {
               <span style={{ color: "var(--muted-foreground)" }}>Insured delivery</span>
               <span>{shipping ? format(shipping) : "Complimentary"}</span>
             </div>
-
-            {gift && (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "var(--muted-foreground)" }}>Gift wrapping</span>
-                <span>{format(wrap)}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Signature Gift Wrapping Toggle */}
-          <div style={{ marginTop: "24px", borderTop: "1px solid var(--border)", paddingTop: "20px" }}>
-            <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
-              <span style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.9rem" }}>
-                <Gift size={16} style={{ color: "var(--gold-deep)" }} strokeWidth={1.4} />
-                Signature gift wrapping
-              </span>
-              <input
-                type="checkbox"
-                checked={gift}
-                onChange={(e) => setGift(e.target.checked)}
-                style={{ width: "18px", height: "18px", accentColor: "var(--primary)", cursor: "pointer" }}
-              />
-            </label>
-
-            {gift && (
-              <textarea
-                value={msg}
-                onChange={(e) => setMsg(e.target.value.slice(0, 200))}
-                placeholder="Your handwritten card message..."
-                rows={3}
-                style={{
-                  marginTop: "12px",
-                  width: "100%",
-                  border: "1px solid var(--border)",
-                  backgroundColor: "transparent",
-                  padding: "10px",
-                  fontSize: "0.85rem",
-                  outline: "none",
-                  resize: "none"
-                }}
-              />
-            )}
           </div>
 
           {/* Total */}
