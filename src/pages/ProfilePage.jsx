@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Trash2, LogOut, Plus, MapPin, Edit2, X, Building, Home } from "lucide-react";
+import { Trash2, LogOut, Plus, MapPin, Edit2, X, Building, Home, Sparkles } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
 

@@ -1,7 +1,6 @@
 import { useSearchParams, Link } from "react-router-dom";
 import { ProductCard } from "../components/ProductCard";
 import { useStore } from "../lib/store";
-import { Sparkles } from "lucide-react";
 
 export default function ShopPage() {
   const [searchParams] = useSearchParams();
