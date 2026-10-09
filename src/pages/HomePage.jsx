@@ -1069,7 +1069,7 @@ function OutlineMarquee() {
             letterSpacing: "0.08em"
           }}
         >
-          APPLE PAY
+          SHOP NOW
         </span>
         <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
         <span
@@ -1079,18 +1079,6 @@ function OutlineMarquee() {
             fontWeight: 800,
             WebkitTextStroke: "1px #555555",
             color: "transparent",
-            letterSpacing: "0.08em"
-          }}
-        >
-          SHOP NOW
-        </span>
-        <span style={{ color: "var(--gold)", fontSize: "1.6rem" }}>✦</span>
-        <span
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
-            fontWeight: 800,
-            color: "#333333",
             letterSpacing: "0.08em"
           }}
         >
@@ -1102,8 +1090,7 @@ function OutlineMarquee() {
             fontFamily: "var(--font-sans)",
             fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
             fontWeight: 800,
-            WebkitTextStroke: "1px #555555",
-            color: "transparent",
+            color: "#333333",
             letterSpacing: "0.08em"
           }}
         >
