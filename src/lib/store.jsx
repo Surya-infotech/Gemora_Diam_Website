@@ -640,6 +640,29 @@ export function StoreProvider({ children }) {
     [backendUrl, customerIdKey, customerTokenKey, notify, user]
   );
 
+  const getCustomerOrders = useCallback(async () => {
+    try {
+      const token = localStorage.getItem(customerTokenKey);
+      const targetId = user?.customerid || user?._id || localStorage.getItem(customerIdKey);
+      if (!targetId) return [];
+
+      const res = await fetch(`${backendUrl}/Customer/GetOrders/${targetId}`, {
+        headers: {
+          "x-user": "true",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        }
+      });
+      const data = await res.json();
+      if (res.ok && data.orders) {
+        return data.orders;
+      }
+      return [];
+    } catch (err) {
+      console.log("Failed to fetch customer orders:", err);
+      return [];
+    }
+  }, [backendUrl, customerIdKey, customerTokenKey, user]);
+
 
   // Fetch all Admin Panel data
   useEffect(() => {
@@ -937,6 +960,7 @@ export function StoreProvider({ children }) {
         deleteAddress,
         setDefaultAddress,
         createOrder,
+        getCustomerOrders,
         login,
         signup,
         logout,
