@@ -517,33 +517,35 @@ function OrderDetailModal({ order, onClose }) {
             <span style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", display: "block" }}>Grand Total</span>
             <span style={{ fontFamily: "var(--font-serif)", fontSize: "1.9rem", fontWeight: 600 }}>{format(order.total)}</span>
           </div>
-          <button
-            onClick={printInvoice}
-            className="eyebrow"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              border: "1px solid var(--foreground)",
-              backgroundColor: "transparent",
-              padding: "10px 20px",
-              cursor: "pointer",
-              borderRadius: "2px",
-              transition: "all 0.2s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--primary)";
-              e.currentTarget.style.color = "#ffffff";
-              e.currentTarget.style.borderColor = "var(--primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "inherit";
-              e.currentTarget.style.borderColor = "var(--foreground)";
-            }}
-          >
-            <Download size={14} /> Download Invoice
-          </button>
+          {String(status || "").toLowerCase() === "delivered" && (
+            <button
+              onClick={printInvoice}
+              className="eyebrow"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                border: "1px solid var(--foreground)",
+                backgroundColor: "transparent",
+                padding: "10px 20px",
+                cursor: "pointer",
+                borderRadius: "2px",
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--primary)";
+                e.currentTarget.style.color = "#ffffff";
+                e.currentTarget.style.borderColor = "var(--primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "inherit";
+                e.currentTarget.style.borderColor = "var(--foreground)";
+              }}
+            >
+              <Download size={14} /> Download Invoice
+            </button>
+          )}
         </div>
       </div>
     </div>
