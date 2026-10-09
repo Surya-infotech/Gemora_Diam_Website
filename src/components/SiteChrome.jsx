@@ -1150,10 +1150,7 @@ export function Footer() {
           </h4>
           <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
             {[
-              ["FAQ's", "/faq"],
-              ["Track Order", "/orders"],
-              ["Customer Support", "/contact"],
-              ["My Wishlist", "/profile?tab=wishlist"]
+              ["FAQ's", "/faq"]
             ].map(([label, to]) => (
               <li key={label}>
                 <Link to={to} style={{ fontSize: "0.85rem", color: "#666", transition: "color 0.2s" }} onMouseEnter={(e) => (e.target.style.color = "var(--primary)")} onMouseLeave={(e) => (e.target.style.color = "#666")}>
@@ -1224,7 +1221,6 @@ export function Footer() {
             <img src={visaSvg} alt="Visa" style={{ height: "22px", objectFit: "contain" }} />
             <img src={masterSvg} alt="Mastercard" style={{ height: "22px", objectFit: "contain" }} />
             <img src={amexSvg} alt="Amex" style={{ height: "22px", objectFit: "contain" }} />
-            <img src={discoverSvg} alt="Discover" style={{ height: "22px", objectFit: "contain" }} />
           </div>
         </div>
       </div>
