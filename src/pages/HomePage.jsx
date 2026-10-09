@@ -807,7 +807,7 @@ function BestSellerSection() {
    4. SPLIT COLLECTION BANNERS (FROM BACKEND CATEGORIES)
    ========================================================================= */
 function SplitCollectionBanners() {
-  const { categories, products } = useStore();
+  const { categories } = useStore();
 
   if (!categories || categories.length < 2) {
     return null;
@@ -815,137 +815,220 @@ function SplitCollectionBanners() {
 
   const cat1 = categories[0];
   const cat2 = categories[1];
-  const prod1 = products?.find((p) => (p.category || "").toLowerCase() === cat1.categoryname?.toLowerCase());
-  const prod2 = products?.find((p) => (p.category || "").toLowerCase() === cat2.categoryname?.toLowerCase());
-  const img1 = cat1.image || prod1?.image || banner5;
-  const img2 = cat2.image || prod2?.image || banner6;
+  const img1 = cat1.image || banner5;
+  const img2 = cat2.image || banner6;
 
   return (
-    <section style={{ backgroundColor: "#ffffff", margin: "20px 0" }}>
-      {/* Banner 1: Backend Category 1 */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
-          alignItems: "center"
-        }}
-      >
-        <div style={{ height: "100%", minHeight: "440px", overflow: "hidden" }}>
-          <img
-            src={img1}
-            alt={cat1.categoryname}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+    <section style={{ backgroundColor: "#ffffff", padding: "40px 0 60px 0" }}>
+      <div className="container-luxury" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+        {/* Banner 1: Image Left, Content Right */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+            backgroundColor: "#faf8f5",
+            borderRadius: "4px",
+            overflow: "hidden",
+            boxShadow: "0 6px 24px rgba(0, 0, 0, 0.04)",
+            border: "1px solid #f0eae1"
+          }}
+        >
+          <div style={{ minHeight: "420px", height: "100%", overflow: "hidden", position: "relative" }}>
+            <img
+              src={img1}
+              alt={cat1.categoryname}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+                transition: "transform 0.8s ease"
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            />
+          </div>
+
+          <div
+            style={{
+              padding: "clamp(36px, 5vw, 64px)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              backgroundColor: "#faf8f5"
+            }}
+          >
+            <span
+              style={{
+                fontSize: "0.78rem",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                color: "var(--primary)",
+                marginBottom: "14px",
+                display: "inline-block"
+              }}
+            >
+              Featured Collection
+            </span>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(2rem, 3.6vw, 2.8rem)",
+                lineHeight: 1.2,
+                fontWeight: 400,
+                color: "#181818",
+                marginBottom: "16px"
+              }}
+            >
+              {cat1.categoryname} Collection
+            </h2>
+            <p
+              style={{
+                fontSize: "0.95rem",
+                lineHeight: 1.7,
+                color: "#666666",
+                maxWidth: "460px",
+                marginBottom: "32px"
+              }}
+            >
+              {cat1.description || `Explore our signature handcrafted ${cat1.categoryname.toLowerCase()} pieces designed for elegance and timeless charm.`}
+            </p>
+            <div>
+              <Link
+                to={`/shop?category=${encodeURIComponent(cat1.categoryname)}`}
+                className="eyebrow"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "14px 30px",
+                  backgroundColor: "var(--primary)",
+                  color: "#ffffff",
+                  borderRadius: "2px",
+                  fontSize: "0.78rem",
+                  letterSpacing: "0.16em",
+                  textDecoration: "none",
+                  transition: "all 0.25s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "0.92";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                Shop Collection <ArrowRight size={15} />
+              </Link>
+            </div>
+          </div>
         </div>
 
-        <div style={{ padding: "60px clamp(24px, 6vw, 90px)" }}>
-          <span
+        {/* Banner 2: Content Left, Image Right */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+            backgroundColor: "#faf8f5",
+            borderRadius: "4px",
+            overflow: "hidden",
+            boxShadow: "0 6px 24px rgba(0, 0, 0, 0.04)",
+            border: "1px solid #f0eae1"
+          }}
+        >
+          <div
             style={{
-              fontSize: "0.82rem",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              fontWeight: 600,
-              color: "var(--primary)",
-              display: "inline-block",
-              marginBottom: "16px"
+              padding: "clamp(36px, 5vw, 64px)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              backgroundColor: "#faf8f5"
             }}
           >
-            FEATURED COLLECTION
-          </span>
-          <h2
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(2.2rem, 4.5vw, 3.6rem)",
-              lineHeight: 1.15,
-              fontWeight: 400,
-              marginBottom: "20px"
-            }}
-          >
-            {cat1.categoryname} Collection
-          </h2>
-          <p
-            style={{
-              fontSize: "0.95rem",
-              lineHeight: 1.7,
-              color: "#666666",
-              maxWidth: "480px",
-              marginBottom: "32px"
-            }}
-          >
-            {cat1.description || `Explore our signature handcrafted ${cat1.categoryname.toLowerCase()} pieces designed for elegance and timeless charm.`}
-          </p>
-          <Link
-            to={`/shop?category=${encodeURIComponent(cat1.categoryname)}`}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              fontSize: "0.82rem",
-              fontWeight: 600,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--primary)"
-            }}
-          >
-            SHOP NOW <ArrowRight size={16} />
-          </Link>
-        </div>
-      </div>
+            <span
+              style={{
+                fontSize: "0.78rem",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                color: "var(--primary)",
+                marginBottom: "14px",
+                display: "inline-block"
+              }}
+            >
+              Curated Craftsmanship
+            </span>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(2rem, 3.6vw, 2.8rem)",
+                lineHeight: 1.2,
+                fontWeight: 400,
+                color: "#181818",
+                marginBottom: "16px"
+              }}
+            >
+              {cat2.categoryname} Collection
+            </h2>
+            <p
+              style={{
+                fontSize: "0.95rem",
+                lineHeight: 1.7,
+                color: "#666666",
+                maxWidth: "460px",
+                marginBottom: "32px"
+              }}
+            >
+              {cat2.description || `Celebrate special moments with our exquisite ${cat2.categoryname.toLowerCase()} sculpted with certified stones.`}
+            </p>
+            <div>
+              <Link
+                to={`/shop?category=${encodeURIComponent(cat2.categoryname)}`}
+                className="eyebrow"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "14px 30px",
+                  backgroundColor: "var(--primary)",
+                  color: "#ffffff",
+                  borderRadius: "2px",
+                  fontSize: "0.78rem",
+                  letterSpacing: "0.16em",
+                  textDecoration: "none",
+                  transition: "all 0.25s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "0.92";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                Shop Collection <ArrowRight size={15} />
+              </Link>
+            </div>
+          </div>
 
-      {/* Banner 2: Backend Category 2 */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
-          alignItems: "center"
-        }}
-      >
-        <div style={{ padding: "60px clamp(24px, 6vw, 90px)", order: 1 }}>
-          <h2
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(2.2rem, 4.5vw, 3.6rem)",
-              lineHeight: 1.15,
-              fontWeight: 400,
-              marginBottom: "20px"
-            }}
-          >
-            {cat2.categoryname} Collection
-          </h2>
-          <p
-            style={{
-              fontSize: "0.95rem",
-              lineHeight: 1.7,
-              color: "#666666",
-              maxWidth: "480px",
-              marginBottom: "32px"
-            }}
-          >
-            {cat2.description || `Celebrate special moments with our exquisite ${cat2.categoryname.toLowerCase()} sculpted with certified stones.`}
-          </p>
-          <Link
-            to={`/shop?category=${encodeURIComponent(cat2.categoryname)}`}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              fontSize: "0.82rem",
-              fontWeight: 600,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--primary)"
-            }}
-          >
-            SHOP NOW <ArrowRight size={16} />
-          </Link>
-        </div>
-
-        <div style={{ height: "100%", minHeight: "440px", overflow: "hidden", order: 2 }}>
-          <img
-            src={img2}
-            alt={cat2.categoryname}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+          <div style={{ minHeight: "420px", height: "100%", overflow: "hidden", position: "relative" }}>
+            <img
+              src={img2}
+              alt={cat2.categoryname}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+                transition: "transform 0.8s ease"
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            />
+          </div>
         </div>
       </div>
     </section>
