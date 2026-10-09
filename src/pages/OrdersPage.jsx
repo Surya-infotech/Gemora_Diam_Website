@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Check, Download, X, Package, MapPin, Sparkles } from "lucide-react";
+import { Check, Download, X, Package, MapPin, Sparkles, Loader2 } from "lucide-react";
 import { useStore } from "../lib/store";
 import { StatusBadge } from "../components/StatusBadge";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 const ORDER_STEPS = ["Confirmed", "Processing", "Shipped", "Delivered"];
 
@@ -357,8 +359,78 @@ function OrderRow({ order, onSelect, format }) {
   );
 }
 
+const escapeHtml = (text) => {
+  if (text == null) return "";
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
+function formatCurrencyWithDetails(amount, details) {
+  const num = typeof amount === "number" ? amount : parseFloat(amount) || 0;
+  const {
+    decimal = 2,
+    thousandseparator = ",",
+    decimalseparator = ".",
+    currencysymbol = "$",
+    currencyposition = "left"
+  } = details || {};
+
+  const decPlaces = decimal !== undefined && decimal !== null ? parseInt(decimal, 10) : 2;
+  let [intPart, decPart] = num.toFixed(decPlaces).split(".");
+  const sep = thousandseparator || ",";
+
+  const last3 = intPart.slice(-3);
+  const other = intPart.slice(0, -3);
+  const formattedInt = other !== "" ? other.replace(/\B(?=(\d{2,3})+(?!\d))/g, sep) + sep + last3 : last3;
+
+  const decSep = decimalseparator || ".";
+  const formattedAmount = decPlaces > 0 && decPart !== undefined ? `${formattedInt}${decSep}${decPart}` : formattedInt;
+
+  const symbol = currencysymbol || "";
+
+  switch (currencyposition) {
+    case "left":
+      return `${symbol}${formattedAmount}`;
+    case "left-space":
+      return `${symbol} ${formattedAmount}`;
+    case "right":
+      return `${formattedAmount}${symbol}`;
+    case "right-space":
+      return `${formattedAmount} ${symbol}`;
+    default:
+      return `${symbol}${formattedAmount}`;
+  }
+}
+
 function OrderDetailModal({ order, onClose }) {
-  const { format, getProduct, generalSettings } = useStore();
+  const { format, getProduct, generalSettings, notify } = useStore();
+  const [downloadingInvoice, setDownloadingInvoice] = useState(false);
+  const [invoiceSettings, setInvoiceSettings] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    fetch(`${backendUrl}/System/GetInvoiceSetting_landingpage`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (isMounted && data) {
+          setInvoiceSettings({
+            invoicePrefix: data.invoiceprefix || data.invoicePrefix || "INV-",
+            notes: data.notes || ""
+          });
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const brandName = generalSettings?.softwarename || "GEMORA DIAM";
   const addressLine = [
     generalSettings?.address,
@@ -375,95 +447,266 @@ function OrderDetailModal({ order, onClose }) {
   const orderItems = order.items || [];
   const shippingAddr = order.shippingaddress || null;
 
-  const printInvoice = () => {
-    const rows = orderItems
-      .map((it) => {
-        const specs = [
-          it.metalname,
-          it.stonename,
-          it.diamondsize,
-          it.shapename,
-          it.clarityname,
-          it.diamondcolor ? `Dia: ${it.diamondcolor}` : "",
-          it.bandcolor ? `Band: ${it.bandcolor}` : ""
-        ]
-          .filter(Boolean)
-          .join(" • ");
+  const formatPrice = (price) => {
+    if (order.currencydetails) {
+      return formatCurrencyWithDetails(price, order.currencydetails);
+    }
+    return format(price);
+  };
 
-        return `
-          <tr>
-            <td style="padding: 14px 0; border-bottom: 1px solid #ECE7DD;">
-              <strong style="font-size: 15px; color: #1c2211;">${it.itemname || "Fine Jewelry Piece"}</strong><br>
-              ${specs ? `<span style="font-size: 12px; color: #666; display: inline-block; margin-top: 3px;">${specs}</span><br>` : ""}
-              ${it.specialinstruction ? `<span style="font-size: 11px; color: #556832; font-style: italic; display: inline-block; margin-top: 3px;">Special Note: "${it.specialinstruction}"</span>` : ""}
-            </td>
-            <td style="padding: 14px 0; border-bottom: 1px solid #ECE7DD; text-align: center; font-size: 14px;">${it.qty || 1}</td>
-            <td style="padding: 14px 0; border-bottom: 1px solid #ECE7DD; text-align: right; font-size: 15px; font-weight: 600; color: #1c2211;">${format(it.totalprice || (it.price * (it.qty || 1)))}</td>
-          </tr>
-        `;
-      })
-      .join("");
+  const handleDownloadInvoice = async () => {
+    if (!order || downloadingInvoice) return;
+    setDownloadingInvoice(true);
 
-    const win = window.open("", "_blank");
-    if (!win) return;
-    win.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Invoice #${orderNum} - ${brandName}</title>
-          <link rel="preconnect" href="https://fonts.googleapis.com">
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-          <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-          <style>
-            body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 48px; color: #1c2211; max-width: 820px; margin: 0 auto; background: #ffffff; }
-            h1 { font-family: 'Playfair Display', serif; letter-spacing: 0.15em; font-size: 28px; text-transform: uppercase; color: #556832; margin: 0 0 4px 0; }
-            .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #556832; padding-bottom: 20px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 36px; }
-            th { text-align: left; padding-bottom: 10px; border-bottom: 1.5px solid #556832; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #556832; }
-            .total { text-align: right; margin-top: 24px; font-size: 22px; font-family: 'Playfair Display', serif; font-weight: 700; color: #1c2211; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
+    try {
+      const orderNumberDisplay = order.ordernumber != null ? order.ordernumber : (order.orderid || order.id);
+      const prefix = invoiceSettings?.invoicePrefix || "INV-";
+      const invoiceNumber = `${prefix}${orderNumberDisplay}`;
+      const invoiceDate = order.createdAt
+        ? new Date(order.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+        : new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+
+      const brandEmail = generalSettings?.email || "";
+      const brandPhone = generalSettings?.phone || "";
+      const brandAddressParts = [
+        generalSettings?.address,
+        generalSettings?.cityname,
+        generalSettings?.statename,
+        generalSettings?.countryname,
+        generalSettings?.postalcode
+      ].filter(Boolean);
+      const brandAddress = brandAddressParts.join(", ");
+
+      const customerName = order.customername || order.shippingaddress?.name || "Valued Customer";
+      const customerEmail = order.customeremail || "";
+      const customerPhone = order.customerphone || order.shippingaddress?.phone || "";
+
+      const shippingAddressParts = shippingAddr
+        ? [
+            shippingAddr.title ? `<strong>${escapeHtml(shippingAddr.title)}</strong>` : "",
+            shippingAddr.address,
+            shippingAddr.cityname,
+            shippingAddr.statename,
+            shippingAddr.countryname,
+            shippingAddr.pincode ? `PIN: ${shippingAddr.pincode}` : ""
+          ].filter(Boolean).join("<br>")
+        : "";
+
+      const items = order.items || [];
+      const itemRows = items
+        .map((item, idx) => {
+          const specs = [
+            item.metalname && `Metal: ${item.metalname}`,
+            item.diamondsize && `Diamond: ${item.diamondsize}`,
+            item.shapename && `Shape: ${item.shapename}`,
+            item.clarityname && `Clarity: ${item.clarityname}`,
+            item.stonename && `Stone: ${item.stonename}`,
+            item.size && `Size: ${item.size}`,
+            item.diamondcolor && `Color: ${item.diamondcolor}`,
+            item.bandcolor && `Band: ${item.bandcolor}`
+          ]
+            .filter(Boolean)
+            .join(" • ");
+
+          const unitPriceStr = formatPrice(item.price);
+          const totalPriceStr = formatPrice(item.totalprice || (item.price * (item.qty || 1)));
+          const qty = item.qty || 1;
+
+          return `
+            <tr>
+              <td style="padding: 12px 14px; border-bottom: 1px solid #eef2f6; vertical-align: top;">
+                <div style="font-weight: 700; color: #0f172a; font-size: 13.5px; margin-bottom: 4px;">
+                  ${idx + 1}. ${escapeHtml(item.itemname || "Fine Jewelry Piece")}
+                </div>
+                ${specs ? `<div style="font-size: 11.5px; color: #64748b; line-height: 1.5; margin-bottom: 4px;">${escapeHtml(specs)}</div>` : ""}
+                ${item.specialinstruction ? `<div style="font-size: 11px; color: #047857; background: #ecfdf5; display: inline-block; padding: 2px 8px; border-radius: 4px; font-style: italic;">Special Note: ${escapeHtml(item.specialinstruction)}</div>` : ""}
+              </td>
+              <td style="padding: 12px 14px; border-bottom: 1px solid #eef2f6; text-align: center; vertical-align: top; font-weight: 600; font-size: 13.5px; color: #334155;">
+                ${qty}
+              </td>
+              <td style="padding: 12px 14px; border-bottom: 1px solid #eef2f6; text-align: right; vertical-align: top; font-size: 13.5px; color: #334155; white-space: nowrap;">
+                ${escapeHtml(unitPriceStr)}
+              </td>
+              <td style="padding: 12px 14px; border-bottom: 1px solid #eef2f6; text-align: right; vertical-align: top; font-weight: 700; font-size: 13.5px; color: #0f172a; white-space: nowrap;">
+                ${escapeHtml(totalPriceStr)}
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      const subtotalStr = formatPrice(order.subtotal ?? order.total);
+      const grandTotalStr = formatPrice(order.total);
+      const invoiceNotes =
+        invoiceSettings?.notes ||
+        "Thank you for choosing Gemora Diam. Each gemstone is ethically crafted, graded, and authenticated.";
+
+      const container = document.createElement("div");
+      container.style.position = "fixed";
+      container.style.left = "-9999px";
+      container.style.top = "0";
+      container.style.width = "794px";
+      container.style.backgroundColor = "#ffffff";
+      container.style.zIndex = "-9999";
+
+      container.innerHTML = `
+        <div style="font-family: Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #ffffff; color: #1e293b; padding: 36px 40px; width: 794px; box-sizing: border-box;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 18px; border-bottom: 2px solid #0f172a; margin-bottom: 22px;">
             <div>
-              <h1>${brandName}</h1>
-              <p style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #c5a059; margin: 0;">Haute Joaillerie Atelier • Official Invoice</p>
+              <div style="font-size: 26px; font-weight: 700; color: #044e39; letter-spacing: 0.05em; text-transform: uppercase;">
+                ${escapeHtml(brandName)}
+              </div>
+              <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: #64748b; letter-spacing: 0.08em; margin-top: 4px;">
+                Official Invoice
+              </div>
             </div>
-            <div style="text-align: right; font-size: 13px; color: #555;">
-              <strong>Order #:</strong> ${orderNum}<br>
-              <strong>Date:</strong> ${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : new Date().toLocaleDateString()}<br>
-              <strong>Status:</strong> ${status}
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a; text-transform: uppercase;">
+                Tax Invoice
+              </div>
+              <div style="font-size: 14px; font-weight: 700; color: #10b981; font-family: monospace; margin-top: 2px;">
+                ${escapeHtml(invoiceNumber)}
+              </div>
             </div>
           </div>
-          ${shippingAddr ? `
-            <div style="margin-top: 24px; padding: 16px; background: #FAF9F6; border: 1px solid #ECE7DD; font-size: 13px; line-height: 1.6;">
-              <strong style="color: #556832; text-transform: uppercase; font-size: 11px; letter-spacing: 0.08em; display: block; margin-bottom: 4px;">Delivered To:</strong>
-              ${order.customername ? `<strong>${order.customername}</strong><br>` : ""}
-              ${shippingAddr.address}, ${shippingAddr.cityname}, ${shippingAddr.statename}, ${shippingAddr.countryname} - ${shippingAddr.pincode}
+
+          <div style="display: flex; justify-content: space-between; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 18px; margin-bottom: 22px;">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 600; color: #64748b;">Invoice Date</div>
+              <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-top: 2px;">${escapeHtml(invoiceDate)}</div>
             </div>
-          ` : ""}
-          <table>
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 600; color: #64748b;">Order Number</div>
+              <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-top: 2px;">#${escapeHtml(orderNumberDisplay)}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 600; color: #64748b;">Order Status</div>
+              <div style="margin-top: 2px;">
+                <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; background: #dcfce7; color: #15803d;">
+                  ${escapeHtml(order.orderstatus || status || "Delivered")}
+                </span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 600; color: #64748b;">Payment Status</div>
+              <div style="margin-top: 2px;">
+                <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; background: #dcfce7; color: #15803d;">
+                  ${escapeHtml(order.paymentstatus || "Paid")}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 18px; margin-bottom: 22px;">
+            <div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; background: #ffffff;">
+              <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #044e39; font-weight: 700; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #f1f5f9;">
+                Billed &amp; Delivered To
+              </div>
+              <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">${escapeHtml(customerName)}</div>
+              ${customerEmail ? `<div style="font-size: 12px; color: #475569;">Email: ${escapeHtml(customerEmail)}</div>` : ""}
+              ${customerPhone ? `<div style="font-size: 12px; color: #475569;">Phone: ${escapeHtml(customerPhone)}</div>` : ""}
+              ${shippingAddressParts ? `<div style="font-size: 12px; color: #475569; margin-top: 6px; line-height: 1.4;">${shippingAddressParts}</div>` : ""}
+            </div>
+
+            <div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; background: #ffffff;">
+              <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #044e39; font-weight: 700; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #f1f5f9;">
+                Issued By
+              </div>
+              <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">${escapeHtml(brandName)}</div>
+              ${brandEmail ? `<div style="font-size: 12px; color: #475569;">Email: ${escapeHtml(brandEmail)}</div>` : ""}
+              ${brandPhone ? `<div style="font-size: 12px; color: #475569;">Phone: ${escapeHtml(brandPhone)}</div>` : ""}
+              ${brandAddress ? `<div style="font-size: 12px; color: #475569; margin-top: 6px; line-height: 1.4;">${escapeHtml(brandAddress)}</div>` : ""}
+              <div style="font-size: 12px; color: #475569; margin-top: 6px;"><strong>Payment Method:</strong> ${escapeHtml(order.paymentmethod || "Credit/Debit Card")}</div>
+            </div>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 22px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
             <thead>
-              <tr>
-                <th>Piece &amp; Atelier Specifications</th>
-                <th style="text-align: center;">Qty</th>
-                <th style="text-align: right;">Amount</th>
+              <tr style="background: #f1f5f9;">
+                <th style="text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #334155; border-bottom: 2px solid #cbd5e1;">Product Details</th>
+                <th style="text-align: center; width: 70px; padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #334155; border-bottom: 2px solid #cbd5e1;">Qty</th>
+                <th style="text-align: right; width: 120px; padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #334155; border-bottom: 2px solid #cbd5e1;">Unit Rate</th>
+                <th style="text-align: right; width: 120px; padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #334155; border-bottom: 2px solid #cbd5e1;">Amount</th>
               </tr>
             </thead>
             <tbody>
-              ${rows}
+              ${itemRows}
             </tbody>
           </table>
-          <div class="total">Grand Total: ${format(order.total)}</div>
-          <p style="margin-top: 48px; font-size: 11px; color: #888; text-align: center; border-top: 1px solid #eee; padding-top: 24px; line-height: 1.6;">
-            ${brandName} Fine Jewelry${addressLine ? ` · ${addressLine}` : ""}<br>
-            Ethically Sourced · GIA/IGI Certified Lab Diamonds · Lifetime Craftsmanship Guarantee
-          </p>
-          <script>window.print()</script>
-        </body>
-      </html>
-    `);
-    win.document.close();
+
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 22px;">
+            <div style="width: 280px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 18px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; color: #475569; margin-bottom: 6px;">
+                <span>Subtotal:</span>
+                <span>${escapeHtml(subtotalStr)}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; color: #0f172a; border-top: 2px solid #0f172a; padding-top: 8px; margin-top: 6px;">
+                <span>Grand Total:</span>
+                <span>${escapeHtml(grandTotalStr)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="border-top: 1px dashed #cbd5e1; padding-top: 16px;">
+            ${
+              invoiceNotes
+                ? `
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 4px;">Notes</div>
+                <div style="font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 12px;">${escapeHtml(invoiceNotes)}</div>
+              `
+                : ""
+            }
+            <div style="text-align: center; padding: 10px; background: #fafaf9; border: 1px solid #e7e5e4; border-radius: 6px; font-size: 11px; color: #78716c;">
+              Ethically Sourced • Certified Lab-Grown Diamonds • Lifetime Craftsmanship Guarantee
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(container);
+
+      const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        windowWidth: 794
+      });
+
+      document.body.removeChild(container);
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.98);
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight, undefined, "FAST");
+      heightLeft -= pdfHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight, undefined, "FAST");
+        heightLeft -= pdfHeight;
+      }
+
+      const safeFilename = `Invoice-${String(invoiceNumber).replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`;
+      pdf.save(safeFilename);
+      if (notify) {
+        notify("Invoice Downloaded", "Official invoice PDF downloaded successfully.");
+      }
+    } catch (err) {
+      console.error("Failed to download invoice PDF:", err);
+      if (notify) {
+        notify("Download Failed", "Failed to download invoice PDF. Please try again.");
+      }
+    } finally {
+      setDownloadingInvoice(false);
+    }
   };
 
   return (
@@ -727,33 +970,47 @@ function OrderDetailModal({ order, onClose }) {
 
           {String(status || "").toLowerCase() === "delivered" && (
             <button
-              onClick={printInvoice}
+              onClick={handleDownloadInvoice}
+              disabled={downloadingInvoice}
               className="eyebrow"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
                 border: "1px solid var(--primary)",
-                backgroundColor: "var(--primary)",
+                backgroundColor: downloadingInvoice ? "#839463" : "var(--primary)",
                 color: "#ffffff",
                 padding: "12px 24px",
-                cursor: "pointer",
+                cursor: downloadingInvoice ? "not-allowed" : "pointer",
                 borderRadius: "2px",
                 fontWeight: 600,
                 letterSpacing: "0.12em",
                 transition: "all 0.2s ease",
-                boxShadow: "0 4px 14px rgba(85, 104, 50, 0.2)"
+                boxShadow: "0 4px 14px rgba(85, 104, 50, 0.2)",
+                opacity: downloadingInvoice ? 0.85 : 1
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--primary-hover)";
-                e.currentTarget.style.borderColor = "var(--primary-hover)";
+                if (!downloadingInvoice) {
+                  e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                  e.currentTarget.style.borderColor = "var(--primary-hover)";
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--primary)";
-                e.currentTarget.style.borderColor = "var(--primary)";
+                if (!downloadingInvoice) {
+                  e.currentTarget.style.backgroundColor = "var(--primary)";
+                  e.currentTarget.style.borderColor = "var(--primary)";
+                }
               }}
             >
-              <Download size={15} /> Download Official Invoice
+              {downloadingInvoice ? (
+                <>
+                  <Loader2 size={15} style={{ animation: "spin 1s linear infinite" }} /> Generating Invoice PDF...
+                </>
+              ) : (
+                <>
+                  <Download size={15} /> Download Official Invoice
+                </>
+              )}
             </button>
           )}
         </div>
