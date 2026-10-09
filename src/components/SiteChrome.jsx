@@ -1164,7 +1164,6 @@ export function Footer() {
               ["Returns", "/returns"],
               ["Privacy Policy", "/privacy-policy"],
               ["My Wishlist", "/profile?tab=wishlist"],
-              ["Compare", "/shop"],
               ["FAQ's", "/faq"]
             ].map(([label, to]) => (
               <li key={label}>
