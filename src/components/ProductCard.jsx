@@ -303,11 +303,11 @@ export function ProductCard({ product }) {
                   <video
                     key={allMedia[activeMediaIndex].url}
                     src={allMedia[activeMediaIndex].url}
-                    controls
                     autoPlay
                     muted
+                    loop
                     playsInline
-                    style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
+                    style={{ width: "100%", maxHeight: "380px", objectFit: "contain", pointerEvents: "none" }}
                   />
                 ) : (
                   <img

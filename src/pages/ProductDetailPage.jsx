@@ -419,10 +419,11 @@ function ProductDetailContent({ product }) {
                 <video
                   key={currentMedia.url}
                   src={currentMedia.url}
-                  controls
                   autoPlay
                   muted
+                  loop
                   playsInline
+                  style={{ pointerEvents: "none" }}
                 />
               ) : (
                 <img
