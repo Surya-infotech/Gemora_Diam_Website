@@ -822,7 +822,7 @@ function SplitCollectionBanners() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
             backgroundColor: "#faf8f5",
             borderRadius: "4px",
             overflow: "hidden",
@@ -830,7 +830,7 @@ function SplitCollectionBanners() {
             border: "1px solid #f0eae1"
           }}
         >
-          <div style={{ minHeight: "420px", height: "100%", overflow: "hidden", position: "relative" }}>
+          <div style={{ minHeight: "280px", maxHeight: "360px", height: "100%", overflow: "hidden", position: "relative" }}>
             <img
               src={img1}
               alt={cat1.categoryname}
@@ -848,7 +848,7 @@ function SplitCollectionBanners() {
 
           <div
             style={{
-              padding: "clamp(36px, 5vw, 64px)",
+              padding: "clamp(24px, 4vw, 42px)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -857,12 +857,12 @@ function SplitCollectionBanners() {
           >
             <span
               style={{
-                fontSize: "0.78rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
                 fontWeight: 600,
                 color: "var(--primary)",
-                marginBottom: "14px",
+                marginBottom: "10px",
                 display: "inline-block"
               }}
             >
@@ -871,22 +871,22 @@ function SplitCollectionBanners() {
             <h2
               style={{
                 fontFamily: "var(--font-serif)",
-                fontSize: "clamp(2rem, 3.6vw, 2.8rem)",
+                fontSize: "clamp(1.7rem, 2.8vw, 2.2rem)",
                 lineHeight: 1.2,
                 fontWeight: 400,
                 color: "#181818",
-                marginBottom: "16px"
+                marginBottom: "12px"
               }}
             >
               {cat1.categoryname} Collection
             </h2>
             <p
               style={{
-                fontSize: "0.95rem",
-                lineHeight: 1.7,
+                fontSize: "0.9rem",
+                lineHeight: 1.6,
                 color: "#666666",
                 maxWidth: "460px",
-                marginBottom: "32px"
+                marginBottom: "22px"
               }}
             >
               {cat1.description || `Explore our signature handcrafted ${cat1.categoryname.toLowerCase()} pieces designed for elegance and timeless charm.`}
@@ -899,11 +899,11 @@ function SplitCollectionBanners() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "10px",
-                  padding: "14px 30px",
+                  padding: "11px 26px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
                   borderRadius: "2px",
-                  fontSize: "0.78rem",
+                  fontSize: "0.76rem",
                   letterSpacing: "0.16em",
                   textDecoration: "none",
                   transition: "all 0.25s ease"
@@ -927,7 +927,7 @@ function SplitCollectionBanners() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
             backgroundColor: "#faf8f5",
             borderRadius: "4px",
             overflow: "hidden",
@@ -937,7 +937,7 @@ function SplitCollectionBanners() {
         >
           <div
             style={{
-              padding: "clamp(36px, 5vw, 64px)",
+              padding: "clamp(24px, 4vw, 42px)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -946,12 +946,12 @@ function SplitCollectionBanners() {
           >
             <span
               style={{
-                fontSize: "0.78rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
                 fontWeight: 600,
                 color: "var(--primary)",
-                marginBottom: "14px",
+                marginBottom: "10px",
                 display: "inline-block"
               }}
             >
@@ -960,22 +960,22 @@ function SplitCollectionBanners() {
             <h2
               style={{
                 fontFamily: "var(--font-serif)",
-                fontSize: "clamp(2rem, 3.6vw, 2.8rem)",
+                fontSize: "clamp(1.7rem, 2.8vw, 2.2rem)",
                 lineHeight: 1.2,
                 fontWeight: 400,
                 color: "#181818",
-                marginBottom: "16px"
+                marginBottom: "12px"
               }}
             >
               {cat2.categoryname} Collection
             </h2>
             <p
               style={{
-                fontSize: "0.95rem",
-                lineHeight: 1.7,
+                fontSize: "0.9rem",
+                lineHeight: 1.6,
                 color: "#666666",
                 maxWidth: "460px",
-                marginBottom: "32px"
+                marginBottom: "22px"
               }}
             >
               {cat2.description || `Celebrate special moments with our exquisite ${cat2.categoryname.toLowerCase()} sculpted with certified stones.`}
@@ -988,11 +988,11 @@ function SplitCollectionBanners() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "10px",
-                  padding: "14px 30px",
+                  padding: "11px 26px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
                   borderRadius: "2px",
-                  fontSize: "0.78rem",
+                  fontSize: "0.76rem",
                   letterSpacing: "0.16em",
                   textDecoration: "none",
                   transition: "all 0.25s ease"
@@ -1011,7 +1011,7 @@ function SplitCollectionBanners() {
             </div>
           </div>
 
-          <div style={{ minHeight: "420px", height: "100%", overflow: "hidden", position: "relative" }}>
+          <div style={{ minHeight: "280px", maxHeight: "360px", height: "100%", overflow: "hidden", position: "relative" }}>
             <img
               src={img2}
               alt={cat2.categoryname}
