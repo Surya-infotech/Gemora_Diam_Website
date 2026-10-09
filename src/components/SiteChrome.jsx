@@ -1036,10 +1036,7 @@ export function Footer() {
               JOIN THE #{generalSettings.softwarename.replace(/\s+/g, '').toUpperCase()} TRIBE
             </span>
           )}
-          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", marginTop: "12px", marginBottom: "8px" }}>
-            Shiny Things Await - 10% Off Inside!
-          </h3>
-          <p style={{ fontSize: "0.85rem", color: "#666", lineHeight: 1.6 }}>
+          <p style={{ fontSize: "0.85rem", color: "#666", lineHeight: 1.6, marginTop: "12px" }}>
             Get early access to new products, exclusive deals &amp; more.
           </p>
 
