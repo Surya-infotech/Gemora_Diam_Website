@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Check, Download, X, Package, Clock, ShieldCheck, MapPin, Sparkles } from "lucide-react";
+import { Check, Download, X, Package, MapPin, Sparkles } from "lucide-react";
 import { useStore } from "../lib/store";
 import { StatusBadge } from "../components/StatusBadge";
 
