@@ -10,7 +10,6 @@ import {
   ChevronDown,
   Phone,
   MapPin,
-  Sparkles,
   ArrowRight,
   LogOut
 } from "lucide-react";

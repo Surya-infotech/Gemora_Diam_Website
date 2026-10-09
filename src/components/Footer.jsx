@@ -12,7 +12,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { useStore } from "../lib/store";
-import { slugifyPolicy } from "../pages/PolicyPage";
+import { slugifyPolicy } from "../lib/slugify";
 
 import visaSvg from "../assets/vemus/payment_visa.svg";
 import masterSvg from "../assets/vemus/payment_master.svg";

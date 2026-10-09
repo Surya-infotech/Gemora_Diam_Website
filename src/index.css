@@ -141,13 +141,6 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.glass-dark {
-  background: rgba(21, 29, 17, 0.78);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
 /* Shimmer & Glow Effects */
 @keyframes subtlePulse {
   0%, 100% { opacity: 0.9; }

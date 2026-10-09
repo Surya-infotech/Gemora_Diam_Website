@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import { useStore } from "../../lib/store";
 
 export default function JustForYouGallery() {

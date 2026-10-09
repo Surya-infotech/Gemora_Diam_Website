@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Lock,
@@ -11,9 +11,7 @@ import {
   Building,
   AlertCircle,
   ArrowRight,
-  Truck,
-  ShieldCheck,
-  ShoppingBag
+  Truck
 } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
@@ -36,7 +34,7 @@ export default function CartPage() {
   } = useStore();
 
   const [addresses, setAddresses] = useState([]);
-  const [loadingAddresses, setLoadingAddresses] = useState(false);
+  const [loadingAddresses, setLoadingAddresses] = useState(() => Boolean(user));
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [addressError, setAddressError] = useState("");
   const [submittingOrder, setSubmittingOrder] = useState(false);
@@ -82,39 +80,39 @@ export default function CartPage() {
     }));
   }, [selectedCountry, selectedState]);
 
-  // Load customer addresses
-  const loadAddresses = useCallback(async () => {
-    if (!user) {
-      setAddresses([]);
-      setSelectedAddressId(null);
-      return;
-    }
-    setLoadingAddresses(true);
-    try {
-      const list = await getAddresses();
-      const validList = Array.isArray(list) ? list : [];
-      setAddresses(validList);
-
-      // Auto-select: default address or first address
-      setSelectedAddressId((prev) => {
-        if (prev && validList.some((a) => a.addressid === prev)) {
-          return prev;
-        }
-        const defaultAddr = validList.find((a) => a.isDefault);
-        if (defaultAddr) return defaultAddr.addressid;
-        if (validList.length > 0) return validList[0].addressid;
-        return null;
-      });
-    } catch (err) {
-      console.error("Failed to load customer addresses:", err);
-    } finally {
-      setLoadingAddresses(false);
-    }
-  }, [getAddresses, user]);
-
+  // Load customer addresses on user change
   useEffect(() => {
-    loadAddresses();
-  }, [loadAddresses]);
+    let isMounted = true;
+    if (!user) return;
+
+    getAddresses()
+      .then((list) => {
+        if (!isMounted) return;
+        const validList = Array.isArray(list) ? list : [];
+        setAddresses(validList);
+
+        // Auto-select: default address or first address
+        setSelectedAddressId((prev) => {
+          if (prev && validList.some((a) => a.addressid === prev)) {
+            return prev;
+          }
+          const defaultAddr = validList.find((a) => a.isDefault);
+          if (defaultAddr) return defaultAddr.addressid;
+          if (validList.length > 0) return validList[0].addressid;
+          return null;
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to load customer addresses:", err);
+      })
+      .finally(() => {
+        if (isMounted) setLoadingAddresses(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [getAddresses, user]);
 
   const handleSelectAddress = (addrId) => {
     setSelectedAddressId(addrId);

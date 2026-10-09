@@ -2,22 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { LegalLayout } from "../components/LegalLayout";
 import { useStore } from "../lib/store";
-
-export function slugifyPolicy(name) {
-  if (!name) return "";
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
+import { slugifyPolicy } from "../lib/slugify";
 
 export default function PolicyPage({ fallbackTitle = "", NotFoundComponent = null }) {
   const { slug } = useParams();
   const location = useLocation();
   const { policies } = useStore();
   const [fetchedPolicies, setFetchedPolicies] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(() => !policies || policies.length === 0);
 
   const rawPath = slug || location.pathname.replace(/^\/(policy\/)?/, "").replace(/\/$/, "");
   const currentSlug = (rawPath || "").toLowerCase();
@@ -26,7 +18,6 @@ export default function PolicyPage({ fallbackTitle = "", NotFoundComponent = nul
 
   useEffect(() => {
     if (!policies || policies.length === 0) {
-      setLoading(true);
       const url = import.meta.env.VITE_BACKEND_URL;
       fetch(`${url}/Support/GetActivePolicies`)
         .then((res) => (res.ok ? res.json() : []))

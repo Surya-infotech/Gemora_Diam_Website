@@ -16,7 +16,6 @@ export default function OrdersPage() {
 
   useEffect(() => {
     let isMounted = true;
-    setLoading(true);
 
     getCustomerOrders()
       .then((data) => {
@@ -432,14 +431,6 @@ function OrderDetailModal({ order, onClose }) {
   }, []);
 
   const brandName = generalSettings?.softwarename || "GEMORA DIAM";
-  const addressLine = [
-    generalSettings?.address,
-    generalSettings?.cityname,
-    generalSettings?.statename,
-    generalSettings?.countryname
-  ]
-    .filter(Boolean)
-    .join(", ");
 
   const orderNum = order.ordernumber || order.orderid || order.id;
   const status = order.orderstatus || order.status || "Confirmed";

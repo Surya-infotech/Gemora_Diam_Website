@@ -14,23 +14,22 @@ function formatTabLabel(type) {
 
 export default function FaqPage() {
   const { faqs: storeFaqs } = useStore();
-  const [faqs, setFaqs] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [activeType, setActiveType] = useState("");
+  const [fetchedFaqs, setFetchedFaqs] = useState([]);
+  const [loading, setLoading] = useState(() => !storeFaqs || storeFaqs.length === 0);
+  const [userSelectedType, setUserSelectedType] = useState("");
   const [openId, setOpenId] = useState(null);
 
-  // Load from store or fetch from backend
+  const faqs = storeFaqs && storeFaqs.length > 0 ? storeFaqs : fetchedFaqs;
+
+  // Load from backend if store hasn't populated yet
   useEffect(() => {
-    if (storeFaqs && storeFaqs.length > 0) {
-      setFaqs(storeFaqs);
-    } else {
-      setLoading(true);
+    if (!storeFaqs || storeFaqs.length === 0) {
       const url = import.meta.env.VITE_BACKEND_URL;
       fetch(`${url}/Support/GetActiveFAQs`)
         .then((res) => (res.ok ? res.json() : []))
         .then((data) => {
           const list = Array.isArray(data) ? data : data ? [data] : [];
-          setFaqs(list);
+          setFetchedFaqs(list);
         })
         .catch((err) => console.warn("Failed to fetch FAQs:", err))
         .finally(() => setLoading(false));
@@ -53,12 +52,13 @@ export default function FaqPage() {
     return types;
   }, [faqs]);
 
-  // Default active tab to the first category
-  useEffect(() => {
-    if (faqTypes.length > 0 && (!activeType || !faqTypes.some((t) => t.toLowerCase() === activeType.toLowerCase()))) {
-      setActiveType(faqTypes[0]);
+  // Derive active type without cascading effect
+  const activeType = useMemo(() => {
+    if (userSelectedType && faqTypes.some((t) => t.toLowerCase() === userSelectedType.toLowerCase())) {
+      return userSelectedType;
     }
-  }, [faqTypes, activeType]);
+    return faqTypes[0] || "";
+  }, [userSelectedType, faqTypes]);
 
   // Filter FAQs for current activeType
   const currentFaqs = useMemo(() => {
@@ -126,7 +126,7 @@ export default function FaqPage() {
                   key={type}
                   type="button"
                   onClick={() => {
-                    setActiveType(type);
+                    setUserSelectedType(type);
                     setOpenId(null);
                   }}
                   style={{

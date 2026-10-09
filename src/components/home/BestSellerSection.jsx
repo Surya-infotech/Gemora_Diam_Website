@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, ShoppingBag, Eye, Sparkles } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import { useStore } from "../../lib/store";
 
 export default function BestSellerSection() {

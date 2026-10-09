@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useStore } from "../../lib/store";
 
 import banner5 from "../../assets/vemus/banner_banner-5.jpg";
