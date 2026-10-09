@@ -921,15 +921,15 @@ export function Footer() {
 
   const navCategories = categories && categories.length > 0
     ? [
-        { label: "ALL JEWELRY", to: "/shop" },
-        ...categories.map((c) => ({
-          label: c.categoryname.toUpperCase(),
-          to: `/shop?category=${encodeURIComponent(c.categoryname)}`
-        }))
-      ]
+      { label: "ALL JEWELRY", to: "/shop" },
+      ...categories.map((c) => ({
+        label: c.categoryname.toUpperCase(),
+        to: `/shop?category=${encodeURIComponent(c.categoryname)}`
+      }))
+    ]
     : [
-        { label: "ALL JEWELRY", to: "/shop" }
-      ];
+      { label: "ALL JEWELRY", to: "/shop" }
+    ];
 
   return (
     <footer style={{ backgroundColor: "#ffffff", color: "#181818" }}>
@@ -1115,18 +1115,6 @@ export function Footer() {
                   {generalSettings.statename}, {generalSettings.countryname}{generalSettings.postalcode ? ` - ${generalSettings.postalcode}` : ""}
                 </span>
               </p>
-              <p style={{ fontSize: "0.85rem", marginBottom: "10px" }}>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    [generalSettings.address, generalSettings.cityname, generalSettings.statename, generalSettings.countryname].filter(Boolean).join(", ")
-                  )}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ textDecoration: "underline", color: "#181818", fontWeight: 500 }}
-                >
-                  See Our Stores
-                </a>
-              </p>
             </>
           )}
           {generalSettings?.phone && (
@@ -1235,7 +1223,6 @@ export function Footer() {
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
             <img src={visaSvg} alt="Visa" style={{ height: "22px", objectFit: "contain" }} />
             <img src={masterSvg} alt="Mastercard" style={{ height: "22px", objectFit: "contain" }} />
-            <img src={applePaySvg} alt="Apple Pay" style={{ height: "22px", objectFit: "contain" }} />
             <img src={amexSvg} alt="Amex" style={{ height: "22px", objectFit: "contain" }} />
             <img src={discoverSvg} alt="Discover" style={{ height: "22px", objectFit: "contain" }} />
           </div>
