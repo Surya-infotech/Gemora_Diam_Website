@@ -6,13 +6,12 @@ const validate = (f) => ({
   name: f.name.trim().length < 2 ? "Please enter your full name" : "",
   email: !/^\S+@\S+\.\S+$/.test(f.email) ? "Enter a valid email address" : "",
   phone: f.phone && !/^[+\d\s()-]{7,20}$/.test(f.phone) ? "Enter a valid phone number" : "",
-  reason: !f.reason ? "Please select a reason for inquiry" : "",
   message: f.message.trim().length < 10 ? "Message must be at least 10 characters" : "",
 });
 
 export default function ContactPage() {
   const { showToast, generalSettings, submitContactUs } = useStore();
-  const [f, setF] = useState({ name: "", email: "", phone: "", reason: "", message: "" });
+  const [f, setF] = useState({ name: "", email: "", phone: "", message: "" });
   const [touched, setTouched] = useState({});
   const [bookModalOpen, setBookModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,13 +25,13 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setTouched({ name: true, email: true, phone: true, reason: true, message: true });
+    setTouched({ name: true, email: true, phone: true, message: true });
     if (Object.values(errs).some(Boolean)) {
       showToast("Please correct highlighted fields before submitting", "error");
       return;
     }
     setIsSubmitting(true);
-    const fullMessage = `${f.reason ? `[${f.reason}] ` : ""}${f.phone ? `Phone: ${f.phone} - ` : ""}${f.message}`;
+    const fullMessage = `${f.phone ? `Phone: ${f.phone} - ` : ""}${f.message}`;
     const res = await submitContactUs({
       name: f.name,
       email: f.email,
@@ -40,7 +39,7 @@ export default function ContactPage() {
     });
     setIsSubmitting(false);
     if (res.success) {
-      setF({ name: "", email: "", phone: "", reason: "", message: "" });
+      setF({ name: "", email: "", phone: "", message: "" });
       setTouched({});
     }
   };
@@ -131,35 +130,6 @@ export default function ContactPage() {
               />
               {touched.phone && errs.phone && (
                 <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "6px" }}>{errs.phone}</p>
-              )}
-            </div>
-
-            <div>
-              <select
-                value={f.reason}
-                onChange={(e) => onFieldChange("reason", e.target.value)}
-                onBlur={() => setTouched((p) => ({ ...p, reason: true }))}
-                style={{
-                  width: "100%",
-                  border: "none",
-                  borderBottom: touched.reason && errs.reason ? "1px solid #d9534f" : "1px solid var(--border)",
-                  backgroundColor: "transparent",
-                  padding: "12px 0",
-                  fontSize: "0.95rem",
-                  color: f.reason ? "var(--foreground)" : "var(--muted-foreground)",
-                  outline: "none",
-                  cursor: "pointer"
-                }}
-              >
-                <option value="">Reason for inquiry *</option>
-                <option value="Bespoke commission">Bespoke commission</option>
-                <option value="Engagement rings">Engagement rings</option>
-                <option value="Order support">Order support</option>
-                <option value="Repairs & care">Repairs & care</option>
-                <option value="Press">Press & Media</option>
-              </select>
-              {touched.reason && errs.reason && (
-                <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "6px" }}>{errs.reason}</p>
               )}
             </div>
           </div>
