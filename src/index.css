@@ -231,3 +231,31 @@ img {
     flex-shrink: 0;
   }
 }
+
+.product-main-stage {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 520px;
+  background-color: #f7f7f7;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.product-main-stage img,
+.product-main-stage video {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block;
+}
+

@@ -339,21 +339,7 @@ function ProductDetailContent({ product }) {
             )}
 
             {/* Main Stage */}
-            <div
-              style={{
-                position: "relative",
-                flex: 1,
-                minWidth: 0,
-                width: "100%",
-                height: "520px",
-                backgroundColor: "#f7f7f7",
-                borderRadius: "4px",
-                overflow: "hidden",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
-                display: "grid",
-                placeItems: "center"
-              }}
-            >
+            <div className="product-main-stage">
               {currentMedia.type === "video" ? (
                 <video
                   src={currentMedia.url}
@@ -361,19 +347,15 @@ function ProductDetailContent({ product }) {
                   autoPlay
                   muted
                   playsInline
-                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
                 />
               ) : (
                 <img
                   src={currentMedia.url}
                   alt={product.name}
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
                     transition: "transform 0.4s ease"
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
                   onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 />
               )}
@@ -396,7 +378,8 @@ function ProductDetailContent({ product }) {
                   color: isLiked ? "var(--primary)" : "#333",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                   cursor: "pointer",
-                  transition: "all 0.2s"
+                  transition: "all 0.2s",
+                  zIndex: 2
                 }}
               >
                 <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
