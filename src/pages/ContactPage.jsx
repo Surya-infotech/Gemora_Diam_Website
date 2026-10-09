@@ -261,19 +261,7 @@ export default function ContactPage() {
             </button>
           </div>
 
-          {/* Map Preview */}
-          {generalSettings?.address && (
-            <div style={{ width: "100%", height: "240px", border: "1px solid var(--border)", overflow: "hidden" }}>
-              <iframe
-                title={`${generalSettings?.softwarename || "Store"} Location Map`}
-                style={{ width: "100%", height: "100%", border: "none", filter: "grayscale(85%) contrast(1.1)" }}
-                loading="lazy"
-                src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                  [generalSettings.address, generalSettings.cityname, generalSettings.statename, generalSettings.countryname].filter(Boolean).join(", ")
-                )}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
-              />
-            </div>
-          )}
+
 
           {/* Quick Communication Channels */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
