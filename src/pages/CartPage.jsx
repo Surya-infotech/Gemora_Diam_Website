@@ -4,40 +4,15 @@ import { Lock, Gift } from "lucide-react";
 import { useStore } from "../lib/store";
 import { CartLines } from "../components/CartLines";
 
-const CODES = {
-  GEMORA10: 0.1,
-  AURA10: 0.1,
-  ETERNITY15: 0.15
-};
-
 export default function CartPage() {
   const navigate = useNavigate();
   const { cart, subtotal, format, clearCart, showToast, user } = useStore();
-  const [code, setCode] = useState("");
-  const [applied, setApplied] = useState(null);
-  const [codeErr, setCodeErr] = useState("");
   const [gift, setGift] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const discount = applied ? subtotal * (CODES[applied] || 0) : 0;
-  const shipping = subtotal - discount >= 500 || subtotal === 0 ? 0 : 35;
+  const shipping = subtotal >= 500 || subtotal === 0 ? 0 : 35;
   const wrap = gift ? 15 : 0;
-  const total = subtotal - discount + shipping + wrap;
-
-  const applyPromo = () => {
-    const c = code.trim().toUpperCase();
-    if (!c) {
-      setCodeErr("Enter a promo code");
-      return;
-    }
-    if (!CODES[c]) {
-      setCodeErr("This code is not valid");
-      return;
-    }
-    setApplied(c);
-    setCodeErr("");
-    showToast(`Coupon applied: ${c} — ${CODES[c] * 100}% off`, "success");
-  };
+  const total = subtotal + shipping + wrap;
 
   if (!cart.length) {
     return (
@@ -107,13 +82,6 @@ export default function CartPage() {
               <span>{format(subtotal)}</span>
             </div>
 
-            {applied && (
-              <div style={{ display: "flex", justifyContent: "space-between", color: "var(--primary)" }}>
-                <span>Promo ({applied})</span>
-                <span>-{format(discount)}</span>
-              </div>
-            )}
-
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--muted-foreground)" }}>Insured delivery</span>
               <span>{shipping ? format(shipping) : "Complimentary"}</span>
@@ -125,42 +93,6 @@ export default function CartPage() {
                 <span>{format(wrap)}</span>
               </div>
             )}
-          </div>
-
-          {/* Promo Code Input */}
-          <div style={{ marginTop: "24px" }}>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <input
-                value={code}
-                onChange={(e) => {
-                  setCode(e.target.value);
-                  setCodeErr("");
-                }}
-                placeholder="Promo code (try GEMORA10)"
-                style={{
-                  flex: 1,
-                  border: "1px solid var(--border)",
-                  backgroundColor: "transparent",
-                  padding: "10px 14px",
-                  fontSize: "0.85rem",
-                  outline: "none"
-                }}
-              />
-              <button
-                type="button"
-                onClick={applyPromo}
-                className="eyebrow"
-                style={{
-                  border: "1px solid var(--foreground)",
-                  backgroundColor: "transparent",
-                  padding: "10px 18px",
-                  cursor: "pointer"
-                }}
-              >
-                Apply
-              </button>
-            </div>
-            {codeErr && <p style={{ marginTop: "6px", fontSize: "0.75rem", color: "#d9534f" }}>{codeErr}</p>}
           </div>
 
           {/* Signature Gift Wrapping Toggle */}
