@@ -733,7 +733,7 @@ function BestSellerSection() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          addToCart(item.id, item.metals?.[0] || "", item.ringSizes?.[0] || "", "", item.price);
+                          addToCart(item.id, item.metals?.[0] || "", "", "", item.price);
                           notify("Added to Bag", `1x ${item.name} (${format(item.price)})`);
                         }}
                         aria-label="Add to Cart"

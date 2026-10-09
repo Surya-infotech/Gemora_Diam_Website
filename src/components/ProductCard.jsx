@@ -50,7 +50,6 @@ export function ProductCard({ product }) {
   const { addToCart, toggleWishlist, wishlist, format, getItemPrice } = useStore();
   const availableMetals = product.metals || [];
   const [metal, setMetal] = useState(availableMetals[0] || "");
-  const [ringSize, setRingSize] = useState(product.ringSizes?.[0] || "");
 
   const matchedPricing = useMemo(() => {
     if (product?.pricing?.priceType === "metal_with_stone_diamond_carat") {
@@ -190,7 +189,7 @@ export function ProductCard({ product }) {
           }}
         >
           <button
-            onClick={() => addToCart(product.id, metal, ringSize, carat, currentPrice)}
+            onClick={() => addToCart(product.id, metal, "", carat, currentPrice)}
             className="eyebrow"
             style={{
               flex: 1,
@@ -448,30 +447,6 @@ export function ProductCard({ product }) {
                 </div>
               )}
 
-              {/* Ring Sizes from Backend */}
-              {product.ringSizes && product.ringSizes.length > 0 && (
-                <div style={{ marginBottom: "16px" }}>
-                  <p className="eyebrow" style={{ marginBottom: "6px" }}>Ring Size</p>
-                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                    {product.ringSizes.map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => setRingSize(s)}
-                        style={{
-                          fontSize: "0.78rem",
-                          border: ringSize === s ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                          backgroundColor: ringSize === s ? "var(--primary-soft)" : "transparent",
-                          padding: "4px 10px",
-                          borderRadius: "2px",
-                          cursor: "pointer"
-                        }}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
 
               {/* Other Backend Attributes */}
               <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" }}>
@@ -531,7 +506,7 @@ export function ProductCard({ product }) {
               <div style={{ marginTop: "auto", paddingTop: "20px" }}>
                 <button
                   onClick={() => {
-                    addToCart(product.id, metal, ringSize, carat, currentPrice);
+                    addToCart(product.id, metal, "", carat, currentPrice);
                     setQuick(false);
                   }}
                   className="eyebrow"
