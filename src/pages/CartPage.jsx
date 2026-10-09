@@ -180,7 +180,7 @@ export default function CartPage() {
 
           {/* Payment Badges */}
           <div style={{ marginTop: "20px", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px" }}>
-            {["Stripe", "Apple Pay", "PayPal", "Visa", "Mastercard"].map((p) => (
+            {["PayPal", "Visa", "Mastercard"].map((p) => (
               <span
                 key={p}
                 style={{
