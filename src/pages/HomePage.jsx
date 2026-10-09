@@ -59,9 +59,6 @@ export default function HomePage() {
       {/* 8. Just For You Curated 6-Tile Gallery */}
       <JustForYouGallery />
 
-      {/* 9. Newsletter 15% Off Banner */}
-      <NewsletterBanner />
-
       {/* Floating Back to Top Button */}
       {showScrollTop && (
         <button
@@ -1398,83 +1395,6 @@ function JustForYouGallery() {
             </div>
           </div>
         ))}
-      </div>
-    </section>
-  );
-}
-
-/* =========================================================================
-   9. NEWSLETTER 15% OFF BANNER
-   ========================================================================= */
-function NewsletterBanner() {
-  const [email, setEmail] = useState("");
-  const { subscribeNewsletter, notify } = useStore();
-
-  const handleSubscribe = async (e) => {
-    e.preventDefault();
-    if (!email || !email.includes("@")) {
-      notify("Invalid Email", "Please enter a valid email address");
-      return;
-    }
-    const res = await subscribeNewsletter(email);
-    if (res.success) {
-      setEmail("");
-    }
-  };
-
-  return (
-    <section style={{ padding: "80px 20px", textAlign: "center", backgroundColor: "#ffffff" }}>
-      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-        <h2
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(2rem, 4.5vw, 3rem)",
-            fontWeight: 400,
-            marginBottom: "12px"
-          }}
-        >
-          Get 15% Off Your First Order
-        </h2>
-        <p style={{ fontSize: "0.95rem", color: "#666666", lineHeight: 1.6, marginBottom: "32px" }}>
-          Join us today and enjoy 15% off your first order. Discover timeless elegance at irresistible prices!
-        </p>
-
-        <form onSubmit={handleSubscribe} style={{ display: "flex", gap: "0", maxWidth: "480px", margin: "0 auto", border: "1px solid #dcdcdc" }}>
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email address"
-            style={{
-              flex: 1,
-              padding: "16px 20px",
-              border: "none",
-              outline: "none",
-              fontSize: "0.88rem",
-              backgroundColor: "#ffffff"
-            }}
-          />
-          <button
-            type="submit"
-            style={{
-              padding: "16px 24px",
-              backgroundColor: "#181818",
-              color: "#ffffff",
-              fontSize: "0.78rem",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              fontWeight: 600,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              cursor: "pointer",
-              transition: "background 0.2s"
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#181818")}
-          >
-            SIGN UP NOW <ArrowRight size={14} />
-          </button>
-        </form>
       </div>
     </section>
   );
