@@ -37,8 +37,13 @@ function mapBackendItem(item) {
   const stones = (item.stones || []).map((s) => (typeof s === "object" ? s.stonename : s)).filter(Boolean);
   const styles = (item.styles || []).map((s) => (typeof s === "object" ? s.stylename : s)).filter(Boolean);
 
-  const gallery = (item.galleryimages || []).map((g) => g.imageUrl).filter(Boolean);
+  const gallery = (item.galleryimages || []).map((g) => (typeof g === "object" ? g?.imageUrl : g)).filter(Boolean);
   const mainImage = item.image || gallery[0] || "";
+
+  const galleryVideos = (item.galleryvideos || [])
+    .map((v) => (typeof v === "object" ? v?.videoUrl || v?.url : v))
+    .filter(Boolean);
+  const mainVideo = item.video || galleryVideos[0] || "";
 
   const mongoId = item._id ? String(item._id) : "";
   const numericId = item.itemid !== undefined && item.itemid !== null ? String(item.itemid) : "";
@@ -57,7 +62,8 @@ function mapBackendItem(item) {
     price: basePrice,
     image: mainImage,
     galleryImages: gallery,
-    video: item.video || item.galleryvideos?.[0]?.videoUrl || "",
+    video: mainVideo,
+    galleryVideos,
     description: item.description || "",
     metals,
     ringSizes,

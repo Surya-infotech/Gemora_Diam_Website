@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Heart, Eye, X } from "lucide-react";
+import { Heart, Eye, X, Play } from "lucide-react";
 import { useStore } from "../lib/store";
 
 const metalSwatch = {
@@ -84,13 +84,31 @@ export function ProductCard({ product }) {
 
   const allMedia = useMemo(() => {
     const list = [];
-    if (product?.image) list.push({ type: "image", url: product.image });
-    if (Array.isArray(product?.galleryImages)) {
-      product.galleryImages.forEach((url) => {
-        if (url && url !== product.image) list.push({ type: "image", url });
+    const seenUrls = new Set();
+    if (product?.image) {
+      list.push({ type: "image", url: product.image });
+      seenUrls.add(product.image);
+    }
+    if (product?.video && !seenUrls.has(product.video)) {
+      list.push({ type: "video", url: product.video });
+      seenUrls.add(product.video);
+    }
+    if (Array.isArray(product?.galleryVideos)) {
+      product.galleryVideos.forEach((vUrl) => {
+        if (vUrl && !seenUrls.has(vUrl)) {
+          list.push({ type: "video", url: vUrl });
+          seenUrls.add(vUrl);
+        }
       });
     }
-    if (product?.video) list.push({ type: "video", url: product.video });
+    if (Array.isArray(product?.galleryImages)) {
+      product.galleryImages.forEach((url) => {
+        if (url && !seenUrls.has(url)) {
+          list.push({ type: "image", url });
+          seenUrls.add(url);
+        }
+      });
+    }
     return list;
   }, [product]);
 
@@ -283,14 +301,17 @@ export function ProductCard({ product }) {
               <div style={{ width: "100%", minHeight: "340px", maxHeight: "380px", display: "grid", placeItems: "center", backgroundColor: "#f7f7f7", borderRadius: "2px", overflow: "hidden" }}>
                 {allMedia[activeMediaIndex]?.type === "video" ? (
                   <video
+                    key={allMedia[activeMediaIndex].url}
                     src={allMedia[activeMediaIndex].url}
                     controls
                     autoPlay
                     muted
+                    playsInline
                     style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
                   />
                 ) : (
                   <img
+                    key={allMedia[activeMediaIndex]?.url || product.image}
                     src={allMedia[activeMediaIndex]?.url || product.image}
                     alt={product.name}
                     style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }}
@@ -317,8 +338,56 @@ export function ProductCard({ product }) {
                       }}
                     >
                       {m.type === "video" ? (
-                        <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", fontSize: "0.65rem", fontWeight: 700, backgroundColor: "#222", color: "#fff" }}>
-                          PLAY
+                        <div
+                          style={{
+                            position: "relative",
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "#111813",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "hidden"
+                          }}
+                        >
+                          <video
+                            src={m.url}
+                            muted
+                            playsInline
+                            preload="metadata"
+                            style={{
+                              position: "absolute",
+                              inset: 0,
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              pointerEvents: "none"
+                            }}
+                          />
+                          <div
+                            style={{
+                              position: "absolute",
+                              inset: 0,
+                              backgroundColor: "rgba(0, 0, 0, 0.35)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center"
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "20px",
+                                height: "20px",
+                                borderRadius: "50%",
+                                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                              }}
+                            >
+                              <Play size={10} fill="#1e2419" color="#1e2419" style={{ marginLeft: "1px" }} />
+                            </div>
+                          </div>
                         </div>
                       ) : (
                         <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />

@@ -10,7 +10,8 @@ import {
   Sparkles,
   Share2,
   ChevronRight,
-  ChevronDown
+  ChevronDown,
+  Play
 } from "lucide-react";
 import { useStore } from "../lib/store";
 
@@ -204,13 +205,38 @@ function ProductDetailContent({ product }) {
   const allMedia = useMemo(() => {
     if (!product) return [];
     const list = [];
-    if (product.image) list.push({ type: "image", url: product.image });
-    if (Array.isArray(product.galleryImages)) {
-      product.galleryImages.forEach((url) => {
-        if (url && url !== product.image) list.push({ type: "image", url });
+    const seenUrls = new Set();
+
+    // 1. First item image
+    if (product.image) {
+      list.push({ type: "image", url: product.image });
+      seenUrls.add(product.image);
+    }
+
+    // 2. Item video(s)
+    if (product.video && !seenUrls.has(product.video)) {
+      list.push({ type: "video", url: product.video });
+      seenUrls.add(product.video);
+    }
+    if (Array.isArray(product.galleryVideos)) {
+      product.galleryVideos.forEach((vUrl) => {
+        if (vUrl && !seenUrls.has(vUrl)) {
+          list.push({ type: "video", url: vUrl });
+          seenUrls.add(vUrl);
+        }
       });
     }
-    if (product.video) list.push({ type: "video", url: product.video });
+
+    // 3. Item gallery images
+    if (Array.isArray(product.galleryImages)) {
+      product.galleryImages.forEach((url) => {
+        if (url && !seenUrls.has(url)) {
+          list.push({ type: "image", url });
+          seenUrls.add(url);
+        }
+      });
+    }
+
     return list;
   }, [product]);
 
@@ -327,8 +353,57 @@ function ProductDetailContent({ product }) {
                     }}
                   >
                     {m.type === "video" ? (
-                      <div style={{ width: "100%", height: "100%", backgroundColor: "#1e2419", color: "#fff", display: "grid", placeItems: "center", fontSize: "0.72rem", fontWeight: 700 }}>
-                        VIDEO
+                      <div
+                        style={{
+                          position: "relative",
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "#111813",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          overflow: "hidden"
+                        }}
+                      >
+                        <video
+                          src={m.url}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            pointerEvents: "none"
+                          }}
+                        />
+                        <div
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            backgroundColor: "rgba(0, 0, 0, 0.35)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "28px",
+                              height: "28px",
+                              borderRadius: "50%",
+                              backgroundColor: "rgba(255, 255, 255, 0.95)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              boxShadow: "0 2px 6px rgba(0,0,0,0.3)"
+                            }}
+                          >
+                            <Play size={13} fill="#1e2419" color="#1e2419" style={{ marginLeft: "2px" }} />
+                          </div>
+                        </div>
                       </div>
                     ) : (
                       <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -342,6 +417,7 @@ function ProductDetailContent({ product }) {
             <div className="product-main-stage">
               {currentMedia.type === "video" ? (
                 <video
+                  key={currentMedia.url}
                   src={currentMedia.url}
                   controls
                   autoPlay
@@ -350,6 +426,7 @@ function ProductDetailContent({ product }) {
                 />
               ) : (
                 <img
+                  key={currentMedia.url}
                   src={currentMedia.url}
                   alt={product.name}
                   style={{

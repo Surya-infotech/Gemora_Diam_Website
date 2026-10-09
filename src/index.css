@@ -248,8 +248,7 @@ img {
   padding: 0;
 }
 
-.product-main-stage img,
-.product-main-stage video {
+.product-main-stage img {
   width: 100% !important;
   height: 100% !important;
   max-width: 100% !important;
@@ -257,5 +256,16 @@ img {
   object-fit: cover !important;
   object-position: center !important;
   display: block;
+}
+
+.product-main-stage video {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  display: block;
+  background-color: #0b0f0c;
 }
 
