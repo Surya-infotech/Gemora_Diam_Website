@@ -11,9 +11,6 @@ import FaqPage from "./pages/FaqPage";
 import CartPage from "./pages/CartPage";
 import OrdersPage from "./pages/OrdersPage";
 import ProfilePage from "./pages/ProfilePage";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
-import TermsPage from "./pages/TermsPage";
-import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import PolicyPage from "./pages/PolicyPage";
 
