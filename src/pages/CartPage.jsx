@@ -12,7 +12,8 @@ import {
   AlertCircle,
   ArrowRight,
   Truck,
-  ShieldCheck
+  ShieldCheck,
+  ShoppingBag
 } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
@@ -20,12 +21,26 @@ import { CartLines } from "../components/CartLines";
 
 export default function CartPage() {
   const navigate = useNavigate();
-  const { cart, subtotal, format, clearCart, showToast, user, getAddresses, addAddress } = useStore();
+  const {
+    cart,
+    subtotal,
+    format,
+    clearCart,
+    showToast,
+    user,
+    getAddresses,
+    addAddress,
+    createOrder,
+    getProduct,
+    storeCurrency
+  } = useStore();
 
   const [addresses, setAddresses] = useState([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [addressError, setAddressError] = useState("");
+  const [submittingOrder, setSubmittingOrder] = useState(false);
+  const [confirmedOrder, setConfirmedOrder] = useState(null);
 
   // Modal State for adding new address
   const [modalOpen, setModalOpen] = useState(false);
@@ -40,8 +55,7 @@ export default function CartPage() {
   const [submittingAddress, setSubmittingAddress] = useState(false);
   const [modalErrors, setModalErrors] = useState({});
 
-  const shipping = subtotal >= 500 || subtotal === 0 ? 0 : 35;
-  const total = subtotal + shipping;
+  const total = subtotal;
 
   // Countries from country-state-city
   const countries = useMemo(() => {
@@ -177,7 +191,7 @@ export default function CartPage() {
     }
   };
 
-  const handleProceedToCheckout = () => {
+  const handleProceedToCheckout = async () => {
     if (!user) {
       showToast("Please sign in to your account to proceed to checkout.", "error");
       navigate("/profile");
@@ -199,13 +213,250 @@ export default function CartPage() {
       return;
     }
 
-    const chosen = addresses.find((a) => a.addressid === selectedAddressId);
-    showToast(
-      `Order placed successfully! Delivering to ${chosen?.title || "your selected address"}.`,
-      "success"
-    );
-    clearCart();
+    const chosenAddress = addresses.find((a) => a.addressid === selectedAddressId);
+    if (!chosenAddress) {
+      setAddressError("Selected delivery address could not be found. Please select again.");
+      return;
+    }
+
+    // Format all cart items with full details matching model
+    const orderItems = cart.map((item) => {
+      const p = getProduct(item.productId);
+      const numericItemId = p?.rawId !== undefined && p?.rawId !== null
+        ? Number(p.rawId)
+        : (p?.itemid !== undefined && !isNaN(p?.itemid)
+          ? Number(p.itemid)
+          : (!isNaN(item.productId) ? Number(item.productId) : 1));
+      return {
+        itemid: numericItemId,
+        productId: item.productId,
+        itemname: p?.name || "Fine Jewelry Piece",
+        image: p?.image || "",
+        metalname: item.metal || "",
+        stonename: item.stone || "",
+        diamondsize: item.carat || "",
+        shapename: item.shapename || item.shape || "",
+        clarityname: item.clarityname || item.clarity || "",
+        diamondcolor: item.diamondcolor || "",
+        bandcolor: item.bandcolor || "",
+        specialinstruction: item.specialinstruction || "",
+        price: Number(item.price ?? p?.price ?? 0),
+        qty: Number(item.qty || 1),
+        totalprice: Number(item.price ?? p?.price ?? 0) * Number(item.qty || 1)
+      };
+    });
+
+    setSubmittingOrder(true);
+    const res = await createOrder({
+      items: orderItems,
+      shippingaddress: chosenAddress,
+      subtotal,
+      total,
+      currencydetails: storeCurrency,
+      currency: storeCurrency?.currency || "INR",
+      paymentmethod: "Credit/Debit Card"
+    });
+    setSubmittingOrder(false);
+
+    if (res.success && res.order) {
+      setConfirmedOrder(res.order);
+      clearCart();
+      showToast(
+        `Order #${res.order.ordernumber || res.order.orderNumber} placed successfully! Thank you for your purchase.`,
+        "success"
+      );
+    }
   };
+
+  // If order was successfully placed, display the luxurious confirmation view
+  if (confirmedOrder) {
+    const orderShippingAddr = confirmedOrder.shippingaddress || confirmedOrder.shippingAddress;
+    const orderNum = confirmedOrder.ordernumber || confirmedOrder.orderNumber;
+    const orderItemsList = confirmedOrder.items || [];
+    const orderItemCount = confirmedOrder.totalitems || confirmedOrder.totalItems || orderItemsList.length;
+
+    return (
+      <div className="container-luxury" style={{ maxWidth: "780px", padding: "60px 20px 100px", margin: "0 auto" }}>
+        <div
+          style={{
+            textAlign: "center",
+            padding: "48px 32px",
+            backgroundColor: "var(--card)",
+            border: "1px solid var(--border)",
+            borderRadius: "4px",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.04)"
+          }}
+        >
+          <div
+            style={{
+              width: "72px",
+              height: "72px",
+              borderRadius: "50%",
+              backgroundColor: "var(--primary-soft)",
+              color: "var(--primary)",
+              display: "grid",
+              placeItems: "center",
+              margin: "0 auto 20px"
+            }}
+          >
+            <CheckCircle2 size={40} />
+          </div>
+
+          <p className="eyebrow" style={{ color: "var(--primary)", marginBottom: "8px" }}>
+            Payment Confirmed · Order Stored in Database
+          </p>
+          <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.2rem, 4vw, 3rem)", margin: 0 }}>
+            Thank You for Your Order
+          </h1>
+
+          <p
+            style={{
+              marginTop: "14px",
+              fontSize: "0.95rem",
+              color: "var(--muted-foreground)",
+              maxWidth: "520px",
+              margin: "14px auto 0"
+            }}
+          >
+            Your order has been recorded in the database and registered with our fine atelier for shipment.
+          </p>
+
+          <div
+            style={{
+              marginTop: "26px",
+              display: "inline-block",
+              backgroundColor: "var(--secondary)",
+              padding: "12px 28px",
+              borderRadius: "3px",
+              border: "1px solid var(--border)"
+            }}
+          >
+            <span style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              Order Reference Number
+            </span>
+            <div style={{ fontFamily: "var(--font-serif)", fontSize: "1.5rem", fontWeight: 700, color: "var(--foreground)", marginTop: "2px" }}>
+              {orderNum}
+            </div>
+          </div>
+
+          {/* Delivery & Order Details Summary */}
+          <div
+            style={{
+              marginTop: "36px",
+              textAlign: "left",
+              backgroundColor: "var(--background)",
+              border: "1px solid var(--border)",
+              borderRadius: "3px",
+              padding: "24px"
+            }}
+          >
+            <h3
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "1.25rem",
+                marginBottom: "16px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}
+            >
+              <Truck size={18} style={{ color: "var(--primary)" }} /> Shipping & Delivery Details
+            </h3>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: "20px",
+                fontSize: "0.88rem"
+              }}
+            >
+              <div>
+                <span style={{ color: "var(--muted-foreground)", fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Delivering To
+                </span>
+                <p style={{ fontWeight: 600, marginTop: "4px" }}>
+                  {orderShippingAddr?.title} ({confirmedOrder.customername || confirmedOrder.customerName || user?.fullname || "Customer"})
+                </p>
+                <p style={{ color: "var(--muted-foreground)", marginTop: "2px", lineHeight: 1.5 }}>
+                  {orderShippingAddr?.address}
+                  <br />
+                  {orderShippingAddr?.cityname}, {orderShippingAddr?.statename} - {orderShippingAddr?.pincode}
+                  <br />
+                  {orderShippingAddr?.countryname}
+                </p>
+              </div>
+
+              <div>
+                <span style={{ color: "var(--muted-foreground)", fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Summary & Status
+                </span>
+                <p style={{ fontWeight: 600, marginTop: "4px" }}>
+                  {orderItemCount} {orderItemCount === 1 ? "Item" : "Items"} · {format(confirmedOrder.total)}
+                </p>
+                <p style={{ color: "var(--muted-foreground)", marginTop: "2px" }}>
+                  Order Status: <strong style={{ color: "var(--primary)" }}>{confirmedOrder.orderstatus || confirmedOrder.orderStatus}</strong>
+                </p>
+                <p style={{ color: "var(--muted-foreground)", marginTop: "2px" }}>
+                  Payment: <strong style={{ color: "var(--primary)" }}>{confirmedOrder.paymentstatus || confirmedOrder.paymentStatus}</strong> via {confirmedOrder.paymentmethod || confirmedOrder.paymentMethod}
+                </p>
+              </div>
+            </div>
+
+            {/* Item Thumbnails Preview */}
+            {orderItemsList.length > 0 && (
+              <div style={{ marginTop: "24px", borderTop: "1px solid var(--border)", paddingTop: "18px" }}>
+                <h4 style={{ fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--muted-foreground)", marginBottom: "12px" }}>
+                  Ordered Items ({orderItemsList.length})
+                </h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {orderItemsList.map((item, idx) => (
+                    <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", fontSize: "0.88rem" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            alt={item.itemname || item.name}
+                            style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "2px", border: "1px solid var(--border)" }}
+                          />
+                        )}
+                        <div>
+                          <div style={{ fontWeight: 600 }}>{item.itemname || item.name}</div>
+                          <div style={{ fontSize: "0.78rem", color: "var(--muted-foreground)" }}>
+                            {[item.metalname || item.metal, item.stonename || item.stone, item.diamondsize || item.carat, item.size ? `Size ${item.size}` : null].filter(Boolean).join(" · ")}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                        <div style={{ fontWeight: 600 }}>{format(item.totalprice || item.totalPrice || item.price * item.qty)}</div>
+                        <div style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>Qty: {item.qty}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ marginTop: "32px", display: "flex", gap: "14px", justifyContent: "center" }}>
+            <Link
+              to="/shop"
+              className="eyebrow"
+              style={{
+                display: "inline-block",
+                backgroundColor: "var(--primary)",
+                color: "#ffffff",
+                padding: "14px 32px",
+                borderRadius: "2px"
+              }}
+            >
+              Continue Shopping
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!cart.length) {
     return (
@@ -575,11 +826,6 @@ export default function CartPage() {
               <span style={{ color: "var(--muted-foreground)" }}>Subtotal</span>
               <span>{format(subtotal)}</span>
             </div>
-
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>Insured delivery</span>
-              <span>{shipping ? format(shipping) : "Complimentary"}</span>
-            </div>
           </div>
 
           {/* Total */}
@@ -663,6 +909,7 @@ export default function CartPage() {
           {/* Checkout Button */}
           <button
             onClick={handleProceedToCheckout}
+            disabled={submittingOrder}
             className="eyebrow"
             style={{
               width: "100%",
@@ -675,13 +922,18 @@ export default function CartPage() {
               color: "var(--primary-foreground)",
               padding: "16px",
               border: "none",
-              cursor: "pointer",
+              cursor: submittingOrder ? "not-allowed" : "pointer",
+              opacity: submittingOrder ? 0.75 : 1,
               transition: "opacity 0.2s ease"
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            onMouseEnter={(e) => {
+              if (!submittingOrder) e.currentTarget.style.opacity = "0.9";
+            }}
+            onMouseLeave={(e) => {
+              if (!submittingOrder) e.currentTarget.style.opacity = "1";
+            }}
           >
-            <Lock size={15} /> Proceed to Secure Checkout
+            <Lock size={15} /> {submittingOrder ? "Processing Order..." : "Proceed to Secure Checkout"}
           </button>
 
           {/* Payment Badges */}

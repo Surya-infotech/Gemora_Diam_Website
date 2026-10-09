@@ -601,6 +601,45 @@ export function StoreProvider({ children }) {
     [backendUrl, customerTokenKey, notify]
   );
 
+  const createOrder = useCallback(
+    async ({ items, shippingaddress, shippingAddress, subtotal, shipping, total, currencydetails, currency, paymentmethod, paymentMethod }) => {
+      try {
+        const token = localStorage.getItem(customerTokenKey);
+        const targetId = user?.customerid || user?._id || localStorage.getItem(customerIdKey);
+        const res = await fetch(`${backendUrl}/Customer/CreateOrder`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user": "true",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            customerid: targetId,
+            items,
+            shippingaddress: shippingaddress || shippingAddress,
+            subtotal,
+            shipping,
+            total,
+            currencydetails,
+            currency,
+            paymentmethod: paymentmethod || paymentMethod
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to place order");
+        }
+
+        return { success: true, order: data.order };
+      } catch (err) {
+        notify("Order Error", err.message || "Could not place order");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, customerIdKey, customerTokenKey, notify, user]
+  );
+
 
   // Fetch all Admin Panel data
   useEffect(() => {
@@ -734,18 +773,50 @@ export function StoreProvider({ children }) {
     [storeCurrency]
   );
 
-  const addToCart = (productId, metal = "", size = "", carat = "", customPrice = null, stone = "") => {
+  const addToCart = (
+    productId,
+    metal = "",
+    size = "",
+    carat = "",
+    customPrice = null,
+    stone = "",
+    extra = {}
+  ) => {
     const p = getProduct(productId);
     const resolvedPrice =
       customPrice !== null && customPrice !== undefined
         ? Number(customPrice)
         : getItemPrice(p, metal, stone, carat);
-    const key = `${productId}|${metal || ""}|${stone || ""}|${size || ""}|${carat || ""}`;
+    const shape = extra.shape || extra.shapename || "";
+    const clarity = extra.clarity || extra.clarityname || "";
+    const diamondcolor = extra.diamondcolor || extra.diamondColor || "";
+    const bandcolor = extra.bandcolor || extra.bandColor || "";
+
+    const key = `${productId}|${metal || ""}|${stone || ""}|${size || ""}|${carat || ""}|${shape}|${clarity}|${diamondcolor}|${bandcolor}`;
     setCart((c) => {
       const ex = c.find((i) => i.key === key);
       return ex
         ? c.map((i) => (i.key === key ? { ...i, qty: i.qty + 1 } : i))
-        : [...c, { key, productId, metal, stone, size, carat, price: resolvedPrice, qty: 1 }];
+        : [
+            ...c,
+            {
+              key,
+              productId,
+              metal,
+              stone,
+              size,
+              carat,
+              shape,
+              shapename: shape,
+              clarity,
+              clarityname: clarity,
+              diamondcolor,
+              bandcolor,
+              specialinstruction: extra.specialinstruction || extra.specialInstruction || "",
+              price: resolvedPrice,
+              qty: 1
+            }
+          ];
     });
     notify("Added to Bag", `${p?.name || "Jewelry Piece"}${metal ? " • " + metal : ""}`);
     setCartOpen(true);
@@ -773,6 +844,12 @@ export function StoreProvider({ children }) {
   const updateQty = (key, qty) => {
     setCart((c) =>
       qty < 1 ? c.filter((i) => i.key !== key) : c.map((i) => (i.key === key ? { ...i, qty } : i))
+    );
+  };
+
+  const updateItemInstruction = (key, specialinstruction) => {
+    setCart((c) =>
+      c.map((i) => (i.key === key ? { ...i, specialinstruction } : i))
     );
   };
 
@@ -847,6 +924,7 @@ export function StoreProvider({ children }) {
         setCurrency: changeCurrency,
         addToCart,
         updateQty,
+        updateItemInstruction,
         removeItem,
         clearCart,
         toggleWishlist,
@@ -858,6 +936,7 @@ export function StoreProvider({ children }) {
         updateAddress,
         deleteAddress,
         setDefaultAddress,
+        createOrder,
         login,
         signup,
         logout,

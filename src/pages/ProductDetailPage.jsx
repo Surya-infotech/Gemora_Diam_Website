@@ -245,8 +245,20 @@ function ProductDetailContent({ product }) {
 
   const handleAddToCart = () => {
     if (!product) return;
+    const finalShape = selectedShape || product?.shapes?.[0] || "";
+    const finalClarity = selectedClarity || product?.clarities?.[0] || "";
+    const finalDiamondColor = selectedDiamondColor || product?.diamondColors?.[0] || "";
+    const finalBandColor = selectedBandColor || product?.bandColors?.[0] || "";
+
     for (let i = 0; i < qty; i++) {
-      addToCart(product.id, metal, "", carat, currentPrice, activeStone);
+      addToCart(product.id, metal, "", carat, currentPrice, activeStone, {
+        shape: finalShape,
+        shapename: finalShape,
+        clarity: finalClarity,
+        clarityname: finalClarity,
+        diamondcolor: finalDiamondColor,
+        bandcolor: finalBandColor
+      });
     }
     notify("Added to Bag", `${qty}x ${product.name} (${format(currentPrice * qty)})`);
   };
