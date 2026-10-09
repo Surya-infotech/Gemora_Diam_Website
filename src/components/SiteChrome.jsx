@@ -1202,9 +1202,7 @@ export function Footer() {
           <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
             {[
               ["Our Story", "/about"],
-              ["Visit Our Store", "/contact"],
-              ["Contact Us", "/contact"],
-              ["Account", "/profile"]
+              ["Contact Us", "/contact"]
             ].map(([label, to]) => (
               <li key={label}>
                 <Link to={to} style={{ fontSize: "0.85rem", color: "#666", transition: "color 0.2s" }} onMouseEnter={(e) => (e.target.style.color = "var(--primary)")} onMouseLeave={(e) => (e.target.style.color = "#666")}>
