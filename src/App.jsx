@@ -14,6 +14,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsPage from "./pages/TermsPage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import PolicyPage from "./pages/PolicyPage";
 
 function ScrollToTop() {
   const { pathname, search } = useLocation();
@@ -80,10 +81,8 @@ export default function App() {
               <Route path="/cart" element={<CartPage />} />
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              <Route path="/returns" element={<ReturnPolicyPage />} />
-              <Route path="/return-policy" element={<ReturnPolicyPage />} />
+              <Route path="/policy/:slug" element={<PolicyPage />} />
+              <Route path="/:slug" element={<PolicyPage NotFoundComponent={NotFoundPage} />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>

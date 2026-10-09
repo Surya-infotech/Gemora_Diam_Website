@@ -18,6 +18,7 @@ import {
   LogOut
 } from "lucide-react";
 import { useStore } from "../lib/store";
+import { slugifyPolicy } from "../pages/PolicyPage";
 import { CartLines } from "./CartLines";
 
 import visaSvg from "../assets/vemus/payment_visa.svg";
@@ -894,7 +895,11 @@ function CartDrawer() {
 export function Footer() {
   const [email, setEmail] = useState("");
   const [subscribing, setSubscribing] = useState(false);
-  const { notify, generalSettings, socialMedia, categories, subscribeNewsletter } = useStore();
+  const { notify, generalSettings, socialMedia, categories, subscribeNewsletter, policies } = useStore();
+
+  const policyItems = (policies || [])
+    .filter((p) => p && p.policyname && p.status !== false)
+    .map((p) => [p.policyname, `/${slugifyPolicy(p.policyname)}`]);
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -1013,13 +1018,13 @@ export function Footer() {
         </div>
       </div>
 
-      {/* 3. Main Footer 4 Columns */}
+      {/* 3. Main Footer 5 Columns */}
       <div
         className="container-luxury"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "48px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          gap: "36px",
           paddingTop: "70px",
           paddingBottom: "60px"
         }}
@@ -1160,11 +1165,10 @@ export function Footer() {
           </h4>
           <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
             {[
-              ["Shipping", "/terms"],
-              ["Returns", "/returns"],
-              ["Privacy Policy", "/privacy-policy"],
-              ["My Wishlist", "/profile?tab=wishlist"],
-              ["FAQ's", "/faq"]
+              ["FAQ's", "/faq"],
+              ["Track Order", "/orders"],
+              ["Customer Support", "/contact"],
+              ["My Wishlist", "/profile?tab=wishlist"]
             ].map(([label, to]) => (
               <li key={label}>
                 <Link to={to} style={{ fontSize: "0.85rem", color: "#666", transition: "color 0.2s" }} onMouseEnter={(e) => (e.target.style.color = "var(--primary)")} onMouseLeave={(e) => (e.target.style.color = "#666")}>
@@ -1175,7 +1179,25 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Col 4: About Us */}
+        {/* Col 4: Policies */}
+        {policyItems.length > 0 && (
+          <div>
+            <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem", letterSpacing: "0.08em", marginBottom: "20px" }}>
+              POLICIES
+            </h4>
+            <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
+              {policyItems.map(([label, to]) => (
+                <li key={label}>
+                  <Link to={to} style={{ fontSize: "0.85rem", color: "#666", transition: "color 0.2s" }} onMouseEnter={(e) => (e.target.style.color = "var(--primary)")} onMouseLeave={(e) => (e.target.style.color = "#666")}>
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Col 5: About Us */}
         <div>
           <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem", letterSpacing: "0.08em", marginBottom: "20px" }}>
             ABOUT US
