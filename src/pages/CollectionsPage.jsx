@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import { ProductCard } from "../components/ProductCard";
 import { useStore } from "../lib/store";
 
-export default function ShopPage() {
+export default function CollectionsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const category = searchParams.get("category") || null;
   const search = searchParams.get("search")?.toLowerCase().trim() || null;

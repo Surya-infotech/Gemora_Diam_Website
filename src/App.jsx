@@ -4,7 +4,7 @@ import { StoreProvider } from "./lib/store";
 import { Header, Footer } from "./components/SiteChrome";
 
 import HomePage from "./pages/HomePage";
-import ShopPage from "./pages/ShopPage";
+import CollectionsPage from "./pages/CollectionsPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import FaqPage from "./pages/FaqPage";
@@ -71,8 +71,8 @@ export default function App() {
           <main style={{ flex: 1 }}>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/collections" element={<ShopPage />} />
-              <Route path="/shop" element={<ShopPage />} />
+              <Route path="/collections" element={<CollectionsPage />} />
+              <Route path="/collection" element={<CollectionsPage />} />
               <Route path="/product/:id" element={<ProductDetailPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
