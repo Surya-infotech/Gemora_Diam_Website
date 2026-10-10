@@ -78,9 +78,11 @@ export default function ShopPage() {
         >
           {title}
         </h1>
-        <p style={{ marginTop: "12px", fontSize: "0.95rem", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
-          Discover ethical lab-grown diamond creations, handcrafted to order in 14K, 18K solid gold, and platinum.
-        </p>
+        {currentCategoryObj && typeof currentCategoryObj === "object" && currentCategoryObj.description?.trim() ? (
+          <p style={{ marginTop: "12px", fontSize: "0.95rem", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
+            {currentCategoryObj.description.trim()}
+          </p>
+        ) : null}
       </div>
 
       {/* Filter Tabs Bar */}

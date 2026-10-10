@@ -16,7 +16,7 @@ export default function CircularCategories() {
   const cards = categories.map((c, i) => ({
     img: c.image || c.categoryimage || (i % 3 === 0 ? promo1 : i % 3 === 1 ? promo2 : promo3),
     title: c.categoryname,
-    desc: c.description || `Handcrafted ${c.categoryname.toLowerCase()} sculpted with certified conflict-free diamonds and gold.`,
+    desc: (c.description && c.description.trim()),
     link: `/shop?category=${encodeURIComponent(c.categoryname)}`
   }));
 
