@@ -3,15 +3,15 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Heart,
   ShoppingBag,
-  ArrowLeft,
   ShieldCheck,
   Truck,
   RotateCcw,
-  Sparkles,
-  Share2,
-  ChevronRight,
   ChevronDown,
-  Play
+  ChevronRight,
+  Play,
+  Share2,
+  Sparkles,
+  ArrowLeft
 } from "lucide-react";
 import { useStore } from "../lib/store";
 

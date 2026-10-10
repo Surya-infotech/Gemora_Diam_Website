@@ -6,7 +6,7 @@ import { useStore } from "../lib/store";
 // ==========================================
 // Safe string extractor (handles strings, objects with label/value/name, arrays, numbers)
 // ==========================================
-export function toSafeString(val) {
+function toSafeString(val) {
   if (val == null) return "";
   if (typeof val === "string") return val;
   if (typeof val === "number" || typeof val === "boolean") return String(val);
@@ -34,7 +34,7 @@ export function toSafeString(val) {
 // ==========================================
 // 1. Precise Diamond Shape Outline Icons (SVG)
 // ==========================================
-export function DiamondShapeIcon({ shape, size = 18 }) {
+function DiamondShapeIcon({ shape, size = 18 }) {
   const norm = toSafeString(shape).toLowerCase();
 
   if (norm.includes("emerald")) {
@@ -157,7 +157,7 @@ export function DiamondShapeIcon({ shape, size = 18 }) {
 // ==========================================
 // 2. Ring Style Silhouette Icons (SVG)
 // ==========================================
-export function RingStyleIcon({ styleName, size = 18 }) {
+function RingStyleIcon({ styleName, size = 18 }) {
   const norm = toSafeString(styleName).toLowerCase();
 
   if (norm.includes("solitaire")) {
@@ -262,7 +262,7 @@ export function RingStyleIcon({ styleName, size = 18 }) {
 // ==========================================
 // 3. Helper to format URLs to start with /collection/
 // ==========================================
-export function toCollectionUrl(slug) {
+function toCollectionUrl(slug) {
   const raw = toSafeString(slug).trim();
   if (!raw) return "/collection";
   const clean = raw.toLowerCase().replace(/^\//, "");
@@ -286,7 +286,7 @@ export function toCollectionUrl(slug) {
 // ==========================================
 // 4. Helper to detect if menu has any real dropdown content
 // ==========================================
-export function hasMenuDropdownContent(menu) {
+function hasMenuDropdownContent(menu) {
   if (!menu) return false;
   const hasCol1 = Boolean(
     toSafeString(menu.column1?.title).trim() ||

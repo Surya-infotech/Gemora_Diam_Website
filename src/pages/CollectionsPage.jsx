@@ -182,7 +182,7 @@ export default function CollectionsPage({ slugOverride = null }) {
         const type = (rf.type || "").toLowerCase().trim();
         const vals = rf.values.map((v) => String(v).toLowerCase().trim());
 
-        let matches = false;
+        let matches;
         if (type.includes("clarity")) {
           // Exact match on clarity name (e.g. "vs1" must not match "vvs1")
           matches = (p.clarities || []).some((c) =>
