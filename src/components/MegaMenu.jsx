@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ChevronDown, ArrowRight } from "lucide-react";
 import { useStore } from "../lib/store";
@@ -318,6 +318,17 @@ export default function MegaMenu() {
   const location = useLocation();
   const [activeMenuId, setActiveMenuId] = useState(null);
   const timeoutRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setActiveMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const activeMenus = Array.isArray(menus) ? menus : [];
 
@@ -361,6 +372,7 @@ export default function MegaMenu() {
 
   return (
     <div
+      ref={containerRef}
       style={{ position: "relative", width: "100%" }}
       onMouseLeave={handleMouseLeave}
     >
@@ -389,27 +401,63 @@ export default function MegaMenu() {
               onMouseEnter={() => menuHasDropdown && handleMouseEnter(menu.menuid)}
               style={{ position: "relative" }}
             >
-              <Link
-                to={targetUrl}
-                onClick={closeMenu}
-                className={`nav-link-luxury ${isMenuOpen || isPageActive ? "active" : ""}`}
-                style={{
-                  fontSize: "0.82rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  color: isMenuOpen || isPageActive ? "var(--primary)" : "var(--foreground)",
-                  padding: "6px 2px"
-                }}
-              >
-                {menuTitle}
-                {menuHasDropdown && (
-                  <ChevronDown size={12} strokeWidth={1.8} style={{ opacity: 0.7 }} />
-                )}
-              </Link>
+              {menuHasDropdown ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+                    setActiveMenuId((prev) => (prev === menu.menuid ? null : menu.menuid));
+                  }}
+                  className={`nav-link-luxury ${isMenuOpen ? "active" : ""}`}
+                  style={{
+                    fontSize: "0.82rem",
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    color: isMenuOpen ? "var(--primary)" : "var(--foreground)",
+                    padding: "6px 2px",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "inherit"
+                  }}
+                >
+                  {menuTitle}
+                  <ChevronDown
+                    size={12}
+                    strokeWidth={1.8}
+                    style={{
+                      opacity: 0.7,
+                      transform: isMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform 0.2s ease"
+                    }}
+                  />
+                </button>
+              ) : (
+                <Link
+                  to={targetUrl}
+                  onClick={closeMenu}
+                  className={`nav-link-luxury ${isPageActive ? "active" : ""}`}
+                  style={{
+                    fontSize: "0.82rem",
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    color: isPageActive ? "var(--primary)" : "var(--foreground)",
+                    padding: "6px 2px",
+                    textDecoration: "none"
+                  }}
+                >
+                  {menuTitle}
+                </Link>
+              )}
             </div>
           );
         })}
