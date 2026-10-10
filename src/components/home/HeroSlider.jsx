@@ -58,7 +58,7 @@ export default function HeroSlider() {
   const hasTextContent = Boolean(
     cur.tag || cur.headingLine1 || cur.headingLine2 || cur.desc || cur.buttonText || cur.secondaryButtonText
   );
-  const cleanTag = cur.tag ? cur.tag.replace(/^[\?✦\s]+/, "").trim() : "";
+  const cleanTag = cur.tag ? cur.tag.replace(/^[?✦\s]+/, "").trim() : "";
 
   return (
     <section
