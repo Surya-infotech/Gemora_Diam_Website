@@ -73,7 +73,7 @@ export default function HeroSlider() {
             inset: 0,
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+              objectFit: "fill",
             objectPosition: "center",
             animation: "subtlePulse 8s ease-in-out infinite alternate"
           }}
