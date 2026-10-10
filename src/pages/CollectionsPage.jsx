@@ -20,6 +20,7 @@ export default function CollectionsPage({ slugOverride = null }) {
   let style = searchParams.get("style")?.toLowerCase().trim() || null;
   let featured = searchParams.get("featured")?.toLowerCase().trim() || null;
   let customTitle = null;
+  let resolvedAttributeFilters = [];
 
   // Active categories from Admin Panel
   const allProducts = products || [];
@@ -38,9 +39,6 @@ export default function CollectionsPage({ slugOverride = null }) {
     }
 
     // B. Check if slug matches any item inside menus (Column 1, 2, or 3)
-    // Multi-attribute filter resolution
-    let resolvedAttributeFilters = [];
-
     if (!customTitle) {
       for (const m of (menus || [])) {
         const allItems = [
@@ -234,7 +232,7 @@ export default function CollectionsPage({ slugOverride = null }) {
         ) : null}
 
         {/* Active Filter Chips */}
-        {(shape || style || featured || category || search) && (
+        {(shape || style || featured || category || search || (resolvedAttributeFilters && resolvedAttributeFilters.length > 0)) && (
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "16px", alignItems: "center" }}>
             <span style={{ fontSize: "0.74rem", textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--muted-foreground)", fontWeight: 600 }}>
               Active Filter:
@@ -247,16 +245,21 @@ export default function CollectionsPage({ slugOverride = null }) {
             )}
             {shape && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
-                Shape: {shape}
+                Shape: {Array.isArray(shape) ? shape.join(", ") : shape}
                 <button onClick={() => { searchParams.delete("shape"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
             {style && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
-                Style: {style}
+                Style: {Array.isArray(style) ? style.join(", ") : style}
                 <button onClick={() => { searchParams.delete("style"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
+            {resolvedAttributeFilters && resolvedAttributeFilters.map((rf, rIdx) => (
+              <span key={rIdx} style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600, textTransform: "capitalize" }}>
+                {rf.type}: {Array.isArray(rf.values) ? rf.values.join(", ") : rf.values}
+              </span>
+            ))}
             {featured && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
                 Featured: {featured}
