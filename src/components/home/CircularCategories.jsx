@@ -2,10 +2,6 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { useStore } from "../../lib/store";
 
-import promo1 from "../../assets/vemus/collections_promo-1.jpg";
-import promo2 from "../../assets/vemus/collections_promo-2.jpg";
-import promo3 from "../../assets/vemus/collections_promo-3.jpg";
-
 export default function CircularCategories() {
   const { categories } = useStore();
 
@@ -14,9 +10,10 @@ export default function CircularCategories() {
   }
 
   const cards = categories.map((c, i) => ({
-    img: c.image || c.categoryimage || (i % 3 === 0 ? promo1 : i % 3 === 1 ? promo2 : promo3),
+    id: c._id || c.categoryid || i,
+    img: c.image || c.categoryimage || "",
     title: c.categoryname,
-    desc: (c.description && c.description.trim()),
+    desc: c.description && c.description.trim(),
     link: `/shop?category=${encodeURIComponent(c.categoryname)}`
   }));
 
@@ -66,7 +63,7 @@ export default function CircularCategories() {
         >
           {cards.map((c, i) => (
             <Link
-              key={i}
+              key={c.id || i}
               to={c.link}
               style={{
                 position: "relative",
@@ -107,19 +104,38 @@ export default function CircularCategories() {
                   flexShrink: 0
                 }}
               >
-                <img
-                  src={c.img}
-                  alt={c.title}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    transition: "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)"
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                />
+                {c.img ? (
+                  <img
+                    src={c.img}
+                    alt={c.title}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                      transition: "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)"
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: "#F4F0E8",
+                      color: "var(--primary)",
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "2.2rem",
+                      fontWeight: 500
+                    }}
+                  >
+                    {c.title ? c.title.charAt(0).toUpperCase() : "✦"}
+                  </div>
+                )}
               </div>
 
               {/* Title */}
@@ -137,17 +153,19 @@ export default function CircularCategories() {
               </h3>
 
               {/* Description */}
-              <p
-                style={{
-                  fontSize: "0.86rem",
-                  color: "var(--muted-foreground)",
-                  lineHeight: 1.6,
-                  maxWidth: "280px",
-                  marginBottom: "24px"
-                }}
-              >
-                {c.desc}
-              </p>
+              {c.desc ? (
+                <p
+                  style={{
+                    fontSize: "0.86rem",
+                    color: "var(--muted-foreground)",
+                    lineHeight: 1.6,
+                    maxWidth: "280px",
+                    marginBottom: "24px"
+                  }}
+                >
+                  {c.desc}
+                </p>
+              ) : null}
 
               {/* Call to action */}
               <div
