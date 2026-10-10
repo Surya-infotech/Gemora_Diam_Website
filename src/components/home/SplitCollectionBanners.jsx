@@ -2,66 +2,19 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useStore } from "../../lib/store";
 
-import banner5 from "../../assets/vemus/banner_banner-5.jpg";
-import banner6 from "../../assets/vemus/banner_banner-6.jpg";
-
-function resolveBannerImage(img, fallback) {
-  if (!img) return fallback;
-  if (typeof img === "string") {
-    if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:") || img.startsWith("blob:")) {
-      return img;
-    }
-    if (img.includes("banner-5") || img.includes("banner_5")) return banner5;
-    if (img.includes("banner-6") || img.includes("banner_6")) return banner6;
-  }
-  return img || fallback;
-}
-
 export default function SplitCollectionBanners() {
-  const { collectionBanners, categories } = useStore();
+  const { collectionBanners } = useStore();
 
-  let itemsToRender = [];
-
-  if (Array.isArray(collectionBanners) && collectionBanners.length > 0) {
-    itemsToRender = collectionBanners;
-  } else if (categories && categories.length >= 2) {
-    const cat1 = categories[0];
-    const cat2 = categories[1];
-    itemsToRender = [
-      {
-        bannerid: 1,
-        tag: "FEATURED ATELIER",
-        title: `${cat1.categoryname} Collection`,
-        description: cat1.description || "",
-        image: cat1.image || banner5,
-        buttonText: "SHOP COLLECTION",
-        buttonLink: `/shop?category=${encodeURIComponent(cat1.categoryname)}`,
-        position: "left"
-      },
-      {
-        bannerid: 2,
-        tag: "CURATED CRAFTSMANSHIP",
-        title: `${cat2.categoryname} Collection`,
-        description: cat2.description || "",
-        image: cat2.image || banner6,
-        buttonText: "SHOP COLLECTION",
-        buttonLink: `/shop?category=${encodeURIComponent(cat2.categoryname)}`,
-        position: "right"
-      }
-    ];
-  }
-
-  if (itemsToRender.length === 0) {
+  if (!Array.isArray(collectionBanners) || collectionBanners.length === 0) {
     return null;
   }
 
   return (
     <section style={{ backgroundColor: "#ffffff", padding: "40px 0 80px 0" }}>
       <div className="container-luxury" style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
-        {itemsToRender.map((b, i) => {
+        {collectionBanners.map((b, i) => {
           const isLeft = b.position === "left" || (!b.position && i % 2 === 0);
-          const fallbackImg = i % 2 === 0 ? banner5 : banner6;
-          const displayImg = resolveBannerImage(b.image, fallbackImg);
+          const displayImg = b.image;
 
           const imageBlock = (
             <div style={{ minHeight: "320px", maxHeight: "420px", height: "100%", overflow: "hidden", position: "relative" }}>
