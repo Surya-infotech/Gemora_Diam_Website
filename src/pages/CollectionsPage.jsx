@@ -1,40 +1,126 @@
-import { useSearchParams, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useSearchParams, useParams, Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { ProductCard } from "../components/ProductCard";
 import { useStore } from "../lib/store";
+import { slugify } from "../lib/slugify";
 
-export default function CollectionsPage() {
+export default function CollectionsPage({ slugOverride = null }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const category = searchParams.get("category") || null;
-  const search = searchParams.get("search")?.toLowerCase().trim() || null;
-  const shape = searchParams.get("shape")?.toLowerCase().trim() || null;
-  const style = searchParams.get("style")?.toLowerCase().trim() || null;
-  const featured = searchParams.get("featured")?.toLowerCase().trim() || null;
+  const routeParams = useParams();
+  const { products, categories, menus, productsLoading } = useStore();
 
-  const { products, categories, productsLoading } = useStore();
+  const slug = (slugOverride || routeParams.slug || "").trim().toLowerCase().replace(/^\//, "");
 
-  // Only use dynamic products from Admin Panel
-  const allProducts = products || [];
+  // 1. Resolve filters and title from clean slug or query params
+  let category = searchParams.get("category") || null;
+  let search = searchParams.get("search")?.toLowerCase().trim() || null;
+  let shape = searchParams.get("shape")?.toLowerCase().trim() || null;
+  let style = searchParams.get("style")?.toLowerCase().trim() || null;
+  let featured = searchParams.get("featured")?.toLowerCase().trim() || null;
+  let customTitle = null;
 
   // Active categories from Admin Panel
+  const allProducts = products || [];
   const activeCategories = (categories || []).filter(
     (c) => c && (c.categoryname || typeof c === "string")
   );
 
+  if (slug && slug !== "collections" && slug !== "collection") {
+    // A. Check if slug matches any Menu Tab in backend menus
+    const matchedMenu = (menus || []).find(
+      (m) => (m.slug || "").toLowerCase().replace(/^\//, "") === slug
+    );
+    if (matchedMenu) {
+      customTitle = matchedMenu.title;
+      category = matchedMenu.title;
+    }
+
+    // B. Check if slug matches any item inside menus (Column 1, 2, or 3)
+    if (!customTitle) {
+      for (const m of (menus || [])) {
+        const allItems = [
+          ...(m.column1?.items || []),
+          ...(m.column2?.items || []),
+          ...(m.column3?.items || [])
+        ];
+        const found = allItems.find(
+          (it) => (it.slug || "").toLowerCase().replace(/^\//, "") === slug
+        );
+        if (found) {
+          customTitle = found.label;
+          if (found.filterType === "style") {
+            style = found.filterValue || found.label;
+          } else if (found.filterType === "shape") {
+            shape = (found.filterValue || found.shape || found.label).toLowerCase();
+          } else if (found.filterType === "category") {
+            category = found.filterValue || found.label;
+          } else if (found.filterType === "subcategory" || found.filterType === "search") {
+            search = (found.filterValue || found.label).toLowerCase();
+          } else if (found.filterType === "featured") {
+            featured = found.filterValue || "bestseller";
+          }
+          break;
+        }
+      }
+    }
+
+    // C. Check if slug matches an active Category
+    if (!customTitle) {
+      const foundCat = activeCategories.find((c) => {
+        const cName = typeof c === "string" ? c : c.categoryname;
+        return slugify(cName) === slug;
+      });
+      if (foundCat) {
+        const catName = typeof foundCat === "string" ? foundCat : foundCat.categoryname;
+        category = catName;
+        customTitle = catName;
+      }
+    }
+
+    // D. Check if slug matches known diamond shapes
+    if (!customTitle) {
+      const knownShapes = ["round", "emerald", "oval", "cushion", "princess", "pear", "radiant", "marquise", "heart", "asscher", "baguette"];
+      const matchedShape = knownShapes.find((s) => slug.includes(s));
+      if (matchedShape) {
+        shape = matchedShape;
+        customTitle = `${matchedShape.charAt(0).toUpperCase() + matchedShape.slice(1)} Cut Diamonds`;
+      }
+    }
+
+    // E. Fallback title formatting if still not resolved
+    if (!customTitle) {
+      customTitle = slug
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+      // Try search match
+      const stripped = customTitle.replace(/ Rings| Bands| Diamonds| Collection| Jewelry/gi, "").trim().toLowerCase();
+      if (stripped) {
+        search = stripped;
+      }
+    }
+  }
+
+  // 2. Filter products based on resolved parameters
   const list = allProducts.filter((p) => {
     if (search) {
       const match =
         (p.name || "").toLowerCase().includes(search) ||
         (p.category || "").toLowerCase().includes(search) ||
         (p.description || "").toLowerCase().includes(search) ||
+        (p.subcategory || "").toLowerCase().includes(search) ||
         (p.sku || "").toLowerCase().includes(search);
       if (!match) return false;
     }
     if (category) {
       const catTrim = category.trim().toLowerCase();
-      const matchName = (p.category || "").trim().toLowerCase() === catTrim ||
+      const matchName =
+        (p.category || "").trim().toLowerCase() === catTrim ||
         (catTrim.includes("ring") && (p.category || "").toLowerCase().includes("ring")) ||
-        (catTrim.includes("bridal") && (p.category || "").toLowerCase().includes("bridal"));
+        (catTrim.includes("bridal") && (p.category || "").toLowerCase().includes("bridal")) ||
+        (catTrim.includes("bracelets") && (p.category || "").toLowerCase().includes("bracelets")) ||
+        (catTrim.includes("earrings") && (p.category || "").toLowerCase().includes("earrings"));
       const matchId = p.categoryid && String(p.categoryid) === String(category);
       if (!matchName && !matchId) return false;
     }
@@ -46,10 +132,11 @@ export default function CollectionsPage() {
       if (!matchShape) return false;
     }
     if (style) {
+      const sTrim = style.toLowerCase();
       const matchStyle =
-        (p.styles || []).some((s) => s.toLowerCase().includes(style) || style.includes(s.toLowerCase())) ||
-        (p.name || "").toLowerCase().includes(style) ||
-        (p.description || "").toLowerCase().includes(style);
+        (p.styles || []).some((s) => s.toLowerCase().includes(sTrim) || sTrim.includes(s.toLowerCase())) ||
+        (p.name || "").toLowerCase().includes(sTrim) ||
+        (p.description || "").toLowerCase().includes(sTrim);
       if (!matchStyle) return false;
     }
     if (featured === "bestseller" && !p.bestseller) {
@@ -66,16 +153,23 @@ export default function CollectionsPage() {
       (c._id && String(c._id) === String(category))
     );
   });
-  const displayTitle = currentCategoryObj
+
+  const displayTitle = customTitle || (currentCategoryObj
     ? (typeof currentCategoryObj === "string" ? currentCategoryObj : currentCategoryObj.categoryname)
-    : category || "All Collections";
+    : category || "All Collections");
 
   let title = displayTitle;
-  if (search) title = `Search: "${searchParams.get("search")}"`;
-  else if (shape) title = `${shape.charAt(0).toUpperCase() + shape.slice(1)} Cut Diamonds`;
-  else if (style) title = `${style.charAt(0).toUpperCase() + style.slice(1)} Style`;
-  else if (featured === "bestseller") title = "Atelier Best Sellers";
-  else if (featured === "new") title = "New Atelier Arrivals";
+  if (!customTitle) {
+    if (searchParams.get("search")) title = `Search: "${searchParams.get("search")}"`;
+    else if (shape) title = `${shape.charAt(0).toUpperCase() + shape.slice(1)} Cut Diamonds`;
+    else if (style) title = `${style.charAt(0).toUpperCase() + style.slice(1)} Style`;
+    else if (featured === "bestseller") title = "Atelier Best Sellers";
+    else if (featured === "new") title = "New Atelier Arrivals";
+  }
+
+  useEffect(() => {
+    document.title = `${title} | Gemora Diam Haute Joaillerie`;
+  }, [title]);
 
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "120px" }}>
@@ -142,7 +236,7 @@ export default function CollectionsPage() {
                 <button onClick={() => { searchParams.delete("featured"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
-            {search && (
+            {search && !slug && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
                 Keyword: "{search}"
                 <button onClick={() => { searchParams.delete("search"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
@@ -171,15 +265,15 @@ export default function CollectionsPage() {
           className="eyebrow"
           style={{
             border: "1px solid",
-            borderColor: !category && !search ? "var(--primary)" : "#E5DFD3",
-            backgroundColor: !category && !search ? "var(--primary)" : "#FAF8F5",
-            color: !category && !search ? "#ffffff" : "var(--foreground)",
+            borderColor: !category && !search && !slug ? "var(--primary)" : "#E5DFD3",
+            backgroundColor: !category && !search && !slug ? "var(--primary)" : "#FAF8F5",
+            color: !category && !search && !slug ? "#ffffff" : "var(--foreground)",
             padding: "10px 22px",
             borderRadius: "50px",
             fontSize: "0.76rem",
             letterSpacing: "0.16em",
             transition: "all 0.25s ease",
-            boxShadow: !category && !search ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
+            boxShadow: !category && !search && !slug ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
           }}
         >
           All Pieces
@@ -193,10 +287,12 @@ export default function CollectionsPage() {
               (c.categoryid && String(c.categoryid) === String(category)) ||
               (c._id && String(c._id) === String(category)));
 
+          const cleanCatSlug = `/${slugify(catName)}`;
+
           return (
             <Link
               key={c._id || c.categoryid || catName}
-              to={`/collections?category=${encodeURIComponent(catName)}`}
+              to={cleanCatSlug}
               className="eyebrow"
               style={{
                 border: "1px solid",

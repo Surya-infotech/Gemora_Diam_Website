@@ -214,6 +214,7 @@ export function StoreProvider({ children }) {
   const [banners, setBanners] = useState([]);
   const [collectionBanners, setCollectionBanners] = useState([]);
   const [aboutUs, setAboutUs] = useState(null);
+  const [menus, setMenus] = useState([]);
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -769,6 +770,15 @@ export function StoreProvider({ children }) {
             setAboutUs(data);
           })
           .catch((err) => console.warn("Failed to fetch about us:", err));
+
+        // 9. Menus (Dynamic Navigation & Mega Menu)
+        fetch(`${backendUrl}/Support/GetActiveMenus`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (!isMounted || !Array.isArray(data)) return;
+            setMenus(data);
+          })
+          .catch((err) => console.warn("Failed to fetch active menus:", err));
       } finally {
         if (isMounted) setSettingsLoading(false);
       }
@@ -964,6 +974,8 @@ export function StoreProvider({ children }) {
         banners,
         collectionBanners,
         aboutUs,
+        menus,
+        setMenus,
         cartOpen,
         setCartOpen,
         setCurrency: changeCurrency,

@@ -13,6 +13,7 @@ import OrdersPage from "./pages/OrdersPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import PolicyPage from "./pages/PolicyPage";
+import DynamicRouteResolver from "./pages/DynamicRouteResolver";
 
 function ScrollToTop() {
   const { pathname, search } = useLocation();
@@ -81,7 +82,7 @@ export default function App() {
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/policy/:slug" element={<PolicyPage />} />
-              <Route path="/:slug" element={<PolicyPage NotFoundComponent={NotFoundPage} />} />
+              <Route path="/:slug" element={<DynamicRouteResolver NotFoundComponent={NotFoundPage} />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>
