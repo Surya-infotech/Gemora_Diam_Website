@@ -88,7 +88,7 @@ export default function SplitCollectionBanners() {
               ) : null}
               <div>
                 <Link
-                  to={b.buttonLink || "/shop"}
+                  to={b.buttonLink || "/collections"}
                   className="eyebrow"
                   style={{
                     display: "inline-flex",
@@ -113,7 +113,7 @@ export default function SplitCollectionBanners() {
                     e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
-                  <span>{b.buttonText || "SHOP COLLECTION"}</span>
+                  <span>{b.buttonText || "EXPLORE COLLECTION"}</span>
                   <ArrowRight size={15} />
                 </Link>
               </div>

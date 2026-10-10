@@ -114,7 +114,7 @@ export default function OrdersPage() {
           <div style={{ marginTop: "32px", display: "flex", justifyContent: "center", gap: "14px" }}>
             {user ? (
               <Link
-                to="/shop"
+                to="/collections"
                 className="eyebrow"
                 style={{
                   display: "inline-flex",

@@ -167,7 +167,7 @@ export default function AboutPage() {
               {aboutUs?.buttonText && (
                 <div style={{ marginTop: "36px" }}>
                   <Link
-                    to={aboutUs.buttonLink || "/shop"}
+                    to={aboutUs.buttonLink || "/collections"}
                     className="eyebrow"
                     style={{
                       display: "inline-block",

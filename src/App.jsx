@@ -71,6 +71,7 @@ export default function App() {
           <main style={{ flex: 1 }}>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/collections" element={<ShopPage />} />
               <Route path="/shop" element={<ShopPage />} />
               <Route path="/product/:id" element={<ProductDetailPage />} />
               <Route path="/about" element={<AboutPage />} />

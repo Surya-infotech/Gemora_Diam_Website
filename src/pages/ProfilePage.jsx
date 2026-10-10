@@ -170,7 +170,7 @@ function WishlistTab() {
           Explore our signature collections to save your favorite lab grown diamond pieces and bridal sets.
         </p>
         <Link
-          to="/shop"
+          to="/collections"
           className="eyebrow"
           style={{
             display: "inline-block",

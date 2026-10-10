@@ -100,14 +100,14 @@ export function Footer() {
 
   const navCategories = categories && categories.length > 0
     ? [
-      { label: "ALL JEWELRY", to: "/shop" },
+      { label: "ALL COLLECTIONS", to: "/collections" },
       ...categories.map((c) => ({
         label: (c.categoryname || "").toUpperCase(),
-        to: `/shop?category=${encodeURIComponent(c.categoryname)}`
+        to: `/collections?category=${encodeURIComponent(c.categoryname)}`
       }))
     ]
     : [
-      { label: "ALL JEWELRY", to: "/shop" }
+      { label: "ALL COLLECTIONS", to: "/collections" }
     ];
 
   return (
@@ -479,7 +479,7 @@ export function Footer() {
             {[
               ["Our Heritage & Story", "/about"],
               ["Contact & Appointments", "/contact"],
-              ["All Fine Jewelry", "/shop"]
+              ["All Collections", "/collections"]
             ].map(([label, to]) => (
               <li key={label}>
                 <Link

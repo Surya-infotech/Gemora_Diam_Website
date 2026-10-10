@@ -325,7 +325,7 @@ export function Header() {
     e.preventDefault();
     if (q.trim()) {
       setSearch(false);
-      navigate(`/shop?search=${encodeURIComponent(q.trim())}`);
+      navigate(`/collections?search=${encodeURIComponent(q.trim())}`);
     }
   };
 
@@ -662,7 +662,7 @@ export function Header() {
               {/* Engagement Rings */}
               <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                 <Link
-                  to="/shop?category=Engagement%20Rings"
+                  to="/collections?category=Engagement%20Rings"
                   onClick={() => setMobile(false)}
                   style={{
                     fontSize: "1.05rem",
@@ -680,7 +680,7 @@ export function Header() {
                   {["Solitaire", "Halo", "Vintage Style Rings", "Three Stone", "Nature Inspired"].map((st) => (
                     <Link
                       key={st}
-                      to={`/shop?style=${encodeURIComponent(st)}`}
+                      to={`/collections?style=${encodeURIComponent(st)}`}
                       onClick={() => setMobile(false)}
                       style={{
                         fontSize: "0.78rem",
@@ -701,7 +701,7 @@ export function Header() {
               {/* Wedding & Bridal */}
               <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                 <Link
-                  to="/shop?category=Bridal%20Sets"
+                  to="/collections?category=Bridal%20Sets"
                   onClick={() => setMobile(false)}
                   style={{
                     fontSize: "1.05rem",
@@ -715,7 +715,7 @@ export function Header() {
                   {["Bridal Sets", "Eternity", "Classic", "Two Stone"].map((st) => (
                     <Link
                       key={st}
-                      to={`/shop?category=Bridal%20Sets&style=${encodeURIComponent(st)}`}
+                      to={`/collections?category=Bridal%20Sets&style=${encodeURIComponent(st)}`}
                       onClick={() => setMobile(false)}
                       style={{
                         fontSize: "0.78rem",
@@ -736,7 +736,7 @@ export function Header() {
               {/* Fine Jewelry */}
               <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                 <Link
-                  to="/shop"
+                  to="/collections"
                   onClick={() => setMobile(false)}
                   style={{
                     fontSize: "1.05rem",
@@ -748,28 +748,28 @@ export function Header() {
                 </Link>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingLeft: "8px", marginTop: "4px" }}>
                   <Link
-                    to="/shop?category=Bracelets"
+                    to="/collections?category=Bracelets"
                     onClick={() => setMobile(false)}
                     style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
                   >
                     Bracelets
                   </Link>
                   <Link
-                    to="/shop?category=Earrings"
+                    to="/collections?category=Earrings"
                     onClick={() => setMobile(false)}
                     style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
                   >
                     Earrings
                   </Link>
                   <Link
-                    to="/shop?shape=Round"
+                    to="/collections?shape=Round"
                     onClick={() => setMobile(false)}
                     style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
                   >
                     Round Cut
                   </Link>
                   <Link
-                    to="/shop?shape=Emerald"
+                    to="/collections?shape=Emerald"
                     onClick={() => setMobile(false)}
                     style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
                   >
@@ -779,16 +779,16 @@ export function Header() {
               </div>
 
               <Link
-                to="/shop"
+                to="/collections"
                 onClick={() => setMobile(false)}
                 style={{
                   fontSize: "1.05rem",
                   fontWeight: 600,
-                  color: location.pathname === "/shop" ? "var(--primary)" : "var(--foreground)",
+                  color: (location.pathname === "/collections" || location.pathname === "/collections") ? "var(--primary)" : "var(--foreground)",
                   padding: "4px 0"
                 }}
               >
-                Shop All Archive
+                All Collections
               </Link>
               <Link
                 to="/about"
@@ -1109,7 +1109,7 @@ function CartDrawer() {
                 Explore our fine jewelry collection to select your handcrafted bespoke pieces.
               </p>
               <Link
-                to="/shop"
+                to="/collections"
                 onClick={() => setCartOpen(false)}
                 className="eyebrow"
                 style={{

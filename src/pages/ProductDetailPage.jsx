@@ -275,8 +275,8 @@ function ProductDetailContent({ product }) {
               Home
             </Link>
             <ChevronRight size={13} style={{ color: "var(--gold-deep)" }} />
-            <Link to="/shop" style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
-              {product.category || "Fine Jewelry"}
+            <Link to="/collections" style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
+              {product.category || "Collections"}
             </Link>
             {product.subcategory && (
               <>
@@ -1271,7 +1271,7 @@ export default function ProductDetailPage() {
               <ArrowLeft size={16} /> Go Back
             </button>
             <Link
-              to="/shop"
+              to="/collections"
               className="eyebrow"
               style={{
                 padding: "12px 26px",

@@ -68,7 +68,7 @@ export default function ShopPage() {
   });
   const displayTitle = currentCategoryObj
     ? (typeof currentCategoryObj === "string" ? currentCategoryObj : currentCategoryObj.categoryname)
-    : category || "All Fine Jewelry";
+    : category || "All Collections";
 
   let title = displayTitle;
   if (search) title = `Search: "${searchParams.get("search")}"`;
@@ -148,7 +148,7 @@ export default function ShopPage() {
                 <button onClick={() => { searchParams.delete("search"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
-            <Link to="/shop" style={{ fontSize: "0.74rem", color: "var(--primary)", textDecoration: "underline", marginLeft: "4px" }}>
+            <Link to="/collections" style={{ fontSize: "0.74rem", color: "var(--primary)", textDecoration: "underline", marginLeft: "4px" }}>
               Clear All
             </Link>
           </div>
@@ -167,7 +167,7 @@ export default function ShopPage() {
         }}
       >
         <Link
-          to="/shop"
+          to="/collections"
           className="eyebrow"
           style={{
             border: "1px solid",
@@ -196,7 +196,7 @@ export default function ShopPage() {
           return (
             <Link
               key={c._id || c.categoryid || catName}
-              to={`/shop?category=${encodeURIComponent(catName)}`}
+              to={`/collections?category=${encodeURIComponent(catName)}`}
               className="eyebrow"
               style={{
                 border: "1px solid",
@@ -226,10 +226,10 @@ export default function ShopPage() {
       {list.length === 0 ? (
         <div style={{ padding: "80px 0", textAlign: "center", color: "var(--muted-foreground)" }}>
           <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.4rem", color: "var(--foreground)" }}>
-            No pieces found in this category
+            No pieces found in this collection
           </p>
           <Link
-            to="/shop"
+            to="/collections"
             className="eyebrow"
             style={{
               marginTop: "20px",
@@ -241,7 +241,7 @@ export default function ShopPage() {
               letterSpacing: "0.16em"
             }}
           >
-            Browse all jewelry
+            Browse all collections
           </Link>
         </div>
       ) : (

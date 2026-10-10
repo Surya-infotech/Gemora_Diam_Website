@@ -254,8 +254,8 @@ export default function MegaMenu() {
           tag: "ENDS SOON • DON'T MISS OUT!",
           description: "Complimentary Insured Delivery on all orders $1,000+ & Lifetime Warranty",
           image: promo1,
-          buttonText: "SHOP ATELIER NOW",
-          buttonLink: "/shop"
+          buttonText: "EXPLORE COLLECTIONS",
+          buttonLink: "/collections"
         };
 
   const handleMouseEnter = (menuKey) => {
@@ -355,7 +355,7 @@ export default function MegaMenu() {
           style={{ position: "relative" }}
         >
           <Link
-            to="/shop?category=Engagement%20Rings"
+            to="/collections?category=Engagement%20Rings"
             onClick={closeMenu}
             className={`nav-link-luxury ${activeMenu === "engagement" ? "active" : ""}`}
             style={{
@@ -381,7 +381,7 @@ export default function MegaMenu() {
           style={{ position: "relative" }}
         >
           <Link
-            to="/shop?category=Bridal%20Sets"
+            to="/collections?category=Bridal%20Sets"
             onClick={closeMenu}
             className={`nav-link-luxury ${activeMenu === "wedding" ? "active" : ""}`}
             style={{
@@ -407,7 +407,7 @@ export default function MegaMenu() {
           style={{ position: "relative" }}
         >
           <Link
-            to="/shop"
+            to="/collections"
             onClick={closeMenu}
             className={`nav-link-luxury ${activeMenu === "jewelry" ? "active" : ""}`}
             style={{
@@ -427,13 +427,13 @@ export default function MegaMenu() {
           </Link>
         </div>
 
-        {/* TAB 4: SHOP ALL */}
+        {/* TAB 4: COLLECTIONS */}
         <div
           onMouseEnter={() => handleMouseEnter("shopall")}
           style={{ position: "relative" }}
         >
           <Link
-            to="/shop"
+            to="/collections"
             onClick={closeMenu}
             className={`nav-link-luxury ${activeMenu === "shopall" ? "active" : ""}`}
             style={{
@@ -448,7 +448,7 @@ export default function MegaMenu() {
               padding: "6px 2px"
             }}
           >
-            Shop All
+            Collections
             <ChevronDown size={12} strokeWidth={1.8} style={{ opacity: 0.7 }} />
           </Link>
         </div>
@@ -525,7 +525,7 @@ export default function MegaMenu() {
                   alignItems: "start"
                 }}
               >
-                {/* Col 1: Shop by Ring Style */}
+                {/* Col 1: Collections by Style */}
                 <div>
                   <h4
                     style={{
@@ -544,7 +544,7 @@ export default function MegaMenu() {
                     {ringStyles.map((item) => (
                       <Link
                         key={item.label}
-                        to={`/shop?style=${encodeURIComponent(item.query)}`}
+                        to={`/collections?style=${encodeURIComponent(item.query)}`}
                         onClick={closeMenu}
                         style={{
                           display: "inline-flex",
@@ -572,7 +572,7 @@ export default function MegaMenu() {
                       </Link>
                     ))}
                     <Link
-                      to="/shop?category=Engagement%20Rings"
+                      to="/collections?category=Engagement%20Rings"
                       onClick={closeMenu}
                       style={{
                         marginTop: "8px",
@@ -585,12 +585,12 @@ export default function MegaMenu() {
                         textUnderlineOffset: "4px"
                       }}
                     >
-                      Shop All Ring Styles
+                      View All Ring Collections
                     </Link>
                   </div>
                 </div>
 
-                {/* Col 2: Shop by Diamond Shape (2 Sub-columns) */}
+                {/* Col 2: Diamond Shapes (2 Sub-columns) */}
                 <div>
                   <h4
                     style={{
@@ -611,7 +611,7 @@ export default function MegaMenu() {
                       {diamondShapesCol1.map((item) => (
                         <Link
                           key={item.label}
-                          to={`/shop?shape=${encodeURIComponent(item.label)}`}
+                          to={`/collections?shape=${encodeURIComponent(item.label)}`}
                           onClick={closeMenu}
                           style={{
                             display: "inline-flex",
@@ -645,7 +645,7 @@ export default function MegaMenu() {
                       {diamondShapesCol2.map((item) => (
                         <Link
                           key={item.label}
-                          to={`/shop?shape=${encodeURIComponent(item.label)}`}
+                          to={`/collections?shape=${encodeURIComponent(item.label)}`}
                           onClick={closeMenu}
                           style={{
                             display: "inline-flex",
@@ -674,7 +674,7 @@ export default function MegaMenu() {
                       ))}
 
                       <Link
-                        to="/shop"
+                        to="/collections"
                         onClick={closeMenu}
                         style={{
                           marginTop: "14px",
@@ -687,7 +687,7 @@ export default function MegaMenu() {
                           textUnderlineOffset: "4px"
                         }}
                       >
-                        Shop All Shapes
+                        Explore All Shapes
                       </Link>
                     </div>
                   </div>
@@ -710,7 +710,7 @@ export default function MegaMenu() {
                   </h4>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     <Link
-                      to="/shop?featured=bestseller"
+                      to="/collections?featured=bestseller"
                       onClick={closeMenu}
                       style={{
                         color: "var(--foreground)",
@@ -725,7 +725,7 @@ export default function MegaMenu() {
                       Top 20 Engagement Rings
                     </Link>
                     <Link
-                      to="/shop?featured=new"
+                      to="/collections?featured=new"
                       onClick={closeMenu}
                       style={{
                         color: "var(--foreground)",
@@ -740,7 +740,7 @@ export default function MegaMenu() {
                       New Arrivals
                     </Link>
                     <Link
-                      to="/shop?featured=bestseller"
+                      to="/collections?featured=bestseller"
                       onClick={closeMenu}
                       style={{
                         color: "var(--foreground)",
@@ -755,7 +755,7 @@ export default function MegaMenu() {
                       Best Sellers
                     </Link>
                     <Link
-                      to="/shop?style=Vintage%20Style%20Rings"
+                      to="/collections?style=Vintage%20Style%20Rings"
                       onClick={closeMenu}
                       style={{
                         color: "var(--foreground)",
@@ -770,7 +770,7 @@ export default function MegaMenu() {
                       Designer Atelier Rings
                     </Link>
                     <Link
-                      to="/shop?search=solitaire"
+                      to="/collections?search=solitaire"
                       onClick={closeMenu}
                       style={{
                         display: "inline-flex",
@@ -868,7 +868,7 @@ export default function MegaMenu() {
                       Complimentary Insured Delivery &amp; Lifetime Polish on bespoke creations.
                     </p>
                     <Link
-                      to={featuredBanner?.buttonLink || "/shop"}
+                      to={featuredBanner?.buttonLink || "/collections"}
                       onClick={closeMenu}
                       className="eyebrow"
                       style={{
@@ -915,13 +915,13 @@ export default function MegaMenu() {
                       marginBottom: "18px"
                     }}
                   >
-                    Shop by Bridal Style
+                    Bridal Collections
                   </h4>
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {bridalStyles.map((item) => (
                       <Link
                         key={item.label}
-                        to={`/shop?category=Bridal%20Sets&style=${encodeURIComponent(item.query)}`}
+                        to={`/collections?category=Bridal%20Sets&style=${encodeURIComponent(item.query)}`}
                         onClick={closeMenu}
                         style={{
                           display: "inline-flex",
@@ -949,7 +949,7 @@ export default function MegaMenu() {
                       </Link>
                     ))}
                     <Link
-                      to="/shop?category=Bridal%20Sets"
+                      to="/collections?category=Bridal%20Sets"
                       onClick={closeMenu}
                       style={{
                         marginTop: "8px",
@@ -962,7 +962,7 @@ export default function MegaMenu() {
                         textUnderlineOffset: "4px"
                       }}
                     >
-                      Shop All Wedding Sets
+                      View All Bridal Collections
                     </Link>
                   </div>
                 </div>
@@ -986,7 +986,7 @@ export default function MegaMenu() {
                       {diamondShapesCol1.slice(0, 6).map((item) => (
                         <Link
                           key={item.label}
-                          to={`/shop?category=Bridal%20Sets&shape=${encodeURIComponent(item.label)}`}
+                          to={`/collections?category=Bridal%20Sets&shape=${encodeURIComponent(item.label)}`}
                           onClick={closeMenu}
                           style={{
                             display: "inline-flex",
@@ -1018,7 +1018,7 @@ export default function MegaMenu() {
                       {diamondShapesCol2.map((item) => (
                         <Link
                           key={item.label}
-                          to={`/shop?category=Bridal%20Sets&shape=${encodeURIComponent(item.label)}`}
+                          to={`/collections?category=Bridal%20Sets&shape=${encodeURIComponent(item.label)}`}
                           onClick={closeMenu}
                           style={{
                             display: "inline-flex",
@@ -1065,21 +1065,21 @@ export default function MegaMenu() {
                   </h4>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     <Link
-                      to="/shop?category=Bridal%20Sets"
+                      to="/collections?category=Bridal%20Sets"
                       onClick={closeMenu}
                       style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem", fontWeight: 500 }}
                     >
                       Matching His &amp; Hers Bands
                     </Link>
                     <Link
-                      to="/shop?category=Bridal%20Sets&style=Eternity"
+                      to="/collections?category=Bridal%20Sets&style=Eternity"
                       onClick={closeMenu}
                       style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem", fontWeight: 500 }}
                     >
                       Full Eternity Diamond Rings
                     </Link>
                     <Link
-                      to="/shop?category=Bridal%20Sets"
+                      to="/collections?category=Bridal%20Sets"
                       onClick={closeMenu}
                       style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem", fontWeight: 500 }}
                     >
@@ -1116,7 +1116,7 @@ export default function MegaMenu() {
                     Mastercrafted to interlock seamlessly with your engagement ring.
                   </p>
                   <Link
-                    to="/shop?category=Bridal%20Sets"
+                    to="/collections?category=Bridal%20Sets"
                     onClick={closeMenu}
                     style={{
                       display: "inline-block",
@@ -1155,13 +1155,13 @@ export default function MegaMenu() {
                       marginBottom: "18px"
                     }}
                   >
-                    Shop by Category
+                    Signature Collections
                   </h4>
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {jewelryCategories.map((item) => (
                       <Link
                         key={item.label}
-                        to={`/shop?${item.param}=${encodeURIComponent(item.query)}`}
+                        to={`/collections?${item.param}=${encodeURIComponent(item.query)}`}
                         onClick={closeMenu}
                         style={{
                           display: "inline-flex",
@@ -1181,7 +1181,7 @@ export default function MegaMenu() {
                       </Link>
                     ))}
                     <Link
-                      to="/shop"
+                      to="/collections"
                       onClick={closeMenu}
                       style={{
                         marginTop: "8px",
@@ -1194,7 +1194,7 @@ export default function MegaMenu() {
                         textUnderlineOffset: "4px"
                       }}
                     >
-                      Shop All Jewelry
+                      View All Collections
                     </Link>
                   </div>
                 </div>
@@ -1217,7 +1217,7 @@ export default function MegaMenu() {
                     {diamondShapesCol1.slice(0, 8).map((item) => (
                       <Link
                         key={item.label}
-                        to={`/shop?shape=${encodeURIComponent(item.label)}`}
+                        to={`/collections?shape=${encodeURIComponent(item.label)}`}
                         onClick={closeMenu}
                         style={{
                           display: "inline-flex",
@@ -1253,16 +1253,16 @@ export default function MegaMenu() {
                     Curations
                   </h4>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    <Link to="/shop?category=Bracelets" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
+                    <Link to="/collections?category=Bracelets" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
                       Tennis &amp; Bangle Bracelets
                     </Link>
-                    <Link to="/shop?category=Earrings" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
+                    <Link to="/collections?category=Earrings" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
                       Diamond Solitaire Studs
                     </Link>
-                    <Link to="/shop?featured=bestseller" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
+                    <Link to="/collections?featured=bestseller" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
                       Everyday Luxury Icons
                     </Link>
-                    <Link to="/shop?featured=new" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
+                    <Link to="/collections?featured=new" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
                       New Atelier Arrivals
                     </Link>
                   </div>
@@ -1287,7 +1287,7 @@ export default function MegaMenu() {
                     Sculpted with certified conflict-free diamonds and 18K solid gold.
                   </p>
                   <Link
-                    to="/shop?category=Bracelets"
+                    to="/collections?category=Bracelets"
                     onClick={closeMenu}
                     style={{
                       display: "inline-block",
@@ -1304,7 +1304,7 @@ export default function MegaMenu() {
               </div>
             )}
 
-            {/* 4. SHOP ALL MEGA MENU */}
+            {/* 4. COLLECTIONS MEGA MENU */}
             {activeMenu === "shopall" && (
               <div
                 style={{
@@ -1319,11 +1319,11 @@ export default function MegaMenu() {
                     Categories
                   </h4>
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                    <Link to="/shop?category=Bracelets" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>Bracelets</Link>
-                    <Link to="/shop?category=Bridal%20Sets" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>Bridal Sets</Link>
-                    <Link to="/shop?category=Earrings" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>Earrings</Link>
-                    <Link to="/shop?category=Engagement%20Rings" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>Engagement Rings</Link>
-                    <Link to="/shop" onClick={closeMenu} style={{ color: "var(--primary)", fontWeight: 700, textDecoration: "underline", fontSize: "0.8rem", marginTop: "6px" }}>Browse All Pieces</Link>
+                    <Link to="/collections?category=Bracelets" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>Bracelets</Link>
+                    <Link to="/collections?category=Bridal%20Sets" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>Bridal Sets</Link>
+                    <Link to="/collections?category=Earrings" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>Earrings</Link>
+                    <Link to="/collections?category=Engagement%20Rings" onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>Engagement Rings</Link>
+                    <Link to="/collections" onClick={closeMenu} style={{ color: "var(--primary)", fontWeight: 700, textDecoration: "underline", fontSize: "0.8rem", marginTop: "6px" }}>Browse All Pieces</Link>
                   </div>
                 </div>
 
@@ -1333,7 +1333,7 @@ export default function MegaMenu() {
                   </h4>
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {["Round", "Emerald", "Oval", "Princess", "Cushion", "Pear", "Heart"].map((s) => (
-                      <Link key={s} to={`/shop?shape=${encodeURIComponent(s)}`} onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem", display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                      <Link key={s} to={`/collections?shape=${encodeURIComponent(s)}`} onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem", display: "inline-flex", alignItems: "center", gap: "8px" }}>
                         <span style={{ color: "var(--gold-deep)" }}><DiamondShapeIcon shape={s} size={15} /></span>
                         <span>{s} Cut</span>
                       </Link>
@@ -1347,7 +1347,7 @@ export default function MegaMenu() {
                   </h4>
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {["18K White Gold", "14K White Gold", "10K Yellow Gold", "10K White Gold", "925 Silver"].map((m) => (
-                      <Link key={m} to={`/shop?search=${encodeURIComponent(m)}`} onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
+                      <Link key={m} to={`/collections?search=${encodeURIComponent(m)}`} onClick={closeMenu} style={{ color: "var(--foreground)", textDecoration: "none", fontSize: "0.84rem" }}>
                         {m}
                       </Link>
                     ))}
@@ -1364,7 +1364,7 @@ export default function MegaMenu() {
                   <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "6px", lineHeight: 1.5 }}>
                     Certified by premier gemological institutes with exact chemical and optical purity.
                   </p>
-                  <Link to="/shop" onClick={closeMenu} style={{ display: "inline-block", marginTop: "12px", fontSize: "0.74rem", fontWeight: 700, color: "var(--primary)" }}>
+                  <Link to="/collections" onClick={closeMenu} style={{ display: "inline-block", marginTop: "12px", fontSize: "0.74rem", fontWeight: 700, color: "var(--primary)" }}>
                     VIEW COMPLETE CATALOG →
                   </Link>
                 </div>

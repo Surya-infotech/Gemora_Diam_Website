@@ -22,7 +22,7 @@ export default function HeroSlider() {
               headingLine2: b.headingLine2 || "",
               desc: b.description || "",
               buttonText: b.buttonText || "",
-              buttonLink: b.buttonLink || "/shop",
+              buttonLink: b.buttonLink || "/collections",
               secondaryButtonText: b.secondaryButtonText || "",
               secondaryButtonLink: b.secondaryButtonLink || "/about"
             }));
@@ -156,7 +156,7 @@ export default function HeroSlider() {
               <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
                 {cur.buttonText && (
                   <Link
-                    to={cur.buttonLink || "/shop"}
+                    to={cur.buttonLink || "/collections"}
                     className="eyebrow"
                     style={{
                       display: "inline-flex",

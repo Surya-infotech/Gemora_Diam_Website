@@ -438,7 +438,7 @@ export default function CartPage() {
 
           <div style={{ marginTop: "32px", display: "flex", gap: "14px", justifyContent: "center" }}>
             <Link
-              to="/shop"
+              to="/collections"
               className="eyebrow"
               style={{
                 display: "inline-block",
@@ -448,7 +448,7 @@ export default function CartPage() {
                 borderRadius: "2px"
               }}
             >
-              Continue Shopping
+              Continue Browsing Collections
             </Link>
           </div>
         </div>
@@ -466,7 +466,7 @@ export default function CartPage() {
           Discover timeless heirloom pieces made to be treasured across generations.
         </p>
         <Link
-          to="/shop"
+          to="/collections"
           className="eyebrow"
           style={{
             marginTop: "36px",
@@ -476,7 +476,7 @@ export default function CartPage() {
             padding: "16px 36px"
           }}
         >
-          Shop the Collection
+          Explore Collections
         </Link>
       </div>
     );

@@ -14,7 +14,7 @@ export default function CircularCategories() {
     img: c.image || c.categoryimage || "",
     title: c.categoryname,
     desc: c.description && c.description.trim(),
-    link: `/shop?category=${encodeURIComponent(c.categoryname)}`
+    link: `/collections?category=${encodeURIComponent(c.categoryname)}`
   }));
 
   return (
