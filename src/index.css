@@ -103,6 +103,68 @@ img {
   }
 }
 
+/* Hero Slider Content Layout */
+.hero-slider-text-box {
+  width: 100%;
+  max-width: 100%;
+  color: #ffffff;
+  padding-left: 10px;
+}
+
+@media (min-width: 900px) {
+  .hero-slider-text-box {
+    max-width: 62%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-slider-text-box {
+    max-width: 760px;
+  }
+}
+
+.hero-slider-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.85rem, 3.6vw, 3.2rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 1.12;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
+  word-break: break-word;
+}
+
+.hero-slider-heading-line2 {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.35rem, 2.5vw, 2.1rem);
+  line-height: 1.25;
+  margin-top: 8px;
+  color: var(--gold-light);
+  text-transform: none;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+}
+
+.hero-slider-desc {
+  font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 540px;
+  margin-bottom: 24px;
+  font-weight: 300;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 
 
 /* Shimmer & Glow Effects */

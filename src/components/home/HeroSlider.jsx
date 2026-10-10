@@ -58,13 +58,14 @@ export default function HeroSlider() {
   const hasTextContent = Boolean(
     cur.tag || cur.headingLine1 || cur.headingLine2 || cur.desc || cur.buttonText || cur.secondaryButtonText
   );
+  const cleanTag = cur.tag ? cur.tag.replace(/^[\?✦\s]+/, "").trim() : "";
 
   return (
     <section
       style={{
         position: "relative",
         height: "88vh",
-        minHeight: "620px",
+        minHeight: "580px",
         maxHeight: "860px",
         overflow: "hidden",
         backgroundColor: "#141c10"
@@ -94,7 +95,7 @@ export default function HeroSlider() {
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to right, rgba(16, 23, 13, 0.76) 0%, rgba(16, 23, 13, 0.35) 55%, rgba(10, 14, 8, 0.6) 100%)"
+            background: "linear-gradient(to right, rgba(16, 23, 13, 0.82) 0%, rgba(16, 23, 13, 0.45) 55%, rgba(10, 14, 8, 0.3) 100%)"
           }}
         />
       )}
@@ -108,92 +109,60 @@ export default function HeroSlider() {
             height: "100%",
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-start",
             zIndex: 2
           }}
         >
-          <div style={{ maxWidth: "660px", color: "#ffffff", paddingLeft: "10px" }}>
+          <div className="hero-slider-text-box">
             {/* Eyebrow */}
-            {cur.tag && (
+            {cleanTag && (
               <div
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "8px",
-                  fontSize: "0.8rem",
-                  letterSpacing: "0.26em",
+                  fontSize: "0.78rem",
+                  letterSpacing: "0.24em",
                   fontWeight: 600,
                   textTransform: "uppercase",
                   color: "var(--gold-light)",
-                  marginBottom: "18px",
-                  backgroundColor: "rgba(0, 0, 0, 0.25)",
+                  marginBottom: "14px",
+                  backgroundColor: "rgba(0, 0, 0, 0.3)",
                   backdropFilter: "blur(4px)",
                   padding: "6px 14px",
                   borderRadius: "2px",
-                  border: "1px solid rgba(197, 160, 89, 0.3)"
+                  border: "1px solid rgba(197, 160, 89, 0.35)"
                 }}
               >
                 <span>✦</span>
-                <span>{cur.tag}</span>
+                <span>{cleanTag}</span>
               </div>
             )}
 
             {/* Heading */}
             {(cur.headingLine1 || cur.headingLine2) && (
-              <h1
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(2.9rem, 6.2vw, 5.4rem)",
-                  fontWeight: 400,
-                  textTransform: "uppercase",
-                  lineHeight: 1.06,
-                  color: "#ffffff",
-                  margin: "0 0 24px 0",
-                  letterSpacing: "0.02em",
-                  textShadow: "0 2px 20px rgba(0,0,0,0.3)"
-                }}
-              >
-                {cur.headingLine1}
+              <h1 className="hero-slider-heading">
+                {cur.headingLine1 && (
+                  <span style={{ display: "block" }}>{cur.headingLine1}</span>
+                )}
                 {cur.headingLine2 ? (
-                  <>
-                    <br />
-                    <em
-                      style={{
-                        fontFamily: "var(--font-serif)",
-                        fontStyle: "italic",
-                        fontWeight: 400,
-                        color: "var(--gold-light)",
-                        textTransform: "none",
-                        letterSpacing: "0.01em"
-                      }}
-                    >
-                      {cur.headingLine2}
-                    </em>
-                  </>
+                  <em className="hero-slider-heading-line2">
+                    {cur.headingLine2}
+                  </em>
                 ) : null}
               </h1>
             )}
 
             {/* Subtitle Description */}
             {cur.desc && (
-              <p
-                style={{
-                  fontSize: "1rem",
-                  lineHeight: 1.75,
-                  color: "rgba(255, 255, 255, 0.92)",
-                  maxWidth: "520px",
-                  marginBottom: "36px",
-                  fontWeight: 300,
-                  textShadow: "0 1px 10px rgba(0,0,0,0.4)"
-                }}
-              >
+              <p className="hero-slider-desc">
                 {cur.desc}
               </p>
             )}
 
             {/* Call To Action Buttons */}
             {(cur.buttonText || cur.secondaryButtonText) && (
-              <div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
                 {cur.buttonText && (
                   <Link
                     to={cur.buttonLink || "/shop"}
@@ -201,12 +170,12 @@ export default function HeroSlider() {
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: "12px",
-                      padding: "16px 36px",
+                      gap: "10px",
+                      padding: "14px 32px",
                       backgroundColor: "var(--primary)",
                       color: "#ffffff",
                       border: "1px solid rgba(197, 160, 89, 0.5)",
-                      fontSize: "0.82rem",
+                      fontSize: "0.8rem",
                       letterSpacing: "0.2em",
                       fontWeight: 600,
                       textTransform: "uppercase",
@@ -234,7 +203,7 @@ export default function HeroSlider() {
                     to={cur.secondaryButtonLink || "/about"}
                     className="eyebrow"
                     style={{
-                      fontSize: "0.82rem",
+                      fontSize: "0.8rem",
                       letterSpacing: "0.2em",
                       fontWeight: 600,
                       textTransform: "uppercase",
