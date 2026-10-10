@@ -38,6 +38,9 @@ export default function CollectionsPage({ slugOverride = null }) {
     }
 
     // B. Check if slug matches any item inside menus (Column 1, 2, or 3)
+    // Multi-attribute filter resolution
+    let resolvedAttributeFilters = [];
+
     if (!customTitle) {
       for (const m of (menus || [])) {
         const allItems = [
@@ -50,16 +53,27 @@ export default function CollectionsPage({ slugOverride = null }) {
         );
         if (found) {
           customTitle = found.label;
-          if (found.filterType === "style") {
-            style = found.filterValue || found.label;
-          } else if (found.filterType === "shape") {
-            shape = (found.filterValue || found.shape || found.label).toLowerCase();
-          } else if (found.filterType === "category") {
-            category = found.filterValue || found.label;
-          } else if (found.filterType === "subcategory" || found.filterType === "search") {
-            search = (found.filterValue || found.label).toLowerCase();
-          } else if (found.filterType === "featured") {
-            featured = found.filterValue || "bestseller";
+          const fType = (found.filterType || "style").toLowerCase().replace(/[^a-z]/g, "");
+          const rawVal = found.filterValue;
+          const fVals = Array.isArray(rawVal)
+            ? rawVal
+            : (typeof rawVal === "string" && rawVal.trim()
+                ? rawVal.split(",").map((s) => s.trim()).filter(Boolean)
+                : (rawVal ? [rawVal] : (found.label ? [found.label] : [])));
+
+          if (fType === "style") {
+            style = fVals.length > 0 ? fVals : (found.label || null);
+          } else if (fType === "shape") {
+            shape = fVals.length > 0 ? fVals : (found.shape ? [found.shape] : (found.label ? [found.label] : null));
+          } else if (fType === "category") {
+            category = fVals.length > 0 ? fVals[0] : (found.label || null);
+          } else if (fType === "subcategory" || fType === "search") {
+            search = fVals.length > 0 ? fVals.join(" ").toLowerCase() : (found.label?.toLowerCase() || null);
+          } else if (fType === "featured") {
+            featured = fVals[0] || "bestseller";
+          } else {
+            // General attribute filter (metal, diamondsize, clarity, color, stone, etc.)
+            resolvedAttributeFilters.push({ type: fType, values: fVals });
           }
           break;
         }
@@ -126,19 +140,31 @@ export default function CollectionsPage({ slugOverride = null }) {
       if (!matchName && !matchId) return false;
     }
     if (shape) {
-      const matchShape =
-        (p.shapes || []).some((s) => s.toLowerCase().includes(shape) || shape.includes(s.toLowerCase())) ||
-        (p.name || "").toLowerCase().includes(shape) ||
-        (p.description || "").toLowerCase().includes(shape);
+      const shapeArr = Array.isArray(shape) ? shape.map((s) => String(s).toLowerCase()) : [String(shape).toLowerCase()];
+      const matchShape = shapeArr.some((sh) =>
+        (p.shapes || []).some((s) => String(s).toLowerCase().includes(sh) || sh.includes(String(s).toLowerCase())) ||
+        (p.name || "").toLowerCase().includes(sh) ||
+        (p.description || "").toLowerCase().includes(sh)
+      );
       if (!matchShape) return false;
     }
     if (style) {
-      const sTrim = style.toLowerCase();
-      const matchStyle =
-        (p.styles || []).some((s) => s.toLowerCase().includes(sTrim) || sTrim.includes(s.toLowerCase())) ||
-        (p.name || "").toLowerCase().includes(sTrim) ||
-        (p.description || "").toLowerCase().includes(sTrim);
+      const styleArr = Array.isArray(style) ? style.map((s) => String(s).toLowerCase()) : [String(style).toLowerCase()];
+      const matchStyle = styleArr.some((st) =>
+        (p.styles || []).some((s) => String(s).toLowerCase().includes(st) || st.includes(String(s).toLowerCase())) ||
+        (p.name || "").toLowerCase().includes(st) ||
+        (p.description || "").toLowerCase().includes(st)
+      );
       if (!matchStyle) return false;
+    }
+    if (resolvedAttributeFilters && resolvedAttributeFilters.length > 0) {
+      for (const rf of resolvedAttributeFilters) {
+        if (!rf.values || rf.values.length === 0) continue;
+        const vals = rf.values.map((v) => String(v).toLowerCase().trim());
+        const jsonStr = JSON.stringify(p).toLowerCase();
+        const matchesAny = vals.some((v) => jsonStr.includes(v));
+        if (!matchesAny) return false;
+      }
     }
     if (featured === "bestseller" && !p.bestseller) {
       return false;
