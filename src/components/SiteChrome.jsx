@@ -7,7 +7,6 @@ import {
   ShoppingBag,
   User,
   X,
-  ChevronDown,
   Phone,
   MapPin,
   ArrowRight,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import { CartLines } from "./CartLines";
+import MegaMenu from "./MegaMenu";
 
 export function Logo() {
   const { generalSettings } = useStore();
@@ -308,7 +308,7 @@ function AccountMenu() {
 }
 
 export function Header() {
-  const { cartCount, wishlist, setCartOpen, generalSettings, categories, products: dynamicProducts, format, user, logout } = useStore();
+  const { cartCount, wishlist, setCartOpen, generalSettings, products: dynamicProducts, format, user, logout } = useStore();
   const [mobile, setMobile] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
@@ -454,8 +454,8 @@ export function Header() {
         }}
       >
         <div className="container-luxury site-header-grid">
-          {/* Left: Desktop Nav Links / Mobile Burger */}
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          {/* Left: Mobile Burger / Desktop Capsule Search */}
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <button
               aria-label="Toggle navigation menu"
               onClick={() => setMobile(true)}
@@ -472,86 +472,14 @@ export function Header() {
               <Menu size={24} strokeWidth={1.5} />
             </button>
 
-            <nav
-              style={{ display: "flex", gap: "32px", alignItems: "center" }}
-              className="desktop-only-nav"
-            >
-              <Link
-                to="/"
-                className={`nav-link-luxury ${location.pathname === "/" ? "active" : ""}`}
-                style={{
-                  fontSize: "0.82rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: location.pathname === "/" ? "var(--primary)" : "var(--foreground)"
-                }}
-              >
-                Home
-              </Link>
-
-              <Link
-                to="/shop"
-                className={`nav-link-luxury ${location.pathname === "/shop" ? "active" : ""}`}
-                style={{
-                  fontSize: "0.82rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: location.pathname === "/shop" ? "var(--primary)" : "var(--foreground)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px"
-                }}
-              >
-                Shop All <ChevronDown size={12} strokeWidth={1.8} />
-              </Link>
-
-              <Link
-                to="/about"
-                className={`nav-link-luxury ${location.pathname === "/about" ? "active" : ""}`}
-                style={{
-                  fontSize: "0.82rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: location.pathname === "/about" ? "var(--primary)" : "var(--foreground)"
-                }}
-              >
-                About Us
-              </Link>
-
-              <Link
-                to="/contact"
-                className={`nav-link-luxury ${location.pathname === "/contact" ? "active" : ""}`}
-                style={{
-                  fontSize: "0.82rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: location.pathname === "/contact" ? "var(--primary)" : "var(--foreground)"
-                }}
-              >
-                Contact
-              </Link>
-            </nav>
-          </div>
-
-          {/* Center: Brand Identity Logo */}
-          <div style={{ textAlign: "center" }}>
-            <Logo />
-          </div>
-
-          {/* Right: Search Input + Client Icons */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "18px" }}>
-            {/* Elegant Luxury Capsule Search */}
+            {/* Desktop Capsule Search */}
             <form
               onSubmit={handleSearchSubmit}
               style={{
                 position: "relative",
                 display: "flex",
                 alignItems: "center",
-                maxWidth: "260px",
+                maxWidth: "280px",
                 width: "100%"
               }}
               className="desktop-only-nav"
@@ -588,7 +516,15 @@ export function Header() {
                 style={{ position: "absolute", left: "14px", color: "var(--primary)", pointerEvents: "none" }}
               />
             </form>
+          </div>
 
+          {/* Center: Brand Identity Logo */}
+          <div style={{ textAlign: "center" }}>
+            <Logo />
+          </div>
+
+          {/* Right: Client Action Icons */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "18px" }}>
             {/* Mobile Search Button */}
             <button
               onClick={() => setSearch(true)}
@@ -665,6 +601,9 @@ export function Header() {
             </button>
           </div>
         </div>
+
+        {/* Desktop Luxury Navigation Bar & Mega Menu */}
+        <MegaMenu />
       </header>
 
       {/* Mobile Drawer Menu */}
@@ -714,11 +653,131 @@ export function Header() {
                   fontSize: "1.05rem",
                   fontWeight: 600,
                   color: location.pathname === "/" ? "var(--primary)" : "var(--foreground)",
-                  padding: "6px 0"
+                  padding: "4px 0"
                 }}
               >
                 Home
               </Link>
+
+              {/* Engagement Rings */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <Link
+                  to="/shop?category=Engagement%20Rings"
+                  onClick={() => setMobile(false)}
+                  style={{
+                    fontSize: "1.05rem",
+                    fontWeight: 600,
+                    color: "var(--foreground)",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                  }}
+                >
+                  <span>Engagement Rings</span>
+                  <span style={{ fontSize: "0.6rem", backgroundColor: "var(--primary)", color: "#fff", padding: "1px 6px", borderRadius: "2px" }}>POPULAR</span>
+                </Link>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingLeft: "8px", marginTop: "4px" }}>
+                  {["Solitaire", "Halo", "Vintage Style Rings", "Three Stone", "Nature Inspired"].map((st) => (
+                    <Link
+                      key={st}
+                      to={`/shop?style=${encodeURIComponent(st)}`}
+                      onClick={() => setMobile(false)}
+                      style={{
+                        fontSize: "0.78rem",
+                        color: "var(--muted-foreground)",
+                        backgroundColor: "#faf8f5",
+                        border: "1px solid #ebe5da",
+                        padding: "3px 10px",
+                        borderRadius: "50px",
+                        textDecoration: "none"
+                      }}
+                    >
+                      {st}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Wedding & Bridal */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <Link
+                  to="/shop?category=Bridal%20Sets"
+                  onClick={() => setMobile(false)}
+                  style={{
+                    fontSize: "1.05rem",
+                    fontWeight: 600,
+                    color: "var(--foreground)"
+                  }}
+                >
+                  Wedding Rings &amp; Bridal Sets
+                </Link>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingLeft: "8px", marginTop: "4px" }}>
+                  {["Bridal Sets", "Eternity", "Classic", "Two Stone"].map((st) => (
+                    <Link
+                      key={st}
+                      to={`/shop?category=Bridal%20Sets&style=${encodeURIComponent(st)}`}
+                      onClick={() => setMobile(false)}
+                      style={{
+                        fontSize: "0.78rem",
+                        color: "var(--muted-foreground)",
+                        backgroundColor: "#faf8f5",
+                        border: "1px solid #ebe5da",
+                        padding: "3px 10px",
+                        borderRadius: "50px",
+                        textDecoration: "none"
+                      }}
+                    >
+                      {st}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Fine Jewelry */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <Link
+                  to="/shop"
+                  onClick={() => setMobile(false)}
+                  style={{
+                    fontSize: "1.05rem",
+                    fontWeight: 600,
+                    color: "var(--foreground)"
+                  }}
+                >
+                  Fine Jewelry
+                </Link>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingLeft: "8px", marginTop: "4px" }}>
+                  <Link
+                    to="/shop?category=Bracelets"
+                    onClick={() => setMobile(false)}
+                    style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
+                  >
+                    Bracelets
+                  </Link>
+                  <Link
+                    to="/shop?category=Earrings"
+                    onClick={() => setMobile(false)}
+                    style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
+                  >
+                    Earrings
+                  </Link>
+                  <Link
+                    to="/shop?shape=Round"
+                    onClick={() => setMobile(false)}
+                    style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
+                  >
+                    Round Cut
+                  </Link>
+                  <Link
+                    to="/shop?shape=Emerald"
+                    onClick={() => setMobile(false)}
+                    style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
+                  >
+                    Emerald Cut
+                  </Link>
+                </div>
+              </div>
+
               <Link
                 to="/shop"
                 onClick={() => setMobile(false)}
@@ -726,28 +785,11 @@ export function Header() {
                   fontSize: "1.05rem",
                   fontWeight: 600,
                   color: location.pathname === "/shop" ? "var(--primary)" : "var(--foreground)",
-                  padding: "6px 0"
+                  padding: "4px 0"
                 }}
               >
-                Shop All Jewelry
+                Shop All Archive
               </Link>
-              {categories && categories.length > 0 ? (
-                categories.map((c) => (
-                  <Link
-                    key={c._id || c.categoryid || c.categoryname}
-                    to={`/shop?category=${encodeURIComponent(c.categoryname)}`}
-                    onClick={() => setMobile(false)}
-                    style={{
-                      fontSize: "0.95rem",
-                      fontWeight: 500,
-                      color: "var(--muted-foreground)",
-                      paddingLeft: "14px"
-                    }}
-                  >
-                    &bull; {c.categoryname}
-                  </Link>
-                ))
-              ) : null}
               <Link
                 to="/about"
                 onClick={() => setMobile(false)}
@@ -755,7 +797,7 @@ export function Header() {
                   fontSize: "1.05rem",
                   fontWeight: 600,
                   color: location.pathname === "/about" ? "var(--primary)" : "var(--foreground)",
-                  padding: "6px 0"
+                  padding: "4px 0"
                 }}
               >
                 About Our Atelier
@@ -767,10 +809,10 @@ export function Header() {
                   fontSize: "1.05rem",
                   fontWeight: 600,
                   color: location.pathname === "/contact" ? "var(--primary)" : "var(--foreground)",
-                  padding: "6px 0"
+                  padding: "4px 0"
                 }}
               >
-                Contact &amp; Stores
+                Contact &amp; Concierge
               </Link>
             </nav>
 

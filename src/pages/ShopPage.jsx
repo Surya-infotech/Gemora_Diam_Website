@@ -1,11 +1,15 @@
 import { useSearchParams, Link } from "react-router-dom";
+import { X } from "lucide-react";
 import { ProductCard } from "../components/ProductCard";
 import { useStore } from "../lib/store";
 
 export default function ShopPage() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const category = searchParams.get("category") || null;
   const search = searchParams.get("search")?.toLowerCase().trim() || null;
+  const shape = searchParams.get("shape")?.toLowerCase().trim() || null;
+  const style = searchParams.get("style")?.toLowerCase().trim() || null;
+  const featured = searchParams.get("featured")?.toLowerCase().trim() || null;
 
   const { products, categories, productsLoading } = useStore();
 
@@ -28,9 +32,28 @@ export default function ShopPage() {
     }
     if (category) {
       const catTrim = category.trim().toLowerCase();
-      const matchName = (p.category || "").trim().toLowerCase() === catTrim;
+      const matchName = (p.category || "").trim().toLowerCase() === catTrim ||
+        (catTrim.includes("ring") && (p.category || "").toLowerCase().includes("ring")) ||
+        (catTrim.includes("bridal") && (p.category || "").toLowerCase().includes("bridal"));
       const matchId = p.categoryid && String(p.categoryid) === String(category);
       if (!matchName && !matchId) return false;
+    }
+    if (shape) {
+      const matchShape =
+        (p.shapes || []).some((s) => s.toLowerCase().includes(shape) || shape.includes(s.toLowerCase())) ||
+        (p.name || "").toLowerCase().includes(shape) ||
+        (p.description || "").toLowerCase().includes(shape);
+      if (!matchShape) return false;
+    }
+    if (style) {
+      const matchStyle =
+        (p.styles || []).some((s) => s.toLowerCase().includes(style) || style.includes(s.toLowerCase())) ||
+        (p.name || "").toLowerCase().includes(style) ||
+        (p.description || "").toLowerCase().includes(style);
+      if (!matchStyle) return false;
+    }
+    if (featured === "bestseller" && !p.bestseller) {
+      return false;
     }
     return true;
   });
@@ -47,7 +70,12 @@ export default function ShopPage() {
     ? (typeof currentCategoryObj === "string" ? currentCategoryObj : currentCategoryObj.categoryname)
     : category || "All Fine Jewelry";
 
-  const title = search ? `Search: "${searchParams.get("search")}"` : displayTitle;
+  let title = displayTitle;
+  if (search) title = `Search: "${searchParams.get("search")}"`;
+  else if (shape) title = `${shape.charAt(0).toUpperCase() + shape.slice(1)} Cut Diamonds`;
+  else if (style) title = `${style.charAt(0).toUpperCase() + style.slice(1)} Style`;
+  else if (featured === "bestseller") title = "Atelier Best Sellers";
+  else if (featured === "new") title = "New Atelier Arrivals";
 
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "120px" }}>
@@ -83,6 +111,48 @@ export default function ShopPage() {
             {currentCategoryObj.description.trim()}
           </p>
         ) : null}
+
+        {/* Active Filter Chips */}
+        {(shape || style || featured || category || search) && (
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "16px", alignItems: "center" }}>
+            <span style={{ fontSize: "0.74rem", textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--muted-foreground)", fontWeight: 600 }}>
+              Active Filter:
+            </span>
+            {category && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
+                Category: {category}
+                <button onClick={() => { searchParams.delete("category"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+              </span>
+            )}
+            {shape && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
+                Shape: {shape}
+                <button onClick={() => { searchParams.delete("shape"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+              </span>
+            )}
+            {style && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
+                Style: {style}
+                <button onClick={() => { searchParams.delete("style"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+              </span>
+            )}
+            {featured && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
+                Featured: {featured}
+                <button onClick={() => { searchParams.delete("featured"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+              </span>
+            )}
+            {search && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
+                Keyword: "{search}"
+                <button onClick={() => { searchParams.delete("search"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+              </span>
+            )}
+            <Link to="/shop" style={{ fontSize: "0.74rem", color: "var(--primary)", textDecoration: "underline", marginLeft: "4px" }}>
+              Clear All
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Filter Tabs Bar */}
