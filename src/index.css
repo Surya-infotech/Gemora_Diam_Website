@@ -1,54 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-
 :root {
-  --radius: 0.25rem;
-  --white: #ffffff;
-  --black: #000000;
-  --ivory: #fafbf8;
-  --obsidian: #181f13;
   --background: #ffffff;
   --card: #ffffff;
 
-  /* Gemora Diam Botanical Luxury Palette - PRESERVED PRIMARY COLOR */
+  /* Gemora Diam Botanical Luxury Palette */
   --primary: #556832;
   --primary-hover: #435226;
   --primary-foreground: #ffffff;
   --primary-soft: #eef2e6;
   --primary-light: #708447;
-  --primary-dark: #374320;
 
   /* Harmonious Luxury Accent (Champagne Gold / Antique Brass) */
-  --accent: #c5a059;
-  --accent-hover: #b38e46;
   --gold: #c5a059;
   --gold-light: #e8d7a7;
   --gold-deep: #9e7d37;
-  --gold-bar: #556832;
-  --gold-glow: rgba(197, 160, 89, 0.25);
 
   /* Premium Neutrals & Backgrounds */
   --foreground: #1c2217;
-  --card-foreground: #1c2217;
-  --main-dark: #151d11;
-  --main-darker: #0d130a;
-  --main-muted: #626e59;
-  --main-subtle: #85917c;
   --secondary: #f4f6f0;
-  --secondary-foreground: #1c2217;
   --muted: #edf1e7;
   --muted-foreground: #5e6b54;
-  --cream-bg: #faf8f5;
-  --champagne: #f4f1e8;
-  --stone-card: #f9f8f5;
   --border: #dfe4d8;
   --border-subtle: #edf1e8;
-  --border-gold: #e2d2b4;
   --destructive: #c0392b;
 
   /* Shadows */
-  --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.03);
-  --shadow-card: 0 6px 24px rgba(28, 34, 23, 0.05);
-  --shadow-hover: 0 14px 34px rgba(28, 34, 23, 0.09);
   --shadow-luxury: 0 20px 50px rgba(15, 23, 11, 0.12);
 
   /* Typography */
@@ -81,11 +56,6 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   font-weight: 400;
   letter-spacing: -0.01em;
   color: var(--foreground);
-}
-
-.font-serif-italic {
-  font-family: var(--font-serif);
-  font-style: italic;
 }
 
 a {
@@ -133,13 +103,7 @@ img {
   }
 }
 
-/* Luxury Interactive Glassmorphism */
-.glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
+
 
 /* Shimmer & Glow Effects */
 @keyframes subtlePulse {
