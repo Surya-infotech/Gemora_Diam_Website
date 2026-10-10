@@ -111,7 +111,7 @@ export default function CircularCategories() {
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "cover",
+                      objectFit: "fill",
                       objectPosition: "center",
                       transition: "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)"
                     }}
