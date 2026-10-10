@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ChevronDown, ArrowRight } from "lucide-react";
 import { useStore } from "../lib/store";
-import promo1 from "../assets/vemus/collections_promo-1.jpg";
 
 // ==========================================
 // 1. Precise Diamond Shape Outline Icons (SVG)
@@ -233,7 +232,34 @@ export function RingStyleIcon({ styleName, size = 18 }) {
 }
 
 // ==========================================
-// 3. Main Dynamic Mega Menu Component
+// 3. Helper to detect if menu has any real dropdown content
+// ==========================================
+export function hasMenuDropdownContent(menu) {
+  if (!menu) return false;
+  const hasCol1 = Boolean(
+    menu.column1?.title?.trim() ||
+    (Array.isArray(menu.column1?.items) && menu.column1.items.length > 0)
+  );
+  const hasCol2 = Boolean(
+    menu.column2?.title?.trim() ||
+    (Array.isArray(menu.column2?.items) && menu.column2.items.length > 0)
+  );
+  const hasCol3 = Boolean(
+    menu.column3?.title?.trim() ||
+    (Array.isArray(menu.column3?.items) && menu.column3.items.length > 0)
+  );
+  const hasBanner = Boolean(
+    menu.banner?.image?.trim() ||
+    menu.banner?.title?.trim() ||
+    menu.banner?.description?.trim()
+  );
+  const hasBottom = Boolean(menu.bottomBar?.text?.trim());
+
+  return hasCol1 || hasCol2 || hasCol3 || hasBanner || hasBottom;
+}
+
+// ==========================================
+// 4. Main Dynamic Mega Menu Component
 // ==========================================
 export default function MegaMenu() {
   const { menus } = useStore();
@@ -261,6 +287,26 @@ export default function MegaMenu() {
 
   const currentMenu = activeMenus.find((m) => m.menuid === activeMenuId);
 
+  const hasCol1 = Boolean(
+    currentMenu?.column1?.title?.trim() ||
+    (Array.isArray(currentMenu?.column1?.items) && currentMenu.column1.items.length > 0)
+  );
+  const hasCol2 = Boolean(
+    currentMenu?.column2?.title?.trim() ||
+    (Array.isArray(currentMenu?.column2?.items) && currentMenu.column2.items.length > 0)
+  );
+  const hasCol3 = Boolean(
+    currentMenu?.column3?.title?.trim() ||
+    (Array.isArray(currentMenu?.column3?.items) && currentMenu.column3.items.length > 0)
+  );
+  const hasBanner = Boolean(
+    currentMenu?.banner?.image?.trim() ||
+    currentMenu?.banner?.title?.trim() ||
+    currentMenu?.banner?.description?.trim()
+  );
+  const hasBottom = Boolean(currentMenu?.bottomBar?.text?.trim());
+  const hasDropdown = hasCol1 || hasCol2 || hasCol3 || hasBanner || hasBottom;
+
   return (
     <div
       style={{ position: "relative", width: "100%" }}
@@ -282,10 +328,11 @@ export default function MegaMenu() {
         {activeMenus.map((menu) => {
           const isMenuOpen = activeMenuId === menu.menuid;
           const isPageActive = location.pathname === menu.slug;
+          const menuHasDropdown = hasMenuDropdownContent(menu);
           return (
             <div
               key={menu.menuid || menu.title}
-              onMouseEnter={() => handleMouseEnter(menu.menuid)}
+              onMouseEnter={() => menuHasDropdown && handleMouseEnter(menu.menuid)}
               style={{ position: "relative" }}
             >
               <Link
@@ -305,7 +352,9 @@ export default function MegaMenu() {
                 }}
               >
                 {menu.title}
-                <ChevronDown size={12} strokeWidth={1.8} style={{ opacity: 0.7 }} />
+                {menuHasDropdown && (
+                  <ChevronDown size={12} strokeWidth={1.8} style={{ opacity: 0.7 }} />
+                )}
               </Link>
             </div>
           );
@@ -377,7 +426,7 @@ export default function MegaMenu() {
       </div>
 
       {/* ---------------- Full-Width Dynamic Mega Menu Dropdown Panel ---------------- */}
-      {currentMenu && (
+      {currentMenu && hasDropdown && (
         <div
           onMouseEnter={() => handleMouseEnter(currentMenu.menuid)}
           style={{
@@ -397,285 +446,310 @@ export default function MegaMenu() {
           <div className="container-luxury" style={{ padding: "36px 44px 28px" }}>
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "1.2fr 1.5fr 1fr 1.3fr",
-                gap: "40px",
-                alignItems: "start"
+                display: "flex",
+                gap: "clamp(36px, 4vw, 64px)",
+                alignItems: "start",
+                justifyContent: "flex-start",
+                flexWrap: "wrap"
               }}
             >
               {/* COLUMN 1: Styles / Categories */}
-              <div>
-                <h4
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "0.88rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: "var(--foreground)",
-                    marginBottom: "18px"
-                  }}
-                >
-                  {currentMenu.column1?.title || "Shop by Style"}
-                </h4>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  {(currentMenu.column1?.items || []).map((item) => (
-                    <Link
-                      key={item.label}
-                      to={item.slug || "/collections"}
-                      onClick={closeMenu}
+              {hasCol1 && (
+                <div style={{ minWidth: "200px", maxWidth: "300px", flex: "0 1 auto" }}>
+                  {currentMenu.column1?.title?.trim() && (
+                    <h4
                       style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "10px",
-                        color: "var(--foreground)",
-                        textDecoration: "none",
-                        fontSize: "0.84rem",
-                        fontWeight: 500,
-                        transition: "all 0.2s ease"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = "var(--primary)";
-                        e.currentTarget.style.transform = "translateX(4px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = "var(--foreground)";
-                        e.currentTarget.style.transform = "translateX(0)";
-                      }}
-                    >
-                      <span style={{ color: "var(--gold-deep)", display: "flex", alignItems: "center" }}>
-                        <RingStyleIcon styleName={item.filterValue || item.label} size={16} />
-                      </span>
-                      <span>{item.label}</span>
-                    </Link>
-                  ))}
-
-                  {currentMenu.column1?.bottomText && (
-                    <Link
-                      to={currentMenu.column1?.bottomUrl || "/collections"}
-                      onClick={closeMenu}
-                      style={{
-                        marginTop: "8px",
-                        fontSize: "0.78rem",
+                        fontFamily: "var(--font-serif)",
+                        fontSize: "0.88rem",
                         fontWeight: 700,
-                        letterSpacing: "0.16em",
+                        letterSpacing: "0.12em",
                         textTransform: "uppercase",
-                        color: "var(--primary)",
-                        textDecoration: "underline",
-                        textUnderlineOffset: "4px"
+                        color: "var(--foreground)",
+                        marginBottom: "18px"
                       }}
                     >
-                      {currentMenu.column1.bottomText}
-                    </Link>
+                      {currentMenu.column1.title.trim()}
+                    </h4>
                   )}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    {(currentMenu.column1?.items || []).map((item) => (
+                      <Link
+                        key={item.label}
+                        to={item.slug || "/collections"}
+                        onClick={closeMenu}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "10px",
+                          color: "var(--foreground)",
+                          textDecoration: "none",
+                          fontSize: "0.84rem",
+                          fontWeight: 500,
+                          transition: "all 0.2s ease"
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = "var(--primary)";
+                          e.currentTarget.style.transform = "translateX(4px)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = "var(--foreground)";
+                          e.currentTarget.style.transform = "translateX(0)";
+                        }}
+                      >
+                        <span style={{ color: "var(--gold-deep)", display: "flex", alignItems: "center" }}>
+                          <RingStyleIcon styleName={item.filterValue || item.label} size={16} />
+                        </span>
+                        <span>{item.label}</span>
+                      </Link>
+                    ))}
+
+                    {currentMenu.column1?.bottomText?.trim() && (
+                      <Link
+                        to={currentMenu.column1?.bottomUrl || "/collections"}
+                        onClick={closeMenu}
+                        style={{
+                          marginTop: "8px",
+                          fontSize: "0.78rem",
+                          fontWeight: 700,
+                          letterSpacing: "0.16em",
+                          textTransform: "uppercase",
+                          color: "var(--primary)",
+                          textDecoration: "underline",
+                          textUnderlineOffset: "4px"
+                        }}
+                      >
+                        {currentMenu.column1.bottomText.trim()}
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* COLUMN 2: Diamond Shapes */}
-              <div>
-                <h4
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "0.88rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: "var(--foreground)",
-                    marginBottom: "18px"
-                  }}
-                >
-                  {currentMenu.column2?.title || "Shop by Diamond Shape"}
-                </h4>
-                {(() => {
-                  const items = currentMenu.column2?.items || [];
-                  const mid = Math.ceil(items.length / 2);
-                  const col1 = items.slice(0, mid);
-                  const col2 = items.slice(mid);
-
-                  return (
-                    <div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 20px" }}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                          {col1.map((item) => (
-                            <Link
-                              key={item.label}
-                              to={item.slug || "/collections"}
-                              onClick={closeMenu}
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "9px",
-                                color: "var(--foreground)",
-                                textDecoration: "none",
-                                fontSize: "0.84rem",
-                                fontWeight: 500,
-                                transition: "all 0.2s ease"
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.color = "var(--primary)";
-                                e.currentTarget.style.transform = "translateX(3px)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.color = "var(--foreground)";
-                                e.currentTarget.style.transform = "translateX(0)";
-                              }}
-                            >
-                              <span style={{ color: "var(--gold-deep)", display: "flex", alignItems: "center" }}>
-                                <DiamondShapeIcon shape={item.shape || item.label} size={16} />
-                              </span>
-                              <span>{item.label}</span>
-                            </Link>
-                          ))}
-                        </div>
-
-                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                          {col2.map((item) => (
-                            <Link
-                              key={item.label}
-                              to={item.slug || "/collections"}
-                              onClick={closeMenu}
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "9px",
-                                color: "var(--foreground)",
-                                textDecoration: "none",
-                                fontSize: "0.84rem",
-                                fontWeight: 500,
-                                transition: "all 0.2s ease"
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.color = "var(--primary)";
-                                e.currentTarget.style.transform = "translateX(3px)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.color = "var(--foreground)";
-                                e.currentTarget.style.transform = "translateX(0)";
-                              }}
-                            >
-                              <span style={{ color: "var(--gold-deep)", display: "flex", alignItems: "center" }}>
-                                <DiamondShapeIcon shape={item.shape || item.label} size={16} />
-                              </span>
-                              <span>{item.label}</span>
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-
-                      {currentMenu.column2?.bottomText && (
-                        <Link
-                          to={currentMenu.column2?.bottomUrl || "/collections"}
-                          onClick={closeMenu}
-                          style={{
-                            display: "inline-block",
-                            marginTop: "16px",
-                            fontSize: "0.78rem",
-                            fontWeight: 700,
-                            letterSpacing: "0.16em",
-                            textTransform: "uppercase",
-                            color: "var(--primary)",
-                            textDecoration: "underline",
-                            textUnderlineOffset: "4px"
-                          }}
-                        >
-                          {currentMenu.column2.bottomText}
-                        </Link>
-                      )}
-                    </div>
-                  );
-                })()}
-              </div>
-
-              {/* COLUMN 3: Featured & Curations */}
-              <div>
-                <h4
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "0.88rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: "var(--foreground)",
-                    marginBottom: "18px"
-                  }}
-                >
-                  {currentMenu.column3?.title || "Featured"}
-                </h4>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  {(currentMenu.column3?.items || []).map((item) => (
-                    <Link
-                      key={item.label}
-                      to={item.slug || "/collections"}
-                      onClick={closeMenu}
+              {hasCol2 && (
+                <div style={{ minWidth: "240px", maxWidth: "440px", flex: "0 1 auto" }}>
+                  {currentMenu.column2?.title?.trim() && (
+                    <h4
                       style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "6px",
+                        fontFamily: "var(--font-serif)",
+                        fontSize: "0.88rem",
+                        fontWeight: 700,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
                         color: "var(--foreground)",
-                        textDecoration: "none",
-                        fontSize: "0.84rem",
-                        fontWeight: 500,
-                        transition: "all 0.2s ease"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = "var(--primary)";
-                        e.currentTarget.style.transform = "translateX(4px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = "var(--foreground)";
-                        e.currentTarget.style.transform = "translateX(0)";
+                        marginBottom: "18px"
                       }}
                     >
-                      <span>{item.label}</span>
-                      {item.badge && (
-                        <span
-                          style={{
-                            fontSize: "0.62rem",
-                            fontWeight: 700,
-                            letterSpacing: "0.08em",
-                            padding: "2px 6px",
-                            backgroundColor: "#1b211a",
-                            color: "#d4af37",
-                            borderRadius: "2px",
-                            lineHeight: 1
-                          }}
-                        >
-                          {item.badge}
-                        </span>
-                      )}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+                      {currentMenu.column2.title.trim()}
+                    </h4>
+                  )}
+                  {(() => {
+                    const items = currentMenu.column2?.items || [];
+                    const isDualCol = items.length > 5;
+                    const mid = Math.ceil(items.length / 2);
+                    const col1 = isDualCol ? items.slice(0, mid) : items;
+                    const col2 = isDualCol ? items.slice(mid) : [];
 
-              {/* COLUMN 4: Promotional Atelier Banner Card */}
-              {currentMenu.banner && (
+                    return (
+                      <div>
+                        <div style={{ display: "grid", gridTemplateColumns: isDualCol ? "1fr 1fr" : "1fr", gap: "12px 20px" }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                            {col1.map((item) => (
+                              <Link
+                                key={item.label}
+                                to={item.slug || "/collections"}
+                                onClick={closeMenu}
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "9px",
+                                  color: "var(--foreground)",
+                                  textDecoration: "none",
+                                  fontSize: "0.84rem",
+                                  fontWeight: 500,
+                                  transition: "all 0.2s ease"
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.color = "var(--primary)";
+                                  e.currentTarget.style.transform = "translateX(3px)";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.color = "var(--foreground)";
+                                  e.currentTarget.style.transform = "translateX(0)";
+                                }}
+                              >
+                                <span style={{ color: "var(--gold-deep)", display: "flex", alignItems: "center" }}>
+                                  <DiamondShapeIcon shape={item.shape || item.label} size={16} />
+                                </span>
+                                <span>{item.label}</span>
+                              </Link>
+                            ))}
+                          </div>
+
+                          {col2.length > 0 && (
+                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                              {col2.map((item) => (
+                                <Link
+                                  key={item.label}
+                                  to={item.slug || "/collections"}
+                                  onClick={closeMenu}
+                                  style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "9px",
+                                    color: "var(--foreground)",
+                                    textDecoration: "none",
+                                    fontSize: "0.84rem",
+                                    fontWeight: 500,
+                                    transition: "all 0.2s ease"
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.color = "var(--primary)";
+                                    e.currentTarget.style.transform = "translateX(3px)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.color = "var(--foreground)";
+                                    e.currentTarget.style.transform = "translateX(0)";
+                                  }}
+                                >
+                                  <span style={{ color: "var(--gold-deep)", display: "flex", alignItems: "center" }}>
+                                    <DiamondShapeIcon shape={item.shape || item.label} size={16} />
+                                  </span>
+                                  <span>{item.label}</span>
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {currentMenu.column2?.bottomText?.trim() && (
+                          <Link
+                            to={currentMenu.column2?.bottomUrl || "/collections"}
+                            onClick={closeMenu}
+                            style={{
+                              display: "inline-block",
+                              marginTop: "16px",
+                              fontSize: "0.78rem",
+                              fontWeight: 700,
+                              letterSpacing: "0.16em",
+                              textTransform: "uppercase",
+                              color: "var(--primary)",
+                              textDecoration: "underline",
+                              textUnderlineOffset: "4px"
+                            }}
+                          >
+                            {currentMenu.column2.bottomText.trim()}
+                          </Link>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
+              {/* COLUMN 3: Featured & Curations */}
+              {hasCol3 && (
+                <div style={{ minWidth: "180px", maxWidth: "280px", flex: "0 1 auto" }}>
+                  {currentMenu.column3?.title?.trim() && (
+                    <h4
+                      style={{
+                        fontFamily: "var(--font-serif)",
+                        fontSize: "0.88rem",
+                        fontWeight: 700,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        color: "var(--foreground)",
+                        marginBottom: "18px"
+                      }}
+                    >
+                      {currentMenu.column3.title.trim()}
+                    </h4>
+                  )}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    {(currentMenu.column3?.items || []).map((item) => (
+                      <Link
+                        key={item.label}
+                        to={item.slug || "/collections"}
+                        onClick={closeMenu}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          color: "var(--foreground)",
+                          textDecoration: "none",
+                          fontSize: "0.84rem",
+                          fontWeight: 500,
+                          transition: "all 0.2s ease"
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = "var(--primary)";
+                          e.currentTarget.style.transform = "translateX(4px)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = "var(--foreground)";
+                          e.currentTarget.style.transform = "translateX(0)";
+                        }}
+                      >
+                        <span>{item.label}</span>
+                        {item.badge && (
+                          <span
+                            style={{
+                              fontSize: "0.62rem",
+                              fontWeight: 700,
+                              letterSpacing: "0.08em",
+                              padding: "2px 6px",
+                              backgroundColor: "#1b211a",
+                              color: "#d4af37",
+                              borderRadius: "2px",
+                              lineHeight: 1
+                            }}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* COLUMN 4: Promotional Atelier Banner Card (Only when banner data exists) */}
+              {hasBanner && (
                 <div
                   style={{
+                    marginLeft: "auto",
+                    width: "320px",
+                    maxWidth: "100%",
+                    flexShrink: 0,
                     position: "relative",
                     borderRadius: "4px",
                     overflow: "hidden",
                     aspectRatio: "4 / 3",
-                    boxShadow: "0 10px 24px rgba(0,0,0,0.08)"
+                    boxShadow: "0 10px 24px rgba(0,0,0,0.08)",
+                    backgroundColor: "#1a1f18"
                   }}
                 >
-                  <img
-                    src={currentMenu.banner.image || promo1}
-                    alt={currentMenu.banner.title || "Featured Collection"}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1.0)")}
-                  />
+                  {currentMenu.banner?.image?.trim() && (
+                    <img
+                      src={currentMenu.banner.image.trim()}
+                      alt={currentMenu.banner.title || "Featured Collection"}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1.0)")}
+                    />
+                  )}
                   <div
                     style={{
                       position: "absolute",
                       inset: 0,
-                      background: "linear-gradient(to top, rgba(18,22,15,0.85) 0%, rgba(18,22,15,0.2) 60%, transparent 100%)",
+                      background: currentMenu.banner?.image?.trim()
+                        ? "linear-gradient(to top, rgba(18,22,15,0.85) 0%, rgba(18,22,15,0.2) 60%, transparent 100%)"
+                        : "linear-gradient(135deg, #182015 0%, #2a3523 100%)",
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "flex-end",
@@ -683,7 +757,7 @@ export default function MegaMenu() {
                       color: "#ffffff"
                     }}
                   >
-                    {currentMenu.banner.eyebrow && (
+                    {currentMenu.banner?.eyebrow?.trim() && (
                       <span
                         style={{
                           fontSize: "0.68rem",
@@ -694,21 +768,23 @@ export default function MegaMenu() {
                           marginBottom: "4px"
                         }}
                       >
-                        {currentMenu.banner.eyebrow}
+                        {currentMenu.banner.eyebrow.trim()}
                       </span>
                     )}
-                    <h5
-                      style={{
-                        fontFamily: "var(--font-serif)",
-                        fontSize: "1.1rem",
-                        fontWeight: 500,
-                        margin: "0 0 6px 0",
-                        color: "#ffffff"
-                      }}
-                    >
-                      {currentMenu.banner.title}
-                    </h5>
-                    {currentMenu.banner.description && (
+                    {currentMenu.banner?.title?.trim() && (
+                      <h5
+                        style={{
+                          fontFamily: "var(--font-serif)",
+                          fontSize: "1.1rem",
+                          fontWeight: 500,
+                          margin: "0 0 6px 0",
+                          color: "#ffffff"
+                        }}
+                      >
+                        {currentMenu.banner.title.trim()}
+                      </h5>
+                    )}
+                    {currentMenu.banner?.description?.trim() && (
                       <p
                         style={{
                           fontSize: "0.74rem",
@@ -717,34 +793,36 @@ export default function MegaMenu() {
                           margin: "0 0 12px 0"
                         }}
                       >
-                        {currentMenu.banner.description}
+                        {currentMenu.banner.description.trim()}
                       </p>
                     )}
-                    <Link
-                      to={currentMenu.banner.buttonLink || "/collections"}
-                      onClick={closeMenu}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        backgroundColor: "#c5a059",
-                        color: "#181f13",
-                        fontSize: "0.72rem",
-                        fontWeight: 700,
-                        letterSpacing: "0.14em",
-                        textTransform: "uppercase",
-                        padding: "8px 14px",
-                        borderRadius: "2px",
-                        textDecoration: "none",
-                        width: "fit-content",
-                        transition: "all 0.2s ease"
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#e0b86a")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#c5a059")}
-                    >
-                      <span>{currentMenu.banner.buttonText || "EXPLORE COLLECTION"}</span>
-                      <ArrowRight size={12} />
-                    </Link>
+                    {currentMenu.banner?.buttonText?.trim() && (
+                      <Link
+                        to={currentMenu.banner.buttonLink || "/collections"}
+                        onClick={closeMenu}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          backgroundColor: "#c5a059",
+                          color: "#181f13",
+                          fontSize: "0.72rem",
+                          fontWeight: 700,
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          padding: "8px 14px",
+                          borderRadius: "2px",
+                          textDecoration: "none",
+                          width: "fit-content",
+                          transition: "all 0.2s ease"
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#e0b86a")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#c5a059")}
+                      >
+                        <span>{currentMenu.banner.buttonText.trim()}</span>
+                        <ArrowRight size={12} />
+                      </Link>
+                    )}
                   </div>
                 </div>
               )}
@@ -752,7 +830,7 @@ export default function MegaMenu() {
           </div>
 
           {/* Bottom Atelier Concierge Strip */}
-          {currentMenu.bottomBar?.text && (
+          {hasBottom && (
             <div
               style={{
                 backgroundColor: "#FAF8F5",
@@ -762,7 +840,7 @@ export default function MegaMenu() {
               }}
             >
               <Link
-                to={currentMenu.bottomBar.link || "/contact"}
+                to={currentMenu.bottomBar?.link || "/contact"}
                 onClick={closeMenu}
                 style={{
                   fontSize: "0.74rem",
@@ -780,7 +858,7 @@ export default function MegaMenu() {
                 onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
               >
                 <span style={{ color: "var(--gold-deep)" }}>✦</span>
-                <span>{currentMenu.bottomBar.text}</span>
+                <span>{currentMenu.bottomBar.text.trim()}</span>
                 <span style={{ fontSize: "0.85rem" }}>→</span>
               </Link>
             </div>
