@@ -213,6 +213,7 @@ export function StoreProvider({ children }) {
   const [faqs, setFaqs] = useState([]);
   const [banners, setBanners] = useState([]);
   const [collectionBanners, setCollectionBanners] = useState([]);
+  const [aboutUs, setAboutUs] = useState(null);
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -759,6 +760,15 @@ export function StoreProvider({ children }) {
             setCollectionBanners(data);
           })
           .catch((err) => console.warn("Failed to fetch collection banners:", err));
+
+        // 8. About Us
+        fetch(`${backendUrl}/Support/GetActiveAboutUs`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (!isMounted || !data) return;
+            setAboutUs(data);
+          })
+          .catch((err) => console.warn("Failed to fetch about us:", err));
       } finally {
         if (isMounted) setSettingsLoading(false);
       }
