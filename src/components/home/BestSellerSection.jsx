@@ -182,7 +182,7 @@ export default function BestSellerSection() {
                     style={{
                       position: "relative",
                       aspectRatio: "1/1",
-                      backgroundColor: "#ffffff",
+                      backgroundColor: "#FAF9F6",
                       overflow: "hidden",
                       display: "flex",
                       alignItems: "center",
@@ -198,8 +198,9 @@ export default function BestSellerSection() {
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "contain",
-                        padding: "16px",
+                        objectFit: "fill",
+                        objectPosition: "center",
+                        display: "block",
                         transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}

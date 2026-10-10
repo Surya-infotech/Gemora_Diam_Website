@@ -1142,8 +1142,7 @@ function ProductDetailContent({ product }) {
                       overflow: "hidden",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      padding: "16px"
+                      justifyContent: "center"
                     }}
                   >
                     <img
@@ -1152,7 +1151,9 @@ function ProductDetailContent({ product }) {
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "contain",
+                        objectFit: "fill",
+                        objectPosition: "center",
+                        display: "block",
                         transition: "transform 0.5s ease"
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}

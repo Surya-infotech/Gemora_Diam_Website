@@ -134,7 +134,7 @@ export default function ShopTheLookSection() {
                     width: "50px",
                     height: "50px",
                     borderRadius: "3px",
-                    objectFit: "contain",
+                    objectFit: "fill",
                     backgroundColor: "#ffffff",
                     border: "1px solid #ECE7DD",
                     flexShrink: 0

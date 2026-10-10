@@ -155,7 +155,7 @@ export function ProductCard({ product }) {
           borderBottom: "1px solid #F0EBE0"
         }}
       >
-        <Link to={`/product/${product._id || product.id}`} style={{ display: "block", width: "100%", height: "100%", padding: "16px" }}>
+        <Link to={`/product/${product._id || product.id}`} style={{ display: "block", width: "100%", height: "100%" }}>
           <img
             src={product.image}
             alt={product.name}
@@ -163,7 +163,9 @@ export function ProductCard({ product }) {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "contain",
+              objectFit: "fill",
+              objectPosition: "center",
+              display: "block",
               transform: isHovered ? "scale(1.08)" : "scale(1)",
               transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
             }}
@@ -411,7 +413,7 @@ export function ProductCard({ product }) {
                     key={allMedia[activeMediaIndex]?.url || product.image}
                     src={allMedia[activeMediaIndex]?.url || product.image}
                     alt={product.name}
-                    style={{ width: "100%", maxHeight: "380px", objectFit: "contain", padding: "12px" }}
+                    style={{ width: "100%", height: "100%", maxHeight: "380px", objectFit: "fill" }}
                   />
                 )}
               </div>
@@ -487,7 +489,7 @@ export function ProductCard({ product }) {
                           </div>
                         </div>
                       ) : (
-                        <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "4px" }} />
+                        <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "fill" }} />
                       )}
                     </button>
                   ))}
