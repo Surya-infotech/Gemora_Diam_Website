@@ -184,12 +184,18 @@ export default function AboutPage() {
             </div>
 
             {(aboutUs?.studioImage || atelier) && (
-              <div style={{ position: "relative" }}>
+              <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
                 <img
                   src={aboutUs?.studioImage || atelier}
                   alt={aboutUs?.studioTitle || "Studio Craftsmanship"}
                   loading="lazy"
-                  style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", borderRadius: "2px" }}
+                  style={{
+                    width: "100%",
+                    maxHeight: "440px",
+                    aspectRatio: "4/3",
+                    objectFit: "fill",
+                    borderRadius: "4px"
+                  }}
                 />
               </div>
             )}
