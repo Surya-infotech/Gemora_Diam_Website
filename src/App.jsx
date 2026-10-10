@@ -74,6 +74,8 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/collections" element={<CollectionsPage />} />
               <Route path="/collection" element={<CollectionsPage />} />
+              <Route path="/collection/:slug" element={<CollectionsPage />} />
+              <Route path="/collections/:slug" element={<CollectionsPage />} />
               <Route path="/product/:id" element={<ProductDetailPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />

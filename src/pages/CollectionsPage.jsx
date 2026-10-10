@@ -10,7 +10,8 @@ export default function CollectionsPage({ slugOverride = null }) {
   const routeParams = useParams();
   const { products, categories, menus, productsLoading } = useStore();
 
-  const slug = (slugOverride || routeParams.slug || "").trim().toLowerCase().replace(/^\//, "");
+  const rawSlug = (slugOverride || routeParams.slug || "").trim().toLowerCase().replace(/^\//, "");
+  const slug = rawSlug.replace(/^collections?\//, "");
 
   // 1. Resolve filters and title from clean slug or query params
   let category = searchParams.get("category") || null;
@@ -29,7 +30,7 @@ export default function CollectionsPage({ slugOverride = null }) {
   if (slug && slug !== "collections" && slug !== "collection") {
     // A. Check if slug matches any Menu Tab in backend menus
     const matchedMenu = (menus || []).find(
-      (m) => (m.slug || "").toLowerCase().replace(/^\//, "") === slug
+      (m) => (m.slug || "").toLowerCase().replace(/^\//, "").replace(/^collections?\//, "") === slug
     );
     if (matchedMenu) {
       customTitle = matchedMenu.title;
@@ -45,7 +46,7 @@ export default function CollectionsPage({ slugOverride = null }) {
           ...(m.column3?.items || [])
         ];
         const found = allItems.find(
-          (it) => (it.slug || "").toLowerCase().replace(/^\//, "") === slug
+          (it) => (it.slug || "").toLowerCase().replace(/^\//, "").replace(/^collections?\//, "") === slug
         );
         if (found) {
           customTitle = found.label;
@@ -69,7 +70,7 @@ export default function CollectionsPage({ slugOverride = null }) {
     if (!customTitle) {
       const foundCat = activeCategories.find((c) => {
         const cName = typeof c === "string" ? c : c.categoryname;
-        return slugify(cName) === slug;
+        return slugify(cName).replace(/^collections?\//, "") === slug;
       });
       if (foundCat) {
         const catName = typeof foundCat === "string" ? foundCat : foundCat.categoryname;
@@ -242,7 +243,7 @@ export default function CollectionsPage({ slugOverride = null }) {
                 <button onClick={() => { searchParams.delete("search"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
-            <Link to="/collections" style={{ fontSize: "0.74rem", color: "var(--primary)", textDecoration: "underline", marginLeft: "4px" }}>
+            <Link to="/collection" style={{ fontSize: "0.74rem", color: "var(--primary)", textDecoration: "underline", marginLeft: "4px" }}>
               Clear All
             </Link>
           </div>
@@ -261,7 +262,7 @@ export default function CollectionsPage({ slugOverride = null }) {
         }}
       >
         <Link
-          to="/collections"
+          to="/collection"
           className="eyebrow"
           style={{
             border: "1px solid",
@@ -282,12 +283,13 @@ export default function CollectionsPage({ slugOverride = null }) {
         {activeCategories.map((c) => {
           const catName = typeof c === "string" ? c : c.categoryname;
           const isSelected =
-            category &&
-            (category.trim().toLowerCase() === catName.trim().toLowerCase() ||
-              (c.categoryid && String(c.categoryid) === String(category)) ||
-              (c._id && String(c._id) === String(category)));
+            (category &&
+              (category.trim().toLowerCase() === catName.trim().toLowerCase() ||
+                (c.categoryid && String(c.categoryid) === String(category)) ||
+                (c._id && String(c._id) === String(category)))) ||
+            slug === slugify(catName);
 
-          const cleanCatSlug = `/${slugify(catName)}`;
+          const cleanCatSlug = `/collection/${slugify(catName)}`;
 
           return (
             <Link
@@ -325,7 +327,7 @@ export default function CollectionsPage({ slugOverride = null }) {
             No pieces found in this collection
           </p>
           <Link
-            to="/collections"
+            to="/collection"
             className="eyebrow"
             style={{
               marginTop: "20px",

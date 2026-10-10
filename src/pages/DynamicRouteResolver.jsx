@@ -1,8 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import { useStore } from "../lib/store";
 import { slugifyPolicy } from "../lib/slugify";
 import PolicyPage from "./PolicyPage";
-import CollectionsPage from "./CollectionsPage";
 
 export default function DynamicRouteResolver({ NotFoundComponent = null }) {
   const { slug } = useParams();
@@ -31,6 +30,6 @@ export default function DynamicRouteResolver({ NotFoundComponent = null }) {
     return <PolicyPage fallbackTitle="" NotFoundComponent={NotFoundComponent} />;
   }
 
-  // 2. Otherwise route to CollectionsPage with the clean slug
-  return <CollectionsPage NotFoundComponent={NotFoundComponent} />;
+  // 2. Otherwise redirect to /collection/:slug so the browser URL shows /collection/
+  return <Navigate to={`/collection/${encodeURIComponent(currentSlug)}`} replace />;
 }

@@ -232,7 +232,30 @@ export function RingStyleIcon({ styleName, size = 18 }) {
 }
 
 // ==========================================
-// 3. Helper to detect if menu has any real dropdown content
+// 3. Helper to format URLs to start with /collection/
+// ==========================================
+export function toCollectionUrl(slug) {
+  if (!slug) return "/collection";
+  const clean = String(slug).trim().toLowerCase().replace(/^\//, "");
+  if (!clean || clean === "collection" || clean === "collections") return "/collection";
+  if (clean.startsWith("collection/")) return `/${clean}`;
+  if (clean.startsWith("collections/")) return `/collection/${clean.replace(/^collections\//, "")}`;
+  if (
+    clean.startsWith("http") ||
+    clean.startsWith("policy/") ||
+    clean === "about" ||
+    clean === "contact" ||
+    clean === "cart" ||
+    clean === "orders" ||
+    clean === "profile"
+  ) {
+    return `/${clean}`;
+  }
+  return `/collection/${clean}`;
+}
+
+// ==========================================
+// 4. Helper to detect if menu has any real dropdown content
 // ==========================================
 export function hasMenuDropdownContent(menu) {
   if (!menu) return false;
@@ -259,7 +282,7 @@ export function hasMenuDropdownContent(menu) {
 }
 
 // ==========================================
-// 4. Main Dynamic Mega Menu Component
+// 5. Main Dynamic Mega Menu Component
 // ==========================================
 export default function MegaMenu() {
   const { menus } = useStore();
@@ -327,7 +350,8 @@ export default function MegaMenu() {
         {/* Dynamic Menus from Backend */}
         {activeMenus.map((menu) => {
           const isMenuOpen = activeMenuId === menu.menuid;
-          const isPageActive = location.pathname === menu.slug;
+          const targetUrl = toCollectionUrl(menu.slug);
+          const isPageActive = location.pathname === targetUrl || location.pathname === menu.slug;
           const menuHasDropdown = hasMenuDropdownContent(menu);
           return (
             <div
@@ -336,7 +360,7 @@ export default function MegaMenu() {
               style={{ position: "relative" }}
             >
               <Link
-                to={menu.slug || "/collections"}
+                to={targetUrl}
                 onClick={closeMenu}
                 className={`nav-link-luxury ${isMenuOpen || isPageActive ? "active" : ""}`}
                 style={{
@@ -364,7 +388,7 @@ export default function MegaMenu() {
         {!activeMenus.some((m) => (m.title || "").toLowerCase().includes("collection") || (m.slug || "").includes("/collection")) && (
           <div onMouseEnter={closeMenu} style={{ position: "relative" }}>
             <Link
-              to="/collections"
+              to="/collection"
               onClick={closeMenu}
               className={`nav-link-luxury ${location.pathname === "/collections" || location.pathname === "/collection" ? "active" : ""}`}
               style={{
@@ -475,7 +499,7 @@ export default function MegaMenu() {
                     {(currentMenu.column1?.items || []).map((item) => (
                       <Link
                         key={item.label}
-                        to={item.slug || "/collections"}
+                        to={toCollectionUrl(item.slug)}
                         onClick={closeMenu}
                         style={{
                           display: "inline-flex",
@@ -505,7 +529,7 @@ export default function MegaMenu() {
 
                     {currentMenu.column1?.bottomText?.trim() && (
                       <Link
-                        to={currentMenu.column1?.bottomUrl || "/collections"}
+                        to={toCollectionUrl(currentMenu.column1?.bottomUrl)}
                         onClick={closeMenu}
                         style={{
                           marginTop: "8px",
@@ -557,7 +581,7 @@ export default function MegaMenu() {
                             {col1.map((item) => (
                               <Link
                                 key={item.label}
-                                to={item.slug || "/collections"}
+                                to={toCollectionUrl(item.slug)}
                                 onClick={closeMenu}
                                 style={{
                                   display: "inline-flex",
@@ -591,7 +615,7 @@ export default function MegaMenu() {
                               {col2.map((item) => (
                                 <Link
                                   key={item.label}
-                                  to={item.slug || "/collections"}
+                                  to={toCollectionUrl(item.slug)}
                                   onClick={closeMenu}
                                   style={{
                                     display: "inline-flex",
@@ -624,7 +648,7 @@ export default function MegaMenu() {
 
                         {currentMenu.column2?.bottomText?.trim() && (
                           <Link
-                            to={currentMenu.column2?.bottomUrl || "/collections"}
+                            to={toCollectionUrl(currentMenu.column2?.bottomUrl)}
                             onClick={closeMenu}
                             style={{
                               display: "inline-block",
@@ -669,7 +693,7 @@ export default function MegaMenu() {
                     {(currentMenu.column3?.items || []).map((item) => (
                       <Link
                         key={item.label}
-                        to={item.slug || "/collections"}
+                        to={toCollectionUrl(item.slug)}
                         onClick={closeMenu}
                         style={{
                           display: "inline-flex",
@@ -798,7 +822,7 @@ export default function MegaMenu() {
                     )}
                     {currentMenu.banner?.buttonText?.trim() && (
                       <Link
-                        to={currentMenu.banner.buttonLink || "/collections"}
+                        to={toCollectionUrl(currentMenu.banner.buttonLink)}
                         onClick={closeMenu}
                         style={{
                           display: "inline-flex",
