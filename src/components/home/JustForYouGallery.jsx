@@ -15,12 +15,18 @@ export default function JustForYouGallery() {
     // 1. First add each active backend product's main image
     products.forEach((p) => {
       if (p.image) {
+        const cleanDesc = (p.description || "")
+          .replace(/<[^>]*>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+
         list.push({
           id: p.id,
           product: p,
           img: p.image,
-          title: p.name || "Handcrafted Jewelry",
-          desc: p.description?.trim() || `${p.category || "Fine Jewelry"} Collection`,
+          title: p.name,
+          desc: cleanDesc || `${p.category} Collection`,
+          category: p.category,
           link: `/product/${p._id || p.id}`
         });
       }
@@ -36,8 +42,9 @@ export default function JustForYouGallery() {
                 id: `${p.id}-gal-${idx}`,
                 product: p,
                 img: gImg,
-                title: p.name || "Exclusive Detail",
-                desc: `${p.category || "Fine Jewelry"} Detail`,
+                title: p.name,
+                desc: `${p.category} Detail`,
+                category: p.category,
                 link: `/product/${p._id || p.id}`
               });
             }
@@ -105,64 +112,38 @@ export default function JustForYouGallery() {
             onClick={() => {
               if (t.link) navigate(t.link);
             }}
-            style={{
-              position: "relative",
-              height: "380px",
-              overflow: "hidden",
-              cursor: "pointer",
-              backgroundColor: "#FAF9F6"
-            }}
+            className="just-for-you-card"
           >
             <img
               src={t.img}
               alt={t.title}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              className="just-for-you-img"
             />
 
-            {/* Hover overlay with Title & Shop Now */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                backgroundColor: "rgba(18, 25, 15, 0.62)",
-                backdropFilter: "blur(2px)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                color: "#ffffff",
-                padding: "24px",
-                opacity: 0,
-                transition: "opacity 0.35s ease"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
-            >
-              <span className="eyebrow" style={{ color: "var(--gold-light)", letterSpacing: "0.2em", marginBottom: "8px" }}>
-                ATELIER PIECE
-              </span>
-              <h4
+            {/* Hover overlay with Title, Eyebrow & Shop Now */}
+            <div className="just-for-you-overlay">
+              <span
+                className="eyebrow"
                 style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "1.45rem",
-                  color: "#ffffff",
+                  color: "var(--gold-light)",
+                  letterSpacing: "0.22em",
                   marginBottom: "8px",
-                  lineHeight: 1.2
+                  fontSize: "0.72rem"
                 }}
               >
+                ✦ {t.category ? t.category.toUpperCase() : "ATELIER PIECE"} ✦
+              </span>
+
+              <h4 className="just-for-you-title">
                 {t.title}
               </h4>
-              <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.85)", marginBottom: "20px", maxWidth: "240px", lineHeight: 1.5 }}>
-                {t.desc}
-              </p>
+
+              {t.desc ? (
+                <p className="just-for-you-desc">
+                  {t.desc}
+                </p>
+              ) : null}
+
               <div
                 className="eyebrow"
                 style={{
@@ -173,7 +154,9 @@ export default function JustForYouGallery() {
                   paddingBottom: "4px",
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "6px"
+                  gap: "6px",
+                  marginTop: "4px",
+                  flexShrink: 0
                 }}
               >
                 <span>DISCOVER PIECE</span>
