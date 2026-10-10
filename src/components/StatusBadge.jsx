@@ -5,8 +5,10 @@ export function StatusBadge({ s }) {
         return { backgroundColor: "var(--primary)", color: "#ffffff" };
       case "Shipped":
         return { backgroundColor: "var(--gold)", color: "#ffffff" };
-      case "Crafted":
+      case "Processing":
         return { backgroundColor: "var(--primary-soft)", color: "var(--primary)", border: "1px solid var(--border)" };
+      case "Cancelled":
+        return { backgroundColor: "#FEF2F2", color: "#991B1B", border: "1px solid #FECACA" };
       default:
         return { backgroundColor: "var(--muted)", color: "var(--foreground)", border: "1px solid var(--border)" };
     }

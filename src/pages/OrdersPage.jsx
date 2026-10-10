@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Check, Download, X, Package, MapPin, Sparkles, Loader2 } from "lucide-react";
+import { Check, Download, X, Package, MapPin, Sparkles, Loader2, AlertCircle } from "lucide-react";
 import { useStore } from "../lib/store";
 import { StatusBadge } from "../components/StatusBadge";
 import { jsPDF } from "jspdf";
@@ -329,6 +329,11 @@ function OrderRow({ order, onSelect, format }) {
         </div>
         <p style={{ fontSize: "0.82rem", color: "var(--muted-foreground)", marginTop: "4px", margin: 0 }}>
           Commissioned on {dateFormatted}
+          {String(status || "").toLowerCase() === "cancelled" && (order.cancelledat || order.cancelreason) && (
+            <span style={{ color: "#B91C1C", fontWeight: 500, marginLeft: "8px" }}>
+              · Cancelled{order.cancelreason ? `: ${order.cancelreason}` : ""}
+            </span>
+          )}
         </p>
       </div>
 
@@ -434,6 +439,18 @@ function OrderDetailModal({ order, onClose }) {
 
   const orderNum = order.ordernumber || order.orderid || order.id;
   const status = order.orderstatus || order.status || "Confirmed";
+  const isCancelled =
+    String(status || "").trim().toLowerCase() === "cancelled" ||
+    String(order.orderstatus || "").trim().toLowerCase() === "cancelled" ||
+    String(order.status || "").trim().toLowerCase() === "cancelled";
+
+  const rawCancelledAt = order.cancelledat || order.canceledAt || (isCancelled ? order.updatedAt : null);
+  const cancelledAtDisplay = rawCancelledAt
+    ? new Date(rawCancelledAt).toLocaleString("en-US", { dateStyle: "long", timeStyle: "short" })
+    : null;
+  const cancelReason = order.cancelreason || order.cancellationReason || order.cancelReason || "";
+  const cancelledByDisplay = order.cancelledby || order.canceledBy || "";
+
   const currentStepIdx = Math.max(0, ORDER_STEPS.indexOf(status));
   const orderItems = order.items || [];
   const shippingAddr = order.shippingaddress || null;
@@ -774,66 +791,131 @@ function OrderDetailModal({ order, onClose }) {
           <p style={{ fontSize: "0.84rem", color: "var(--muted-foreground)", marginTop: "6px", margin: 0 }}>
             Commissioned on {order.createdAt ? new Date(order.createdAt).toLocaleString("en-US", { dateStyle: "long", timeStyle: "short" }) : "Recently"}
             {order.paymentstatus ? ` · Payment: ${order.paymentstatus}` : ""}
+            {isCancelled && cancelledAtDisplay ? ` · Cancelled: ${cancelledAtDisplay}` : ""}
           </p>
         </div>
 
-        {/* Stepper Progress Bar */}
-        <div style={{ marginTop: "32px", padding: "20px", backgroundColor: "#ffffff", borderRadius: "6px", border: "1px solid #EDE8DE" }}>
-          <p className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.68rem", marginBottom: "16px" }}>
-            Courier &amp; Craftsmanship Progress
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${ORDER_STEPS.length}, 1fr)`, position: "relative" }}>
-            {/* Horizontal Track line */}
-            <div
-              style={{
-                position: "absolute",
-                top: "14px",
-                left: "10%",
-                right: "10%",
-                height: "2px",
-                backgroundColor: "#EAE4D7",
-                zIndex: 0
-              }}
-            />
-            {ORDER_STEPS.map((step, idx) => {
-              const isPassed = idx <= currentStepIdx;
-              return (
-                <div key={step} style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
-                  <div
-                    style={{
-                      width: "28px",
-                      height: "28px",
-                      borderRadius: "50%",
-                      border: "2px solid",
-                      borderColor: isPassed ? "var(--primary)" : "#EAE4D7",
-                      backgroundColor: isPassed ? "var(--primary)" : "#ffffff",
-                      color: isPassed ? "#ffffff" : "var(--muted-foreground)",
-                      margin: "0 auto 8px",
-                      display: "grid",
-                      placeItems: "center",
-                      fontSize: "0.75rem",
-                      fontWeight: 700,
-                      boxShadow: isPassed ? "0 2px 8px rgba(85, 104, 50, 0.3)" : "none",
-                      transition: "all 0.3s ease"
-                    }}
-                  >
-                    {isPassed ? <Check size={14} strokeWidth={2.4} /> : idx + 1}
+        {/* Stepper Progress Bar (Hidden when order is cancelled) */}
+        {!isCancelled ? (
+          <div style={{ marginTop: "32px", padding: "20px", backgroundColor: "#ffffff", borderRadius: "6px", border: "1px solid #EDE8DE" }}>
+            <p className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.68rem", marginBottom: "16px" }}>
+              Courier &amp; Craftsmanship Progress
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${ORDER_STEPS.length}, 1fr)`, position: "relative" }}>
+              {/* Horizontal Track line */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "14px",
+                  left: "10%",
+                  right: "10%",
+                  height: "2px",
+                  backgroundColor: "#EAE4D7",
+                  zIndex: 0
+                }}
+              />
+              {ORDER_STEPS.map((step, idx) => {
+                const isPassed = idx <= currentStepIdx;
+                return (
+                  <div key={step} style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+                    <div
+                      style={{
+                        width: "28px",
+                        height: "28px",
+                        borderRadius: "50%",
+                        border: "2px solid",
+                        borderColor: isPassed ? "var(--primary)" : "#EAE4D7",
+                        backgroundColor: isPassed ? "var(--primary)" : "#ffffff",
+                        color: isPassed ? "#ffffff" : "var(--muted-foreground)",
+                        margin: "0 auto 8px",
+                        display: "grid",
+                        placeItems: "center",
+                        fontSize: "0.75rem",
+                        fontWeight: 700,
+                        boxShadow: isPassed ? "0 2px 8px rgba(85, 104, 50, 0.3)" : "none",
+                        transition: "all 0.3s ease"
+                      }}
+                    >
+                      {isPassed ? <Check size={14} strokeWidth={2.4} /> : idx + 1}
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "0.76rem",
+                        fontWeight: isPassed ? 600 : 400,
+                        color: isPassed ? "var(--foreground)" : "var(--muted-foreground)",
+                        letterSpacing: "0.02em"
+                      }}
+                    >
+                      {step}
+                    </span>
                   </div>
-                  <span
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          /* Order Cancellation Details Notice */
+          <div
+            style={{
+              marginTop: "28px",
+              backgroundColor: "#FFF8F8",
+              border: "1px solid #F5C6CB",
+              borderRadius: "6px",
+              padding: "20px 24px"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
+              <div
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                  backgroundColor: "#FEE2E2",
+                  border: "1px solid #FECACA",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "#B91C1C",
+                  flexShrink: 0
+                }}
+              >
+                <AlertCircle size={18} strokeWidth={2.2} />
+              </div>
+
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "4px" }}>
+                  <h3
                     style={{
-                      fontSize: "0.76rem",
-                      fontWeight: isPassed ? 600 : 400,
-                      color: isPassed ? "var(--foreground)" : "var(--muted-foreground)",
-                      letterSpacing: "0.02em"
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "1.2rem",
+                      fontWeight: 600,
+                      color: "#991B1B",
+                      margin: 0
                     }}
                   >
-                    {step}
-                  </span>
+                    Order Cancelled
+                  </h3>
+                  {cancelledAtDisplay && (
+                    <span style={{ fontSize: "0.78rem", color: "#B91C1C", fontWeight: 500 }}>
+                      Cancelled on {cancelledAtDisplay}
+                    </span>
+                  )}
                 </div>
-              );
-            })}
+
+                <p style={{ fontSize: "0.85rem", color: "#7F1D1D", margin: 0, lineHeight: 1.5 }}>
+                  {cancelReason
+                    ? `Reason: "${cancelReason}"`
+                    : "This commission has been cancelled. Courier dispatch and craftsmanship progress have ceased."}
+                </p>
+
+                {cancelledByDisplay && (
+                  <p style={{ fontSize: "0.76rem", color: "#991B1B", margin: "6px 0 0 0", opacity: 0.85 }}>
+                    Processed by: {cancelledByDisplay}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Delivery Destination */}
         {shippingAddr && (
