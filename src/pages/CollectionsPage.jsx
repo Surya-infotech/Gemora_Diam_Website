@@ -30,12 +30,16 @@ export default function CollectionsPage({ slugOverride = null }) {
 
   if (slug && slug !== "collections" && slug !== "collection") {
     // A. Check if slug matches any Menu Tab in backend menus
-    const matchedMenu = (menus || []).find(
-      (m) => (m.slug || "").toLowerCase().replace(/^\//, "").replace(/^collections?\//, "") === slug
-    );
+    const getCleanSlug = (s) => {
+      const val = s && typeof s === "object" ? (s.value || s.label || s.slug || "") : (s || "");
+      return String(val).toLowerCase().replace(/^\//, "").replace(/^collections?\//, "");
+    };
+
+    const matchedMenu = (menus || []).find((m) => getCleanSlug(m.slug) === slug);
     if (matchedMenu) {
-      customTitle = matchedMenu.title;
-      category = matchedMenu.title;
+      const titleStr = typeof matchedMenu.title === "object" ? (matchedMenu.title?.value || matchedMenu.title?.label || "") : (matchedMenu.title || "");
+      customTitle = titleStr;
+      category = titleStr;
     }
 
     // B. Check if slug matches any item inside menus (Column 1, 2, or 3)
@@ -46,27 +50,31 @@ export default function CollectionsPage({ slugOverride = null }) {
           ...(m.column2?.items || []),
           ...(m.column3?.items || [])
         ];
-        const found = allItems.find(
-          (it) => (it.slug || "").toLowerCase().replace(/^\//, "").replace(/^collections?\//, "") === slug
-        );
+        const found = allItems.find((it) => getCleanSlug(it.slug) === slug);
         if (found) {
-          customTitle = found.label;
-          const fType = (found.filterType || "style").toLowerCase().replace(/[^a-z]/g, "");
-          const rawVal = found.filterValue;
+          const rawLabel = typeof found.label === "object" ? (found.label?.value || found.label?.label || "") : String(found.label || "");
+          customTitle = rawLabel;
+          const rawFType = typeof found.filterType === "object" ? (found.filterType?.value || found.filterType?.label || "") : (found.filterType || "style");
+          const fType = String(rawFType).toLowerCase().replace(/[^a-z]/g, "");
+          let rawVal = found.filterValue;
+          if (rawVal && typeof rawVal === "object" && !Array.isArray(rawVal)) {
+            rawVal = rawVal.value || rawVal.label || "";
+          }
           const fVals = Array.isArray(rawVal)
             ? rawVal
             : (typeof rawVal === "string" && rawVal.trim()
                 ? rawVal.split(",").map((s) => s.trim()).filter(Boolean)
-                : (rawVal ? [rawVal] : (found.label ? [found.label] : [])));
+                : (rawVal ? [String(rawVal)] : (rawLabel ? [rawLabel] : [])));
 
           if (fType === "style") {
-            style = fVals.length > 0 ? fVals : (found.label || null);
+            style = fVals.length > 0 ? fVals : (rawLabel || null);
           } else if (fType === "shape") {
-            shape = fVals.length > 0 ? fVals : (found.shape ? [found.shape] : (found.label ? [found.label] : null));
+            const rawShape = typeof found.shape === "object" ? (found.shape?.value || found.shape?.label || "") : (found.shape || "");
+            shape = fVals.length > 0 ? fVals : (rawShape ? [String(rawShape)] : (rawLabel ? [rawLabel] : null));
           } else if (fType === "category") {
-            category = fVals.length > 0 ? fVals[0] : (found.label || null);
+            category = fVals.length > 0 ? fVals[0] : (rawLabel || null);
           } else if (fType === "subcategory" || fType === "search") {
-            search = fVals.length > 0 ? fVals.join(" ").toLowerCase() : (found.label?.toLowerCase() || null);
+            search = fVals.length > 0 ? fVals.join(" ").toLowerCase() : (rawLabel ? rawLabel.toLowerCase() : null);
           } else if (fType === "featured") {
             featured = fVals[0] || "bestseller";
           } else {
