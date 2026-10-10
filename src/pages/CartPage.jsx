@@ -491,8 +491,8 @@ export default function CartPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          gap: "60px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+          gap: "clamp(28px, 4vw, 60px)",
           marginTop: "40px",
           alignItems: "start"
         }}

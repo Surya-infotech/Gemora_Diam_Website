@@ -125,7 +125,7 @@ export default function SplitCollectionBanners() {
               key={b._id || b.bannerid || i}
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
                 backgroundColor: "#FAF9F6",
                 borderRadius: "6px",
                 overflow: "hidden",

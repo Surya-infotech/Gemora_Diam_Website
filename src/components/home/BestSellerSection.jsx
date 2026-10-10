@@ -128,8 +128,8 @@ export default function BestSellerSection() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: "32px",
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 1fr))",
+            gap: "clamp(20px, 3vw, 32px)",
             justifyContent: "center"
           }}
         >

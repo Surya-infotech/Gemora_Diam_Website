@@ -353,7 +353,7 @@ export function ProductCard({ product }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "20px",
+            padding: "clamp(8px, 3vw, 20px)",
             animation: "fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
           }}
           onClick={() => setQuick(false)}
@@ -363,13 +363,13 @@ export function ProductCard({ product }) {
               backgroundColor: "#ffffff",
               maxWidth: "820px",
               width: "100%",
-              maxHeight: "90vh",
+              maxHeight: "92vh",
               overflowY: "auto",
               borderRadius: "4px",
               boxShadow: "var(--shadow-luxury)",
               position: "relative",
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
               border: "1px solid #EAE3D5"
             }}
             onClick={(e) => e.stopPropagation()}

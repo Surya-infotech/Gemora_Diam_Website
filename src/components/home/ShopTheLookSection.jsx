@@ -58,10 +58,10 @@ export default function ShopTheLookSection() {
             display: "grid",
             gridTemplateColumns:
               looks.length === 1
-                ? "minmax(320px, 460px)"
+                ? "minmax(min(100%, 280px), 460px)"
                 : looks.length === 2
-                  ? "repeat(auto-fit, minmax(320px, 480px))"
-                  : "repeat(auto-fit, minmax(320px, 1fr))",
+                  ? "repeat(auto-fit, minmax(min(100%, 280px), 480px))"
+                  : "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
             justifyContent: "center",
             gap: "32px"
           }}
@@ -72,7 +72,7 @@ export default function ShopTheLookSection() {
               onClick={() => (item.product?._id || item.product?.id) && navigate(`/product/${item.product._id || item.product.id}`)}
               style={{
                 position: "relative",
-                height: "560px",
+                height: "clamp(420px, 60vw, 560px)",
                 overflow: "hidden",
                 borderRadius: "6px",
                 boxShadow: "0 8px 30px rgba(0,0,0,0.06)",

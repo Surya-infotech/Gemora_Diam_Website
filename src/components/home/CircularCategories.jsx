@@ -56,8 +56,8 @@ export default function CircularCategories() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "36px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+            gap: "clamp(20px, 3vw, 36px)",
             justifyContent: "center"
           }}
         >

@@ -61,16 +61,7 @@ export default function HeroSlider() {
   const cleanTag = cur.tag ? cur.tag.replace(/^[?✦\s]+/, "").trim() : "";
 
   return (
-    <section
-      style={{
-        position: "relative",
-        height: "88vh",
-        minHeight: "580px",
-        maxHeight: "860px",
-        overflow: "hidden",
-        backgroundColor: "#141c10"
-      }}
-    >
+    <section className="hero-slider-section">
       {/* Background Image with slow cinematic zoom */}
       {cur.img && (
         <img
@@ -231,6 +222,7 @@ export default function HeroSlider() {
           <button
             onClick={prevSlide}
             aria-label="Previous Slide"
+            className="hero-nav-arrow"
             style={{
               position: "absolute",
               left: "24px",
@@ -264,6 +256,7 @@ export default function HeroSlider() {
           <button
             onClick={nextSlide}
             aria-label="Next Slide"
+            className="hero-nav-arrow"
             style={{
               position: "absolute",
               right: "24px",

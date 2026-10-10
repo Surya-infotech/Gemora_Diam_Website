@@ -100,7 +100,7 @@ export default function JustForYouGallery() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
           gap: "4px",
           width: "100%",
           padding: "0 4px"

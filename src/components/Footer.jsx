@@ -118,7 +118,7 @@ export function Footer() {
           className="container-luxury"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
             gap: "32px",
             alignItems: "center"
           }}
@@ -267,7 +267,7 @@ export function Footer() {
         className="container-luxury"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
           gap: "42px",
           paddingTop: "70px",
           paddingBottom: "60px"

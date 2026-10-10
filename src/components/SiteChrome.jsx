@@ -35,7 +35,7 @@ export function Logo() {
       <span
         style={{
           fontFamily: "var(--font-serif)",
-          fontSize: "clamp(1.9rem, 3.2vw, 2.45rem)",
+          fontSize: "clamp(1.35rem, 2.6vw, 2.45rem)",
           fontWeight: 600,
           fontStyle: "italic",
           letterSpacing: "0.02em",
@@ -453,16 +453,7 @@ export function Header() {
           transition: "all 0.3s ease"
         }}
       >
-        <div
-          className="container-luxury"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr auto 1fr",
-            alignItems: "center",
-            height: "86px",
-            gap: "24px"
-          }}
-        >
+        <div className="container-luxury site-header-grid">
           {/* Left: Desktop Nav Links / Mobile Burger */}
           <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
             <button
@@ -693,6 +684,7 @@ export function Header() {
               width: "84%",
               maxWidth: "360px",
               height: "100%",
+              overflowY: "auto",
               backgroundColor: "#ffffff",
               padding: "32px 24px",
               display: "flex",

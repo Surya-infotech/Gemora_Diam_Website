@@ -178,8 +178,8 @@ export default function ShopPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: "36px 28px",
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 1fr))",
+            gap: "clamp(24px, 3vw, 36px) clamp(16px, 2vw, 28px)",
             marginTop: "28px"
           }}
         >
