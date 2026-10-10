@@ -22,6 +22,19 @@ export default function CollectionsPage({ slugOverride = null }) {
   let customTitle = null;
   let resolvedAttributeFilters = [];
 
+  const clarityParam = searchParams.get("clarity")?.trim();
+  if (clarityParam) {
+    resolvedAttributeFilters.push({ type: "clarity", values: [clarityParam] });
+  }
+  const metalParam = searchParams.get("metal")?.trim();
+  if (metalParam) {
+    resolvedAttributeFilters.push({ type: "metal", values: [metalParam] });
+  }
+  const stoneParam = searchParams.get("stone")?.trim();
+  if (stoneParam) {
+    resolvedAttributeFilters.push({ type: "stone", values: [stoneParam] });
+  }
+
   // Active categories from Admin Panel
   const allProducts = products || [];
   const activeCategories = (categories || []).filter(
@@ -61,7 +74,7 @@ export default function CollectionsPage({ slugOverride = null }) {
             rawVal = rawVal.value || rawVal.label || "";
           }
           const fVals = Array.isArray(rawVal)
-            ? rawVal
+            ? rawVal.map((v) => (typeof v === "object" ? v?.value || v?.label || "" : String(v || ""))).filter(Boolean)
             : (typeof rawVal === "string" && rawVal.trim()
                 ? rawVal.split(",").map((s) => s.trim()).filter(Boolean)
                 : (rawVal ? [String(rawVal)] : (rawLabel ? [rawLabel] : [])));
@@ -166,10 +179,50 @@ export default function CollectionsPage({ slugOverride = null }) {
     if (resolvedAttributeFilters && resolvedAttributeFilters.length > 0) {
       for (const rf of resolvedAttributeFilters) {
         if (!rf.values || rf.values.length === 0) continue;
+        const type = (rf.type || "").toLowerCase().trim();
         const vals = rf.values.map((v) => String(v).toLowerCase().trim());
-        const jsonStr = JSON.stringify(p).toLowerCase();
-        const matchesAny = vals.some((v) => jsonStr.includes(v));
-        if (!matchesAny) return false;
+
+        let matches = false;
+        if (type.includes("clarity")) {
+          // Exact match on clarity name (e.g. "vs1" must not match "vvs1")
+          matches = (p.clarities || []).some((c) =>
+            vals.includes(String(c).toLowerCase().trim())
+          );
+        } else if (type.includes("metal")) {
+          // Match metal name exactly or normalized
+          matches = (p.metals || []).some((m) =>
+            vals.some((v) => {
+              const mNorm = String(m).toLowerCase().trim();
+              return mNorm === v || mNorm.replace(/\s+/g, "") === v.replace(/\s+/g, "");
+            })
+          );
+        } else if (type.includes("stone")) {
+          // Match stone name exactly
+          matches = (p.stones || []).some((s) =>
+            vals.includes(String(s).toLowerCase().trim())
+          );
+        } else if (type.includes("diamondcolor") || type === "color") {
+          matches =
+            (p.diamondColors || []).some((c) => vals.includes(String(c).toLowerCase().trim())) ||
+            (p.bandColors || []).some((c) => vals.includes(String(c).toLowerCase().trim()));
+        } else if (type.includes("bandcolor")) {
+          matches = (p.bandColors || []).some((c) =>
+            vals.includes(String(c).toLowerCase().trim())
+          );
+        } else if (type.includes("size") || type.includes("ringsize")) {
+          matches = (p.ringSizes || []).some((s) =>
+            vals.includes(String(s).toLowerCase().trim())
+          );
+        } else {
+          // Fallback exact word/token matching rather than loose substring match
+          const jsonStr = JSON.stringify(p);
+          matches = vals.some((v) => {
+            const escaped = v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const reg = new RegExp(`(^|[^a-zA-Z0-9])${escaped}([^a-zA-Z0-9]|$)`, "i");
+            return reg.test(jsonStr);
+          });
+        }
+        if (!matches) return false;
       }
     }
     if (featured === "bestseller" && !p.bestseller) {
