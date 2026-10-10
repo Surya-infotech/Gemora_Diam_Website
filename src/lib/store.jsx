@@ -212,6 +212,7 @@ export function StoreProvider({ children }) {
   const [policies, setPolicies] = useState([]);
   const [faqs, setFaqs] = useState([]);
   const [banners, setBanners] = useState([]);
+  const [collectionBanners, setCollectionBanners] = useState([]);
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -749,6 +750,15 @@ export function StoreProvider({ children }) {
             setBanners(data);
           })
           .catch((err) => console.warn("Failed to fetch banners:", err));
+
+        // 7. Collection Banners (Split Banners)
+        fetch(`${backendUrl}/Support/GetActiveCollectionBanners`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (!isMounted || !Array.isArray(data)) return;
+            setCollectionBanners(data);
+          })
+          .catch((err) => console.warn("Failed to fetch collection banners:", err));
       } finally {
         if (isMounted) setSettingsLoading(false);
       }
@@ -942,6 +952,7 @@ export function StoreProvider({ children }) {
         policies,
         faqs,
         banners,
+        collectionBanners,
         cartOpen,
         setCartOpen,
         setCurrency: changeCurrency,
