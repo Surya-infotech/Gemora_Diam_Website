@@ -183,11 +183,11 @@ export default function AboutPage() {
               )}
             </div>
 
-            {aboutUs?.studioImage && (
+            {(aboutUs?.studioImage || atelier) && (
               <div style={{ position: "relative" }}>
                 <img
-                  src={aboutUs.studioImage}
-                  alt={aboutUs.studioTitle || "Studio Craftsmanship"}
+                  src={aboutUs?.studioImage || atelier}
+                  alt={aboutUs?.studioTitle || "Studio Craftsmanship"}
                   loading="lazy"
                   style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", borderRadius: "2px" }}
                 />

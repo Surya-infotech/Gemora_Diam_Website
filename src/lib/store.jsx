@@ -963,6 +963,7 @@ export function StoreProvider({ children }) {
         faqs,
         banners,
         collectionBanners,
+        aboutUs,
         cartOpen,
         setCartOpen,
         setCurrency: changeCurrency,
