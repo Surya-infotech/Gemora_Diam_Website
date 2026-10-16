@@ -16,6 +16,7 @@ import {
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
 import { CartLines } from "../components/CartLines";
+import PayPalCheckoutModal from "../components/cart/PayPalCheckoutModal";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -39,6 +40,8 @@ export default function CartPage() {
   const [addressError, setAddressError] = useState("");
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
+  const [paypalModalOpen, setPaypalModalOpen] = useState(false);
+  const [pendingOrderData, setPendingOrderData] = useState(null);
 
   // Modal State for adding new address
   const [modalOpen, setModalOpen] = useState(false);
@@ -244,26 +247,30 @@ export default function CartPage() {
       };
     });
 
-    setSubmittingOrder(true);
-    const res = await createOrder({
+    setSubmittingOrder(false);
+    setPendingOrderData({
       items: orderItems,
       shippingaddress: chosenAddress,
       subtotal,
       total,
       currencydetails: storeCurrency,
-      currency: storeCurrency?.currency || "INR",
-      paymentmethod: "Credit/Debit Card"
+      currency: storeCurrency?.currency || "USD"
     });
-    setSubmittingOrder(false);
+    setPaypalModalOpen(true);
+  };
 
-    if (res.success && res.order) {
-      setConfirmedOrder(res.order);
-      clearCart();
-      showToast(
-        `Order #${res.order.ordernumber || res.order.orderNumber} placed successfully! Thank you for your purchase.`,
-        "success"
-      );
-    }
+  const handlePaymentSuccess = (confirmedOrderData) => {
+    setPaypalModalOpen(false);
+    setConfirmedOrder(confirmedOrderData);
+    clearCart();
+    showToast(
+      `Order #${confirmedOrderData.ordernumber || confirmedOrderData.orderNumber} placed successfully! Thank you for your purchase.`,
+      "success"
+    );
+  };
+
+  const handlePaymentError = (errMsg) => {
+    showToast(errMsg || "Payment was not completed. No order was placed.", "error");
   };
 
   // If order was successfully placed, display the luxurious confirmation view
@@ -1308,6 +1315,15 @@ export default function CartPage() {
           </div>
         </div>
       )}
+
+      {/* PayPal Checkout Gateway Modal */}
+      <PayPalCheckoutModal
+        isOpen={paypalModalOpen}
+        onClose={() => setPaypalModalOpen(false)}
+        orderData={pendingOrderData}
+        onSuccess={handlePaymentSuccess}
+        onError={handlePaymentError}
+      />
     </div>
   );
 }

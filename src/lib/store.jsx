@@ -643,6 +643,71 @@ export function StoreProvider({ children }) {
     [backendUrl, customerIdKey, customerTokenKey, notify, user]
   );
 
+  const getPayPalClientId = useCallback(async () => {
+    try {
+      const res = await fetch(`${backendUrl}/Customer/paypal-client-id`);
+      const data = await res.json();
+      if (res.ok && data.clientId) {
+        return { success: true, clientId: data.clientId, mode: data.mode };
+      }
+      return { success: false, error: data.message || "Failed to fetch PayPal client ID" };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }, [backendUrl]);
+
+  const createPayPalOrder = useCallback(
+    async ({ amount, currency = "USD", description }) => {
+      try {
+        const token = localStorage.getItem(customerTokenKey);
+        const res = await fetch(`${backendUrl}/Customer/create-paypal-order`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user": "true",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ amount, currency, description })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.id) {
+          throw new Error(data.message || "Failed to create PayPal payment session");
+        }
+        return { success: true, id: data.id, status: data.status };
+      } catch (err) {
+        notify("PayPal Error", err.message || "Could not initiate PayPal checkout");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, customerTokenKey, notify]
+  );
+
+  const capturePayPalOrder = useCallback(
+    async ({ paypalOrderId, orderData }) => {
+      try {
+        const token = localStorage.getItem(customerTokenKey);
+        const res = await fetch(`${backendUrl}/Customer/capture-paypal-order`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user": "true",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ paypalOrderId, orderData })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success || !data.order) {
+          throw new Error(data.message || "PayPal payment capture failed. Order was not created.");
+        }
+        return { success: true, order: data.order, transactionId: data.transactionId };
+      } catch (err) {
+        notify("Payment Failed", err.message || "Payment was not completed. No order was created.");
+        return { success: false, error: err.message };
+      }
+    },
+    [backendUrl, customerTokenKey, notify]
+  );
+
   const getCustomerOrders = useCallback(async () => {
     try {
       const token = localStorage.getItem(customerTokenKey);
@@ -994,6 +1059,9 @@ export function StoreProvider({ children }) {
         deleteAddress,
         setDefaultAddress,
         createOrder,
+        getPayPalClientId,
+        createPayPalOrder,
+        capturePayPalOrder,
         getCustomerOrders,
         login,
         signup,
