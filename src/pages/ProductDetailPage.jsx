@@ -638,7 +638,7 @@ function ProductDetailContent({ product }) {
                           color: "var(--foreground)"
                         }}
                       >
-                        Stone
+                        Diamond Type
                       </label>
                       <div style={{ position: "relative" }}>
                         <select
@@ -706,7 +706,7 @@ function ProductDetailContent({ product }) {
                           color: "var(--foreground)"
                         }}
                       >
-                        Diamond Size
+                        Central Diamond Size
                       </label>
                       <div style={{ position: "relative" }}>
                         <select
