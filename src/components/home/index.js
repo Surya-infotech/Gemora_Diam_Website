@@ -1,5 +1,6 @@
 export { default as HeroSlider } from "./HeroSlider";
 export { default as CircularCategories } from "./CircularCategories";
+export { default as ShopByShapeSection } from "./ShopByShapeSection";
 export { default as BestSellerSection } from "./BestSellerSection";
 export { default as SplitCollectionBanners } from "./SplitCollectionBanners";
 export { default as OutlineMarquee } from "./OutlineMarquee";

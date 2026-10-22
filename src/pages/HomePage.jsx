@@ -3,6 +3,7 @@ import { ArrowUp } from "lucide-react";
 import {
   HeroSlider,
   CircularCategories,
+  ShopByShapeSection,
   BestSellerSection,
   SplitCollectionBanners,
   OutlineMarquee,
@@ -33,7 +34,10 @@ export default function HomePage() {
       {/* 2. Three Circular Promo Cards */}
       <CircularCategories />
 
-      {/* 3. Best Seller Section with Tab Filter */}
+      {/* 3. Shop By Shape Dial Section (Tesora Jewellery Interactive Section) */}
+      <ShopByShapeSection />
+
+      {/* 4. Best Seller Section with Tab Filter */}
       <BestSellerSection />
 
       {/* 4. Split Collection Banners */}
