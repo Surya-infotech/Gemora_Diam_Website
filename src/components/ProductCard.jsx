@@ -284,9 +284,9 @@ export function ProductCard({ product }) {
       </div>
 
       {/* Info Details Container */}
-      <div style={{ padding: "18px 20px 22px", display: "flex", flexDirection: "column", flex: 1 }}>
+      <div style={{ padding: "clamp(12px, 2vw, 18px) clamp(10px, 2vw, 20px) clamp(14px, 2.5vw, 22px)", display: "flex", flexDirection: "column", flex: 1 }}>
         <p className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem", letterSpacing: "0.14em", marginBottom: "4px" }}>
-          {product.category}{product.sku ? ` &bull; ${product.sku}` : ""}
+          {product.category}{product.sku ? ` • ${product.sku}` : ""}
         </p>
 
         <h3
@@ -498,11 +498,11 @@ export function ProductCard({ product }) {
             </div>
 
             {/* Product Details & Selection Right */}
-            <div style={{ padding: "36px 32px", display: "flex", flexDirection: "column" }}>
+            <div style={{ padding: "clamp(20px, 4vw, 36px) clamp(16px, 4vw, 32px)", display: "flex", flexDirection: "column" }}>
               <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-                {product.category}{product.subcategory ? ` &bull; ${product.subcategory}` : ""} {product.sku ? `&bull; SKU: ${product.sku}` : ""}
+                {product.category}{product.subcategory ? ` • ${product.subcategory}` : ""} {product.sku ? `• SKU: ${product.sku}` : ""}
               </p>
-              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: "8px 0 10px 0", lineHeight: 1.2 }}>
+              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.4rem, 3vw, 2rem)", margin: "8px 0 10px 0", lineHeight: 1.2 }}>
                 {product.name}
               </h2>
               <p style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--primary)", margin: "0 0 16px 0" }}>
@@ -518,7 +518,7 @@ export function ProductCard({ product }) {
               {matchedPricing?.stonename && (
                 <div style={{ marginBottom: "14px", fontSize: "0.82rem", color: "var(--muted-foreground)" }}>
                   <span style={{ fontWeight: 600, color: "var(--foreground)" }}>Stone:</span> {matchedPricing.stonename}
-                  {matchedPricing.stonePricingType === "fixed" && " &bull; Fixed Price"}
+                  {matchedPricing.stonePricingType === "fixed" && " • Fixed Price"}
                 </div>
               )}
 
@@ -607,7 +607,7 @@ export function ProductCard({ product }) {
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
                 >
                   <ShoppingBag size={16} />
-                  <span>Add to Bag &bull; {format(currentPrice)}</span>
+                  <span>Add to Bag • {format(currentPrice)}</span>
                 </button>
               </div>
             </div>

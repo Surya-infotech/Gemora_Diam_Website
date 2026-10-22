@@ -113,13 +113,13 @@ export function Footer() {
   return (
     <footer style={{ backgroundColor: "#ffffff", color: "var(--foreground)" }}>
       {/* 1. Value Badges Bar - Warm Ivory Luxury Finish */}
-      <div style={{ backgroundColor: "#FAF8F5", borderTop: "1px solid #EAE5D8", borderBottom: "1px solid #EAE5D8", padding: "40px 0" }}>
+      <div style={{ backgroundColor: "#FAF8F5", borderTop: "1px solid #EAE5D8", borderBottom: "1px solid #EAE5D8", padding: "clamp(24px, 4vw, 40px) 0" }}>
         <div
           className="container-luxury"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
-            gap: "32px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
+            gap: "clamp(20px, 3vw, 32px)",
             alignItems: "center"
           }}
         >
@@ -267,10 +267,10 @@ export function Footer() {
         className="container-luxury"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
-          gap: "42px",
-          paddingTop: "70px",
-          paddingBottom: "60px"
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))",
+          gap: "clamp(28px, 4vw, 42px)",
+          paddingTop: "clamp(40px, 6vw, 70px)",
+          paddingBottom: "clamp(36px, 5vw, 60px)"
         }}
       >
         {/* Col 1: Join the Atelier Circle */}

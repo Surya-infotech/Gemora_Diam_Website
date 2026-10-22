@@ -97,15 +97,7 @@ export default function JustForYouGallery() {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
-          gap: "4px",
-          width: "100%",
-          padding: "0 4px"
-        }}
-      >
+      <div className="just-for-you-grid">
         {tiles.map((t, idx) => (
           <div
             key={t.id || idx}

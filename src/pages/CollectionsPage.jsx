@@ -342,13 +342,16 @@ export default function CollectionsPage({ slugOverride = null }) {
 
       {/* Filter Tabs Bar */}
       <div
+        className="no-scrollbar"
         style={{
           display: "flex",
           gap: "10px",
-          flexWrap: "wrap",
+          flexWrap: "nowrap",
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
           borderBottom: "1px solid #EDE8DE",
-          paddingBottom: "24px",
-          marginTop: "40px"
+          paddingBottom: "16px",
+          marginTop: "clamp(20px, 4vw, 40px)"
         }}
       >
         <Link
@@ -363,6 +366,8 @@ export default function CollectionsPage({ slugOverride = null }) {
             borderRadius: "50px",
             fontSize: "0.76rem",
             letterSpacing: "0.16em",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
             transition: "all 0.25s ease",
             boxShadow: !category && !search && !slug ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
           }}
@@ -395,6 +400,8 @@ export default function CollectionsPage({ slugOverride = null }) {
                 borderRadius: "50px",
                 fontSize: "0.76rem",
                 letterSpacing: "0.16em",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
                 transition: "all 0.25s ease",
                 boxShadow: isSelected ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
               }}
@@ -433,14 +440,7 @@ export default function CollectionsPage({ slugOverride = null }) {
           </Link>
         </div>
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 1fr))",
-            gap: "clamp(24px, 3vw, 36px) clamp(16px, 2vw, 28px)",
-            marginTop: "28px"
-          }}
-        >
+        <div className="products-responsive-grid" style={{ marginTop: "28px" }}>
           {list.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

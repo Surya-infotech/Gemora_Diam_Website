@@ -53,14 +53,7 @@ export default function CircularCategories() {
         </div>
 
         {/* Collection Cards Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
-            gap: "clamp(20px, 3vw, 36px)",
-            justifyContent: "center"
-          }}
-        >
+        <div className="categories-balanced-grid">
           {cards.map((c, i) => (
             <Link
               key={c.id || i}
@@ -70,7 +63,7 @@ export default function CircularCategories() {
                 backgroundColor: "#FAF9F6",
                 borderRadius: "6px",
                 border: "1px solid #EAE4D7",
-                padding: "48px 32px 36px 32px",
+                padding: "clamp(28px, 4vw, 48px) clamp(16px, 3vw, 32px) clamp(24px, 3vw, 36px)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -94,11 +87,11 @@ export default function CircularCategories() {
               <div
                 style={{
                   position: "relative",
-                  width: "190px",
-                  height: "190px",
+                  width: "clamp(130px, 16vw, 190px)",
+                  height: "clamp(130px, 16vw, 190px)",
                   borderRadius: "50%",
                   overflow: "hidden",
-                  marginBottom: "28px",
+                  marginBottom: "clamp(16px, 3vw, 28px)",
                   boxShadow: "0 0 0 4px #FAF9F6, 0 0 0 6px rgba(197, 160, 89, 0.4), 0 10px 25px rgba(0,0,0,0.08)",
                   backgroundColor: "#ffffff",
                   flexShrink: 0
@@ -142,7 +135,7 @@ export default function CircularCategories() {
               <h3
                 style={{
                   fontFamily: "var(--font-serif)",
-                  fontSize: "1.75rem",
+                  fontSize: "clamp(1.3rem, 2.2vw, 1.75rem)",
                   color: "var(--foreground)",
                   marginBottom: "10px",
                   fontWeight: 500,

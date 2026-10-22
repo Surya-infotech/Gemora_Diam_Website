@@ -994,7 +994,7 @@ function ProductDetailContent({ product }) {
                 }}
               >
                 <ShoppingBag size={18} />
-                <span>Add To Bag &bull; {format(currentPrice * qty)}</span>
+                <span>Add To Bag • {format(currentPrice * qty)}</span>
               </button>
             </div>
 
@@ -1151,7 +1151,7 @@ function ProductDetailContent({ product }) {
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "fill",
+                        objectFit: "cover",
                         objectPosition: "center",
                         display: "block",
                         transition: "transform 0.5s ease"

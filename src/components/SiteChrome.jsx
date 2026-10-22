@@ -35,12 +35,13 @@ export function Logo() {
       <span
         style={{
           fontFamily: "var(--font-serif)",
-          fontSize: "clamp(1.35rem, 2.6vw, 2.45rem)",
+          fontSize: "clamp(1.2rem, 3.2vw, 2.3rem)",
           fontWeight: 600,
           fontStyle: "italic",
           letterSpacing: "0.02em",
           color: "var(--foreground)",
-          lineHeight: 1
+          lineHeight: 1,
+          whiteSpace: "nowrap"
         }}
       >
         {brandName}
@@ -48,14 +49,15 @@ export function Logo() {
       <span
         style={{
           fontSize: "0.58rem",
-          letterSpacing: "0.3em",
+          letterSpacing: "0.26em",
           textTransform: "uppercase",
           color: "var(--primary)",
           fontWeight: 600,
-          marginTop: "4px"
+          marginTop: "4px",
+          whiteSpace: "nowrap"
         }}
       >
-        Fine Jewelry &bull; Atelier
+        Fine Jewelry • Atelier
       </span>
     </Link>
   );
@@ -107,7 +109,7 @@ function AccountMenu() {
   }, [open]);
 
   return (
-    <div style={{ position: "relative" }} ref={menuRef} className="desktop-only-nav">
+    <div style={{ position: "relative" }} ref={menuRef} className="tablet-up-nav">
       <button
         onClick={() => setOpen((prev) => !prev)}
         aria-label="Account Menu"
@@ -368,29 +370,30 @@ export function Header() {
         style={{
           backgroundColor: "var(--primary)",
           color: "#ffffff",
-          fontSize: "0.75rem",
+          fontSize: "clamp(0.68rem, 1.8vw, 0.75rem)",
           fontWeight: 500,
-          padding: "6px 24px",
+          padding: "6px 14px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
-          gap: "12px",
+          gap: "8px",
           borderBottom: "1px solid rgba(255, 255, 255, 0.1)"
         }}
       >
-        <div className="container-luxury" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 0, paddingRight: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "22px" }}>
+        <div className="container-luxury" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 0, paddingRight: 0, flexWrap: "wrap", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 20px)", flexWrap: "wrap" }}>
             {generalSettings?.phone && (
               <a
                 href={`tel:${generalSettings.phone.replace(/\s+/g, '')}`}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "6px",
+                  gap: "5px",
                   color: "#ffffff",
                   letterSpacing: "0.04em",
-                  transition: "opacity 0.2s"
+                  transition: "opacity 0.2s",
+                  fontSize: "inherit"
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
@@ -404,10 +407,11 @@ export function Header() {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "6px",
+                gap: "5px",
                 color: "#ffffff",
                 letterSpacing: "0.04em",
-                transition: "opacity 0.2s"
+                transition: "opacity 0.2s",
+                fontSize: "inherit"
               }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
@@ -417,9 +421,9 @@ export function Header() {
             </Link>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }} className="desktop-only-nav">
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }} className="tablet-up-nav">
             <span style={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "0.72rem", letterSpacing: "0.08em" }}>
-              Complimentary Ring Sizer &amp; Consultations
+              Complimentary Consultations
             </span>
             <Link
               to="/contact"
@@ -524,7 +528,7 @@ export function Header() {
           </div>
 
           {/* Right: Client Action Icons */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "18px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "clamp(8px, 1.8vw, 18px)" }}>
             {/* Mobile Search Button */}
             <button
               onClick={() => setSearch(true)}
@@ -1149,7 +1153,7 @@ function CartDrawer() {
               </span>
             </div>
             <p style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", marginTop: "6px", lineHeight: 1.5 }}>
-              Complimentary insured worldwide shipping &bull; 30-day effortless returns.
+              Complimentary insured worldwide shipping • 30-day effortless returns.
             </p>
             <button
               onClick={() => {

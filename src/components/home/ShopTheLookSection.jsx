@@ -72,7 +72,7 @@ export default function ShopTheLookSection() {
               onClick={() => (item.product?._id || item.product?.id) && navigate(`/product/${item.product._id || item.product.id}`)}
               style={{
                 position: "relative",
-                height: "clamp(420px, 60vw, 560px)",
+                height: "clamp(340px, 50vw, 560px)",
                 overflow: "hidden",
                 borderRadius: "6px",
                 boxShadow: "0 8px 30px rgba(0,0,0,0.06)",
@@ -109,17 +109,17 @@ export default function ShopTheLookSection() {
               <div
                 style={{
                   position: "absolute",
-                  bottom: "20px",
-                  left: "20px",
-                  right: "20px",
+                  bottom: "clamp(12px, 2.5vw, 20px)",
+                  left: "clamp(12px, 2.5vw, 20px)",
+                  right: "clamp(12px, 2.5vw, 20px)",
                   backgroundColor: "rgba(255, 255, 255, 0.94)",
                   backdropFilter: "blur(12px)",
                   WebkitBackdropFilter: "blur(12px)",
                   borderRadius: "4px",
-                  padding: "14px 18px",
+                  padding: "clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 18px)",
                   display: "flex",
                   alignItems: "center",
-                  gap: "14px",
+                  gap: "12px",
                   boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
                   border: "1px solid rgba(255, 255, 255, 0.6)",
                   transition: "transform 0.2s ease"

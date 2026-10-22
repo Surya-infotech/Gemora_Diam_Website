@@ -86,7 +86,8 @@ export default function HeroSlider() {
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to right, rgba(16, 23, 13, 0.82) 0%, rgba(16, 23, 13, 0.45) 55%, rgba(10, 14, 8, 0.3) 100%)"
+            background:
+              "linear-gradient(180deg, rgba(10, 14, 8, 0.2) 0%, rgba(16, 23, 13, 0.6) 40%, rgba(16, 23, 13, 0.9) 100%)"
           }}
         />
       )}
@@ -153,7 +154,7 @@ export default function HeroSlider() {
 
             {/* Call To Action Buttons */}
             {(cur.buttonText || cur.secondaryButtonText) && (
-              <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "clamp(12px, 3vw, 20px)", flexWrap: "wrap" }}>
                 {cur.buttonText && (
                   <Link
                     to={cur.buttonLink || "/collections"}
@@ -162,12 +163,12 @@ export default function HeroSlider() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "10px",
-                      padding: "14px 32px",
+                      padding: "clamp(11px, 2.2vw, 14px) clamp(20px, 3.2vw, 32px)",
                       backgroundColor: "var(--primary)",
                       color: "#ffffff",
                       border: "1px solid rgba(197, 160, 89, 0.5)",
                       fontSize: "0.8rem",
-                      letterSpacing: "0.2em",
+                      letterSpacing: "0.18em",
                       fontWeight: 600,
                       textTransform: "uppercase",
                       boxShadow: "0 6px 24px rgba(0,0,0,0.35)",

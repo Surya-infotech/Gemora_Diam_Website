@@ -815,15 +815,16 @@ export default function CartPage() {
           style={{
             border: "1px solid #EDE8DE",
             backgroundColor: "#FAF9F6",
-            padding: "36px",
+            padding: "clamp(20px, 4vw, 36px)",
             boxShadow: "0 8px 30px rgba(0,0,0,0.04)",
             borderRadius: "6px",
             position: "sticky",
             top: "100px",
-            maxWidth: "440px"
+            width: "100%",
+            boxSizing: "border-box"
           }}
         >
-          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", fontWeight: 400, margin: 0 }}>
+          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: 400, margin: 0 }}>
             Order Summary
           </h2>
 

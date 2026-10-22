@@ -24,8 +24,8 @@ export function CartLines({ compact = false }) {
               src={p.image}
               alt={p.name}
               style={{
-                width: compact ? "84px" : "116px",
-                height: compact ? "100px" : "138px",
+                width: compact ? "80px" : "clamp(84px, 18vw, 116px)",
+                height: compact ? "96px" : "clamp(100px, 22vw, 138px)",
                 objectFit: "contain",
                 padding: "8px",
                 borderRadius: "4px",
@@ -41,7 +41,7 @@ export function CartLines({ compact = false }) {
                   <h4
                     style={{
                       fontFamily: "var(--font-serif)",
-                      fontSize: compact ? "1.1rem" : "1.3rem",
+                      fontSize: compact ? "1.1rem" : "clamp(1.05rem, 2.5vw, 1.3rem)",
                       lineHeight: 1.25,
                       margin: 0,
                       fontWeight: 500
@@ -51,13 +51,13 @@ export function CartLines({ compact = false }) {
                   </h4>
                   <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "4px", lineHeight: 1.5 }}>
                     {item.metal}
-                    {item.stone ? ` &bull; ${item.stone}` : ""}
-                    {item.carat ? ` &bull; ${item.carat}` : ""}
-                    {item.shape || item.shapename ? ` &bull; ${item.shape || item.shapename}` : ""}
-                    {item.clarity || item.clarityname ? ` &bull; ${item.clarity || item.clarityname}` : ""}
-                    {item.diamondcolor ? ` &bull; Dia: ${item.diamondcolor}` : ""}
-                    {item.bandcolor ? ` &bull; Band: ${item.bandcolor}` : ""}
-                    {item.size ? ` &bull; Size: ${item.size}` : ""}
+                    {item.stone ? ` • ${item.stone}` : ""}
+                    {item.carat ? ` • ${item.carat}` : ""}
+                    {item.shape || item.shapename ? ` • ${item.shape || item.shapename}` : ""}
+                    {item.clarity || item.clarityname ? ` • ${item.clarity || item.clarityname}` : ""}
+                    {item.diamondcolor ? ` • Dia: ${item.diamondcolor}` : ""}
+                    {item.bandcolor ? ` • Band: ${item.bandcolor}` : ""}
+                    {item.size ? ` • Size: ${item.size}` : ""}
                   </p>
                   <p style={{ fontSize: "0.8rem", color: "var(--primary)", fontWeight: 600, marginTop: "2px" }}>
                     {format(item.price ?? p.price)} each

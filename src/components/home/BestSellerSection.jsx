@@ -75,12 +75,15 @@ export default function BestSellerSection() {
         {/* Category Filter Tabs */}
         {categoryTabs.length > 1 && (
           <div
+            className="no-scrollbar"
             style={{
               display: "flex",
               justifyContent: "center",
-              gap: "10px",
-              marginBottom: "48px",
-              flexWrap: "wrap"
+              gap: "8px",
+              marginBottom: "clamp(24px, 5vw, 48px)",
+              flexWrap: "wrap",
+              overflowX: "auto",
+              paddingBottom: "4px"
             }}
           >
             {categoryTabs.map((t) => {
@@ -125,14 +128,7 @@ export default function BestSellerSection() {
         )}
 
         {/* Product Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 1fr))",
-            gap: "clamp(20px, 3vw, 32px)",
-            justifyContent: "center"
-          }}
-        >
+        <div className="products-responsive-grid">
           {filtered.length === 0 ? (
             <div
               style={{
@@ -281,10 +277,10 @@ export default function BestSellerSection() {
                   </div>
 
                   {/* Item Details */}
-                  <div style={{ padding: "20px 22px 24px", display: "flex", flexDirection: "column", flex: 1 }}>
+                  <div style={{ padding: "clamp(12px, 2vw, 20px) clamp(10px, 2vw, 22px) clamp(14px, 2.5vw, 24px)", display: "flex", flexDirection: "column", flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                       <span className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem", letterSpacing: "0.14em" }}>
-                        {item.category || "Jewelry"} {item.sku ? `&bull; ${item.sku}` : ""}
+                        {item.category} {item.sku ? ` • ${item.sku}` : ""}
                       </span>
                       {item.metals && item.metals.length > 0 && (
                         <span style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>
