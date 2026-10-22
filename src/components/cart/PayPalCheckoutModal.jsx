@@ -25,9 +25,13 @@ export default function PayPalCheckoutModal({
     if (!isOpen) return;
 
     let isMounted = true;
-    setLoadingSdk(true);
-    setSdkError("");
-    setPaymentError("");
+    queueMicrotask(() => {
+      if (isMounted) {
+        setLoadingSdk(true);
+        setSdkError("");
+        setPaymentError("");
+      }
+    });
 
     getPayPalClientId()
       .then((res) => {
@@ -194,10 +198,11 @@ export default function PayPalCheckoutModal({
 
     document.body.appendChild(script);
 
+    const container = buttonContainerRef.current;
     return () => {
       isMounted = false;
-      if (buttonContainerRef.current) {
-        buttonContainerRef.current.innerHTML = "";
+      if (container) {
+        container.innerHTML = "";
       }
     };
   }, [isOpen, clientId, orderData, createPayPalOrder, capturePayPalOrder, onSuccess, onError]);
