@@ -12,6 +12,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { useStore } from "../lib/store";
+import { formatPhoneNumber } from "../lib/formatters";
 import { slugifyPolicy } from "../lib/slugify";
 
 import visaSvg from "../assets/vemus/payment_visa.svg";
@@ -402,7 +403,7 @@ export function Footer() {
                 onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-foreground)")}
               >
-                {generalSettings.phone}
+                {formatPhoneNumber(generalSettings.phone)}
               </a>
             </div>
           )}

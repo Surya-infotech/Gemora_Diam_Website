@@ -13,6 +13,7 @@ import {
   LogOut
 } from "lucide-react";
 import { useStore } from "../lib/store";
+import { formatPhoneNumber } from "../lib/formatters";
 import { CartLines } from "./CartLines";
 import MegaMenu from "./MegaMenu";
 
@@ -399,7 +400,7 @@ export function Header() {
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
                 <Phone size={12} strokeWidth={1.8} />
-                <span>Concierge: {generalSettings.phone}</span>
+                <span>Concierge: {formatPhoneNumber(generalSettings.phone)}</span>
               </a>
             )}
             <Link

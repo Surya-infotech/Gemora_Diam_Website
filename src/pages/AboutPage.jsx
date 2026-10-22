@@ -1,4 +1,5 @@
 import { useStore } from "../lib/store";
+import { formatPhoneNumber } from "../lib/formatters";
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Award, Sparkles, ShieldCheck } from "lucide-react";
 import atelier from "../assets/atelier.jpg";
@@ -150,7 +151,7 @@ export default function AboutPage() {
                 <p style={{ display: "flex", gap: "12px", alignItems: "center", marginTop: "14px", fontSize: "0.95rem" }}>
                   <Phone size={18} style={{ color: "var(--gold-deep)", flexShrink: 0 }} />
                   <a href={`tel:${generalSettings.phone.replace(/\s+/g, "")}`} style={{ color: "var(--foreground)", textDecoration: "none" }}>
-                    {generalSettings.phone}
+                    {formatPhoneNumber(generalSettings.phone)}
                   </a>
                 </p>
               )}

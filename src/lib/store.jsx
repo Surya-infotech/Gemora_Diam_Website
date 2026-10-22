@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { formatPhoneNumber } from "./formatters";
 
 
 function mapBackendItem(item) {
@@ -1069,6 +1070,7 @@ export function StoreProvider({ children }) {
         getProduct,
         getItemPrice,
         format,
+        formatPhoneNumber,
         cartCount,
         subtotal,
         notify,
