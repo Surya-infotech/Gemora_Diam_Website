@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
+import { formatPhoneNumber } from "../lib/formatters";
 import { CartLines } from "../components/CartLines";
 import PayPalCheckoutModal from "../components/cart/PayPalCheckoutModal";
 
@@ -29,7 +30,6 @@ export default function CartPage() {
     user,
     getAddresses,
     addAddress,
-    createOrder,
     getProduct,
     storeCurrency
   } = useStore();
@@ -390,6 +390,11 @@ export default function CartPage() {
                   <br />
                   {orderShippingAddr?.countryname}
                 </p>
+                {(orderShippingAddr?.phone || confirmedOrder.customerphone || user?.phone) && (
+                  <p style={{ color: "var(--muted-foreground)", marginTop: "6px", fontSize: "0.84rem" }}>
+                    Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(orderShippingAddr?.phone || confirmedOrder.customerphone || user?.phone)}</strong>
+                  </p>
+                )}
               </div>
 
               <div>
@@ -765,6 +770,11 @@ export default function CartPage() {
                         <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", paddingLeft: "30px", marginTop: "2px" }}>
                           {addr.countryname}
                         </p>
+                        {addr.phone && (
+                          <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", paddingLeft: "30px", marginTop: "4px" }}>
+                            Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(addr.phone)}</strong>
+                          </p>
+                        )}
                       </div>
 
                       {/* Bottom Selection Indicator */}

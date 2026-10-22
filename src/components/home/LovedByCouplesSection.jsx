@@ -11,26 +11,32 @@ export default function LovedByCouplesSection() {
   const carouselRef = useRef(null);
 
   useEffect(() => {
-    fetchActiveSection();
-  }, []);
-
-  const fetchActiveSection = async () => {
-    try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      const res = await fetch(`${backendUrl}/Support/GetActiveCoupleSection`);
-      const data = await res.json();
-      if (res.ok && data && data.status !== false) {
-        setSectionData(data);
-      } else {
-        setSectionData(null);
+    let isMounted = true;
+    const loadSection = async () => {
+      try {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const res = await fetch(`${backendUrl}/Support/GetActiveCoupleSection`);
+        const data = await res.json();
+        if (isMounted) {
+          if (res.ok && data && data.status !== false) {
+            setSectionData(data);
+          } else {
+            setSectionData(null);
+          }
+        }
+      } catch (err) {
+        console.error("Error loading Loved by Couples section:", err);
+        if (isMounted) setSectionData(null);
+      } finally {
+        if (isMounted) setLoading(false);
       }
-    } catch (err) {
-      console.error("Error loading Loved by Couples section:", err);
-      setSectionData(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    loadSection();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const checkScroll = useCallback(() => {
     const el = carouselRef.current;

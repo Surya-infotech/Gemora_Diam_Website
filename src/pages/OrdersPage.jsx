@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Check, Download, X, Package, MapPin, Sparkles, Loader2, AlertCircle } from "lucide-react";
 import { useStore } from "../lib/store";
+import { formatPhoneNumber } from "../lib/formatters";
 import { StatusBadge } from "../components/StatusBadge";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
@@ -612,7 +613,7 @@ function OrderDetailModal({ order, onClose }) {
               </div>
               <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">${escapeHtml(customerName)}</div>
               ${customerEmail ? `<div style="font-size: 12px; color: #475569;">Email: ${escapeHtml(customerEmail)}</div>` : ""}
-              ${customerPhone ? `<div style="font-size: 12px; color: #475569;">Phone: ${escapeHtml(customerPhone)}</div>` : ""}
+              ${customerPhone ? `<div style="font-size: 12px; color: #475569;">Phone: ${escapeHtml(formatPhoneNumber(customerPhone))}</div>` : ""}
               ${shippingAddressParts ? `<div style="font-size: 12px; color: #475569; margin-top: 6px; line-height: 1.4;">${shippingAddressParts}</div>` : ""}
             </div>
 
@@ -622,7 +623,7 @@ function OrderDetailModal({ order, onClose }) {
               </div>
               <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">${escapeHtml(brandName)}</div>
               ${brandEmail ? `<div style="font-size: 12px; color: #475569;">Email: ${escapeHtml(brandEmail)}</div>` : ""}
-              ${brandPhone ? `<div style="font-size: 12px; color: #475569;">Phone: ${escapeHtml(brandPhone)}</div>` : ""}
+              ${brandPhone ? `<div style="font-size: 12px; color: #475569;">Phone: ${escapeHtml(formatPhoneNumber(brandPhone))}</div>` : ""}
               ${brandAddress ? `<div style="font-size: 12px; color: #475569; margin-top: 6px; line-height: 1.4;">${escapeHtml(brandAddress)}</div>` : ""}
               <div style="font-size: 12px; color: #475569; margin-top: 6px;"><strong>Payment Method:</strong> ${escapeHtml(order.paymentmethod || "Credit/Debit Card")}</div>
             </div>
@@ -935,6 +936,11 @@ function OrderDetailModal({ order, onClose }) {
             <p style={{ color: "var(--muted-foreground)", margin: 0, lineHeight: 1.6 }}>
               {shippingAddr.address}, {shippingAddr.cityname}, {shippingAddr.statename}, {shippingAddr.countryname} - {shippingAddr.pincode}
             </p>
+            {(order.customerphone || shippingAddr.phone) && (
+              <p style={{ color: "var(--muted-foreground)", margin: "4px 0 0 0", fontSize: "0.82rem" }}>
+                Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(order.customerphone || shippingAddr.phone)}</strong>
+              </p>
+            )}
           </div>
         )}
 
