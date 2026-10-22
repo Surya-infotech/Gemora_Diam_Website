@@ -6,3 +6,4 @@ export { default as SplitCollectionBanners } from "./SplitCollectionBanners";
 export { default as OutlineMarquee } from "./OutlineMarquee";
 export { default as ShopTheLookSection } from "./ShopTheLookSection";
 export { default as JustForYouGallery } from "./JustForYouGallery";
+export { default as LovedByCouplesSection } from "./LovedByCouplesSection";

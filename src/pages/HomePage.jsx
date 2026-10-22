@@ -8,7 +8,8 @@ import {
   SplitCollectionBanners,
   OutlineMarquee,
   ShopTheLookSection,
-  JustForYouGallery
+  JustForYouGallery,
+  LovedByCouplesSection
 } from "../components/home";
 
 export default function HomePage() {
@@ -51,6 +52,9 @@ export default function HomePage() {
 
       {/* 7. Just For You Curated 6-Tile Gallery */}
       <JustForYouGallery />
+
+      {/* 8. Loved by couples (Real Love Stories & Client Reviews) */}
+      <LovedByCouplesSection />
 
       {/* Floating Back to Top Button */}
       {showScrollTop && (
