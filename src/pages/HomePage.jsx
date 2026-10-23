@@ -9,8 +9,7 @@ import {
   SplitCollectionBanners,
   OutlineMarquee,
   ShopTheLookSection,
-  LovedByCouplesSection,
-  TrustBadgesSection
+  LovedByCouplesSection
 } from "../components/home";
 
 export default function HomePage() {
@@ -57,8 +56,6 @@ export default function HomePage() {
       {/* 9. Loved by couples (Real Love Stories & Client Reviews Carousel) */}
       <LovedByCouplesSection />
 
-      {/* 10. The Gemora Diam Promise Trust Guarantees */}
-      <TrustBadgesSection />
 
 
       {/* Floating Back to Top Button */}
