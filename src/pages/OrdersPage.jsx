@@ -16,7 +16,6 @@ import {
   User,
   ShoppingBag,
   Truck,
-  ShieldCheck,
   CreditCard
 } from "lucide-react";
 import { useStore } from "../lib/store";
@@ -1328,102 +1327,14 @@ function OrderDetailModal({ order, onClose }) {
             </div>
           )}
 
-          {/* Dual Cards: Delivery Destination + Maison Privée Guarantee */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "16px"
-            }}
-          >
-            {/* Delivery Destination */}
-            {shippingAddr ? (
-              <div
-                style={{
-                  padding: "18px 20px",
-                  borderRadius: "14px",
-                  backgroundColor: "#FAF9F6",
-                  border: "1px solid #EDE8DE",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between"
-                }}
-              >
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                    <div
-                      style={{
-                        width: "28px",
-                        height: "28px",
-                        borderRadius: "50%",
-                        backgroundColor: "rgba(85, 104, 50, 0.1)",
-                        display: "grid",
-                        placeItems: "center",
-                        color: "var(--primary)"
-                      }}
-                    >
-                      <MapPin size={15} />
-                    </div>
-                    <span
-                      className="eyebrow"
-                      style={{
-                        fontSize: "0.72rem",
-                        fontWeight: 700,
-                        letterSpacing: "0.12em",
-                        color: "var(--foreground)"
-                      }}
-                    >
-                      DELIVERY DESTINATION ({shippingAddr.title || "PRIMARY"})
-                    </span>
-                  </div>
-                  <p style={{ fontSize: "0.88rem", color: "var(--foreground)", fontWeight: 600, margin: "0 0 4px 0" }}>
-                    {shippingAddr.name || order.customername || "Valued Patron"}
-                  </p>
-                  <p style={{ color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5, fontSize: "0.84rem" }}>
-                    {[shippingAddr.address, shippingAddr.cityname, shippingAddr.statename, shippingAddr.countryname].filter(Boolean).join(", ")}
-                    {shippingAddr.pincode ? ` - ${shippingAddr.pincode}` : ""}
-                  </p>
-                  {(order.customerphone || shippingAddr.phone) && (
-                    <p style={{ color: "var(--muted-foreground)", margin: "8px 0 0 0", fontSize: "0.82rem" }}>
-                      Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(order.customerphone || shippingAddr.phone)}</strong>
-                    </p>
-                  )}
-                </div>
-                <div style={{ marginTop: "12px", paddingTop: "10px", borderTop: "1px dashed #EDE8DE", fontSize: "0.74rem", color: "var(--muted-foreground)" }}>
-                  ✦ White-glove direct courier · Signature required
-                </div>
-              </div>
-            ) : (
-              <div
-                style={{
-                  padding: "18px 20px",
-                  borderRadius: "14px",
-                  backgroundColor: "#FAF9F6",
-                  border: "1px solid #EDE8DE"
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                  <MapPin size={16} style={{ color: "var(--primary)" }} />
-                  <span className="eyebrow" style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em" }}>
-                    DELIVERY DESTINATION
-                  </span>
-                </div>
-                <p style={{ color: "var(--muted-foreground)", fontSize: "0.84rem", margin: 0 }}>
-                  Digital order confirmation or boutique atelier pickup.
-                </p>
-              </div>
-            )}
-
-            {/* Atelier Guarantees Card */}
+          {/* Delivery Destination */}
+          {shippingAddr ? (
             <div
               style={{
-                padding: "18px 20px",
+                padding: "18px 22px",
                 borderRadius: "14px",
                 backgroundColor: "#FAF9F6",
-                border: "1px solid #EDE8DE",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between"
+                border: "1px solid #EDE8DE"
               }}
             >
               <div>
@@ -1439,7 +1350,7 @@ function OrderDetailModal({ order, onClose }) {
                       color: "var(--primary)"
                     }}
                   >
-                    <ShieldCheck size={15} />
+                    <MapPin size={15} />
                   </div>
                   <span
                     className="eyebrow"
@@ -1450,33 +1361,43 @@ function OrderDetailModal({ order, onClose }) {
                       color: "var(--foreground)"
                     }}
                   >
-                    MAISON PRIVÉE GUARANTEE
+                    DELIVERY DESTINATION ({shippingAddr.title || "PRIMARY"})
                   </span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontSize: "0.82rem", color: "var(--muted-foreground)", marginTop: "8px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span style={{ color: "var(--primary)", fontWeight: 700 }}>✦</span>
-                    <span>100% Certified Ethical Lab Diamonds</span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span style={{ color: "var(--primary)", fontWeight: 700 }}>✦</span>
-                    <span>Complimentary Lifetime Atelier Warranty</span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span style={{ color: "var(--primary)", fontWeight: 700 }}>✦</span>
-                    <span>Discreet Tamper-Evident Presentation Box</span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span style={{ color: "var(--primary)", fontWeight: 700 }}>✦</span>
-                    <span>Certified Appraisal Authenticity Dossier</span>
-                  </div>
-                </div>
-              </div>
-              <div style={{ marginTop: "12px", paddingTop: "10px", borderTop: "1px dashed #EDE8DE", fontSize: "0.74rem", color: "var(--primary)", fontWeight: 600 }}>
-                Haute Joaillerie Certified Atelier Standards
+                <p style={{ fontSize: "0.88rem", color: "var(--foreground)", fontWeight: 600, margin: "0 0 4px 0" }}>
+                  {shippingAddr.name || order.customername || "Valued Patron"}
+                </p>
+                <p style={{ color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5, fontSize: "0.84rem" }}>
+                  {[shippingAddr.address, shippingAddr.cityname, shippingAddr.statename, shippingAddr.countryname].filter(Boolean).join(", ")}
+                  {shippingAddr.pincode ? ` - ${shippingAddr.pincode}` : ""}
+                </p>
+                {(order.customerphone || shippingAddr.phone) && (
+                  <p style={{ color: "var(--muted-foreground)", margin: "8px 0 0 0", fontSize: "0.82rem" }}>
+                    Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(order.customerphone || shippingAddr.phone)}</strong>
+                  </p>
+                )}
               </div>
             </div>
-          </div>
+          ) : (
+            <div
+              style={{
+                padding: "18px 22px",
+                borderRadius: "14px",
+                backgroundColor: "#FAF9F6",
+                border: "1px solid #EDE8DE"
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                <MapPin size={16} style={{ color: "var(--primary)" }} />
+                <span className="eyebrow" style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em" }}>
+                  DELIVERY DESTINATION
+                </span>
+              </div>
+              <p style={{ color: "var(--muted-foreground)", fontSize: "0.84rem", margin: 0 }}>
+                Digital order confirmation or boutique atelier pickup.
+              </p>
+            </div>
+          )}
 
           {/* Ordered Item List */}
           <div
