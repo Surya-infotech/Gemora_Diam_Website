@@ -670,6 +670,10 @@ function OrderDetailModal({ order, onClose }) {
     String(status || "").trim().toLowerCase() === "cancelled" ||
     String(order.orderstatus || "").trim().toLowerCase() === "cancelled" ||
     String(order.status || "").trim().toLowerCase() === "cancelled";
+  const isDelivered =
+    String(status || "").trim().toLowerCase() === "delivered" ||
+    String(order.orderstatus || "").trim().toLowerCase() === "delivered" ||
+    String(order.status || "").trim().toLowerCase() === "delivered";
 
   const rawCancelledAt = order.cancelledat || order.canceledAt || (isCancelled ? order.updatedAt : null);
   const cancelledAtDisplay = rawCancelledAt
@@ -690,7 +694,7 @@ function OrderDetailModal({ order, onClose }) {
   };
 
   const handleDownloadInvoice = async () => {
-    if (!order || downloadingInvoice) return;
+    if (!order || downloadingInvoice || !isDelivered) return;
     setDownloadingInvoice(true);
 
     try {
@@ -1625,54 +1629,56 @@ function OrderDetailModal({ order, onClose }) {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-            <button
-              onClick={handleDownloadInvoice}
-              disabled={downloadingInvoice}
-              className="eyebrow"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "9px",
-                backgroundColor: downloadingInvoice ? "#839463" : "var(--primary)",
-                color: "#ffffff",
-                border: "none",
-                padding: "13px 26px",
-                cursor: downloadingInvoice ? "not-allowed" : "pointer",
-                borderRadius: "8px",
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                fontSize: "0.76rem",
-                transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-                boxShadow: "0 4px 16px rgba(85, 104, 50, 0.25)",
-                opacity: downloadingInvoice ? 0.85 : 1
-              }}
-              onMouseEnter={(e) => {
-                if (!downloadingInvoice) {
-                  e.currentTarget.style.backgroundColor = "var(--primary-hover)";
-                  e.currentTarget.style.transform = "translateY(-1px)";
-                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(85, 104, 50, 0.35)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!downloadingInvoice) {
-                  e.currentTarget.style.backgroundColor = "var(--primary)";
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(85, 104, 50, 0.25)";
-                }
-              }}
-            >
-              {downloadingInvoice ? (
-                <>
-                  <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} />
-                  <span>Generating Invoice PDF...</span>
-                </>
-              ) : (
-                <>
-                  <Download size={16} />
-                  <span>Download Official Invoice</span>
-                </>
-              )}
-            </button>
+            {isDelivered && (
+              <button
+                onClick={handleDownloadInvoice}
+                disabled={downloadingInvoice}
+                className="eyebrow"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "9px",
+                  backgroundColor: downloadingInvoice ? "#839463" : "var(--primary)",
+                  color: "#ffffff",
+                  border: "none",
+                  padding: "13px 26px",
+                  cursor: downloadingInvoice ? "not-allowed" : "pointer",
+                  borderRadius: "8px",
+                  fontWeight: 700,
+                  letterSpacing: "0.12em",
+                  fontSize: "0.76rem",
+                  transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                  boxShadow: "0 4px 16px rgba(85, 104, 50, 0.25)",
+                  opacity: downloadingInvoice ? 0.85 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!downloadingInvoice) {
+                    e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                    e.currentTarget.style.boxShadow = "0 6px 20px rgba(85, 104, 50, 0.35)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!downloadingInvoice) {
+                    e.currentTarget.style.backgroundColor = "var(--primary)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 4px 16px rgba(85, 104, 50, 0.25)";
+                  }
+                }}
+              >
+                {downloadingInvoice ? (
+                  <>
+                    <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} />
+                    <span>Generating Invoice PDF...</span>
+                  </>
+                ) : (
+                  <>
+                    <Download size={16} />
+                    <span>Download Official Invoice</span>
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>
