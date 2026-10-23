@@ -11,10 +11,12 @@ import {
   Play,
   Share2,
   Sparkles,
-  ArrowLeft
+  ArrowLeft,
+  MessageCircle
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import SectionHeading from "../components/SectionHeading";
+import ProductCard from "../components/ProductCard";
 
 
 
@@ -179,8 +181,10 @@ function ProductDetailContent({ product }) {
 
   const hasDescription = Boolean(product?.description && product.description.trim());
   const currentTab = useMemo(() => {
-    if (!hasDescription) return "delivery";
-    return activeTab === "delivery" ? "delivery" : "description";
+    if (activeTab === "specifications") return "specifications";
+    if (activeTab === "delivery") return "delivery";
+    if (!hasDescription) return "specifications";
+    return "description";
   }, [hasDescription, activeTab]);
 
   const allMedia = useMemo(() => {
@@ -265,55 +269,48 @@ function ProductDetailContent({ product }) {
   };
 
   const currentMedia = allMedia[activeMediaIndex] || { type: "image", url: product.image };
+  const truncatedBreadcrumbTitle = (product.name || "").length > 36
+    ? `${product.name.slice(0, 34)}…`
+    : product.name;
 
   return (
     <div style={{ backgroundColor: "#ffffff", color: "var(--foreground)", paddingBottom: "100px" }}>
       {/* Breadcrumb Navigation */}
-      <div style={{ borderBottom: "1px solid #EDE8DE", backgroundColor: "#FAF9F6" }}>
-        <div className="container-luxury" style={{ padding: "16px 20px" }}>
-          <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "0.82rem", color: "var(--muted-foreground)" }}>
+      <div style={{ borderBottom: "1px solid rgba(237, 232, 222, 0.75)", backgroundColor: "#FAF9F6" }}>
+        <div className="container-luxury" style={{ padding: "14px 20px" }}>
+          <nav aria-label="Breadcrumb" style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "0.78rem", color: "var(--muted-foreground)", letterSpacing: "0.03em" }}>
             <Link to="/" style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
               Home
             </Link>
-            <ChevronRight size={13} style={{ color: "var(--gold-deep)" }} />
+            <span style={{ color: "var(--gold-deep)", opacity: 0.6 }}>/</span>
             <Link to="/collections" style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
               {product.category || "Collections"}
             </Link>
             {product.subcategory && (
               <>
-                <ChevronRight size={13} style={{ color: "var(--gold-deep)" }} />
+                <span style={{ color: "var(--gold-deep)", opacity: 0.6 }}>/</span>
                 <span>{product.subcategory}</span>
               </>
             )}
-            <ChevronRight size={13} style={{ color: "var(--gold-deep)" }} />
-            <span style={{ color: "var(--foreground)", fontWeight: 600 }}>{product.name}</span>
-          </div>
+            <span style={{ color: "var(--gold-deep)", opacity: 0.6 }}>/</span>
+            <span style={{ color: "var(--foreground)", fontWeight: 500 }} title={product.name}>
+              {truncatedBreadcrumbTitle}
+            </span>
+          </nav>
         </div>
       </div>
 
       {/* Main Product Showcase Section */}
-      <div className="container-luxury" style={{ marginTop: "44px" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
-            gap: "clamp(24px, 4vw, 56px)",
-            alignItems: "start"
-          }}
-        >
+      <div className="container-luxury" style={{ marginTop: "36px" }}>
+        <div className="product-showcase-grid">
           {/* LEFT: Media Gallery */}
           <div
             className="product-gallery-layout"
-            style={{ position: "sticky", top: "100px" }}
+            style={{ position: "sticky", top: "96px" }}
           >
-            {/* Thumbnail Rail (Vertical on the left side) */}
+            {/* Thumbnail Rail */}
             {allMedia.length > 1 && (
-              <div
-                className="product-gallery-thumbnails"
-                style={{
-                  scrollbarWidth: "thin"
-                }}
-              >
+              <div className="product-gallery-thumbnails">
                 {allMedia.map((m, idx) => (
                   <button
                     key={idx}
@@ -323,14 +320,14 @@ function ProductDetailContent({ product }) {
                       width: "74px",
                       height: "74px",
                       flexShrink: 0,
-                      borderRadius: "4px",
+                      borderRadius: "10px",
                       border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid #EDE8DE",
                       backgroundColor: "#FAF9F6",
                       padding: "3px",
                       overflow: "hidden",
                       cursor: "pointer",
                       opacity: activeMediaIndex === idx ? 1 : 0.75,
-                      boxShadow: activeMediaIndex === idx ? "0 2px 8px rgba(85, 104, 50, 0.2)" : "none",
+                      boxShadow: activeMediaIndex === idx ? "0 4px 12px rgba(85, 104, 50, 0.2)" : "none",
                       transition: "all 0.2s"
                     }}
                     onMouseEnter={(e) => {
@@ -356,7 +353,8 @@ function ProductDetailContent({ product }) {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          overflow: "hidden"
+                          overflow: "hidden",
+                          borderRadius: "6px"
                         }}
                       >
                         <video
@@ -385,8 +383,8 @@ function ProductDetailContent({ product }) {
                         >
                           <div
                             style={{
-                              width: "28px",
-                              height: "28px",
+                              width: "26px",
+                              height: "26px",
                               borderRadius: "50%",
                               backgroundColor: "rgba(255, 255, 255, 0.95)",
                               display: "flex",
@@ -395,12 +393,12 @@ function ProductDetailContent({ product }) {
                               boxShadow: "0 2px 6px rgba(0,0,0,0.3)"
                             }}
                           >
-                            <Play size={13} fill="#1e2419" color="#1e2419" style={{ marginLeft: "2px" }} />
+                            <Play size={12} fill="#1e2419" color="#1e2419" style={{ marginLeft: "2px" }} />
                           </div>
                         </div>
                       </div>
                     ) : (
-                      <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "6px" }} />
                     )}
                   </button>
                 ))}
@@ -424,13 +422,30 @@ function ProductDetailContent({ product }) {
                   key={currentMedia.url}
                   src={currentMedia.url}
                   alt={product.name}
-                  style={{
-                    transition: "transform 0.4s ease"
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 />
               )}
+
+              {/* Atelier Luxury Watermark */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "16px",
+                  left: "18px",
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "0.68rem",
+                  letterSpacing: "0.22em",
+                  color: "rgba(197, 160, 89, 0.8)",
+                  textTransform: "uppercase",
+                  pointerEvents: "none",
+                  zIndex: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px"
+                }}
+              >
+                <span style={{ display: "inline-block", width: "4px", height: "4px", borderRadius: "50%", backgroundColor: "var(--gold)" }} />
+                Gemora Atelier
+              </div>
 
               {/* Floating Wishlist Button */}
               <button
@@ -444,13 +459,14 @@ function ProductDetailContent({ product }) {
                   height: "42px",
                   borderRadius: "50%",
                   backgroundColor: "rgba(255,255,255,0.92)",
-                  backdropFilter: "blur(6px)",
+                  backdropFilter: "blur(8px)",
                   display: "grid",
                   placeItems: "center",
-                  color: isLiked ? "var(--primary)" : "#333",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                  color: isLiked ? "#e53e3e" : "#333",
+                  boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
                   cursor: "pointer",
                   transition: "all 0.2s",
+                  border: "1px solid rgba(255,255,255,0.6)",
                   zIndex: 2
                 }}
               >
@@ -460,10 +476,10 @@ function ProductDetailContent({ product }) {
           </div>
 
           {/* RIGHT: Product Details & Purchase Form */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                <span className="eyebrow" style={{ color: "var(--primary)", letterSpacing: "0.22em" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <span className="eyebrow" style={{ color: "var(--primary)", letterSpacing: "0.22em", fontSize: "0.74rem" }}>
                   {product.category || (generalSettings?.softwarename || "Gemora Diam")}
                   {product.subcategory ? ` • ${product.subcategory}` : ""}
                 </span>
@@ -472,15 +488,28 @@ function ProductDetailContent({ product }) {
                   onClick={handleShare}
                   aria-label="Share product"
                   style={{
-                    display: "flex",
+                    display: "inline-flex",
                     alignItems: "center",
                     gap: "6px",
-                    fontSize: "0.78rem",
+                    fontSize: "0.76rem",
                     color: "var(--muted-foreground)",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    padding: "5px 12px",
+                    borderRadius: "20px",
+                    border: "1px solid #EDE8DE",
+                    backgroundColor: "#FAF9F6",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = "var(--primary)";
+                    e.currentTarget.style.color = "var(--primary)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "#EDE8DE";
+                    e.currentTarget.style.color = "var(--muted-foreground)";
                   }}
                 >
-                  <Share2 size={14} />
+                  <Share2 size={13} />
                   <span>{copied ? "Copied!" : "Share"}</span>
                 </button>
               </div>
@@ -488,48 +517,62 @@ function ProductDetailContent({ product }) {
               <h1
                 style={{
                   fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(2rem, 3.5vw, 2.8rem)",
+                  fontSize: "clamp(1.65rem, 2.4vw, 2.25rem)",
                   fontWeight: 400,
-                  lineHeight: 1.2,
-                  color: "var(--foreground)"
+                  lineHeight: 1.26,
+                  color: "#1a2219",
+                  letterSpacing: "-0.01em",
+                  margin: "8px 0 12px 0",
+                  wordBreak: "break-word"
                 }}
               >
                 {product.name}
               </h1>
 
-              <div style={{ marginTop: "14px" }}>
+              <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: "10px", marginTop: "10px" }}>
                 <span
                   style={{
                     fontFamily: "var(--font-serif)",
                     fontSize: "2.1rem",
                     fontWeight: 600,
-                    color: "var(--primary)"
+                    color: "var(--primary)",
+                    letterSpacing: "-0.01em"
                   }}
                 >
                   {format(currentPrice)}
                 </span>
+                <span style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", letterSpacing: "0.02em" }}>
+                  (Includes complimentary insured shipping &amp; taxes)
+                </span>
               </div>
             </div>
 
-            <div style={{ height: "1px", backgroundColor: "var(--border-subtle)" }} />
+            <div style={{ height: "1px", backgroundColor: "#EDE8DE" }} />
 
             {/* Metal Selector */}
             {availableMetals.length > 0 && (
               <div>
-                <label
-                  style={{
-                    fontSize: "0.78rem",
-                    fontWeight: 600,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.12em",
-                    display: "block",
-                    marginBottom: "22px",
-                    color: "var(--foreground)"
-                  }}
-                >
-                  Select Metal
-                </label>
-                <div style={{ display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap", padding: "6px 2px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
+                  <label
+                    style={{
+                      fontSize: "0.76rem",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.14em",
+                      color: "var(--foreground)"
+                    }}
+                  >
+                    Select Metal:{" "}
+                    <span style={{ color: "var(--primary)", fontWeight: 600, textTransform: "none", letterSpacing: "0.02em" }}>
+                      {metal}
+                    </span>
+                  </label>
+                  <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", letterSpacing: "0.03em" }}>
+                    100% Solid Certified Metal
+                  </span>
+                </div>
+
+                <div style={{ display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap", padding: "8px 2px 4px 2px" }}>
                   {availableMetals.map((m) => {
                     const isSelected = metal === m;
                     const isHovered = hoveredMetal === m;
@@ -543,19 +586,19 @@ function ProductDetailContent({ product }) {
                           title={m}
                           aria-label={m}
                           style={{
-                            width: "40px",
-                            height: "40px",
+                            width: "42px",
+                            height: "42px",
                             borderRadius: "50%",
                             background: getMetalGradient(m),
-                            border: "1px solid rgba(0,0,0,0.18)",
+                            border: "1px solid rgba(0,0,0,0.16)",
                             boxShadow: isSelected
-                              ? "0 0 0 2px #ffffff, 0 0 0 4px var(--primary)"
+                              ? "0 0 0 2px #ffffff, 0 0 0 4.5px var(--primary)"
                               : isHovered
-                                ? "0 0 0 2px #ffffff, 0 0 0 3px rgba(0,0,0,0.25)"
-                                : "0 1px 3px rgba(0,0,0,0.08)",
-                            transform: isSelected || isHovered ? "scale(1.08)" : "scale(1)",
+                                ? "0 0 0 2px #ffffff, 0 0 0 3px rgba(85,104,50,0.4)"
+                                : "0 2px 6px rgba(0,0,0,0.06)",
+                            transform: isSelected ? "scale(1.08)" : isHovered ? "scale(1.04)" : "scale(1)",
                             cursor: "pointer",
-                            transition: "all 0.18s cubic-bezier(0.4, 0, 0.2, 1)",
+                            transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                             outline: "none",
                             display: "inline-flex",
                             alignItems: "center",
@@ -568,7 +611,6 @@ function ProductDetailContent({ product }) {
                         >
                           {getMetalType(m, product)}
                         </button>
-                        {/* Hover Tooltip with metal name */}
                         {isHovered && (
                           <div
                             style={{
@@ -579,15 +621,14 @@ function ProductDetailContent({ product }) {
                               backgroundColor: "#181818",
                               color: "#ffffff",
                               padding: "5px 10px",
-                              borderRadius: "3px",
+                              borderRadius: "4px",
                               fontSize: "0.72rem",
                               fontWeight: 600,
-                              letterSpacing: "0.04em",
+                              letterSpacing: "0.03em",
                               whiteSpace: "nowrap",
                               pointerEvents: "none",
                               zIndex: 50,
-                              boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
-                              animation: "fadeIn 0.15s ease-out"
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.25)"
                             }}
                           >
                             {m}
@@ -613,351 +654,353 @@ function ProductDetailContent({ product }) {
               </div>
             )}
 
-            {/* Stone & Diamond Size Dropdowns (Side by Side) */}
-            {(availableStones.length > 0 ||
-              (hasCarat && activeCaratPrices.length > 0)) && (
+            {/* Stone & Diamond Size Dropdowns */}
+            {(availableStones.length > 0 || (hasCarat && activeCaratPrices.length > 0)) && (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+                  gap: "14px",
+                  alignItems: "start"
+                }}
+              >
+                {/* Stone Dropdown */}
+                {availableStones.length > 0 && (
+                  <div>
+                    <label
+                      htmlFor="stone-select"
+                      style={{
+                        fontSize: "0.76rem",
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.12em",
+                        display: "block",
+                        marginBottom: "8px",
+                        color: "var(--foreground)"
+                      }}
+                    >
+                      Diamond Type
+                    </label>
+                    <div style={{ position: "relative" }}>
+                      <select
+                        id="stone-select"
+                        value={activeStone}
+                        onChange={(e) => setSelectedStone(e.target.value)}
+                        style={{
+                          width: "100%",
+                          height: "44px",
+                          padding: "0 36px 0 14px",
+                          border: "1px solid #E5DFD3",
+                          borderRadius: "8px",
+                          backgroundColor: "#FAF9F6",
+                          color: "var(--foreground)",
+                          fontSize: "0.84rem",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                          appearance: "none",
+                          WebkitAppearance: "none",
+                          outline: "none",
+                          transition: "all 0.2s"
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = "var(--primary)";
+                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = "#E5DFD3";
+                          e.currentTarget.style.boxShadow = "none";
+                        }}
+                      >
+                        {availableStones.map((st) => (
+                          <option key={st} value={st}>
+                            {st}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown
+                        size={16}
+                        style={{
+                          position: "absolute",
+                          right: "12px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          pointerEvents: "none",
+                          color: "var(--muted-foreground)"
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Diamond Size Dropdown */}
+                {hasCarat && activeCaratPrices.length > 0 && (
+                  <div>
+                    <label
+                      htmlFor="carat-select"
+                      style={{
+                        fontSize: "0.76rem",
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.12em",
+                        display: "block",
+                        marginBottom: "8px",
+                        color: "var(--foreground)"
+                      }}
+                    >
+                      Central Diamond Size
+                    </label>
+                    <div style={{ position: "relative" }}>
+                      <select
+                        id="carat-select"
+                        value={carat}
+                        onChange={(e) => setSelectedCarat(e.target.value)}
+                        style={{
+                          width: "100%",
+                          height: "44px",
+                          padding: "0 36px 0 14px",
+                          border: "1px solid #E5DFD3",
+                          borderRadius: "8px",
+                          backgroundColor: "#FAF9F6",
+                          color: "var(--foreground)",
+                          fontSize: "0.84rem",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                          appearance: "none",
+                          WebkitAppearance: "none",
+                          outline: "none",
+                          transition: "all 0.2s"
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = "var(--primary)";
+                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = "#E5DFD3";
+                          e.currentTarget.style.boxShadow = "none";
+                        }}
+                      >
+                        {activeCaratPrices.map((cp) => (
+                          <option key={cp.diamondsize} value={cp.diamondsize}>
+                            {cp.diamondsize}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown
+                        size={16}
+                        style={{
+                          position: "absolute",
+                          right: "12px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          pointerEvents: "none",
+                          color: "var(--muted-foreground)"
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Attribute Groups */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {/* Shape & Clarity */}
+              {((product.shapes && product.shapes.length > 0) ||
+                (product.clarities && product.clarities.length > 0)) && (
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+                    gridTemplateColumns:
+                      product.shapes?.length > 0 && product.clarities?.length > 0
+                        ? "repeat(auto-fit, minmax(180px, 1fr))"
+                        : "1fr",
                     gap: "16px",
                     alignItems: "start"
                   }}
                 >
-                  {/* Stone Dropdown */}
-                  {availableStones.length > 0 && (
+                  {product.shapes && product.shapes.length > 0 && (
                     <div>
-                      <label
-                        htmlFor="stone-select"
-                        style={{
-                          fontSize: "0.78rem",
-                          fontWeight: 600,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.12em",
-                          display: "block",
-                          marginBottom: "8px",
-                          color: "var(--foreground)"
-                        }}
-                      >
-                        Diamond Type
+                      <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                        Shape: <span style={{ fontWeight: 600, color: "var(--primary)" }}>{selectedShape || product.shapes[0]}</span>
                       </label>
-                      <div style={{ position: "relative" }}>
-                        <select
-                          id="stone-select"
-                          value={activeStone}
-                          onChange={(e) => setSelectedStone(e.target.value)}
-                          style={{
-                            width: "100%",
-                            height: "44px",
-                            padding: "0 36px 0 14px",
-                            border: "1px solid var(--border)",
-                            borderRadius: "2px",
-                            backgroundColor: "#ffffff",
-                            color: "var(--foreground)",
-                            fontSize: "0.84rem",
-                            fontWeight: 500,
-                            cursor: "pointer",
-                            appearance: "none",
-                            WebkitAppearance: "none",
-                            outline: "none",
-                            transition: "all 0.2s"
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.borderColor = "var(--primary)";
-                            e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.borderColor = "var(--border)";
-                            e.currentTarget.style.boxShadow = "none";
-                          }}
-                        >
-                          {availableStones.map((st) => (
-                            <option key={st} value={st}>
-                              {st}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown
-                          size={16}
-                          style={{
-                            position: "absolute",
-                            right: "12px",
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            pointerEvents: "none",
-                            color: "var(--muted-foreground)"
-                          }}
-                        />
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        {product.shapes.map((sh) => {
+                          const isSelected = (selectedShape || product.shapes[0]) === sh;
+                          return (
+                            <button
+                              key={sh}
+                              type="button"
+                              onClick={() => setSelectedShape(sh)}
+                              style={{
+                                padding: "7px 16px",
+                                border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
+                                backgroundColor: isSelected ? "var(--primary)" : "#FAF8F5",
+                                color: isSelected ? "#ffffff" : "var(--foreground)",
+                                borderRadius: "6px",
+                                fontSize: "0.82rem",
+                                fontWeight: isSelected ? 600 : 500,
+                                cursor: "pointer",
+                                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                                boxShadow: isSelected ? "0 2px 8px rgba(85, 104, 50, 0.25)" : "none"
+                              }}
+                            >
+                              {sh}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
 
-                  {/* Diamond Size Dropdown */}
-                  {hasCarat && activeCaratPrices.length > 0 && (
+                  {product.clarities && product.clarities.length > 0 && (
                     <div>
-                      <label
-                        htmlFor="carat-select"
-                        style={{
-                          fontSize: "0.78rem",
-                          fontWeight: 600,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.12em",
-                          display: "block",
-                          marginBottom: "8px",
-                          color: "var(--foreground)"
-                        }}
-                      >
-                        Central Diamond Size
+                      <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                        Clarity: <span style={{ fontWeight: 600, color: "var(--primary)" }}>{selectedClarity || product.clarities[0]}</span>
                       </label>
-                      <div style={{ position: "relative" }}>
-                        <select
-                          id="carat-select"
-                          value={carat}
-                          onChange={(e) => setSelectedCarat(e.target.value)}
-                          style={{
-                            width: "100%",
-                            height: "44px",
-                            padding: "0 36px 0 14px",
-                            border: "1px solid var(--border)",
-                            borderRadius: "2px",
-                            backgroundColor: "#ffffff",
-                            color: "var(--foreground)",
-                            fontSize: "0.84rem",
-                            fontWeight: 500,
-                            cursor: "pointer",
-                            appearance: "none",
-                            WebkitAppearance: "none",
-                            outline: "none",
-                            transition: "all 0.2s"
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.borderColor = "var(--primary)";
-                            e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.borderColor = "var(--border)";
-                            e.currentTarget.style.boxShadow = "none";
-                          }}
-                        >
-                          {activeCaratPrices.map((cp) => (
-                            <option key={cp.diamondsize} value={cp.diamondsize}>
-                              {cp.diamondsize}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown
-                          size={16}
-                          style={{
-                            position: "absolute",
-                            right: "12px",
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            pointerEvents: "none",
-                            color: "var(--muted-foreground)"
-                          }}
-                        />
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        {product.clarities.map((cl) => {
+                          const isSelected = (selectedClarity || product.clarities[0]) === cl;
+                          return (
+                            <button
+                              key={cl}
+                              type="button"
+                              onClick={() => setSelectedClarity(cl)}
+                              style={{
+                                padding: "7px 16px",
+                                border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
+                                backgroundColor: isSelected ? "var(--primary)" : "#FAF8F5",
+                                color: isSelected ? "#ffffff" : "var(--foreground)",
+                                borderRadius: "6px",
+                                fontSize: "0.82rem",
+                                fontWeight: isSelected ? 600 : 500,
+                                cursor: "pointer",
+                                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                                boxShadow: isSelected ? "0 2px 8px rgba(85, 104, 50, 0.25)" : "none"
+                              }}
+                            >
+                              {cl}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
-
                 </div>
               )}
 
-            {/* Attribute Groups (Single Label Per Group) */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {/* Shape & Clarity in One Row */}
-              {((product.shapes && product.shapes.length > 0) ||
-                (product.clarities && product.clarities.length > 0)) && (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        product.shapes?.length > 0 && product.clarities?.length > 0
-                          ? "repeat(auto-fit, minmax(200px, 1fr))"
-                          : "1fr",
-                      gap: "20px",
-                      alignItems: "start"
-                    }}
-                  >
-                    {product.shapes && product.shapes.length > 0 && (
-                      <div>
-                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                          Shape: <span style={{ fontWeight: 400, color: "var(--primary)" }}>{selectedShape || product.shapes[0]}</span>
-                        </label>
-                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                          {product.shapes.map((sh) => {
-                            const isSelected = (selectedShape || product.shapes[0]) === sh;
-                            return (
-                              <button
-                                key={sh}
-                                type="button"
-                                onClick={() => setSelectedShape(sh)}
-                                style={{
-                                  padding: "7px 16px",
-                                  border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
-                                  backgroundColor: isSelected ? "var(--primary-soft)" : "#FAF8F5",
-                                  color: isSelected ? "var(--primary)" : "var(--foreground)",
-                                  borderRadius: "4px",
-                                  fontSize: "0.82rem",
-                                  fontWeight: isSelected ? 600 : 400,
-                                  cursor: "pointer",
-                                  transition: "all 0.2s ease"
-                                }}
-                              >
-                                {sh}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-
-                    {product.clarities && product.clarities.length > 0 && (
-                      <div>
-                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                          Clarity: <span style={{ fontWeight: 400, color: "var(--primary)" }}>{selectedClarity || product.clarities[0]}</span>
-                        </label>
-                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                          {product.clarities.map((cl) => {
-                            const isSelected = (selectedClarity || product.clarities[0]) === cl;
-                            return (
-                              <button
-                                key={cl}
-                                type="button"
-                                onClick={() => setSelectedClarity(cl)}
-                                style={{
-                                  padding: "7px 16px",
-                                  border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
-                                  backgroundColor: isSelected ? "var(--primary-soft)" : "#FAF8F5",
-                                  color: isSelected ? "var(--primary)" : "var(--foreground)",
-                                  borderRadius: "4px",
-                                  fontSize: "0.82rem",
-                                  fontWeight: isSelected ? 600 : 400,
-                                  cursor: "pointer",
-                                  transition: "all 0.2s ease"
-                                }}
-                              >
-                                {cl}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-
-
-              {/* Diamond Color & Band Color in One Row */}
+              {/* Diamond Color & Band Color */}
               {((product.diamondColors && product.diamondColors.length > 0) ||
                 (product.bandColors && product.bandColors.length > 0)) && (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        product.diamondColors?.length > 0 && product.bandColors?.length > 0
-                          ? "repeat(auto-fit, minmax(200px, 1fr))"
-                          : "1fr",
-                      gap: "20px",
-                      alignItems: "start"
-                    }}
-                  >
-                    {product.diamondColors && product.diamondColors.length > 0 && (
-                      <div>
-                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                          Diamond Color: <span style={{ fontWeight: 400, color: "var(--primary)" }}>{selectedDiamondColor || product.diamondColors[0]}</span>
-                        </label>
-                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                          {product.diamondColors.map((dc) => {
-                            const isSelected = (selectedDiamondColor || product.diamondColors[0]) === dc;
-                            return (
-                              <button
-                                key={dc}
-                                type="button"
-                                onClick={() => setSelectedDiamondColor(dc)}
-                                style={{
-                                  padding: "7px 16px",
-                                  border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
-                                  backgroundColor: isSelected ? "var(--primary-soft)" : "#FAF8F5",
-                                  color: isSelected ? "var(--primary)" : "var(--foreground)",
-                                  borderRadius: "4px",
-                                  fontSize: "0.82rem",
-                                  fontWeight: isSelected ? 600 : 400,
-                                  cursor: "pointer",
-                                  transition: "all 0.2s ease"
-                                }}
-                              >
-                                {dc}
-                              </button>
-                            );
-                          })}
-                        </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      product.diamondColors?.length > 0 && product.bandColors?.length > 0
+                        ? "repeat(auto-fit, minmax(180px, 1fr))"
+                        : "1fr",
+                    gap: "16px",
+                    alignItems: "start"
+                  }}
+                >
+                  {product.diamondColors && product.diamondColors.length > 0 && (
+                    <div>
+                      <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                        Diamond Color: <span style={{ fontWeight: 600, color: "var(--primary)" }}>{selectedDiamondColor || product.diamondColors[0]}</span>
+                      </label>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        {product.diamondColors.map((dc) => {
+                          const isSelected = (selectedDiamondColor || product.diamondColors[0]) === dc;
+                          return (
+                            <button
+                              key={dc}
+                              type="button"
+                              onClick={() => setSelectedDiamondColor(dc)}
+                              style={{
+                                padding: "7px 16px",
+                                border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
+                                backgroundColor: isSelected ? "var(--primary)" : "#FAF8F5",
+                                color: isSelected ? "#ffffff" : "var(--foreground)",
+                                borderRadius: "6px",
+                                fontSize: "0.82rem",
+                                fontWeight: isSelected ? 600 : 500,
+                                cursor: "pointer",
+                                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                                boxShadow: isSelected ? "0 2px 8px rgba(85, 104, 50, 0.25)" : "none"
+                              }}
+                            >
+                              {dc}
+                            </button>
+                          );
+                        })}
                       </div>
-                    )}
+                    </div>
+                  )}
 
-                    {product.bandColors && product.bandColors.length > 0 && (
-                      <div>
-                        <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                          Band Color: <span style={{ fontWeight: 400, color: "var(--primary)" }}>{selectedBandColor || product.bandColors[0]}</span>
-                        </label>
-                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                          {product.bandColors.map((bc) => {
-                            const isSelected = (selectedBandColor || product.bandColors[0]) === bc;
-                            return (
-                              <button
-                                key={bc}
-                                type="button"
-                                onClick={() => setSelectedBandColor(bc)}
-                                style={{
-                                  padding: "7px 16px",
-                                  border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
-                                  backgroundColor: isSelected ? "var(--primary-soft)" : "#FAF8F5",
-                                  color: isSelected ? "var(--primary)" : "var(--foreground)",
-                                  borderRadius: "4px",
-                                  fontSize: "0.82rem",
-                                  fontWeight: isSelected ? 600 : 400,
-                                  cursor: "pointer",
-                                  transition: "all 0.2s ease"
-                                }}
-                              >
-                                {bc}
-                              </button>
-                            );
-                          })}
-                        </div>
+                  {product.bandColors && product.bandColors.length > 0 && (
+                    <div>
+                      <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                        Band Color: <span style={{ fontWeight: 600, color: "var(--primary)" }}>{selectedBandColor || product.bandColors[0]}</span>
+                      </label>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        {product.bandColors.map((bc) => {
+                          const isSelected = (selectedBandColor || product.bandColors[0]) === bc;
+                          return (
+                            <button
+                              key={bc}
+                              type="button"
+                              onClick={() => setSelectedBandColor(bc)}
+                              style={{
+                                padding: "7px 16px",
+                                border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
+                                backgroundColor: isSelected ? "var(--primary)" : "#FAF8F5",
+                                color: isSelected ? "#ffffff" : "var(--foreground)",
+                                borderRadius: "6px",
+                                fontSize: "0.82rem",
+                                fontWeight: isSelected ? 600 : 500,
+                                cursor: "pointer",
+                                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                                boxShadow: isSelected ? "0 2px 8px rgba(85, 104, 50, 0.25)" : "none"
+                              }}
+                            >
+                              {bc}
+                            </button>
+                          );
+                        })}
                       </div>
-                    )}
-                  </div>
-                )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Quantity & Add to Cart Action */}
-            <div style={{ display: "flex", gap: "14px", alignItems: "center", marginTop: "12px" }}>
+            <div style={{ display: "flex", gap: "12px", alignItems: "center", marginTop: "8px" }}>
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  border: "1px solid #EDE8DE",
-                  borderRadius: "4px",
-                  height: "54px",
+                  border: "1px solid #E5DFD3",
+                  borderRadius: "8px",
+                  height: "52px",
                   backgroundColor: "#FAF9F6"
                 }}
               >
                 <button
                   type="button"
                   onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  style={{ width: "44px", height: "100%", display: "grid", placeItems: "center", cursor: "pointer", fontSize: "1.1rem", color: "var(--foreground)" }}
+                  aria-label="Decrease quantity"
+                  style={{ width: "40px", height: "100%", display: "grid", placeItems: "center", cursor: "pointer", fontSize: "1.1rem", color: "var(--foreground)", background: "transparent", border: "none" }}
                 >
                   -
                 </button>
-                <span style={{ width: "44px", textAlign: "center", fontWeight: 600, fontSize: "0.95rem", color: "var(--foreground)" }}>
+                <span style={{ width: "36px", textAlign: "center", fontWeight: 600, fontSize: "0.95rem", color: "var(--foreground)" }}>
                   {qty}
                 </span>
                 <button
                   type="button"
                   onClick={() => setQty((q) => q + 1)}
-                  style={{ width: "44px", height: "100%", display: "grid", placeItems: "center", cursor: "pointer", fontSize: "1.1rem", color: "var(--foreground)" }}
+                  aria-label="Increase quantity"
+                  style={{ width: "40px", height: "100%", display: "grid", placeItems: "center", cursor: "pointer", fontSize: "1.1rem", color: "var(--foreground)", background: "transparent", border: "none" }}
                 >
                   +
                 </button>
@@ -968,30 +1011,32 @@ function ProductDetailContent({ product }) {
                 onClick={handleAddToCart}
                 style={{
                   flex: 1,
-                  height: "54px",
+                  height: "52px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
-                  fontSize: "0.85rem",
+                  fontSize: "0.86rem",
                   fontWeight: 600,
-                  letterSpacing: "0.18em",
+                  letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  borderRadius: "4px",
+                  borderRadius: "8px",
                   cursor: "pointer",
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "10px",
-                  transition: "all 0.25s ease",
-                  boxShadow: "0 6px 22px rgba(85, 104, 50, 0.3)",
+                  transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                  boxShadow: "0 6px 20px rgba(85, 104, 50, 0.25)",
                   border: "1px solid rgba(197, 160, 89, 0.35)"
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = "var(--primary-hover)";
                   e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(85, 104, 50, 0.35)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = "var(--primary)";
                   e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(85, 104, 50, 0.25)";
                 }}
               >
                 <ShoppingBag size={18} />
@@ -999,88 +1044,251 @@ function ProductDetailContent({ product }) {
               </button>
             </div>
 
+            {/* Concierge & Appointment Links */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              <a
+                href={`https://wa.me/917845120369?text=${encodeURIComponent(`Hello Gemora Atelier, I would like to inquire about ${product.name}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  height: "44px",
+                  borderRadius: "8px",
+                  border: "1px solid #E5DFD3",
+                  backgroundColor: "#FAF9F6",
+                  color: "var(--foreground)",
+                  fontSize: "0.78rem",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  textDecoration: "none",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "var(--primary)";
+                  e.currentTarget.style.color = "var(--primary)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#E5DFD3";
+                  e.currentTarget.style.color = "var(--foreground)";
+                }}
+              >
+                <MessageCircle size={15} color="var(--primary)" />
+                <span>Atelier Concierge</span>
+              </a>
+              <Link
+                to="/contact"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  height: "44px",
+                  borderRadius: "8px",
+                  border: "1px solid #E5DFD3",
+                  backgroundColor: "#FAF9F6",
+                  color: "var(--foreground)",
+                  fontSize: "0.78rem",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  textDecoration: "none",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "var(--primary)";
+                  e.currentTarget.style.color = "var(--primary)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#E5DFD3";
+                  e.currentTarget.style.color = "var(--foreground)";
+                }}
+              >
+                <Sparkles size={15} color="var(--gold-deep)" />
+                <span>Book Appointment</span>
+              </Link>
+            </div>
+
             {/* Trust Assurances */}
             <div
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(2, 1fr)",
-                gap: "16px",
-                padding: "22px",
+                gap: "14px",
+                padding: "20px 22px",
                 backgroundColor: "#FAF8F5",
-                border: "1px solid #EAE4D7",
-                borderRadius: "6px",
-                marginTop: "12px"
+                border: "1px solid #EDE8DE",
+                borderRadius: "12px",
+                marginTop: "6px"
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.82rem" }}>
-                <Truck size={18} color="var(--primary)" />
-                <span style={{ fontWeight: 500 }}>Complimentary Insured Shipping</span>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                <Truck size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Complimentary Insured Delivery</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Direct to door via armoured courier</div>
+                </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.82rem" }}>
-                <ShieldCheck size={18} color="var(--primary)" />
-                <span style={{ fontWeight: 500 }}>Certified Authenticity</span>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                <ShieldCheck size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Certified Authenticity</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>100% Certified conflict-free stones</div>
+                </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.82rem" }}>
-                <RotateCcw size={18} color="var(--primary)" />
-                <span style={{ fontWeight: 500 }}>30-Day Effortless Returns</span>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                <RotateCcw size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>7-Day Bespoke Returns</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Hassle-free return &amp; exchange policy</div>
+                </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.82rem" }}>
-                <Sparkles size={18} color="var(--primary)" />
-                <span style={{ fontWeight: 500 }}>Lifetime Warranty &amp; Polish</span>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                <Sparkles size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Lifetime Atelier Warranty</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Annual prong check &amp; ultrasonic polish</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Detailed Tabs: Story, Specifications, Shipping */}
-        <div style={{ marginTop: "70px", borderTop: "1px solid var(--border)" }}>
-          <div style={{ display: "flex", gap: "32px", borderBottom: "1px solid var(--border-subtle)", paddingTop: "20px" }}>
+        <div style={{ marginTop: "70px", borderTop: "1px solid #EDE8DE" }}>
+          <div style={{ display: "flex", gap: "32px", borderBottom: "1px solid #EDE8DE", paddingTop: "20px" }}>
             {hasDescription && (
               <button
                 onClick={() => setActiveTab("description")}
                 style={{
                   paddingBottom: "14px",
                   fontSize: "0.92rem",
-                  fontWeight: currentTab === "description" ? 600 : 400,
+                  fontWeight: currentTab === "description" ? 600 : 500,
                   color: currentTab === "description" ? "var(--primary)" : "var(--muted-foreground)",
                   borderBottom: currentTab === "description" ? "2px solid var(--primary)" : "2px solid transparent",
-                  cursor: "pointer"
+                  cursor: "pointer",
+                  background: "transparent",
+                  borderTop: "none",
+                  borderLeft: "none",
+                  borderRight: "none",
+                  transition: "all 0.2s"
                 }}
               >
-                Description & Craftsmanship
+                Story &amp; Craftsmanship
               </button>
             )}
+            <button
+              onClick={() => setActiveTab("specifications")}
+              style={{
+                paddingBottom: "14px",
+                fontSize: "0.92rem",
+                fontWeight: currentTab === "specifications" ? 600 : 500,
+                color: currentTab === "specifications" ? "var(--primary)" : "var(--muted-foreground)",
+                borderBottom: currentTab === "specifications" ? "2px solid var(--primary)" : "2px solid transparent",
+                cursor: "pointer",
+                background: "transparent",
+                borderTop: "none",
+                borderLeft: "none",
+                borderRight: "none",
+                transition: "all 0.2s"
+              }}
+            >
+              Atelier Specifications
+            </button>
             <button
               onClick={() => setActiveTab("delivery")}
               style={{
                 paddingBottom: "14px",
                 fontSize: "0.92rem",
-                fontWeight: currentTab === "delivery" ? 600 : 400,
+                fontWeight: currentTab === "delivery" ? 600 : 500,
                 color: currentTab === "delivery" ? "var(--primary)" : "var(--muted-foreground)",
                 borderBottom: currentTab === "delivery" ? "2px solid var(--primary)" : "2px solid transparent",
-                cursor: "pointer"
+                cursor: "pointer",
+                background: "transparent",
+                borderTop: "none",
+                borderLeft: "none",
+                borderRight: "none",
+                transition: "all 0.2s"
               }}
             >
-              Delivery & Returns
+              Delivery &amp; Returns
             </button>
           </div>
 
-          <div style={{ padding: "32px 0", maxWidth: "800px", lineHeight: 1.8, fontSize: "0.94rem", color: "var(--muted-foreground)" }}>
+          <div style={{ padding: "32px 0", maxWidth: "860px", lineHeight: 1.8, fontSize: "0.94rem", color: "var(--foreground)" }}>
             {hasDescription && currentTab === "description" && (
               <div>
-                <p>
+                <p style={{ color: "var(--muted-foreground)", whiteSpace: "pre-line" }}>
                   {product.description}
                 </p>
               </div>
             )}
 
+            {currentTab === "specifications" && (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                  gap: "14px",
+                  backgroundColor: "#FAF9F6",
+                  padding: "24px",
+                  borderRadius: "12px",
+                  border: "1px solid #EDE8DE"
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                  <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Selected Metal</span>
+                  <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{metal || "Bespoke Gold"}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                  <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Diamond / Stone</span>
+                  <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{activeStone || "Lab Grown Diamond"}</span>
+                </div>
+                {carat && (
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                    <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Diamond Weight</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{carat}</span>
+                  </div>
+                )}
+                {product.shapes?.length > 0 && (
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                    <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Diamond Shape</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{selectedShape || product.shapes[0]}</span>
+                  </div>
+                )}
+                {product.clarities?.length > 0 && (
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                    <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Clarity Grade</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{selectedClarity || product.clarities[0]}</span>
+                  </div>
+                )}
+                {product.diamondColors?.length > 0 && (
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                    <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Diamond Color</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{selectedDiamondColor || product.diamondColors[0]}</span>
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                  <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Craftsmanship Origin</span>
+                  <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>Gemora Haute Atelier</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                  <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Certification</span>
+                  <span style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--primary)" }}>Certified Authentic</span>
+                </div>
+              </div>
+            )}
+
             {currentTab === "delivery" && (
               <div>
-                <ul style={{ paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <li><strong>Complimentary Insured Delivery:</strong> Shipped securely via armoured courier with signature confirmation required upon delivery.</li>
-                  <li><strong>Delivery Timelines:</strong> In-stock pieces are dispatched within 2 business days. Customized pieces require 7-10 business days.</li>
-                  <li><strong>30-Day Returns:</strong> If you are not entirely mesmerized by your jewel, return it in its unworn condition within 30 days for a full refund or exchange.</li>
-                  <li><strong>Lifetime Warranty:</strong> Includes complimentary annual prong inspection, sonic cleaning, and surface polishing.</li>
+                <ul style={{ paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "12px", color: "var(--muted-foreground)" }}>
+                  <li><strong style={{ color: "var(--foreground)" }}>Complimentary Insured Delivery:</strong> Shipped securely via armoured courier with signature confirmation required upon delivery.</li>
+                  <li><strong style={{ color: "var(--foreground)" }}>Delivery Timelines:</strong> In-stock pieces are dispatched within 2 business days. Customized pieces require 7-10 business days.</li>
+                  <li><strong style={{ color: "var(--foreground)" }}>7-Day Bespoke Returns:</strong> If you are not entirely mesmerized by your jewel, return it in its unworn condition within 7 days for a full refund or exchange.</li>
+                  <li><strong style={{ color: "var(--foreground)" }}>Lifetime Warranty:</strong> Includes complimentary annual prong inspection, sonic cleaning, and surface polishing.</li>
                 </ul>
               </div>
             )}
@@ -1089,102 +1297,16 @@ function ProductDetailContent({ product }) {
 
         {/* You May Also Like Recommendations */}
         {relatedProducts.length > 0 && (
-          <div style={{ marginTop: "70px", paddingTop: "50px", borderTop: "1px solid var(--border)" }}>
+          <div style={{ marginTop: "70px", paddingTop: "50px", borderTop: "1px solid #EDE8DE" }}>
             <SectionHeading
-              eyebrow="Curated Recommendations"
+              eyebrow="Curated Pieces"
               title="You May Also Like"
-              description="Complementary handcrafted pieces sculpted with identical ethical diamond brilliance."
+              description="Complementary handcrafted pieces sculpted with identical diamond brilliance."
             />
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 300px))",
-                gap: "28px",
-                justifyContent: "flex-start"
-              }}
-            >
+            <div className="bestseller-grid">
               {relatedProducts.map((rel) => (
-                <div
-                  key={rel._id || rel.id}
-                  onClick={() => navigate(`/product/${rel._id || rel.id}`)}
-                  style={{
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                    maxWidth: "300px",
-                    width: "100%",
-                    borderRadius: "4px",
-                    border: "1px solid var(--border-subtle)",
-                    backgroundColor: "#ffffff",
-                    overflow: "hidden",
-                    transition: "all 0.3s ease",
-                    boxShadow: "0 2px 10px rgba(0,0,0,0.03)"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.08)";
-                    e.currentTarget.style.borderColor = "var(--border)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 2px 10px rgba(0,0,0,0.03)";
-                    e.currentTarget.style.borderColor = "var(--border-subtle)";
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "relative",
-                      aspectRatio: "1/1",
-                      backgroundColor: "#f9f9f9",
-                      overflow: "hidden",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}
-                  >
-                    <img
-                      src={rel.image}
-                      alt={rel.name}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        objectPosition: "center",
-                        display: "block",
-                        transition: "transform 0.5s ease"
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                    />
-                  </div>
-
-                  <div style={{ padding: "18px 18px 20px 18px", display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--muted-foreground)", fontWeight: 600 }}>
-                      {rel.category || "Fine Jewelry"}
-                    </span>
-                    <h4
-                      style={{
-                        fontFamily: "var(--font-serif)",
-                        fontSize: "1.08rem",
-                        fontWeight: 500,
-                        lineHeight: 1.3,
-                        color: "var(--foreground)",
-                        margin: 0
-                      }}
-                    >
-                      {rel.name}
-                    </h4>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "6px" }}>
-                      <span style={{ fontSize: "0.98rem", fontWeight: 700, color: "var(--primary)" }}>
-                        {format(rel.price)}
-                      </span>
-                      <span style={{ fontSize: "0.76rem", color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
-                        View Details &rarr;
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                <ProductCard key={rel._id || rel.id} product={rel} />
               ))}
             </div>
           </div>
