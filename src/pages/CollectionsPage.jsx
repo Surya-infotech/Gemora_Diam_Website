@@ -344,82 +344,119 @@ export default function CollectionsPage({ slugOverride = null }) {
         )}
       </div>
 
-      {/* Filter Tabs Bar */}
+      {/* Navigation Tabs Bar matching Home Page BestSeller section */}
       <div
-        className="no-scrollbar"
         style={{
           display: "flex",
-          gap: "10px",
-          flexWrap: "nowrap",
-          overflowX: "auto",
-          WebkitOverflowScrolling: "touch",
-          borderBottom: "1px solid #EDE8DE",
-          paddingBottom: "16px",
-          marginTop: "clamp(20px, 4vw, 40px)"
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderBottom: "1px solid #ebe5da",
+          marginTop: "clamp(24px, 4vw, 36px)",
+          marginBottom: "32px",
+          gap: "20px",
+          flexWrap: "wrap"
         }}
       >
-        <Link
-          to="/collection"
-          className="eyebrow"
+        {/* Category Tabs */}
+        <div
+          className="no-scrollbar"
           style={{
-            border: "1px solid",
-            borderColor: !category && !search && !slug ? "var(--primary)" : "#E5DFD3",
-            backgroundColor: !category && !search && !slug ? "var(--primary)" : "#FAF8F5",
-            color: !category && !search && !slug ? "#ffffff" : "var(--foreground)",
-            padding: "10px 22px",
-            borderRadius: "50px",
-            fontSize: "0.76rem",
-            letterSpacing: "0.16em",
-            whiteSpace: "nowrap",
-            flexShrink: 0,
-            transition: "all 0.25s ease",
-            boxShadow: !category && !search && !slug ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
+            display: "flex",
+            alignItems: "center",
+            gap: "28px",
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch"
           }}
         >
-          All Pieces
-        </Link>
+          {/* All Pieces Tab */}
+          {(() => {
+            const isAllActive = !category && !search && !slug;
+            return (
+              <Link
+                to="/collection"
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "0.85rem",
+                  fontWeight: isAllActive ? 600 : 400,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: isAllActive ? "#1a1a1a" : "#777777",
+                  textDecoration: "none",
+                  padding: "0 0 12px 0",
+                  borderBottom: isAllActive ? "2px solid #1a1a1a" : "2px solid transparent",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  if (!isAllActive) e.currentTarget.style.color = "#1a1a1a";
+                }}
+                onMouseLeave={(e) => {
+                  if (!isAllActive) e.currentTarget.style.color = "#777777";
+                }}
+              >
+                All Pieces
+              </Link>
+            );
+          })()}
 
-        {activeCategories.map((c) => {
-          const catName = typeof c === "string" ? c : c.categoryname;
-          const isSelected =
-            (category &&
-              (category.trim().toLowerCase() === catName.trim().toLowerCase() ||
-                (c.categoryid && String(c.categoryid) === String(category)) ||
-                (c._id && String(c._id) === String(category)))) ||
-            slug === slugify(catName);
+          {/* Dynamic Active Categories */}
+          {activeCategories.map((c) => {
+            const catName = typeof c === "string" ? c : c.categoryname;
+            const isSelected =
+              (category &&
+                (category.trim().toLowerCase() === catName.trim().toLowerCase() ||
+                  (c.categoryid && String(c.categoryid) === String(category)) ||
+                  (c._id && String(c._id) === String(category)))) ||
+              slug === slugify(catName);
 
-          const cleanCatSlug = `/collection/${slugify(catName)}`;
+            const cleanCatSlug = `/collection/${slugify(catName)}`;
 
-          return (
-            <Link
-              key={c._id || c.categoryid || catName}
-              to={cleanCatSlug}
-              className="eyebrow"
-              style={{
-                border: "1px solid",
-                borderColor: isSelected ? "var(--primary)" : "#E5DFD3",
-                backgroundColor: isSelected ? "var(--primary)" : "#FAF8F5",
-                color: isSelected ? "#ffffff" : "var(--foreground)",
-                padding: "10px 22px",
-                borderRadius: "50px",
-                fontSize: "0.76rem",
-                letterSpacing: "0.16em",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-                transition: "all 0.25s ease",
-                boxShadow: isSelected ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
-              }}
-            >
-              {catName}
-            </Link>
-          );
-        })}
+            return (
+              <Link
+                key={c._id || c.categoryid || catName}
+                to={cleanCatSlug}
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "0.85rem",
+                  fontWeight: isSelected ? 600 : 400,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: isSelected ? "#1a1a1a" : "#777777",
+                  textDecoration: "none",
+                  padding: "0 0 12px 0",
+                  borderBottom: isSelected ? "2px solid #1a1a1a" : "2px solid transparent",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSelected) e.currentTarget.style.color = "#1a1a1a";
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSelected) e.currentTarget.style.color = "#777777";
+                }}
+              >
+                {catName}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Piece Count Indicator */}
+        <div
+          style={{
+            fontSize: "0.80rem",
+            color: "var(--muted-foreground)",
+            fontWeight: 500,
+            letterSpacing: "0.04em",
+            paddingBottom: "12px",
+            whiteSpace: "nowrap"
+          }}
+        >
+          {productsLoading ? "Loading collection..." : `${list.length} ${list.length === 1 ? "piece" : "pieces"} available`}
+        </div>
       </div>
-
-      {/* Piece Count Indicator */}
-      <p style={{ marginTop: "24px", fontSize: "0.84rem", color: "var(--muted-foreground)" }}>
-        {productsLoading ? "Loading collection..." : `${list.length} ${list.length === 1 ? "piece" : "pieces"} available`}
-      </p>
 
       {/* Product Grid */}
       {list.length === 0 ? (
@@ -436,20 +473,46 @@ export default function CollectionsPage({ slugOverride = null }) {
               backgroundColor: "var(--primary)",
               color: "#ffffff",
               padding: "12px 28px",
-              borderRadius: "2px",
-              letterSpacing: "0.16em"
+              borderRadius: "4px",
+              letterSpacing: "0.16em",
+              textDecoration: "none"
             }}
           >
             Browse all collections
           </Link>
         </div>
       ) : (
-        <div className="products-responsive-grid" style={{ marginTop: "28px" }}>
+        <div className="bestseller-grid">
           {list.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <ProductCard key={p.id || p._id} product={p} />
           ))}
         </div>
       )}
+
+      <style>{`
+        .bestseller-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: clamp(16px, 1.8vw, 24px);
+        }
+        @media (max-width: 1024px) {
+          .bestseller-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+        @media (max-width: 768px) {
+          .bestseller-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+          }
+        }
+        @media (max-width: 480px) {
+          .bestseller-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
