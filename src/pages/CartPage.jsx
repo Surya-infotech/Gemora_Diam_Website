@@ -627,6 +627,7 @@ export default function CartPage() {
 
         {/* Checkout Flow Step Indicator */}
         <div
+          className="cart-flow-indicator-wrap"
           style={{
             display: "flex",
             alignItems: "center",
@@ -987,7 +988,7 @@ export default function CartPage() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))",
                   gap: "16px"
                 }}
               >
@@ -1405,7 +1406,7 @@ export default function CartPage() {
               overflowY: "auto",
               backgroundColor: "var(--background)",
               border: "1px solid var(--border)",
-              padding: "32px",
+              padding: "clamp(18px, 4vw, 32px)",
               position: "relative",
               boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
               borderRadius: "4px"
@@ -1511,7 +1512,7 @@ export default function CartPage() {
               </div>
 
               {/* Country & State */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div className="form-grid-2-col">
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, marginBottom: "6px" }}>
                     Country *
@@ -1582,7 +1583,7 @@ export default function CartPage() {
               </div>
 
               {/* City & Pincode */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div className="form-grid-2-col">
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, marginBottom: "6px" }}>
                     City *

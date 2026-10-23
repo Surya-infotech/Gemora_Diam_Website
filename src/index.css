@@ -533,3 +533,167 @@ img {
     gap: 30px !important;
   }
 }
+
+/* ==========================================================
+   Multi-Device Responsive Breakpoint System & Enhancements
+   (Mobile: 320-640px, Tablet: 641-1023px, Laptop: 1024-1280px)
+   ========================================================== */
+
+/* 1. Fluid Announcement Bar */
+.announcement-bar-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.announcement-guarantees-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 767px) {
+  .announcement-guarantees-track {
+    justify-content: flex-start !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.04em !important;
+  }
+  .announcement-hide-mobile {
+    display: none !important;
+  }
+  .announcement-btn-full {
+    display: none !important;
+  }
+  .announcement-btn-compact {
+    display: inline-flex !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .announcement-btn-compact {
+    display: none !important;
+  }
+  .announcement-btn-full {
+    display: inline-flex !important;
+  }
+}
+
+/* 2. Product Detail Sticky Gallery for Desktop only */
+@media (min-width: 960px) {
+  .product-gallery-sticky {
+    position: sticky !important;
+    top: 96px !important;
+  }
+}
+
+@media (max-width: 959px) {
+  .product-gallery-sticky {
+    position: static !important;
+  }
+}
+
+/* 3. Product Trust Grid Responsive */
+.product-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 540px) {
+  .product-trust-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 16px 14px !important;
+  }
+}
+
+/* 4. Sticky Mobile Bottom CTA Bar on Product Page */
+.product-mobile-bottom-bar {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .product-mobile-bottom-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid #ebe5da;
+    padding: 10px 16px env(safe-area-inset-bottom, 10px);
+    z-index: 95;
+    box-shadow: 0 -6px 24px rgba(28, 34, 23, 0.08);
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    animation: fadeIn 0.25s ease;
+  }
+}
+
+/* 5. Small Laptop (1024px - 1280px) Navigation Refinements */
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .site-navbar-tesora {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+  .nav-link-luxury {
+    font-size: 0.72rem !important;
+    letter-spacing: 0.08em !important;
+    padding: 6px 2px !important;
+  }
+  .desktop-search-input {
+    width: 170px !important;
+  }
+}
+
+/* 6. Mobile & Tablet Responsive Form Grids */
+@media (max-width: 640px) {
+  .form-grid-2-col {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .cart-flow-indicator-wrap {
+    display: none !important;
+  }
+  .mobile-card-compact-pad {
+    padding: 18px 14px !important;
+  }
+}
+
+/* 7. Smooth Mobile Drawer Animation */
+.mobile-drawer-content {
+  width: 86%;
+  max-width: 380px;
+  height: 100%;
+  overflow-y: auto;
+  background-color: #ffffff;
+  padding: 24px 20px env(safe-area-inset-bottom, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 10px 0 35px rgba(0, 0, 0, 0.2);
+}
+
+/* 8. Touch Target Accessibility */
+@media (pointer: coarse) {
+  button, a {
+    min-height: 38px;
+    min-width: 38px;
+  }
+}

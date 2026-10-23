@@ -315,10 +315,7 @@ function ProductDetailContent({ product }) {
       <div className="container-luxury" style={{ marginTop: "36px" }}>
         <div className="product-showcase-grid">
           {/* LEFT: Media Gallery */}
-          <div
-            className="product-gallery-layout"
-            style={{ position: "sticky", top: "96px" }}
-          >
+          <div className="product-gallery-layout product-gallery-sticky">
             {/* Thumbnail Rail */}
             {allMedia.length > 1 && (
               <div className="product-gallery-thumbnails">
@@ -1103,10 +1100,8 @@ function ProductDetailContent({ product }) {
 
             {/* Trust Assurances */}
             <div
+              className="product-trust-grid"
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: "14px",
                 padding: "20px 22px",
                 backgroundColor: "#FAF8F5",
                 border: "1px solid #EDE8DE",
@@ -1436,6 +1431,52 @@ function ProductDetailContent({ product }) {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Sticky Mobile Purchase Bar (< 768px) */}
+      <div className="product-mobile-bottom-bar">
+        <div style={{ flex: "1 1 auto", minWidth: 0, paddingRight: "10px" }}>
+          <div
+            style={{
+              fontSize: "0.82rem",
+              fontWeight: 600,
+              color: "var(--foreground)",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis"
+            }}
+          >
+            {product.name}
+          </div>
+          <div style={{ fontSize: "0.92rem", fontWeight: 700, color: "var(--primary)" }}>
+            {format(currentPrice)}
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          style={{
+            flexShrink: 0,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "6px",
+            backgroundColor: "var(--primary)",
+            color: "#ffffff",
+            padding: "10px 18px",
+            borderRadius: "6px",
+            fontWeight: 600,
+            fontSize: "0.8rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            border: "none",
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(85, 104, 50, 0.3)"
+          }}
+        >
+          <ShoppingBag size={15} />
+          <span>Add to Bag</span>
+        </button>
       </div>
     </div>
   );

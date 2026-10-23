@@ -329,8 +329,20 @@ function AccountMenu() {
 }
 
 export function Header() {
-  const { cartCount, wishlist, setCartOpen, generalSettings, products: dynamicProducts, format, user, logout } = useStore();
+  const {
+    cartCount,
+    wishlist,
+    setCartOpen,
+    generalSettings,
+    products: dynamicProducts,
+    format,
+    user,
+    logout,
+    menus,
+    categories
+  } = useStore();
   const [mobile, setMobile] = useState(false);
+  const [expandedMobileMenu, setExpandedMobileMenu] = useState(null);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
   const location = useLocation();
@@ -357,29 +369,16 @@ export function Header() {
         style={{
           backgroundColor: "var(--primary)",
           color: "#ffffff",
-          fontSize: "clamp(0.68rem, 1.8vw, 0.74rem)",
+          fontSize: "clamp(0.66rem, 1.4vw, 0.74rem)",
           fontWeight: 500,
-          padding: "7px 16px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          padding: "7px clamp(12px, 3vw, 24px)",
           borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
           position: "relative",
-          zIndex: 101
+          zIndex: 101,
+          overflow: "hidden"
         }}
       >
-        <div
-          className="container-luxury"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            paddingLeft: 0,
-            paddingRight: 0,
-            gap: "12px"
-          }}
-        >
+        <div className="container-luxury announcement-bar-wrap" style={{ paddingLeft: 0, paddingRight: 0 }}>
           {/* Left: Concierge Phone */}
           <div style={{ display: "flex", alignItems: "center", gap: "14px" }} className="desktop-only-nav">
             {generalSettings?.phone && (
@@ -403,37 +402,23 @@ export function Header() {
           </div>
 
           {/* Center: Core Guarantees with Luxury Diamond Accents */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-              flex: 1,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              fontSize: "0.7rem",
-              fontWeight: 500,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis"
-            }}
-          >
+          <div className="announcement-guarantees-track">
             <span>Complimentary Insured Delivery</span>
             <span style={{ color: "var(--gold-light)", opacity: 0.9 }}>•</span>
             <span>7-Day Bespoke Returns</span>
-            <span style={{ color: "var(--gold-light)", opacity: 0.9 }}>•</span>
-            <span>Lifetime Warranty</span>
+            <span style={{ color: "var(--gold-light)", opacity: 0.9 }} className="announcement-hide-mobile">•</span>
+            <span className="announcement-hide-mobile">Lifetime Warranty</span>
             <span style={{ color: "var(--gold-light)", opacity: 0.9 }} className="tablet-up-nav">•</span>
             <span className="tablet-up-nav">100% Certified Lab Diamonds</span>
           </div>
 
           {/* Right: Book Appointment CTA */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
+            {/* Full text for tablets and desktops */}
             <Link
               to="/contact"
+              className="announcement-btn-full"
               style={{
-                display: "inline-flex",
                 alignItems: "center",
                 gap: "5px",
                 color: "#ffffff",
@@ -457,8 +442,31 @@ export function Header() {
                 e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.25)";
               }}
             >
-              <span>Book an Appointment</span>
+              <span>Book Appointment</span>
               <ArrowRight size={11} />
+            </Link>
+
+            {/* Compact button for mobile phones */}
+            <Link
+              to="/contact"
+              className="announcement-btn-compact"
+              style={{
+                alignItems: "center",
+                gap: "4px",
+                color: "#ffffff",
+                backgroundColor: "rgba(0, 0, 0, 0.2)",
+                padding: "3px 8px",
+                borderRadius: "50px",
+                fontSize: "0.62rem",
+                fontWeight: 600,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                border: "1px solid rgba(255, 255, 255, 0.25)"
+              }}
+            >
+              <span>Book</span>
+              <ArrowRight size={10} />
             </Link>
           </div>
         </div>
@@ -511,7 +519,7 @@ export function Header() {
                 position: "relative",
                 display: "flex",
                 alignItems: "center",
-                width: "clamp(190px, 16vw, 280px)"
+                width: "clamp(170px, 16vw, 280px)"
               }}
               className="desktop-only-nav"
             >
@@ -519,6 +527,7 @@ export function Header() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search fine jewelry, rings, bands..."
+                className="desktop-search-input"
                 style={{
                   width: "100%",
                   padding: "8px 38px 8px 16px",
@@ -667,178 +676,208 @@ export function Header() {
             inset: 0,
             zIndex: 9999,
             backgroundColor: "rgba(22, 30, 18, 0.65)",
-            backdropFilter: "blur(6px)"
+            backdropFilter: "blur(6px)",
+            WebkitBackdropFilter: "blur(6px)"
           }}
           onClick={() => setMobile(false)}
         >
           <div
-            style={{
-              width: "84%",
-              maxWidth: "360px",
-              height: "100%",
-              overflowY: "auto",
-              backgroundColor: "#ffffff",
-              padding: "32px 24px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "24px",
-              animation: "slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-              boxShadow: "10px 0 35px rgba(0,0,0,0.2)"
-            }}
+            className="mobile-drawer-content"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Header: Logo and Close */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <Logo />
               <button
                 onClick={() => setMobile(false)}
                 aria-label="Close menu"
-                style={{ color: "var(--foreground)", padding: "4px" }}
+                style={{
+                  color: "var(--foreground)",
+                  padding: "6px",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  display: "grid",
+                  placeItems: "center"
+                }}
               >
-                <X size={24} strokeWidth={1.5} />
+                <X size={22} strokeWidth={1.5} />
               </button>
             </div>
 
-            <nav style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "16px" }}>
+            {/* Mobile Nav Links */}
+            <nav style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "8px" }}>
               <Link
                 to="/"
                 onClick={() => setMobile(false)}
                 style={{
-                  fontSize: "1.05rem",
+                  fontSize: "1.02rem",
                   fontWeight: 600,
                   color: location.pathname === "/" ? "var(--primary)" : "var(--foreground)",
-                  padding: "4px 0"
+                  padding: "8px 0",
+                  borderBottom: "1px solid #f2eee6"
                 }}
               >
                 Home
               </Link>
 
-              {/* Engagement Rings */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <Link
-                  to="/collections?category=Engagement%20Rings"
-                  onClick={() => setMobile(false)}
-                  style={{
-                    fontSize: "1.05rem",
-                    fontWeight: 600,
-                    color: "var(--foreground)",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center"
-                  }}
-                >
-                  <span>Engagement Rings</span>
-                  <span style={{ fontSize: "0.6rem", backgroundColor: "var(--primary)", color: "#fff", padding: "1px 6px", borderRadius: "2px" }}>POPULAR</span>
-                </Link>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingLeft: "8px", marginTop: "4px" }}>
-                  {["Solitaire", "Halo", "Vintage Style Rings", "Three Stone", "Nature Inspired"].map((st) => (
-                    <Link
-                      key={st}
-                      to={`/collections?style=${encodeURIComponent(st)}`}
-                      onClick={() => setMobile(false)}
-                      style={{
-                        fontSize: "0.78rem",
-                        color: "var(--muted-foreground)",
-                        backgroundColor: "#faf8f5",
-                        border: "1px solid #ebe5da",
-                        padding: "3px 10px",
-                        borderRadius: "50px",
-                        textDecoration: "none"
-                      }}
-                    >
-                      {st}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              {/* Dynamic Menus from Backend if configured */}
+              {Array.isArray(menus) && menus.length > 0 ? (
+                menus.map((m, mIdx) => {
+                  const mTitle = typeof m?.title === "object" ? m.title?.value || m.title?.label || "Collection" : (m?.title || "Collection");
+                  const mSlug = typeof m?.slug === "object" ? m.slug?.value || m.slug?.slug || "/collections" : (m?.slug || "/collections");
+                  const cleanUrl = mSlug.startsWith("/") ? mSlug : `/collection/${mSlug}`;
+                  const col1Items = m.column1?.items || [];
+                  const col2Items = m.column2?.items || [];
+                  const allItems = [...col1Items, ...col2Items];
+                  const hasSub = allItems.length > 0;
+                  const isExpanded = expandedMobileMenu === (m.menuid || mIdx);
 
-              {/* Wedding & Bridal */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <Link
-                  to="/collections?category=Bridal%20Sets"
-                  onClick={() => setMobile(false)}
-                  style={{
-                    fontSize: "1.05rem",
-                    fontWeight: 600,
-                    color: "var(--foreground)"
-                  }}
-                >
-                  Wedding Rings &amp; Bridal Sets
-                </Link>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingLeft: "8px", marginTop: "4px" }}>
-                  {["Bridal Sets", "Eternity", "Classic", "Two Stone"].map((st) => (
-                    <Link
-                      key={st}
-                      to={`/collections?category=Bridal%20Sets&style=${encodeURIComponent(st)}`}
-                      onClick={() => setMobile(false)}
-                      style={{
-                        fontSize: "0.78rem",
-                        color: "var(--muted-foreground)",
-                        backgroundColor: "#faf8f5",
-                        border: "1px solid #ebe5da",
-                        padding: "3px 10px",
-                        borderRadius: "50px",
-                        textDecoration: "none"
-                      }}
-                    >
-                      {st}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+                  return (
+                    <div key={m.menuid || mIdx} style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "8px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <Link
+                          to={cleanUrl}
+                          onClick={() => setMobile(false)}
+                          style={{
+                            fontSize: "1.02rem",
+                            fontWeight: 600,
+                            color: "var(--foreground)",
+                            padding: "6px 0",
+                            flex: 1
+                          }}
+                        >
+                          {mTitle}
+                        </Link>
+                        {hasSub && (
+                          <button
+                            type="button"
+                            onClick={() => setExpandedMobileMenu(isExpanded ? null : (m.menuid || mIdx))}
+                            aria-label={`Expand ${mTitle}`}
+                            style={{
+                              padding: "6px 10px",
+                              color: "var(--foreground)",
+                              cursor: "pointer",
+                              fontSize: "0.85rem"
+                            }}
+                          >
+                            <span style={{ fontSize: "1.1rem", display: "inline-block", transform: isExpanded ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>+</span>
+                          </button>
+                        )}
+                      </div>
 
-              {/* Fine Jewelry */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <Link
-                  to="/collections"
-                  onClick={() => setMobile(false)}
-                  style={{
-                    fontSize: "1.05rem",
-                    fontWeight: 600,
-                    color: "var(--foreground)"
-                  }}
-                >
-                  Fine Jewelry
-                </Link>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingLeft: "8px", marginTop: "4px" }}>
-                  <Link
-                    to="/collections?category=Bracelets"
-                    onClick={() => setMobile(false)}
-                    style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
-                  >
-                    Bracelets
-                  </Link>
-                  <Link
-                    to="/collections?category=Earrings"
-                    onClick={() => setMobile(false)}
-                    style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
-                  >
-                    Earrings
-                  </Link>
-                  <Link
-                    to="/collections?shape=Round"
-                    onClick={() => setMobile(false)}
-                    style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
-                  >
-                    Round Cut
-                  </Link>
-                  <Link
-                    to="/collections?shape=Emerald"
-                    onClick={() => setMobile(false)}
-                    style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", backgroundColor: "#faf8f5", border: "1px solid #ebe5da", padding: "3px 10px", borderRadius: "50px", textDecoration: "none" }}
-                  >
-                    Emerald Cut
-                  </Link>
-                </div>
-              </div>
+                      {hasSub && isExpanded && (
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "8px 0 4px 6px" }}>
+                          {allItems.slice(0, 8).map((it, itIdx) => {
+                            const itLabel = typeof it?.label === "object" ? it.label?.value || it.label?.label || "" : String(it?.label || "");
+                            const itSlug = typeof it?.slug === "object" ? it.slug?.value || it.slug?.slug || "" : String(it?.slug || "");
+                            const itUrl = itSlug ? (itSlug.startsWith("/") ? itSlug : `/collection/${itSlug}`) : `/collections?style=${encodeURIComponent(itLabel)}`;
+                            return (
+                              <Link
+                                key={itIdx}
+                                to={itUrl}
+                                onClick={() => setMobile(false)}
+                                style={{
+                                  fontSize: "0.76rem",
+                                  color: "var(--muted-foreground)",
+                                  backgroundColor: "#FAF8F5",
+                                  border: "1px solid #EBE5DA",
+                                  padding: "4px 10px",
+                                  borderRadius: "50px",
+                                  textDecoration: "none"
+                                }}
+                              >
+                                {itLabel}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                /* Standard Fallback Curated Categories */
+                <>
+                  <div style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "8px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <Link
+                        to="/collections?category=Engagement%20Rings"
+                        onClick={() => setMobile(false)}
+                        style={{ fontSize: "1.02rem", fontWeight: 600, color: "var(--foreground)", padding: "6px 0" }}
+                      >
+                        <span>Engagement Rings</span>
+                      </Link>
+                      <span style={{ fontSize: "0.58rem", backgroundColor: "var(--primary)", color: "#fff", padding: "2px 6px", borderRadius: "2px", fontWeight: 700 }}>POPULAR</span>
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "8px 0 4px 6px" }}>
+                      {["Solitaire", "Halo", "Vintage Style", "Three Stone", "Oval Cut", "Round Cut"].map((st) => (
+                        <Link
+                          key={st}
+                          to={`/collections?style=${encodeURIComponent(st)}`}
+                          onClick={() => setMobile(false)}
+                          style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", backgroundColor: "#FAF8F5", border: "1px solid #EBE5DA", padding: "4px 10px", borderRadius: "50px" }}
+                        >
+                          {st}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "8px" }}>
+                    <Link
+                      to="/collections?category=Bridal%20Sets"
+                      onClick={() => setMobile(false)}
+                      style={{ fontSize: "1.02rem", fontWeight: 600, color: "var(--foreground)", padding: "6px 0", display: "block" }}
+                    >
+                      Wedding Rings &amp; Bridal Sets
+                    </Link>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "8px 0 4px 6px" }}>
+                      {["Eternity Bands", "Classic Rings", "Two Stone"].map((st) => (
+                        <Link
+                          key={st}
+                          to={`/collections?category=Bridal%20Sets&style=${encodeURIComponent(st)}`}
+                          onClick={() => setMobile(false)}
+                          style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", backgroundColor: "#FAF8F5", border: "1px solid #EBE5DA", padding: "4px 10px", borderRadius: "50px" }}
+                        >
+                          {st}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "8px" }}>
+                    <Link
+                      to="/collections"
+                      onClick={() => setMobile(false)}
+                      style={{ fontSize: "1.02rem", fontWeight: 600, color: "var(--foreground)", padding: "6px 0", display: "block" }}
+                    >
+                      Fine Jewelry
+                    </Link>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "8px 0 4px 6px" }}>
+                      {["Bracelets", "Earrings", "Pendants"].map((st) => (
+                        <Link
+                          key={st}
+                          to={`/collections?category=${encodeURIComponent(st)}`}
+                          onClick={() => setMobile(false)}
+                          style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", backgroundColor: "#FAF8F5", border: "1px solid #EBE5DA", padding: "4px 10px", borderRadius: "50px" }}
+                        >
+                          {st}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
 
               <Link
                 to="/collections"
                 onClick={() => setMobile(false)}
                 style={{
-                  fontSize: "1.05rem",
+                  fontSize: "1.02rem",
                   fontWeight: 600,
-                  color: (location.pathname === "/collections" || location.pathname === "/collections") ? "var(--primary)" : "var(--foreground)",
-                  padding: "4px 0"
+                  color: location.pathname === "/collections" ? "var(--primary)" : "var(--foreground)",
+                  padding: "8px 0",
+                  borderBottom: "1px solid #f2eee6"
                 }}
               >
                 All Collections
@@ -847,10 +886,11 @@ export function Header() {
                 to="/about"
                 onClick={() => setMobile(false)}
                 style={{
-                  fontSize: "1.05rem",
+                  fontSize: "1.02rem",
                   fontWeight: 600,
                   color: location.pathname === "/about" ? "var(--primary)" : "var(--foreground)",
-                  padding: "4px 0"
+                  padding: "8px 0",
+                  borderBottom: "1px solid #f2eee6"
                 }}
               >
                 About Gemora
@@ -859,51 +899,53 @@ export function Header() {
                 to="/contact"
                 onClick={() => setMobile(false)}
                 style={{
-                  fontSize: "1.05rem",
+                  fontSize: "1.02rem",
                   fontWeight: 600,
                   color: location.pathname === "/contact" ? "var(--primary)" : "var(--foreground)",
-                  padding: "4px 0"
+                  padding: "8px 0",
+                  borderBottom: "1px solid #f2eee6"
                 }}
               >
                 Contact &amp; Concierge
               </Link>
             </nav>
 
-            <div style={{ marginTop: "auto", borderTop: "1px solid #eee", paddingTop: "20px" }}>
+            {/* Mobile Footer Area: Account and Sign out */}
+            <div style={{ marginTop: "auto", borderTop: "1px solid #f0ede6", paddingTop: "18px" }}>
               {user ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <div
                       style={{
-                        width: "38px",
-                        height: "38px",
+                        width: "36px",
+                        height: "36px",
                         borderRadius: "50%",
                         backgroundColor: "var(--primary)",
                         color: "#ffffff",
                         display: "grid",
                         placeItems: "center",
                         fontWeight: 700,
-                        fontSize: "0.95rem"
+                        fontSize: "0.9rem"
                       }}
                     >
                       {user.fullname ? user.fullname[0] : "C"}
                     </div>
                     <div>
-                      <div style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)" }}>{user.fullname}</div>
-                      <div style={{ fontSize: "0.78rem", color: "var(--muted-foreground)" }}>{user.email}</div>
+                      <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "var(--foreground)" }}>{user.fullname}</div>
+                      <div style={{ fontSize: "0.76rem", color: "var(--muted-foreground)" }}>{user.email}</div>
                     </div>
                   </div>
                   <Link
                     to="/profile"
                     onClick={() => setMobile(false)}
-                    style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--foreground)", marginTop: "4px" }}
+                    style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--foreground)", marginTop: "4px" }}
                   >
                     My Account &amp; Settings
                   </Link>
                   <Link
                     to="/orders"
                     onClick={() => setMobile(false)}
-                    style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--foreground)" }}
+                    style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--foreground)" }}
                   >
                     My Orders &amp; Tracking
                   </Link>
@@ -920,14 +962,14 @@ export function Header() {
                       border: "none",
                       padding: 0,
                       color: "var(--destructive)",
-                      fontSize: "0.9rem",
+                      fontSize: "0.88rem",
                       fontWeight: 600,
                       cursor: "pointer",
                       textAlign: "left",
-                      marginTop: "6px"
+                      marginTop: "4px"
                     }}
                   >
-                    <LogOut size={16} />
+                    <LogOut size={15} />
                     Sign Out
                   </button>
                 </div>
@@ -941,12 +983,12 @@ export function Header() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: "8px",
-                    padding: "14px",
+                    padding: "13px",
                     backgroundColor: "var(--primary)",
                     color: "#ffffff",
-                    fontSize: "0.82rem",
+                    fontSize: "0.78rem",
                     fontWeight: 600,
-                    borderRadius: "2px",
+                    borderRadius: "6px",
                     letterSpacing: "0.14em"
                   }}
                 >
@@ -968,9 +1010,11 @@ export function Header() {
             zIndex: 9999,
             backgroundColor: "rgba(22, 30, 18, 0.75)",
             backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
             display: "flex",
             justifyContent: "center",
-            padding: "80px 20px 20px 20px",
+            padding: "clamp(24px, 5vw, 60px) 16px",
+            overflowY: "auto",
             animation: "fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
           }}
           onClick={() => setSearch(false)}
@@ -980,22 +1024,22 @@ export function Header() {
               backgroundColor: "#ffffff",
               maxWidth: "680px",
               width: "100%",
-              padding: "36px",
-              borderRadius: "4px",
+              padding: "clamp(20px, 4vw, 36px)",
+              borderRadius: "8px",
               alignSelf: "flex-start",
               boxShadow: "var(--shadow-luxury)",
               border: "1px solid #e8e2d5"
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
               <span className="eyebrow" style={{ color: "var(--primary)" }}>
                 {generalSettings?.softwarename ? `Search ${generalSettings.softwarename}` : "Search Gemora Diam"}
               </span>
               <button
                 onClick={() => setSearch(false)}
                 aria-label="Close search"
-                style={{ color: "var(--foreground)", padding: "4px" }}
+                style={{ color: "var(--foreground)", padding: "4px", cursor: "pointer" }}
               >
                 <X size={22} strokeWidth={1.5} />
               </button>
@@ -1014,20 +1058,20 @@ export function Header() {
                   borderLeft: "none",
                   borderRight: "none",
                   background: "transparent",
-                  paddingBottom: "12px",
+                  paddingBottom: "10px",
                   fontFamily: "var(--font-serif)",
-                  fontSize: "1.8rem",
+                  fontSize: "clamp(1.2rem, 3.5vw, 1.8rem)",
                   color: "var(--foreground)",
                   outline: "none"
                 }}
               />
             </form>
 
-            <p className="eyebrow" style={{ marginTop: "24px", color: "var(--muted-foreground)" }}>
+            <p className="eyebrow" style={{ marginTop: "20px", color: "var(--muted-foreground)" }}>
               {q ? `${results.length} matching pieces` : "Popular Creations"}
             </p>
 
-            <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
               {results.slice(0, 4).map((p) => (
                 <div
                   key={p.id}
@@ -1038,10 +1082,10 @@ export function Header() {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "16px",
-                    padding: "10px 14px",
+                    gap: "14px",
+                    padding: "8px 12px",
                     cursor: "pointer",
-                    borderRadius: "3px",
+                    borderRadius: "4px",
                     transition: "all 0.2s"
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
@@ -1050,11 +1094,11 @@ export function Header() {
                   <img
                     src={p.image}
                     alt={p.name}
-                    style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "2px", backgroundColor: "#f6f6f6" }}
+                    style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "4px", backgroundColor: "#f6f6f6" }}
                   />
                   <div>
-                    <h4 style={{ fontSize: "0.95rem", margin: 0, fontWeight: 500, fontFamily: "var(--font-serif)" }}>{p.name}</h4>
-                    <span style={{ fontSize: "0.85rem", color: "var(--primary)", fontWeight: 600 }}>{format(p.price)}</span>
+                    <h4 style={{ fontSize: "0.92rem", margin: 0, fontWeight: 500, fontFamily: "var(--font-serif)" }}>{p.name}</h4>
+                    <span style={{ fontSize: "0.82rem", color: "var(--primary)", fontWeight: 600 }}>{format(p.price)}</span>
                   </div>
                 </div>
               ))}

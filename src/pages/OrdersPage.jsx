@@ -408,7 +408,7 @@ function OrderRow({ order, onSelect, format }) {
         gap: "24px",
         border: isHovered ? "1px solid #D8D1C5" : "1px solid #EDE8DE",
         backgroundColor: "#ffffff",
-        padding: "22px 28px",
+        padding: "clamp(14px, 3vw, 22px) clamp(14px, 3.5vw, 28px)",
         borderRadius: "14px",
         cursor: "pointer",
         transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -416,7 +416,7 @@ function OrderRow({ order, onSelect, format }) {
         transform: isHovered ? "translateY(-2px)" : "translateY(0)"
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "20px", flex: "1 1 360px", minWidth: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "20px", flex: "1 1 min(100%, 340px)", minWidth: 0 }}>
         {/* Product Preview Stage with Gold/Olive Borders */}
         <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
           {orderItems.slice(0, 3).map((it, idx) => {
