@@ -434,6 +434,34 @@ img {
   background-color: #0b0f0c;
 }
 
+/* Universal Bestseller & Product Card Grid */
+.bestseller-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(16px, 1.8vw, 24px);
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .bestseller-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .bestseller-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bestseller-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
 /* Responsive Sticky Header */
 .site-header-grid {
   display: grid;

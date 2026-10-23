@@ -231,12 +231,24 @@ function ProductDetailContent({ product }) {
   }, [product, wishlist]);
 
   const relatedProducts = useMemo(() => {
-    if (!product || !products) return [];
-    const sameCategory = products.filter(
-      (p) => String(p.id) !== String(product.id) && p.category === product.category
+    if (!product || !products || products.length === 0) return [];
+    const currentProdId = String(product._id || product.id || "");
+    const otherProducts = products.filter(
+      (p) => String(p._id || p.id) !== currentProdId
     );
-    if (sameCategory.length > 0) return sameCategory.slice(0, 4);
-    return products.filter((p) => String(p.id) !== String(product.id)).slice(0, 4);
+    const sameCategory = otherProducts.filter(
+      (p) =>
+        p.category &&
+        product.category &&
+        String(p.category).trim().toLowerCase() === String(product.category).trim().toLowerCase()
+    );
+    if (sameCategory.length >= 4) {
+      return sameCategory.slice(0, 4);
+    }
+    const remaining = otherProducts.filter(
+      (p) => !sameCategory.some((sc) => String(sc._id || sc.id) === String(p._id || p.id))
+    );
+    return [...sameCategory, ...remaining].slice(0, 4);
   }, [product, products]);
 
   const handleShare = () => {
@@ -1304,7 +1316,17 @@ function ProductDetailContent({ product }) {
               description="Complementary handcrafted pieces sculpted with identical diamond brilliance."
             />
 
-            <div className="bestseller-grid">
+            <div
+              className="bestseller-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  relatedProducts.length < 4
+                    ? "repeat(auto-fill, minmax(240px, 300px))"
+                    : undefined,
+                justifyContent: relatedProducts.length < 4 ? "start" : undefined
+              }}
+            >
               {relatedProducts.map((rel) => (
                 <ProductCard key={rel._id || rel.id} product={rel} />
               ))}
