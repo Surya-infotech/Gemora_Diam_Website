@@ -38,40 +38,18 @@ export function Logo() {
       onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
       onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
     >
-      {/* Exquisite Diamond Atelier Crest */}
-      <svg
-        width="34"
-        height="34"
-        viewBox="0 0 36 36"
-        fill="none"
-        style={{ flexShrink: 0 }}
-        aria-hidden="true"
-      >
-        <path
-          d="M18 2.5L32 9.5V18.5C32 26 25.5 32 18 34C10.5 32 4 26 4 18.5V9.5L18 2.5Z"
-          stroke="url(#gemoraCrestGrad)"
-          strokeWidth="1.2"
-          fill="rgba(85, 104, 50, 0.05)"
-        />
-        <path
-          d="M18 8L26 14L18 28.5L10 14L18 8Z"
-          stroke="var(--primary)"
-          strokeWidth="1.1"
-        />
-        <path
-          d="M10 14H26M18 8V28.5M14 14L18 28.5L22 14"
-          stroke="#b38728"
-          strokeWidth="0.8"
-          strokeOpacity="0.85"
-        />
-        <defs>
-          <linearGradient id="gemoraCrestGrad" x1="4" y1="2.5" x2="32" y2="34" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#d4af37" />
-            <stop offset="0.5" stopColor="#556832" />
-            <stop offset="1" stopColor="#b38728" />
-          </linearGradient>
-        </defs>
-      </svg>
+      {/* Brand Identity Logo */}
+      <img
+        src="/GEMORALOGO.png"
+        alt={brandName}
+        style={{
+          width: "48px",
+          height: "48px",
+          objectFit: "contain",
+          flexShrink: 0,
+          display: "block"
+        }}
+      />
 
       <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
         <span
