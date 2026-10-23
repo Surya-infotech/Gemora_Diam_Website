@@ -1,47 +1,90 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useStore } from "../../lib/store";
 import SectionHeading from "../SectionHeading";
+
+const CURATED_FALLBACKS = {
+  bracelets: {
+    img: "https://images.unsplash.com/photo-1611591475155-426475489c36?q=80&w=1000&auto=format&fit=crop",
+    desc: "Handcrafted tennis and cuff bracelets sculpted with certified conflict-free diamonds."
+  },
+  "bridal sets": {
+    img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop",
+    desc: "Harmonized engagement and wedding eternity bands designed to sit flush forever."
+  },
+  earrings: {
+    img: "https://images.unsplash.com/photo-1630019852942-f89202989a59?q=80&w=1000&auto=format&fit=crop",
+    desc: "Luminous diamond studs, drops, and cascading chandeliers cut for exceptional brilliance."
+  },
+  "engagement rings": {
+    img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=1000&auto=format&fit=crop",
+    desc: "Solitaire, halo, and three-stone silhouettes set with certified lab-grown diamonds."
+  },
+  "wedding bands": {
+    img: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?q=80&w=1000&auto=format&fit=crop",
+    desc: "Eternity and comfort-fit wedding bands forged in recycled 18k gold and platinum."
+  }
+};
 
 const DEFAULT_CATEGORIES = [
   {
     id: "cat-1",
-    img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800&auto=format&fit=crop",
-    title: "Engagement Rings",
-    desc: "Solitaire, halo, and bespoke engagement rings handcrafted with certified lab diamonds.",
-    link: "/collections?category=Engagement+Rings"
+    img: "https://images.unsplash.com/photo-1611591475155-426475489c36?q=80&w=1000&auto=format&fit=crop",
+    title: "Bracelets",
+    desc: "Handcrafted tennis and cuff bracelets sculpted with certified conflict-free diamonds.",
+    link: "/collections?category=Bracelets"
   },
   {
     id: "cat-2",
-    img: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop",
-    title: "Wedding Bands",
-    desc: "Timeless eternity bands and bridal rings sculpted in recycled 18k gold and platinum.",
-    link: "/collections?category=Wedding+Bands"
+    img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop",
+    title: "Bridal Sets",
+    desc: "Harmonized engagement and wedding eternity bands designed to sit flush forever.",
+    link: "/collections?category=Bridal+Sets"
   },
   {
     id: "cat-3",
-    img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop",
-    title: "Fine Jewelry",
-    desc: "Tennis bracelets, diamond pendant necklaces, and heirloom earrings for every milestone.",
-    link: "/collections"
+    img: "https://images.unsplash.com/photo-1630019852942-f89202989a59?q=80&w=1000&auto=format&fit=crop",
+    title: "Earrings",
+    desc: "Luminous diamond studs, drops, and cascading chandeliers cut for exceptional brilliance.",
+    link: "/collections?category=Earrings"
   }
 ];
 
+function cleanCategoryData(c, i) {
+  const title = c.categoryname || c.title || "Jewelry";
+  const key = title.trim().toLowerCase();
+  const fallback = CURATED_FALLBACKS[key] || {
+    img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1000&auto=format&fit=crop",
+    desc: "Masterfully sculpted fine jewelry pieces crafted with ethical diamonds and recycled precious metals."
+  };
+
+  const rawDesc = c.description || c.desc || "";
+  const isGibberish = !rawDesc || rawDesc.trim().length < 8 || /sdfsdf|asdf|test|lorem|qwerty/i.test(rawDesc);
+  const desc = isGibberish ? fallback.desc : rawDesc.trim();
+
+  // If image is missing, use curated fallback
+  const rawImg = c.image || c.categoryimage || c.img || "";
+  const img = rawImg && rawImg.trim() ? rawImg : fallback.img;
+
+  return {
+    id: c._id || c.categoryid || c.id || i,
+    title,
+    desc,
+    img,
+    link: `/collections?category=${encodeURIComponent(title)}`
+  };
+}
+
 export default function CircularCategories() {
   const { categories } = useStore();
+  const [hoveredIdx, setHoveredIdx] = useState(null);
 
-  const cards = (categories && categories.length > 0)
-    ? categories.map((c, i) => ({
-      id: c._id || c.categoryid || i,
-      img: c.image || c.categoryimage || "",
-      title: c.categoryname,
-      desc: c.description && c.description.trim(),
-      link: `/collections?category=${encodeURIComponent(c.categoryname)}`
-    }))
-    : DEFAULT_CATEGORIES;
+  const rawCards = (categories && categories.length > 0) ? categories : DEFAULT_CATEGORIES;
+  const cards = rawCards.map(cleanCategoryData);
 
   return (
-    <section style={{ padding: "90px 0 80px 0", backgroundColor: "#ffffff" }}>
+    <section style={{ padding: "clamp(60px, 7vw, 96px) 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
         {/* Section Header */}
         <SectionHeading
@@ -50,52 +93,43 @@ export default function CircularCategories() {
           description="Explore masterfully sculpted designs crafted with ethical lab-grown diamonds and recycled precious metals."
         />
 
-        {/* Collection Cards Grid */}
+        {/* High-End Editorial Category Cards Grid */}
         <div className="categories-balanced-grid">
-          {cards.map((c, i) => (
-            <Link
-              key={c.id || i}
-              to={c.link}
-              style={{
-                position: "relative",
-                backgroundColor: "#FAF9F6",
-                borderRadius: "6px",
-                border: "1px solid #EAE4D7",
-                padding: "clamp(28px, 4vw, 48px) clamp(16px, 3vw, 32px) clamp(24px, 3vw, 36px)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                textDecoration: "none",
-                transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.03)"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "var(--primary)";
-                e.currentTarget.style.transform = "translateY(-6px)";
-                e.currentTarget.style.boxShadow = "0 18px 45px rgba(85, 104, 50, 0.12)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#EAE4D7";
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.03)";
-              }}
-            >
-              {/* Luxury Circular Medallion Portal */}
-              <div
+          {cards.map((c, i) => {
+            const isHovered = hoveredIdx === i;
+
+            return (
+              <Link
+                key={c.id || i}
+                to={c.link}
+                onMouseEnter={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
                 style={{
                   position: "relative",
-                  width: "clamp(130px, 16vw, 190px)",
-                  height: "clamp(130px, 16vw, 190px)",
-                  borderRadius: "50%",
+                  display: "flex",
+                  flexDirection: "column",
+                  backgroundColor: "#FAF9F6",
+                  borderRadius: "20px",
+                  border: isHovered ? "1px solid var(--primary)" : "1px solid #EAE5D9",
                   overflow: "hidden",
-                  marginBottom: "clamp(16px, 3vw, 28px)",
-                  boxShadow: "0 0 0 4px #FAF9F6, 0 0 0 6px rgba(197, 160, 89, 0.4), 0 10px 25px rgba(0,0,0,0.08)",
-                  backgroundColor: "#ffffff",
-                  flexShrink: 0
+                  textDecoration: "none",
+                  transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                  transform: isHovered ? "translateY(-6px)" : "translateY(0)",
+                  boxShadow: isHovered
+                    ? "0 20px 45px rgba(85, 104, 50, 0.12)"
+                    : "0 4px 20px rgba(0, 0, 0, 0.03)"
                 }}
               >
-                {c.img ? (
+                {/* 1. Portrait Photographic Hero Window */}
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "clamp(260px, 28vw, 340px)",
+                    overflow: "hidden",
+                    backgroundColor: "#f2ece1"
+                  }}
+                >
                   <img
                     src={c.img}
                     alt={c.title}
@@ -104,81 +138,112 @@ export default function CircularCategories() {
                       height: "100%",
                       objectFit: "cover",
                       objectPosition: "center",
-                      transition: "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)"
+                      transition: "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)",
+                      transform: isHovered ? "scale(1.06)" : "scale(1)"
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                   />
-                ) : (
+
+                  {/* Gentle Bottom Gradient Shadow */}
                   <div
                     style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
+                      position: "absolute",
+                      inset: 0,
+                      background: "linear-gradient(to top, rgba(20, 26, 16, 0.45) 0%, rgba(20, 26, 16, 0.05) 50%, rgba(0,0,0,0) 100%)",
+                      pointerEvents: "none"
+                    }}
+                  />
+
+                  {/* Top Floating Badge */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "16px",
+                      left: "16px",
+                      backgroundColor: "rgba(255, 255, 255, 0.94)",
+                      backdropFilter: "blur(8px)",
+                      WebkitBackdropFilter: "blur(8px)",
+                      padding: "4px 12px",
+                      borderRadius: "999px",
+                      fontSize: "0.66rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "var(--foreground)",
+                      border: "1px solid rgba(255, 255, 255, 0.8)",
+                      display: "inline-flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: "#F4F0E8",
-                      color: "var(--primary)",
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "2.2rem",
-                      fontWeight: 500
+                      gap: "5px"
                     }}
                   >
-                    {c.title ? c.title.charAt(0).toUpperCase() : "✦"}
+                    <Sparkles size={11} style={{ color: "var(--gold)" }} />
+                    <span>Curated</span>
                   </div>
-                )}
-              </div>
+                </div>
 
-              {/* Title */}
-              <h3
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(1.3rem, 2.2vw, 1.75rem)",
-                  color: "var(--foreground)",
-                  marginBottom: "10px",
-                  fontWeight: 500,
-                  lineHeight: 1.2
-                }}
-              >
-                {c.title}
-              </h3>
-
-              {/* Description */}
-              {c.desc ? (
-                <p
+                {/* 2. Card Editorial Details Surface */}
+                <div
                   style={{
-                    fontSize: "0.86rem",
-                    color: "var(--muted-foreground)",
-                    lineHeight: 1.6,
-                    maxWidth: "280px",
-                    marginBottom: "24px"
+                    padding: "clamp(22px, 3vw, 30px) clamp(18px, 2.5vw, 26px)",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    textAlign: "center",
+                    flexGrow: 1
                   }}
                 >
-                  {c.desc}
-                </p>
-              ) : null}
+                  <h3
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "clamp(1.4rem, 2.2vw, 1.85rem)",
+                      color: "var(--foreground)",
+                      margin: "0 0 10px 0",
+                      fontWeight: 500,
+                      lineHeight: 1.2
+                    }}
+                  >
+                    {c.title}
+                  </h3>
 
-              {/* Call to action */}
-              <div
-                className="eyebrow"
-                style={{
-                  marginTop: "auto",
-                  fontSize: "0.76rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.18em",
-                  color: "var(--primary)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  borderBottom: "1.5px solid var(--primary)",
-                  paddingBottom: "3px"
-                }}
-              >
-                <span>EXPLORE COLLECTION</span>
-                <ArrowUpRight size={14} />
-              </div>
-            </Link>
-          ))}
+                  <p
+                    style={{
+                      fontSize: "0.86rem",
+                      color: "var(--muted-foreground)",
+                      lineHeight: 1.6,
+                      maxWidth: "290px",
+                      margin: "0 0 22px 0",
+                      flexGrow: 1
+                    }}
+                  >
+                    {c.desc}
+                  </p>
+
+                  {/* 3. Luxury Action Button in Gemora Brand Primary Green */}
+                  <div
+                    style={{
+                      marginTop: "auto",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "7px",
+                      padding: "9px 24px",
+                      borderRadius: "999px",
+                      fontSize: "0.72rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      backgroundColor: isHovered ? "var(--primary)" : "var(--primary-soft)",
+                      color: isHovered ? "#ffffff" : "var(--primary)",
+                      border: isHovered ? "1px solid var(--primary)" : "1px solid rgba(85, 104, 50, 0.28)",
+                      transition: "all 0.25s ease",
+                      boxShadow: isHovered ? "0 4px 14px rgba(85, 104, 50, 0.3)" : "none"
+                    }}
+                  >
+                    <span>Explore Collection</span>
+                    <ArrowRight size={13} />
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
