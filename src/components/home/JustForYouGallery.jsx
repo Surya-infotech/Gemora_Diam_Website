@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { useStore } from "../../lib/store";
+import SectionHeading from "../SectionHeading";
 
 export default function JustForYouGallery() {
   const { products } = useStore();
@@ -65,36 +66,12 @@ export default function JustForYouGallery() {
   return (
     <section style={{ padding: "80px 0 0 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
-        <div style={{ textAlign: "center", maxWidth: "640px", margin: "0 auto 48px auto" }}>
-          <span
-            className="eyebrow"
-            style={{
-              color: "var(--primary)",
-              letterSpacing: "0.26em",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px"
-            }}
-          >
-            <span>✦</span>
-            <span>ATELIER PERSPECTIVES</span>
-            <span>✦</span>
-          </span>
-          <h2
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(2.2rem, 4.2vw, 3.2rem)",
-              fontWeight: 400,
-              marginTop: "12px",
-              lineHeight: 1.15
-            }}
-          >
-            Just For You
-          </h2>
-          <p style={{ fontSize: "0.95rem", color: "var(--muted-foreground)", marginTop: "12px", lineHeight: 1.6 }}>
-            Every angle captured with artisan fidelity and unparalleled gemstone brilliance.
-          </p>
-        </div>
+        {/* Section Header */}
+        <SectionHeading
+          eyebrow="Atelier Perspectives"
+          title="Just For You"
+          description="Every angle captured with artisan fidelity and unparalleled gemstone brilliance."
+        />
       </div>
 
       <div className="just-for-you-grid">

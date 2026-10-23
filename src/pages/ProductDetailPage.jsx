@@ -14,6 +14,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { useStore } from "../lib/store";
+import SectionHeading from "../components/SectionHeading";
 
 
 
@@ -1089,14 +1090,11 @@ function ProductDetailContent({ product }) {
         {/* You May Also Like Recommendations */}
         {relatedProducts.length > 0 && (
           <div style={{ marginTop: "70px", paddingTop: "50px", borderTop: "1px solid var(--border)" }}>
-            <div style={{ textAlign: "center", marginBottom: "40px" }}>
-              <p className="eyebrow" style={{ color: "var(--primary)" }}>
-                Curated Recommendations
-              </p>
-              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2.2rem", marginTop: "6px" }}>
-                You May Also Like
-              </h2>
-            </div>
+            <SectionHeading
+              eyebrow="Curated Recommendations"
+              title="You May Also Like"
+              description="Complementary handcrafted pieces sculpted with identical ethical diamond brilliance."
+            />
 
             <div
               style={{

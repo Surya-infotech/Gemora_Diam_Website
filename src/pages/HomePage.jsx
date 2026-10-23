@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
 import {
   HeroSlider,
-  CircularCategories,
+  ThePromiseAndVowSection,
   ShopByShapeSection,
   BestSellerSection,
+  CircularCategories,
   SplitCollectionBanners,
   OutlineMarquee,
   ShopTheLookSection,
-  JustForYouGallery,
-  LovedByCouplesSection
+  LovedByCouplesSection,
+  TrustBadgesSection,
+  JustForYouGallery
 } from "../components/home";
 
 export default function HomePage() {
@@ -29,32 +31,38 @@ export default function HomePage() {
 
   return (
     <div style={{ backgroundColor: "#ffffff", color: "#181818", overflowX: "hidden" }}>
-      {/* 1. Hero Section Slider */}
+      {/* 1. Hero Section Slider with Editorial Presentation */}
       <HeroSlider />
 
-      {/* 2. Three Circular Promo Cards */}
-      <CircularCategories />
+      {/* 2. The Promise & The Vow (Signature Tesora-inspired 2-card feature + Shop by style) */}
+      <ThePromiseAndVowSection />
 
-      {/* 3. Shop By Shape Dial Section (Tesora Jewellery Interactive Section) */}
+      {/* 3. Shop By Shape Interactive Dial & 3-Step Ring Builder */}
       <ShopByShapeSection />
 
-      {/* 4. Best Seller Section with Tab Filter */}
+      {/* 4. Best Seller Section with Tab Filter & Shop All Rings Link */}
       <BestSellerSection />
 
-      {/* 4. Split Collection Banners */}
+      {/* 5. Signature Collections (Circular Medallion Curations) */}
+      <CircularCategories />
+
+      {/* 6. Split Collection Banners (Dynamic if configured) */}
       <SplitCollectionBanners />
 
-      {/* 5. Infinite Outline Typography Marquee */}
+      {/* 7. Infinite Outline Typography Marquee */}
       <OutlineMarquee />
 
-      {/* 6. Shop The Look Section */}
+      {/* 8. Shop The Look Curated Ensembles */}
       <ShopTheLookSection />
 
-      {/* 7. Just For You Curated 6-Tile Gallery */}
-      <JustForYouGallery />
-
-      {/* 8. Loved by couples (Real Love Stories & Client Reviews) */}
+      {/* 9. Loved by couples (Real Love Stories & Client Reviews Carousel) */}
       <LovedByCouplesSection />
+
+      {/* 10. The Gemora Diam Promise Trust Guarantees */}
+      <TrustBadgesSection />
+
+      {/* 11. Just For You Curated Editorial Gallery */}
+      <JustForYouGallery />
 
       {/* Floating Back to Top Button */}
       {showScrollTop && (

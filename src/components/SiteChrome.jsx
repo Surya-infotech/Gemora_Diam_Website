@@ -334,75 +334,84 @@ export function Header() {
 
   return (
     <>
-      {/* 1. Ultra-Luxurious Announcement Marquee */}
-      <div
-        style={{
-          backgroundColor: "#161e12",
-          color: "#f5f3ee",
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-          fontSize: "0.72rem",
-          letterSpacing: "0.18em",
-          padding: "7px 0",
-          textTransform: "uppercase",
-          borderBottom: "1px solid rgba(197, 160, 89, 0.2)",
-          position: "relative",
-          zIndex: 101
-        }}
-      >
-        <div className="animate-marquee" style={{ display: "inline-flex", alignItems: "center", gap: "40px" }}>
-          <span>COMPLIMENTARY INSURED WORLDWIDE DELIVERY</span>
-          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
-          <span>100% ETHICALLY CERTIFIED LAB GROWN DIAMONDS</span>
-          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
-          <span>30-DAY BESPOKE RETURNS &amp; LIFETIME POLISH</span>
-          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
-          <span>COMPLIMENTARY INSURED WORLDWIDE DELIVERY</span>
-          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
-          <span>100% ETHICALLY CERTIFIED LAB GROWN DIAMONDS</span>
-          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
-          <span>30-DAY BESPOKE RETURNS &amp; LIFETIME POLISH</span>
-          <span style={{ color: "var(--gold)", fontSize: "0.9rem" }}>✦</span>
-        </div>
-      </div>
-
-      {/* 2. Slender Concierge Bar */}
+      {/* Sleek Tesora-Style Unified Luxury Announcement Bar */}
       <div
         style={{
           backgroundColor: "var(--primary)",
           color: "#ffffff",
-          fontSize: "clamp(0.68rem, 1.8vw, 0.75rem)",
+          fontSize: "clamp(0.68rem, 1.8vw, 0.74rem)",
           fontWeight: 500,
-          padding: "6px 14px",
+          padding: "7px 16px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          flexWrap: "wrap",
-          gap: "8px",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.1)"
+          borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
+          position: "relative",
+          zIndex: 101
         }}
       >
-        <div className="container-luxury" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", paddingLeft: 0, paddingRight: 0, flexWrap: "wrap", gap: "8px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 20px)", flexWrap: "wrap" }}>
+        <div
+          className="container-luxury"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            paddingLeft: 0,
+            paddingRight: 0,
+            gap: "12px"
+          }}
+        >
+          {/* Left: Concierge Phone */}
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }} className="desktop-only-nav">
             {generalSettings?.phone && (
               <a
                 href={`tel:${generalSettings.phone.replace(/\s+/g, '')}`}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "5px",
+                  gap: "6px",
                   color: "#ffffff",
                   letterSpacing: "0.04em",
-                  transition: "opacity 0.2s",
-                  fontSize: "inherit"
+                  fontSize: "inherit",
+                  textDecoration: "none",
+                  opacity: 0.95
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
                 <Phone size={12} strokeWidth={1.8} />
                 <span>Concierge: {formatPhoneNumber(generalSettings.phone)}</span>
               </a>
             )}
+          </div>
+
+          {/* Center: Core Guarantees with Luxury Diamond Accents */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              flex: 1,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              fontSize: "0.7rem",
+              fontWeight: 500,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis"
+            }}
+          >
+            <span>Complimentary Insured Delivery</span>
+            <span style={{ color: "var(--gold-light)", opacity: 0.9 }}>•</span>
+            <span>7-Day Bespoke Returns</span>
+            <span style={{ color: "var(--gold-light)", opacity: 0.9 }}>•</span>
+            <span>Lifetime Atelier Warranty</span>
+            <span style={{ color: "var(--gold-light)", opacity: 0.9 }} className="tablet-up-nav">•</span>
+            <span className="tablet-up-nav">100% Certified Lab Diamonds</span>
+          </div>
+
+          {/* Right: Book Appointment CTA */}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <Link
               to="/contact"
               style={{
@@ -410,35 +419,28 @@ export function Header() {
                 alignItems: "center",
                 gap: "5px",
                 color: "#ffffff",
-                letterSpacing: "0.04em",
-                transition: "opacity 0.2s",
-                fontSize: "inherit"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-            >
-              <MapPin size={12} strokeWidth={1.8} />
-              <span>Bespoke Atelier Locations</span>
-            </Link>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "14px" }} className="tablet-up-nav">
-            <span style={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "0.72rem", letterSpacing: "0.08em" }}>
-              Complimentary Consultations
-            </span>
-            <Link
-              to="/contact"
-              style={{
-                color: "var(--gold-light)",
-                fontSize: "0.72rem",
+                backgroundColor: "rgba(0, 0, 0, 0.2)",
+                padding: "3px 10px",
+                borderRadius: "50px",
+                fontSize: "0.68rem",
                 fontWeight: 600,
-                letterSpacing: "0.1em",
+                letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                textDecoration: "underline",
-                textUnderlineOffset: "3px"
+                textDecoration: "none",
+                border: "1px solid rgba(255, 255, 255, 0.25)",
+                transition: "all 0.2s ease"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+                e.currentTarget.style.borderColor = "#ffffff";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.25)";
               }}
             >
-              Book Appointment
+              <span>Book an Appointment</span>
+              <ArrowRight size={11} />
             </Link>
           </div>
         </div>

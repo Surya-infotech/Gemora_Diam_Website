@@ -1,7 +1,47 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Heart, ShoppingBag, ArrowRight } from "lucide-react";
 import { useStore } from "../../lib/store";
+import SectionHeading from "../SectionHeading";
+
+const CURATED_BESTSELLERS = [
+  {
+    id: "curated-1",
+    _id: "curated-1",
+    name: "The Round Brilliant Solitaire Ring",
+    category: "Engagement Rings",
+    price: 1850,
+    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800&auto=format&fit=crop",
+    metals: ["18k Yellow Gold", "Platinum", "18k White Gold"]
+  },
+  {
+    id: "curated-2",
+    _id: "curated-2",
+    name: "The Luminous Oval Pavé Ring",
+    category: "Engagement Rings",
+    price: 2450,
+    image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?q=80&w=800&auto=format&fit=crop",
+    metals: ["18k Yellow Gold", "14k Rose Gold", "Platinum"]
+  },
+  {
+    id: "curated-3",
+    _id: "curated-3",
+    name: "The Grand Emerald Cut Eternity Band",
+    category: "Wedding Bands",
+    price: 3100,
+    image: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?q=80&w=800&auto=format&fit=crop",
+    metals: ["Platinum", "18k White Gold", "18k Yellow Gold"]
+  },
+  {
+    id: "curated-4",
+    _id: "curated-4",
+    name: "The Vintage Floral Cushion Solitaire",
+    category: "Engagement Rings",
+    price: 2150,
+    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop",
+    metals: ["18k Yellow Gold", "Platinum"]
+  }
+];
 
 export default function BestSellerSection() {
   const navigate = useNavigate();
@@ -16,7 +56,7 @@ export default function BestSellerSection() {
     categories: dynamicCategories
   } = useStore();
 
-  const products = dynamicProducts || [];
+  const products = (dynamicProducts && dynamicProducts.length > 0) ? dynamicProducts : CURATED_BESTSELLERS;
 
   const categoryTabs = [
     { id: "all", label: "All Pieces" },
@@ -25,7 +65,11 @@ export default function BestSellerSection() {
         id: (c.categoryname || "").toLowerCase(),
         label: c.categoryname || ""
       }))
-      : [])
+      : [
+        { id: "engagement rings", label: "Engagement Rings" },
+        { id: "wedding bands", label: "Wedding Bands" },
+        { id: "fine jewelry", label: "Fine Jewelry" }
+      ])
   ];
 
   const filtered =
@@ -38,94 +82,102 @@ export default function BestSellerSection() {
       );
 
   return (
-    <section style={{ padding: "80px 0 100px 0", backgroundColor: "#ffffff" }}>
+    <section style={{ padding: "clamp(48px, 6vw, 84px) 0 clamp(48px, 7vw, 96px) 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
         {/* Section Header */}
-        <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 40px auto" }}>
-          <span
-            className="eyebrow"
+        <SectionHeading
+          eyebrow="Most Loved"
+          title="Our best sellers"
+          description="Handcrafted engagement rings and bestselling bridal icons, sculpted with ethical certified lab diamonds."
+        />
+
+        {/* Filter Bar & Category Link */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "16px",
+            marginBottom: "clamp(24px, 4vw, 36px)",
+            paddingBottom: "8px"
+          }}
+        >
+          {categoryTabs.length > 1 ? (
+            <div
+              className="no-scrollbar"
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                gap: "8px",
+                flexWrap: "wrap",
+                overflowX: "auto"
+              }}
+            >
+              {categoryTabs.map((t) => {
+                const isActive = activeTab === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setActiveTab(t.id)}
+                    className="eyebrow"
+                    style={{
+                      fontSize: "0.72rem",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      fontWeight: 600,
+                      color: isActive ? "#ffffff" : "var(--foreground)",
+                      backgroundColor: isActive ? "var(--primary)" : "#FAF8F5",
+                      border: isActive ? "1px solid var(--primary)" : "1px solid #E5DFD3",
+                      padding: "9px 20px",
+                      borderRadius: "999px",
+                      transition: "all 0.25s ease",
+                      cursor: "pointer",
+                      boxShadow: isActive ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.borderColor = "var(--primary)";
+                        e.currentTarget.style.color = "var(--primary)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.borderColor = "#E5DFD3";
+                        e.currentTarget.style.color = "var(--foreground)";
+                      }
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
+          ) : <div />}
+
+          <Link
+            to="/collections?category=Engagement+Rings"
             style={{
-              color: "var(--primary)",
-              letterSpacing: "0.26em",
               display: "inline-flex",
               alignItems: "center",
-              gap: "6px"
-            }}
-          >
-            <span>✦</span>
-            <span>TIMELESS ATELIER ICONS</span>
-            <span>✦</span>
-          </span>
-          <h2
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(2.2rem, 4.5vw, 3.2rem)",
-              fontWeight: 400,
-              marginTop: "12px",
-              lineHeight: 1.15
-            }}
-          >
-            Most Coveted Creations
-          </h2>
-          <p style={{ fontSize: "0.95rem", color: "var(--muted-foreground)", marginTop: "12px", lineHeight: 1.6 }}>
-            Bespoke rings, bracelets, and fine jewelry sculpted to perfection with ethical lab-grown diamonds.
-          </p>
-        </div>
-
-        {/* Category Filter Tabs */}
-        {categoryTabs.length > 1 && (
-          <div
-            className="no-scrollbar"
-            style={{
-              display: "flex",
-              justifyContent: "center",
               gap: "8px",
-              marginBottom: "clamp(24px, 5vw, 48px)",
-              flexWrap: "wrap",
-              overflowX: "auto",
-              paddingBottom: "4px"
+              fontSize: "0.74rem",
+              fontWeight: 700,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "var(--foreground)",
+              borderBottom: "1.5px solid var(--primary)",
+              paddingBottom: "3px",
+              textDecoration: "none",
+              transition: "color 0.2s"
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
           >
-            {categoryTabs.map((t) => {
-              const isActive = activeTab === t.id;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => setActiveTab(t.id)}
-                  className="eyebrow"
-                  style={{
-                    fontSize: "0.76rem",
-                    letterSpacing: "0.16em",
-                    textTransform: "uppercase",
-                    fontWeight: 600,
-                    color: isActive ? "#ffffff" : "var(--foreground)",
-                    backgroundColor: isActive ? "var(--primary)" : "#FAF8F5",
-                    border: isActive ? "1px solid var(--primary)" : "1px solid #E5DFD3",
-                    padding: "10px 22px",
-                    borderRadius: "50px",
-                    transition: "all 0.25s ease",
-                    cursor: "pointer",
-                    boxShadow: isActive ? "0 4px 14px rgba(85, 104, 50, 0.25)" : "none"
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.borderColor = "var(--primary)";
-                      e.currentTarget.style.color = "var(--primary)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.borderColor = "#E5DFD3";
-                      e.currentTarget.style.color = "var(--foreground)";
-                    }
-                  }}
-                >
-                  {t.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
+            <span>Shop all Engagement Rings</span>
+            <ArrowRight size={14} style={{ color: "var(--primary)" }} />
+          </Link>
+        </div>
 
         {/* Product Grid */}
         <div className="products-responsive-grid">
@@ -156,7 +208,7 @@ export default function BestSellerSection() {
                     display: "flex",
                     flexDirection: "column",
                     backgroundColor: "#FAF9F6",
-                    borderRadius: "4px",
+                    borderRadius: "12px",
                     overflow: "hidden",
                     border: "1px solid #EDE7DC",
                     transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -194,7 +246,7 @@ export default function BestSellerSection() {
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "fill",
+                        objectFit: "cover",
                         objectPosition: "center",
                         display: "block",
                         transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
@@ -203,15 +255,12 @@ export default function BestSellerSection() {
                       onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                     />
 
-                    {/* Quick Floating Action Icons */}
+                    {/* Quick Floating Wishlist Action */}
                     <div
                       style={{
                         position: "absolute",
                         top: "12px",
                         right: "12px",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "8px",
                         zIndex: 2
                       }}
                     >
@@ -221,113 +270,111 @@ export default function BestSellerSection() {
                           e.stopPropagation();
                           toggleWishlist(item.id);
                         }}
-                        aria-label="Wishlist"
+                        aria-label="Toggle wishlist"
                         style={{
-                          width: "38px",
-                          height: "38px",
+                          width: "36px",
+                          height: "36px",
                           borderRadius: "50%",
                           backgroundColor: "#ffffff",
+                          border: "1px solid #EDE7DC",
+                          boxShadow: "0 3px 10px rgba(0,0,0,0.08)",
                           display: "grid",
                           placeItems: "center",
                           color: isLiked ? "var(--primary)" : "var(--foreground)",
-                          boxShadow: "0 3px 10px rgba(0,0,0,0.08)",
-                          border: "1px solid #ECE7DD",
-                          transition: "all 0.2s ease",
-                          cursor: "pointer"
+                          cursor: "pointer",
+                          transition: "all 0.2s"
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-soft)")}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
                       >
-                        <Heart size={16} fill={isLiked ? "currentColor" : "none"} strokeWidth={1.5} />
-                      </button>
-
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          addToCart(item.id, item.metals?.[0] || "", "", "", item.price);
-                          notify("Added to Bag", `1x ${item.name} (${format(item.price)})`);
-                        }}
-                        aria-label="Add to Bag"
-                        style={{
-                          width: "38px",
-                          height: "38px",
-                          borderRadius: "50%",
-                          backgroundColor: "#ffffff",
-                          display: "grid",
-                          placeItems: "center",
-                          color: "var(--foreground)",
-                          boxShadow: "0 3px 10px rgba(0,0,0,0.08)",
-                          border: "1px solid #ECE7DD",
-                          transition: "all 0.2s ease",
-                          cursor: "pointer"
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = "var(--primary)";
-                          e.currentTarget.style.color = "#ffffff";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "#ffffff";
-                          e.currentTarget.style.color = "var(--foreground)";
-                        }}
-                      >
-                        <ShoppingBag size={16} strokeWidth={1.5} />
+                        <Heart size={16} fill={isLiked ? "currentColor" : "none"} strokeWidth={1.6} />
                       </button>
                     </div>
                   </div>
 
-                  {/* Item Details */}
-                  <div style={{ padding: "clamp(12px, 2vw, 20px) clamp(10px, 2vw, 22px) clamp(14px, 2.5vw, 24px)", display: "flex", flexDirection: "column", flex: 1 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                      <span className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem", letterSpacing: "0.14em" }}>
-                        {item.category} {item.sku ? ` • ${item.sku}` : ""}
-                      </span>
-                      {item.metals && item.metals.length > 0 && (
-                        <span style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>
-                          {item.metals.length} {item.metals.length === 1 ? "metal" : "metals"}
-                        </span>
-                      )}
-                    </div>
+                  {/* Product Info Block */}
+                  <div style={{ padding: "18px 20px 22px", display: "flex", flexDirection: "column", flex: 1 }}>
+                    <span
+                      style={{
+                        fontSize: "0.72rem",
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        color: "var(--gold-deep)",
+                        fontWeight: 600,
+                        marginBottom: "6px"
+                      }}
+                    >
+                      {item.category || "Fine Jewelry"}
+                    </span>
 
                     <h4
                       style={{
+                        fontFamily: "var(--font-serif)",
                         fontSize: "1.1rem",
                         fontWeight: 500,
                         lineHeight: 1.3,
                         color: "var(--foreground)",
                         margin: "0 0 10px 0",
-                        cursor: "pointer",
-                        fontFamily: "var(--font-serif)",
-                        transition: "color 0.2s"
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        minHeight: "2.6em"
                       }}
-                      onClick={() => navigate(`/product/${item._id || item.id}`)}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
                     >
                       {item.name}
                     </h4>
 
-                    <div style={{ marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: "8px" }}>
-                      <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--primary)" }}>
-                        {format(item.price)}
-                      </span>
-
-                      <button
-                        onClick={() => navigate(`/product/${item._id || item.id}`)}
-                        className="eyebrow"
+                    {item.price > 0 && (
+                      <div
                         style={{
-                          fontSize: "0.72rem",
-                          letterSpacing: "0.12em",
-                          color: "var(--foreground)",
-                          textDecoration: "underline",
-                          textUnderlineOffset: "3px",
-                          cursor: "pointer",
-                          transition: "color 0.2s"
+                          fontSize: "1rem",
+                          fontWeight: 700,
+                          color: "var(--primary)",
+                          marginBottom: "16px"
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
                       >
-                        View Details
+                        {format(item.price)}
+                      </div>
+                    )}
+
+                    {/* Quick Add To Bag Action */}
+                    <div style={{ marginTop: "auto" }}>
+                      <button
+                        onClick={() => {
+                          addToCart(item.id, item.metals?.[0] || "", "", "", item.price);
+                          notify("Added to Bag", `1x ${item.name}`);
+                        }}
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                          backgroundColor: "var(--primary)",
+                          color: "#ffffff",
+                          border: "none",
+                          padding: "10px 14px",
+                          borderRadius: "999px",
+                          fontSize: "0.72rem",
+                          fontWeight: 600,
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          cursor: "pointer",
+                          transition: "all 0.25s",
+                          boxShadow: "0 2px 8px rgba(85, 104, 50, 0.25)"
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                          e.currentTarget.style.transform = "translateY(-1px)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = "var(--primary)";
+                          e.currentTarget.style.transform = "translateY(0)";
+                        }}
+                      >
+                        <ShoppingBag size={14} />
+                        <span>Add To Bag</span>
                       </button>
                     </div>
                   </div>

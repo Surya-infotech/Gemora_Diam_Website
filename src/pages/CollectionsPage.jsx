@@ -261,20 +261,24 @@ export default function CollectionsPage({ slugOverride = null }) {
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "120px" }}>
       {/* Page Header */}
       <div style={{ maxWidth: "700px" }}>
-        <span
+        <p
           className="eyebrow"
           style={{
-            color: "var(--primary)",
-            letterSpacing: "0.26em",
+            color: "var(--gold-deep)",
+            marginBottom: "8px",
             display: "inline-flex",
             alignItems: "center",
-            gap: "6px"
+            gap: "8px",
+            fontSize: "0.72rem",
+            fontWeight: 600,
+            letterSpacing: "0.22em",
+            textTransform: "uppercase"
           }}
         >
-          <span>✦</span>
-          <span>THE ATELIER ARCHIVE</span>
-          <span>✦</span>
-        </span>
+          <span style={{ height: "1px", width: "20px", backgroundColor: "var(--gold)" }} />
+          The Atelier Archive
+          <span style={{ height: "1px", width: "20px", backgroundColor: "var(--gold)" }} />
+        </p>
         <h1
           style={{
             fontFamily: "var(--font-serif)",

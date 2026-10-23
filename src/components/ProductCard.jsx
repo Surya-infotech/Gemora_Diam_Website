@@ -163,7 +163,7 @@ export function ProductCard({ product }) {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "fill",
+              objectFit: "cover",
               objectPosition: "center",
               display: "block",
               transform: isHovered ? "scale(1.08)" : "scale(1)",
@@ -413,7 +413,7 @@ export function ProductCard({ product }) {
                     key={allMedia[activeMediaIndex]?.url || product.image}
                     src={allMedia[activeMediaIndex]?.url || product.image}
                     alt={product.name}
-                    style={{ width: "100%", height: "100%", maxHeight: "380px", objectFit: "fill" }}
+                    style={{ width: "100%", height: "100%", maxHeight: "380px", objectFit: "cover", objectPosition: "center" }}
                   />
                 )}
               </div>
@@ -489,7 +489,7 @@ export function ProductCard({ product }) {
                           </div>
                         </div>
                       ) : (
-                        <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "fill" }} />
+                        <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
                       )}
                     </button>
                   ))}

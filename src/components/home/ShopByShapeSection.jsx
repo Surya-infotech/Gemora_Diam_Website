@@ -56,8 +56,235 @@ function GoldProngsMount() {
   );
 }
 
+// Precise Diamond Shape Outline Vector SVGs for Dial Ticks
+function DiamondVectorIcon({ shape, size = 22, color = "#c5a059" }) {
+  const norm = (shape || "").toLowerCase();
+
+  if (norm.includes("round")) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+        <circle cx="12" cy="12" r="9" />
+        <polygon points="12,4 19,12 12,20 5,12" strokeWidth="0.8" />
+        <line x1="7" y1="7" x2="17" y2="17" strokeWidth="0.8" />
+        <line x1="7" y1="17" x2="17" y2="7" strokeWidth="0.8" />
+      </svg>
+    );
+  }
+  if (norm.includes("oval")) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+        <ellipse cx="12" cy="12" rx="7" ry="9.5" />
+        <polygon points="12,3 17,12 12,21 7,12" strokeWidth="0.8" />
+      </svg>
+    );
+  }
+  if (norm.includes("cushion")) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+        <rect x="4" y="4" width="16" height="16" rx="5" />
+        <polygon points="12,5 19,12 12,19 5,12" strokeWidth="0.8" />
+      </svg>
+    );
+  }
+  if (norm.includes("pear")) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+        <path d="M12 3 C16 9 19 14 19 17 A7 7 0 0 1 5 17 C5 14 8 9 12 3 Z" />
+        <polygon points="12,7 16,16 8,16" strokeWidth="0.8" />
+      </svg>
+    );
+  }
+  if (norm.includes("emerald")) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+        <polygon points="6,3 18,3 21,6 21,18 18,21 6,21 3,18 3,6" />
+        <polygon points="8,6 16,6 18,8 18,16 16,18 8,18 6,16 6,8" strokeWidth="0.8" />
+        <rect x="10" y="8" width="4" height="8" strokeWidth="0.8" />
+      </svg>
+    );
+  }
+  if (norm.includes("princess")) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+        <rect x="4" y="4" width="16" height="16" rx="0.5" />
+        <polygon points="12,4 20,12 12,20 4,12" strokeWidth="0.8" />
+        <line x1="4" y1="4" x2="20" y2="20" strokeWidth="0.8" />
+        <line x1="4" y1="20" x2="20" y2="4" strokeWidth="0.8" />
+      </svg>
+    );
+  }
+  if (norm.includes("radiant")) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+        <polygon points="6,4 18,4 20,6 20,18 18,20 6,20 4,18 4,6" />
+        <polygon points="12,6 17,12 12,18 7,12" strokeWidth="0.8" />
+        <line x1="4" y1="6" x2="20" y2="18" strokeWidth="0.7" />
+        <line x1="4" y1="18" x2="20" y2="6" strokeWidth="0.7" />
+      </svg>
+    );
+  }
+  if (norm.includes("marquise")) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+        <path d="M12 2 C18 7 21 12 12 22 C3 12 6 7 12 2 Z" />
+        <polygon points="12,6 16,12 12,18 8,12" strokeWidth="0.8" />
+      </svg>
+    );
+  }
+  if (norm.includes("asscher")) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+        <polygon points="7,4 17,4 20,7 20,17 17,20 7,20 4,17 4,7" />
+        <polygon points="9,6 15,6 17,8 17,16 15,18 9,18 7,16 7,8" strokeWidth="0.8" />
+        <rect x="9.5" y="9.5" width="5" height="5" strokeWidth="0.8" />
+      </svg>
+    );
+  }
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.3">
+      <polygon points="6,3 18,3 22,9 12,21 2,9" />
+      <polygon points="12,3 17,9 12,21 7,9" strokeWidth="0.8" />
+      <line x1="2" y1="9" x2="22" y2="9" strokeWidth="0.8" />
+    </svg>
+  );
+}
+
+const DEFAULT_SHAPE_DATA = {
+  headerEyebrow: "Find Your Ring",
+  headerTitle: "Shop by shape",
+  headerDescription: "Start with the diamond. Every ring is handcrafted and set with an ethically certified stone.",
+  designEyebrow: "Create Your Own",
+  designTitle: "Design your ring",
+  designDescription: "Start with a setting and add the perfect center stone, or the other way round. It's entirely up to you, and we'll handcraft the result.",
+  step1Num: "01",
+  step1Title: "Choose your setting",
+  step1Desc: "Solitaire, halo, hidden halo, or vintage-inspired.",
+  step2Num: "02",
+  step2Title: "Pair your diamond",
+  step2Desc: "Pick the shape, carat, and certified stone you love.",
+  step3Num: "03",
+  step3Title: "We handcraft it",
+  step3Desc: "Set by hand and delivered ready to propose.",
+  primaryBtnText: "Start Designing",
+  primaryBtnLink: "/collections",
+  secondaryBtnText: "Talk to a Designer",
+  secondaryBtnLink: "/contact",
+  shapes: [
+    {
+      shapeid: "round",
+      name: "Round",
+      tagline: "The classic shape with unmatched 58-facet brilliance",
+      description: "The round brilliant cut is engineered with 58 precision facets to maximize light reflection, fire, and scintillation.",
+      bestFor: "Maximum Sparkle",
+      brilliance: "Very High",
+      showcaseImage: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Timeless Round Brilliant Ring",
+      buttonLink: "/collections?shape=Round"
+    },
+    {
+      shapeid: "oval",
+      name: "Oval",
+      tagline: "Graceful elegance with flattering finger elongation",
+      description: "An elongated brilliant silhouette offering comparable fire to the round cut while creating an illusion of slender, graceful hands.",
+      bestFor: "Finger Elongation",
+      brilliance: "Very High",
+      showcaseImage: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Luminous Oval Solitaire",
+      buttonLink: "/collections?shape=Oval"
+    },
+    {
+      shapeid: "cushion",
+      name: "Cushion",
+      tagline: "Romantic rounded pillow corners with antique warmth",
+      description: "Combining a square cut with rounded corners, the pillow cut exudes heirloom charm with deep, pillowy flashes of rainbow fire.",
+      bestFor: "Vintage Romance",
+      brilliance: "High",
+      showcaseImage: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Heirloom Cushion Halo Ring",
+      buttonLink: "/collections?shape=Cushion"
+    },
+    {
+      shapeid: "pear",
+      name: "Pear",
+      tagline: "An exquisite teardrop cut balancing poise and drama",
+      description: "A distinctive hybrid cut combining the brilliance of a round cut with the dramatic point of a marquise for bold beauty.",
+      bestFor: "Dramatic Grace",
+      brilliance: "Very High",
+      showcaseImage: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Royal Pear Pavé Ring",
+      buttonLink: "/collections?shape=Pear"
+    },
+    {
+      shapeid: "emerald",
+      name: "Emerald",
+      tagline: "Art Deco step facets with hall-of-mirrors clarity",
+      description: "Clean rectangular step cuts produce mesmerizing hall-of-mirrors flashes, highlighting exceptional gemstone clarity and regal refinement.",
+      bestFor: "Architectural Elegance",
+      brilliance: "Medium",
+      showcaseImage: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Grand Emerald Cut Solitaire",
+      buttonLink: "/collections?shape=Emerald"
+    },
+    {
+      shapeid: "princess",
+      name: "Princess",
+      tagline: "Crisp modern square geometry with fiery brilliance",
+      description: "Featuring sharp 90-degree corners and intricate pyramid chevron faceting for a bold, modern expression of intense fire.",
+      bestFor: "Contemporary Sparkle",
+      brilliance: "Very High",
+      showcaseImage: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Modern Princess Solitaire",
+      buttonLink: "/collections?shape=Princess"
+    },
+    {
+      shapeid: "radiant",
+      name: "Radiant",
+      tagline: "Emerald silhouette infused with 70 brilliant facets",
+      description: "Combines the elegant emerald outline with brilliant-cut facet arrangement, delivering extraordinary multidirectional sparkle.",
+      bestFor: "Intense Fire & Symmetry",
+      brilliance: "Very High",
+      showcaseImage: "https://images.unsplash.com/photo-1598560917505-59a3ad559071?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Fiery Radiant Cut Masterpiece",
+      buttonLink: "/collections?shape=Radiant"
+    },
+    {
+      shapeid: "elongated-cushion",
+      name: "Elongated Cushion",
+      tagline: "Modern slender proportions on the classic pillow silhouette",
+      description: "A stretched length-to-width ratio on the beloved cushion cut that elongates the finger while maintaining soft rounded corners.",
+      bestFor: "Slender Elegance",
+      brilliance: "High",
+      showcaseImage: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Bespoke Elongated Cushion Ring",
+      buttonLink: "/collections?shape=Cushion"
+    },
+    {
+      shapeid: "marquise",
+      name: "Marquise",
+      tagline: "Royal elongated cut maximizing surface carat presence",
+      description: "Commissioned by King Louis XV of France, this regal football silhouette provides the greatest face-up size per carat weight.",
+      bestFor: "Maximizing Carat Appearance",
+      brilliance: "Very High",
+      showcaseImage: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Sovereign Marquise Solitaire",
+      buttonLink: "/collections?shape=Marquise"
+    },
+    {
+      shapeid: "asscher",
+      name: "Asscher",
+      tagline: "Vintage Parisian step cut with octagonal depth",
+      description: "Developed in 1902 by the Asscher Brothers, featuring square step facets and cropped corners creating a hypnotic windmill optical pattern.",
+      bestFor: "Vintage Sophistication",
+      brilliance: "Medium",
+      showcaseImage: "https://images.unsplash.com/photo-1529636798458-92182e662485?q=80&w=800&auto=format&fit=crop",
+      showcaseTitle: "The Parisian Asscher Step Cut",
+      buttonLink: "/collections?shape=Asscher"
+    }
+  ]
+};
+
 export default function ShopByShapeSection() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(DEFAULT_SHAPE_DATA);
   const [activeState, setActiveState] = useState({ index: 0, rotation: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [sparkleKey, setSparkleKey] = useState(0);
@@ -141,8 +368,8 @@ export default function ShopByShapeSection() {
     }
   };
 
-  // Only render when backend data is loaded and has shapes
-  if (!data || data.status === false || shapes.length === 0 || !activeShape) {
+  // Guard check: ensure we have at least one active shape
+  if (!data || shapes.length === 0 || !activeShape) {
     return null;
   }
 
@@ -276,8 +503,9 @@ export default function ShopByShapeSection() {
                     marginBottom: "8px"
                   }}
                 >
-                  <span style={{ display: "inline-block", width: "24px", height: "1px", backgroundColor: "var(--gold)" }} />
+                  <span style={{ display: "inline-block", width: "20px", height: "1px", backgroundColor: "var(--gold)" }} />
                   {data.designEyebrow}
+                  <span style={{ display: "inline-block", width: "20px", height: "1px", backgroundColor: "var(--gold)" }} />
                 </div>
               )}
 
@@ -525,7 +753,7 @@ export default function ShopByShapeSection() {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "8px",
-                    backgroundColor: "#181818",
+                    backgroundColor: "var(--primary)",
                     color: "#ffffff",
                     fontSize: "11px",
                     fontWeight: 600,
@@ -533,13 +761,16 @@ export default function ShopByShapeSection() {
                     textTransform: "uppercase",
                     padding: "12px 24px",
                     borderRadius: "999px",
+                    boxShadow: "0 4px 14px rgba(85, 104, 50, 0.35)",
                     transition: "all 0.3s ease"
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "var(--gold-deep)";
+                    e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                    e.currentTarget.style.transform = "translateY(-1.5px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#181818";
+                    e.currentTarget.style.backgroundColor = "var(--primary)";
+                    e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
                   {data.primaryBtnText || "START DESIGNING"}
@@ -733,9 +964,7 @@ export default function ShopByShapeSection() {
                                 }}
                               />
                             ) : (
-                              <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--gold-deep)" }}>
-                                {s.name.slice(0, 2).toUpperCase()}
-                              </span>
+                              <DiamondVectorIcon shape={s.name} size={22} color="#c5a059" />
                             )}
                           </button>
                         </div>
@@ -788,7 +1017,9 @@ export default function ShopByShapeSection() {
                           e.currentTarget.style.display = "none";
                         }}
                       />
-                    ) : null}
+                    ) : (
+                      <DiamondVectorIcon shape={activeShape.name} size={30} color="#d4af37" />
+                    )}
 
                     {/* Sparkle Burst animation */}
                     <div
@@ -1161,22 +1392,25 @@ export default function ShopByShapeSection() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "6px",
-                      backgroundColor: "#181818",
+                      backgroundColor: "var(--primary)",
                       color: "#ffffff",
                       fontSize: "9.5px",
                       fontWeight: 700,
                       letterSpacing: "0.12em",
                       textTransform: "uppercase",
-                      padding: "8px 14px",
+                      padding: "8px 16px",
                       borderRadius: "999px",
                       whiteSpace: "nowrap",
+                      boxShadow: "0 2px 8px rgba(85, 104, 50, 0.3)",
                       transition: "all 0.3s ease"
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "var(--gold-deep)";
+                      e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                      e.currentTarget.style.transform = "translateY(-1px)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#181818";
+                      e.currentTarget.style.backgroundColor = "var(--primary)";
+                      e.currentTarget.style.transform = "translateY(0)";
                     }}
                   >
                     SHOP {activeShape.name.toUpperCase()}

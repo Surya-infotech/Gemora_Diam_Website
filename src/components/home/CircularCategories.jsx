@@ -1,56 +1,54 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { useStore } from "../../lib/store";
+import SectionHeading from "../SectionHeading";
+
+const DEFAULT_CATEGORIES = [
+  {
+    id: "cat-1",
+    img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800&auto=format&fit=crop",
+    title: "Engagement Rings",
+    desc: "Solitaire, halo, and bespoke engagement rings handcrafted with certified lab diamonds.",
+    link: "/collections?category=Engagement+Rings"
+  },
+  {
+    id: "cat-2",
+    img: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop",
+    title: "Wedding Bands",
+    desc: "Timeless eternity bands and bridal rings sculpted in recycled 18k gold and platinum.",
+    link: "/collections?category=Wedding+Bands"
+  },
+  {
+    id: "cat-3",
+    img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop",
+    title: "Fine Jewelry",
+    desc: "Tennis bracelets, diamond pendant necklaces, and heirloom earrings for every milestone.",
+    link: "/collections"
+  }
+];
 
 export default function CircularCategories() {
   const { categories } = useStore();
 
-  if (!categories || categories.length === 0) {
-    return null;
-  }
-
-  const cards = categories.map((c, i) => ({
-    id: c._id || c.categoryid || i,
-    img: c.image || c.categoryimage || "",
-    title: c.categoryname,
-    desc: c.description && c.description.trim(),
-    link: `/collections?category=${encodeURIComponent(c.categoryname)}`
-  }));
+  const cards = (categories && categories.length > 0)
+    ? categories.map((c, i) => ({
+      id: c._id || c.categoryid || i,
+      img: c.image || c.categoryimage || "",
+      title: c.categoryname,
+      desc: c.description && c.description.trim(),
+      link: `/collections?category=${encodeURIComponent(c.categoryname)}`
+    }))
+    : DEFAULT_CATEGORIES;
 
   return (
     <section style={{ padding: "90px 0 80px 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
         {/* Section Header */}
-        <div style={{ textAlign: "center", maxWidth: "640px", margin: "0 auto 56px auto" }}>
-          <span
-            className="eyebrow"
-            style={{
-              color: "var(--primary)",
-              letterSpacing: "0.26em",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px"
-            }}
-          >
-            <span>✦</span>
-            <span>ATELIER CURATIONS</span>
-            <span>✦</span>
-          </span>
-          <h2
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(2.2rem, 4.2vw, 3.2rem)",
-              fontWeight: 400,
-              marginTop: "12px",
-              lineHeight: 1.15
-            }}
-          >
-            Signature Collections
-          </h2>
-          <p style={{ fontSize: "0.95rem", color: "var(--muted-foreground)", marginTop: "12px", lineHeight: 1.6 }}>
-            Explore masterfully sculpted designs crafted with ethical lab-grown diamonds and recycled precious metals.
-          </p>
-        </div>
+        <SectionHeading
+          eyebrow="Atelier Curations"
+          title="Signature Collections"
+          description="Explore masterfully sculpted designs crafted with ethical lab-grown diamonds and recycled precious metals."
+        />
 
         {/* Collection Cards Grid */}
         <div className="categories-balanced-grid">
@@ -104,7 +102,7 @@ export default function CircularCategories() {
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "fill",
+                      objectFit: "cover",
                       objectPosition: "center",
                       transition: "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)"
                     }}

@@ -3,6 +3,7 @@ import { formatPhoneNumber } from "../lib/formatters";
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Award, Sparkles, ShieldCheck } from "lucide-react";
 import atelier from "../assets/atelier.jpg";
+import SectionHeading from "../components/SectionHeading";
 
 export default function AboutPage() {
   const { aboutUs, generalSettings, settingsLoading } = useStore();
@@ -49,22 +50,14 @@ export default function AboutPage() {
     <div>
       {/* 1. Intro Hero Section (Dynamic from Backend) */}
       {hasHero && (
-        <section className="container-luxury" style={{ maxWidth: "860px", padding: "100px 20px 70px", textAlign: "center" }}>
-          {aboutUs?.heroEyebrow && (
-            <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-              {aboutUs.heroEyebrow}
-            </p>
-          )}
-          {aboutUs?.heroTitle && (
-            <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.8rem, 6vw, 4.6rem)", lineHeight: 1.15, marginTop: "16px" }}>
-              {aboutUs.heroTitle}
-            </h1>
-          )}
-          {aboutUs?.heroDescription && (
-            <p style={{ marginTop: "24px", fontSize: "1.05rem", lineHeight: 1.8, color: "var(--muted-foreground)" }}>
-              {aboutUs.heroDescription}
-            </p>
-          )}
+        <section className="container-luxury" style={{ maxWidth: "860px", padding: "100px 20px 70px" }}>
+          <SectionHeading
+            eyebrow={aboutUs.heroEyebrow}
+            title={aboutUs.heroTitle}
+            description={aboutUs.heroDescription}
+            tag="h1"
+            maxWidth="760px"
+          />
         </section>
       )}
 
@@ -194,7 +187,8 @@ export default function AboutPage() {
                     width: "100%",
                     maxHeight: "440px",
                     aspectRatio: "4/3",
-                    objectFit: "fill",
+                    objectFit: "cover",
+                    objectPosition: "center",
                     borderRadius: "4px"
                   }}
                 />

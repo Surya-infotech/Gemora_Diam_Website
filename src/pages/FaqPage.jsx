@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { useStore } from "../lib/store";
+import SectionHeading from "../components/SectionHeading";
 
 function formatTabLabel(type) {
   if (!type) return "General";
@@ -77,24 +78,12 @@ export default function FaqPage() {
   return (
     <div className="container-luxury" style={{ maxWidth: "880px", paddingTop: "60px", paddingBottom: "110px" }}>
       {/* Page Header */}
-      <div style={{ textAlign: "center", marginBottom: "44px" }}>
-        <p className="eyebrow" style={{ color: "var(--gold-deep)", marginBottom: "10px" }}>
-          Help &amp; Support
-        </p>
-        <h1
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(2.3rem, 4.5vw, 3.4rem)",
-            margin: "0 0 14px 0",
-            letterSpacing: "-0.01em"
-          }}
-        >
-          Frequently Asked Questions
-        </h1>
-        <p style={{ color: "#666", fontSize: "0.95rem", maxWidth: "560px", margin: "0 auto" }}>
-          Find quick answers to common questions about our certified lab grown diamonds, custom creations, shipping, and care.
-        </p>
-      </div>
+      <SectionHeading
+        eyebrow="Help & Support"
+        title="Frequently Asked Questions"
+        description="Find quick answers to common questions about our certified lab grown diamonds, custom creations, shipping, and care."
+        tag="h1"
+      />
 
       {loading && faqs.length === 0 ? (
         <div style={{ textAlign: "center", padding: "60px 0", color: "#888" }}>

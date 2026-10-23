@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useStore } from "../../lib/store";
+import SectionHeading from "../SectionHeading";
 
 export default function ShopTheLookSection() {
   const navigate = useNavigate();
@@ -22,36 +23,12 @@ export default function ShopTheLookSection() {
   return (
     <section style={{ padding: "90px 0 100px 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
-        <div style={{ textAlign: "center", maxWidth: "640px", margin: "0 auto 48px auto" }}>
-          <span
-            className="eyebrow"
-            style={{
-              color: "var(--primary)",
-              letterSpacing: "0.26em",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px"
-            }}
-          >
-            <span>✦</span>
-            <span>ATELIER LOOKBOOK</span>
-            <span>✦</span>
-          </span>
-          <h2
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(2.2rem, 4.2vw, 3.2rem)",
-              fontWeight: 400,
-              marginTop: "12px",
-              lineHeight: 1.15
-            }}
-          >
-            Curated Ensembles
-          </h2>
-          <p style={{ fontSize: "0.95rem", color: "var(--muted-foreground)", marginTop: "12px", lineHeight: 1.6 }}>
-            Discover how our master jewelers layer and harmonize timeless solitaire and bridal pieces.
-          </p>
-        </div>
+        {/* Section Header */}
+        <SectionHeading
+          eyebrow="Atelier Lookbook"
+          title="Curated Ensembles"
+          description="Discover how our master jewelers layer and harmonize timeless solitaire and bridal pieces."
+        />
 
         <div
           style={{
@@ -134,7 +111,8 @@ export default function ShopTheLookSection() {
                     width: "50px",
                     height: "50px",
                     borderRadius: "3px",
-                    objectFit: "fill",
+                    objectFit: "cover",
+                    objectPosition: "center",
                     backgroundColor: "#ffffff",
                     border: "1px solid #ECE7DD",
                     flexShrink: 0

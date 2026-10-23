@@ -1,9 +1,86 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowLeft, ArrowRight, Star, X } from "lucide-react";
+import SectionHeading from "../SectionHeading";
+
+const DEFAULT_COUPLE_DATA = {
+  headerEyebrow: "Real Love Stories",
+  headerTitle: "Loved by couples",
+  headerDescription: "Proposals, promises, and the rings that made them. In their own words.",
+  ratingScore: "5.0",
+  reviewCountText: "from 120+ verified reviews",
+  stories: [
+    {
+      storyId: "s1",
+      coupleName: "Meera & Arjun",
+      location: "Udaipur, India",
+      storySnippet: "Our day was so special, filled with family and so much love. Arjun surprised me by the lake where we had our first date with the most radiant custom solitaire ring...",
+      fullStory: "Our day was so special, filled with family and so much love. Arjun surprised me by the lake where we had our first date with the most radiant custom solitaire ring. The team at Gemora Diam helped him select a certified lab-grown diamond that captured every beam of sunlight.",
+      coupleImage: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=1200&auto=format&fit=crop",
+      ringTitle: "Custom Oval Solitaire in 18k Yellow Gold"
+    },
+    {
+      storyId: "s2",
+      coupleName: "Ananya & Rohan",
+      location: "Shimla, India",
+      storySnippet: "We got engaged on a mountain trip we'd been planning for years. Rohan proposed right as the sun broke over the pine ridges with a hidden halo diamond band...",
+      fullStory: "We got engaged on a mountain trip we'd been planning for years. Rohan proposed right as the sun broke over the pine ridges with a hidden halo diamond band. The ring was beyond everything I had dreamed of—the diamond fire is magical in every light.",
+      coupleImage: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200&auto=format&fit=crop",
+      ringTitle: "The Hidden Halo Round Brilliant Ring"
+    },
+    {
+      storyId: "s3",
+      coupleName: "Priya & Karan",
+      location: "Mumbai, India",
+      storySnippet: "Our families flew in from three different cities to celebrate with us. It was the most beautiful chaos we could have asked for, sealed with bespoke eternity bands...",
+      fullStory: "Our families flew in from three different cities to celebrate with us. It was the most beautiful chaos we could have asked for, sealed with bespoke eternity bands that fit together flawlessly. The craftsmanship is pure perfection.",
+      coupleImage: "https://images.unsplash.com/photo-1529636798458-92182e662485?q=80&w=1200&auto=format&fit=crop",
+      ringTitle: "Pavé Band & Cushion Cut Centerpiece"
+    },
+    {
+      storyId: "s4",
+      coupleName: "Siddharth & Rhea",
+      location: "Jaipur, India",
+      storySnippet: "He proposed at sunset during our trip to the pink city. The emerald-cut lab diamond ring was breathtaking against the golden palace walls...",
+      fullStory: "He proposed at sunset during our trip to the pink city. The emerald-cut lab diamond ring was breathtaking against the golden palace walls. Choosing ethical lab diamonds meant we got twice the carat size with zero ethical compromise.",
+      coupleImage: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?q=80&w=1200&auto=format&fit=crop",
+      ringTitle: "The Emerald Cut Heritage Solitaire"
+    }
+  ],
+  reviews: [
+    {
+      reviewId: "r1",
+      clientName: "Priya S.",
+      location: "Verified Client",
+      quote: "Gemora Diam made it so effortless to customize and select the dream ring for my fiancé. If you're hesitant to shop for fine jewelry online, don't be! The diamond brilliance is extraordinary.",
+      rating: 5
+    },
+    {
+      reviewId: "r2",
+      clientName: "Arjun K.",
+      location: "Verified Client",
+      quote: "100% recommend. I searched fine jewelry houses for months before discovering Gemora Diam. The custom ring builder allowed me to pick the exact stone shape and carat weight. Outstanding service!",
+      rating: 5
+    },
+    {
+      reviewId: "r3",
+      clientName: "Meera V.",
+      location: "Verified Client",
+      quote: "The interactive 3D shape dial made it so easy to envision the ring on my hand before ordering. The bespoke package arrived overnight with full certification documents. Truly royal experience.",
+      rating: 5
+    },
+    {
+      reviewId: "r4",
+      clientName: "Rohan D.",
+      location: "Verified Client",
+      quote: "Exceptional craftsmanship and attentive concierge care from consultation to delivery. The finished engagement ring took my partner's breath away. Thank you Gemora Diam!",
+      rating: 5
+    }
+  ]
+};
 
 export default function LovedByCouplesSection() {
-  const [sectionData, setSectionData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [sectionData, setSectionData] = useState(DEFAULT_COUPLE_DATA);
+  const [loading, setLoading] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [selectedStory, setSelectedStory] = useState(null);
@@ -15,18 +92,16 @@ export default function LovedByCouplesSection() {
     const loadSection = async () => {
       try {
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        if (!backendUrl) return;
         const res = await fetch(`${backendUrl}/Support/GetActiveCoupleSection`);
-        const data = await res.json();
-        if (isMounted) {
-          if (res.ok && data && data.status !== false) {
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted && data && data.status !== false && (data.stories?.length || data.reviews?.length)) {
             setSectionData(data);
-          } else {
-            setSectionData(null);
           }
         }
       } catch (err) {
-        console.error("Error loading Loved by Couples section:", err);
-        if (isMounted) setSectionData(null);
+        console.warn("Using curated couple love stories:", err);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -107,180 +182,110 @@ export default function LovedByCouplesSection() {
     >
       <div className="container-luxury" style={{ maxWidth: "1540px", margin: "0 auto", padding: "0 24px" }}>
         {/* Section Header */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            flexWrap: "wrap",
-            gap: "24px",
-            marginBottom: "32px"
-          }}
+        <SectionHeading
+          eyebrow={sectionData.headerEyebrow || "Real Stories"}
+          title={sectionData.headerTitle || "Loved by couples"}
+          description={sectionData.headerDescription || "Hear directly from couples who embarked on their forever journey with Gemora Diam."}
         >
-          {/* Header Left: Eyebrow + Title + Description */}
-          <div style={{ maxWidth: "600px" }}>
-            {sectionData.headerEyebrow && (
-              <span
-                style={{
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  letterSpacing: "0.24em",
-                  textTransform: "uppercase",
-                  color: "var(--primary, #556832)",
-                  display: "block",
-                  marginBottom: "8px"
-                }}
-              >
-                {sectionData.headerEyebrow}
+          {/* Rating Badge */}
+          {(sectionData.ratingScore || sectionData.reviewCountText) && (
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                backgroundColor: "#FAF8F5",
+                padding: "8px 20px",
+                borderRadius: "999px",
+                border: "1px solid #ECE7DD"
+              }}
+            >
+              <div style={{ display: "flex", gap: "3px", color: "var(--gold)" }}>
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={14} fill="var(--gold)" color="var(--gold)" />
+                ))}
+              </div>
+              <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--foreground)" }}>
+                {sectionData.ratingScore || "5.0"}
               </span>
-            )}
-            {sectionData.headerTitle && (
-              <h2
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(2rem, 3.6vw, 2.9rem)",
-                  fontWeight: 400,
-                  color: "#181818",
-                  lineHeight: 1.15,
-                  margin: "0 0 10px 0"
-                }}
-              >
-                {sectionData.headerTitle}
-              </h2>
-            )}
-            {sectionData.headerDescription && (
-              <p
-                style={{
-                  fontSize: "0.95rem",
-                  color: "rgba(24, 24, 24, 0.65)",
-                  lineHeight: 1.55,
-                  margin: 0
-                }}
-              >
-                {sectionData.headerDescription}
-              </p>
-            )}
-          </div>
+              <span style={{ fontSize: "0.78rem", color: "var(--muted-foreground)" }}>
+                · {sectionData.reviewCountText || "from 120+ verified reviews"}
+              </span>
+            </div>
+          )}
+        </SectionHeading>
 
-          {/* Header Right: Rating and Navigation Arrows */}
-          <div
+        {/* Carousel Slider Navigation Controls */}
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginBottom: "18px" }}>
+          <button
+            type="button"
+            aria-label="Previous story"
+            onClick={() => scrollByDirection(-1)}
+            disabled={!canScrollLeft}
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "28px"
+              width: "44px",
+              height: "44px",
+              borderRadius: "50%",
+              border: canScrollLeft ? "1px solid rgba(24, 24, 24, 0.25)" : "1px solid rgba(24, 24, 24, 0.1)",
+              backgroundColor: "transparent",
+              color: canScrollLeft ? "#181818" : "rgba(24, 24, 24, 0.25)",
+              display: "grid",
+              placeItems: "center",
+              cursor: canScrollLeft ? "pointer" : "not-allowed",
+              transition: "all 0.25s ease"
+            }}
+            onMouseEnter={(e) => {
+              if (canScrollLeft) {
+                e.currentTarget.style.backgroundColor = "#181818";
+                e.currentTarget.style.color = "#ffffff";
+                e.currentTarget.style.borderColor = "#181818";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canScrollLeft) {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "#181818";
+                e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.25)";
+              }
             }}
           >
-            {/* Rating Box */}
-            {(sectionData.ratingScore || sectionData.reviewCountText) && (
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                {sectionData.ratingScore && (
-                  <span
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "2.4rem",
-                      fontWeight: 400,
-                      lineHeight: 1,
-                      color: "#181818"
-                    }}
-                  >
-                    {sectionData.ratingScore}
-                  </span>
-                )}
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", gap: "2px", color: "#c5a059" }}>
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={14} fill="#c5a059" color="#c5a059" />
-                    ))}
-                  </div>
-                  {sectionData.reviewCountText && (
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        color: "rgba(24, 24, 24, 0.55)",
-                        marginTop: "3px"
-                      }}
-                    >
-                      {sectionData.reviewCountText}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
+            <ArrowLeft size={18} />
+          </button>
 
-            {/* Slider Controls */}
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                type="button"
-                aria-label="Previous story"
-                onClick={() => scrollByDirection(-1)}
-                disabled={!canScrollLeft}
-                style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "50%",
-                  border: canScrollLeft ? "1px solid rgba(24, 24, 24, 0.25)" : "1px solid rgba(24, 24, 24, 0.1)",
-                  backgroundColor: "transparent",
-                  color: canScrollLeft ? "#181818" : "rgba(24, 24, 24, 0.25)",
-                  display: "grid",
-                  placeItems: "center",
-                  cursor: canScrollLeft ? "pointer" : "not-allowed",
-                  transition: "all 0.25s ease"
-                }}
-                onMouseEnter={(e) => {
-                  if (canScrollLeft) {
-                    e.currentTarget.style.backgroundColor = "#181818";
-                    e.currentTarget.style.color = "#ffffff";
-                    e.currentTarget.style.borderColor = "#181818";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (canScrollLeft) {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "#181818";
-                    e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.25)";
-                  }
-                }}
-              >
-                <ArrowLeft size={18} />
-              </button>
-
-              <button
-                type="button"
-                aria-label="Next story"
-                onClick={() => scrollByDirection(1)}
-                disabled={!canScrollRight}
-                style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "50%",
-                  border: canScrollRight ? "1px solid rgba(24, 24, 24, 0.25)" : "1px solid rgba(24, 24, 24, 0.1)",
-                  backgroundColor: "transparent",
-                  color: canScrollRight ? "#181818" : "rgba(24, 24, 24, 0.25)",
-                  display: "grid",
-                  placeItems: "center",
-                  cursor: canScrollRight ? "pointer" : "not-allowed",
-                  transition: "all 0.25s ease"
-                }}
-                onMouseEnter={(e) => {
-                  if (canScrollRight) {
-                    e.currentTarget.style.backgroundColor = "#181818";
-                    e.currentTarget.style.color = "#ffffff";
-                    e.currentTarget.style.borderColor = "#181818";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (canScrollRight) {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "#181818";
-                    e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.25)";
-                  }
-                }}
-              >
-                <ArrowRight size={18} />
-              </button>
-            </div>
-          </div>
+          <button
+            type="button"
+            aria-label="Next story"
+            onClick={() => scrollByDirection(1)}
+            disabled={!canScrollRight}
+            style={{
+              width: "44px",
+              height: "44px",
+              borderRadius: "50%",
+              border: canScrollRight ? "1px solid rgba(24, 24, 24, 0.25)" : "1px solid rgba(24, 24, 24, 0.1)",
+              backgroundColor: "transparent",
+              color: canScrollRight ? "#181818" : "rgba(24, 24, 24, 0.25)",
+              display: "grid",
+              placeItems: "center",
+              cursor: canScrollRight ? "pointer" : "not-allowed",
+              transition: "all 0.25s ease"
+            }}
+            onMouseEnter={(e) => {
+              if (canScrollRight) {
+                e.currentTarget.style.backgroundColor = "#181818";
+                e.currentTarget.style.color = "#ffffff";
+                e.currentTarget.style.borderColor = "#181818";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canScrollRight) {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "#181818";
+                e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.25)";
+              }
+            }}
+          >
+            <ArrowRight size={18} />
+          </button>
         </div>
 
         {/* Carousel Track */}

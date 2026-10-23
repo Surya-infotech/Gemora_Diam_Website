@@ -2,7 +2,7 @@
   --background: #ffffff;
   --card: #ffffff;
 
-  /* Gemora Diam Botanical Luxury Palette */
+  /* Gemora Diam Botanical Luxury Primary Color (PRESERVED) */
   --primary: #556832;
   --primary-hover: #435226;
   --primary-foreground: #ffffff;
@@ -13,6 +13,17 @@
   --gold: #c5a059;
   --gold-light: #e8d7a7;
   --gold-deep: #9e7d37;
+  --champagne: #c5a059;
+  --champagne-light: #f3e9d2;
+
+  /* Tesora-Inspired Warm Luxury Canvas & Neutrals */
+  --cream: #fcfbf9;
+  --ivory: #f7f3ec;
+  --sand: #ede5d8;
+  --dark-luxury: #151d11;
+  --ink: #181818;
+  --ink-light: #444444;
+  --ink-muted: #6e6e6e;
 
   /* Premium Neutrals & Backgrounds */
   --foreground: #1c2217;
@@ -25,6 +36,7 @@
 
   /* Shadows */
   --shadow-luxury: 0 20px 50px rgba(15, 23, 11, 0.12);
+  --shadow-card: 0 10px 30px rgba(28, 34, 23, 0.06);
 
   /* Typography */
   --font-serif: "Playfair Display", "Cormorant Garamond", Georgia, serif;
@@ -590,3 +602,146 @@ img {
   text-overflow: ellipsis;
   word-break: break-word;
 }
+
+/* ==========================================================
+   Tesora-Inspired Editorial Luxury Utilities & Animations
+   ========================================================== */
+.font-display {
+  font-family: var(--font-serif);
+}
+
+.text-champagne {
+  color: var(--champagne);
+}
+
+.text-ink {
+  color: var(--ink);
+}
+
+.bg-cream {
+  background-color: var(--cream);
+}
+
+.bg-ivory {
+  background-color: var(--ivory);
+}
+
+.bg-sand {
+  background-color: var(--sand);
+}
+
+.bg-dark-luxury {
+  background-color: var(--dark-luxury);
+}
+
+/* Luxury card with fine gold hairline border */
+.luxury-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 16px;
+  background-color: var(--dark-luxury);
+  box-shadow: 0 4px 20px rgba(20, 27, 17, 0.15);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.luxury-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 45px rgba(20, 27, 17, 0.28);
+}
+
+/* Shimmer sweep effect */
+@keyframes shimmerSweep {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(250%) skewX(-15deg); }
+}
+
+.shimmer-sweep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  pointer-events: none;
+}
+
+.luxury-card:hover .shimmer-sweep {
+  animation: shimmerSweep 1.2s ease-out;
+}
+
+/* Modern Pill Button */
+.btn-pill-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--primary);
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: 9999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 4px 14px rgba(85, 104, 50, 0.35);
+  border: 1px solid transparent;
+}
+
+.btn-pill-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 22px rgba(85, 104, 50, 0.45);
+}
+
+.btn-pill-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: transparent;
+  color: var(--ink);
+  padding: 12px 28px;
+  border-radius: 9999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1px solid rgba(24, 24, 24, 0.3);
+}
+
+.btn-pill-secondary:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background-color: var(--primary-soft);
+  transform: translateY(-1.5px);
+}
+
+.btn-pill-ghost-light {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  padding: 12px 28px;
+  border-radius: 9999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.btn-pill-ghost-light:hover {
+  background-color: #ffffff;
+  color: var(--ink);
+  border-color: #ffffff;
+  transform: translateY(-1.5px);
+}
+

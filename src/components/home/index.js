@@ -1,4 +1,5 @@
 export { default as HeroSlider } from "./HeroSlider";
+export { default as ThePromiseAndVowSection } from "./ThePromiseAndVowSection";
 export { default as CircularCategories } from "./CircularCategories";
 export { default as ShopByShapeSection } from "./ShopByShapeSection";
 export { default as BestSellerSection } from "./BestSellerSection";
@@ -7,3 +8,4 @@ export { default as OutlineMarquee } from "./OutlineMarquee";
 export { default as ShopTheLookSection } from "./ShopTheLookSection";
 export { default as JustForYouGallery } from "./JustForYouGallery";
 export { default as LovedByCouplesSection } from "./LovedByCouplesSection";
+export { default as TrustBadgesSection } from "./TrustBadgesSection";
