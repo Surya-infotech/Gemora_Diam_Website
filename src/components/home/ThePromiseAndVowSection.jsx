@@ -41,6 +41,21 @@ export default function ThePromiseAndVowSection() {
   const safeIdx = hasStyles ? Math.min(Math.max(0, activeStyleIdx), styles.length - 1) : 0;
   const activeStyle = hasStyles ? styles[safeIdx] : null;
 
+  // If Super Admin has not entered any content yet, cleanly return null
+  const hasAnyContent = Boolean(
+    data.headerTitle ||
+    data.headerEyebrow ||
+    data.vowsTitle ||
+    data.vowsImage ||
+    data.proposalTitle ||
+    data.proposalImage ||
+    hasStyles
+  );
+
+  if (!hasAnyContent) {
+    return null;
+  }
+
   const prevStyle = () => {
     if (!hasStyles) return;
     setActiveStyleIdx((prev) => (prev === 0 ? styles.length - 1 : prev - 1));
