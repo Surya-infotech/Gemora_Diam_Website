@@ -15,7 +15,9 @@ import {
   CheckCircle2,
   User,
   ShoppingBag,
-  Truck
+  Truck,
+  ShieldCheck,
+  CreditCard
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import { formatPhoneNumber } from "../lib/formatters";
@@ -383,6 +385,7 @@ export default function OrdersPage() {
 
 function OrderRow({ order, onSelect, format }) {
   const { getProduct } = useStore();
+  const [isHovered, setIsHovered] = useState(false);
   const orderNum = order.ordernumber || order.orderid || order.id;
   const orderItems = order.items || [];
   const status = order.orderstatus || order.status || "Confirmed";
@@ -397,6 +400,8 @@ function OrderRow({ order, onSelect, format }) {
   return (
     <div
       onClick={onSelect}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         width: "100%",
         display: "flex",
@@ -404,26 +409,17 @@ function OrderRow({ order, onSelect, format }) {
         justifyContent: "space-between",
         flexWrap: "wrap",
         gap: "24px",
-        border: "1px solid #EDE8DE",
+        border: isHovered ? "1px solid #D8D1C5" : "1px solid #EDE8DE",
         backgroundColor: "#ffffff",
         padding: "22px 28px",
         borderRadius: "14px",
         cursor: "pointer",
         transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.02)"
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "#D8D1C5";
-        e.currentTarget.style.boxShadow = "0 12px 30px rgba(85, 104, 50, 0.07)";
-        e.currentTarget.style.transform = "translateY(-2px)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "#EDE8DE";
-        e.currentTarget.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.02)";
-        e.currentTarget.style.transform = "translateY(0)";
+        boxShadow: isHovered ? "0 12px 30px rgba(85, 104, 50, 0.08)" : "0 2px 10px rgba(0, 0, 0, 0.02)",
+        transform: isHovered ? "translateY(-2px)" : "translateY(0)"
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "20px", flex: "1 1 340px", minWidth: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "20px", flex: "1 1 360px", minWidth: 0 }}>
         {/* Product Preview Stage with Gold/Olive Borders */}
         <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
           {orderItems.slice(0, 3).map((it, idx) => {
@@ -434,7 +430,7 @@ function OrderRow({ order, onSelect, format }) {
                 style={{
                   width: "66px",
                   height: "66px",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   border: "1.5px solid #EDE8DE",
                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
                   backgroundColor: "#FAF9F6",
@@ -445,32 +441,54 @@ function OrderRow({ order, onSelect, format }) {
                   transition: "transform 0.2s ease"
                 }}
               >
-                <img
-                  src={imgSrc}
-                  alt=""
+                {imgSrc ? (
+                  <img
+                    src={imgSrc}
+                    alt=""
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block"
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      if (e.currentTarget.nextSibling) {
+                        e.currentTarget.nextSibling.style.display = "grid";
+                      }
+                    }}
+                  />
+                ) : null}
+                <div
                   style={{
+                    display: imgSrc ? "none" : "grid",
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover"
+                    placeItems: "center",
+                    backgroundColor: "#FAF9F6",
+                    color: "var(--primary)"
                   }}
-                />
+                >
+                  <Sparkles size={20} strokeWidth={1.5} />
+                </div>
               </div>
             );
           })}
           {orderItems.length > 3 && (
             <div
               style={{
-                width: "40px",
-                height: "40px",
+                width: "42px",
+                height: "42px",
                 borderRadius: "50%",
                 backgroundColor: "rgba(85, 104, 50, 0.1)",
                 color: "var(--primary)",
-                fontSize: "0.74rem",
+                fontSize: "0.76rem",
                 fontWeight: 700,
                 display: "grid",
                 placeItems: "center",
                 marginLeft: "-14px",
                 border: "2px solid #ffffff",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
                 zIndex: 0
               }}
             >
@@ -501,7 +519,7 @@ function OrderRow({ order, onSelect, format }) {
             </span>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.82rem", color: "var(--muted-foreground)", marginBottom: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.82rem", color: "var(--muted-foreground)", marginBottom: "5px" }}>
             <Calendar size={13} style={{ color: "var(--primary)" }} />
             <span>Commissioned on {dateFormatted}</span>
             {String(status || "").toLowerCase() === "cancelled" && (order.cancelledat || order.cancelreason) && (
@@ -529,9 +547,9 @@ function OrderRow({ order, onSelect, format }) {
       </div>
 
       {/* Right Column: Price, StatusBadge, Action Button */}
-      <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "22px", flexWrap: "wrap" }}>
         <div style={{ textAlign: "right" }}>
-          <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block" }}>
+          <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--muted-foreground)", display: "block" }}>
             Total Value
           </span>
           <span style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", fontWeight: 700, color: "var(--foreground)" }}>
@@ -546,20 +564,27 @@ function OrderRow({ order, onSelect, format }) {
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: "6px",
-            backgroundColor: "rgba(85, 104, 50, 0.08)",
-            color: "var(--primary)",
-            border: "1px solid rgba(85, 104, 50, 0.25)",
+            gap: "7px",
+            backgroundColor: isHovered ? "var(--primary)" : "rgba(85, 104, 50, 0.08)",
+            color: isHovered ? "#ffffff" : "var(--primary)",
+            border: isHovered ? "1px solid var(--primary)" : "1px solid rgba(85, 104, 50, 0.25)",
             padding: "10px 18px",
             borderRadius: "8px",
             fontWeight: 700,
             fontSize: "0.74rem",
             letterSpacing: "0.1em",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+            transform: isHovered ? "translateX(2px)" : "none"
           }}
         >
           <span>View Dossier</span>
-          <ArrowRight size={13} />
+          <ArrowRight
+            size={13}
+            style={{
+              transform: isHovered ? "translateX(3px)" : "none",
+              transition: "transform 0.2s ease"
+            }}
+          />
         </div>
       </div>
     </div>
@@ -925,27 +950,40 @@ function OrderDetailModal({ order, onClose }) {
       style={{
         position: "fixed",
         inset: 0,
-        backgroundColor: "rgba(20, 24, 14, 0.7)",
-        backdropFilter: "blur(8px)",
+        backgroundColor: "rgba(18, 22, 14, 0.72)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
         zIndex: 9999,
         display: "grid",
         placeItems: "center",
-        padding: "20px"
+        padding: "24px 16px",
+        animation: "modalFadeIn 0.25s ease-out"
       }}
       onClick={onClose}
     >
+      <style>{`
+        @keyframes modalFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes modalSlideUp {
+          from { opacity: 0; transform: translateY(18px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
       <div
         style={{
           width: "100%",
-          maxWidth: "700px",
-          maxHeight: "92vh",
+          maxWidth: "760px",
+          maxHeight: "90vh",
           overflowY: "auto",
-          backgroundColor: "#FAF9F6",
+          backgroundColor: "#ffffff",
           border: "1px solid #EDE8DE",
-          padding: "36px",
+          padding: "36px 40px",
           position: "relative",
-          borderRadius: "6px",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.22)"
+          borderRadius: "16px",
+          boxShadow: "0 28px 70px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(85, 104, 50, 0.04)",
+          animation: "modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -953,104 +991,240 @@ function OrderDetailModal({ order, onClose }) {
           onClick={onClose}
           style={{
             position: "absolute",
-            top: "20px",
-            right: "20px",
-            background: "#ffffff",
+            top: "22px",
+            right: "22px",
+            background: "#FAF9F6",
             border: "1px solid #EDE8DE",
-            width: "34px",
-            height: "34px",
+            width: "36px",
+            height: "36px",
             borderRadius: "50%",
             display: "grid",
             placeItems: "center",
             color: "var(--foreground)",
             cursor: "pointer",
-            transition: "all 0.2s"
+            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.03)"
           }}
           onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(85, 104, 50, 0.1)";
             e.currentTarget.style.borderColor = "var(--primary)";
             e.currentTarget.style.color = "var(--primary)";
+            e.currentTarget.style.transform = "rotate(90deg)";
           }}
           onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "#FAF9F6";
             e.currentTarget.style.borderColor = "#EDE8DE";
             e.currentTarget.style.color = "var(--foreground)";
+            e.currentTarget.style.transform = "rotate(0deg)";
           }}
           aria-label="Close modal"
         >
-          <X size={18} />
+          <X size={17} />
         </button>
 
         {/* Modal Top Header */}
         <div>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
-            <span style={{ width: "5px", height: "5px", borderRadius: "50%", backgroundColor: "var(--gold)" }} />
-            <span className="eyebrow" style={{ color: "var(--gold-deep)" }}>Atelier Dossier • Order Record</span>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+            <div
+              style={{
+                width: "20px",
+                height: "20px",
+                borderRadius: "50%",
+                backgroundColor: "rgba(85, 104, 50, 0.1)",
+                color: "var(--primary)",
+                display: "grid",
+                placeItems: "center"
+              }}
+            >
+              <Sparkles size={11} />
+            </div>
+            <span
+              className="eyebrow"
+              style={{
+                color: "var(--primary)",
+                letterSpacing: "0.2em",
+                fontSize: "0.7rem",
+                fontWeight: 700
+              }}
+            >
+              ATELIER COMMISSION DOSSIER · AUTHENTICATED
+            </span>
           </div>
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", marginTop: "4px" }}>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2.2rem", margin: 0, letterSpacing: "-0.01em" }}>
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginTop: "4px" }}>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "2.3rem",
+                margin: 0,
+                letterSpacing: "-0.01em",
+                color: "var(--foreground)",
+                fontWeight: 600
+              }}
+            >
               Order #{orderNum}
             </h2>
             <StatusBadge s={status} />
           </div>
-          <p style={{ fontSize: "0.84rem", color: "var(--muted-foreground)", marginTop: "6px", margin: 0 }}>
-            Commissioned on {order.createdAt ? new Date(order.createdAt).toLocaleString("en-US", { dateStyle: "long", timeStyle: "short" }) : "Recently"}
-            {order.paymentstatus ? ` · Payment: ${order.paymentstatus}` : ""}
-            {isCancelled && cancelledAtDisplay ? ` · Cancelled: ${cancelledAtDisplay}` : ""}
-          </p>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "18px",
+              flexWrap: "wrap",
+              marginTop: "10px",
+              fontSize: "0.84rem",
+              color: "var(--muted-foreground)"
+            }}
+          >
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              <Calendar size={13} style={{ color: "var(--primary)" }} />
+              <span>Commissioned {order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-US", { dateStyle: "long" }) : "Recently"}</span>
+            </div>
+            {order.paymentstatus && (
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                <CheckCircle2 size={13} style={{ color: "var(--primary)" }} />
+                <span>Payment: <strong style={{ color: "var(--foreground)" }}>{order.paymentstatus}</strong></span>
+              </div>
+            )}
+            {order.paymentmethod && (
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                <CreditCard size={13} style={{ color: "var(--primary)" }} />
+                <span>Via {order.paymentmethod}</span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Stepper Progress Bar (Hidden when order is cancelled) */}
         {!isCancelled ? (
-          <div style={{ marginTop: "32px", padding: "20px", backgroundColor: "#ffffff", borderRadius: "6px", border: "1px solid #EDE8DE" }}>
-            <p className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.68rem", marginBottom: "16px" }}>
-              Courier &amp; Craftsmanship Progress
-            </p>
+          <div
+            style={{
+              marginTop: "28px",
+              padding: "24px 26px",
+              backgroundColor: "#FAF9F6",
+              borderRadius: "14px",
+              border: "1px solid #EDE8DE"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "22px" }}>
+              <span
+                className="eyebrow"
+                style={{
+                  color: "var(--primary)",
+                  letterSpacing: "0.16em",
+                  fontSize: "0.7rem",
+                  fontWeight: 700
+                }}
+              >
+                COURIER &amp; CRAFTSMANSHIP TIMELINE
+              </span>
+              <span
+                style={{
+                  fontSize: "0.72rem",
+                  fontWeight: 700,
+                  color: "var(--primary)",
+                  backgroundColor: "rgba(85, 104, 50, 0.1)",
+                  padding: "3px 10px",
+                  borderRadius: "999px"
+                }}
+              >
+                Phase {currentStepIdx + 1} of {ORDER_STEPS.length}: {ORDER_STEPS[currentStepIdx]}
+              </span>
+            </div>
+
             <div style={{ display: "grid", gridTemplateColumns: `repeat(${ORDER_STEPS.length}, 1fr)`, position: "relative" }}>
-              {/* Horizontal Track line */}
+              {/* Background Track line */}
               <div
                 style={{
                   position: "absolute",
-                  top: "14px",
-                  left: "10%",
-                  right: "10%",
+                  top: "16px",
+                  left: "12%",
+                  right: "12%",
                   height: "2px",
-                  backgroundColor: "#EAE4D7",
+                  backgroundColor: "#EDE8DE",
                   zIndex: 0
                 }}
               />
+              {/* Active Track line */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "16px",
+                  left: "12%",
+                  width: currentStepIdx === 0 ? "0%" : `${(currentStepIdx / (ORDER_STEPS.length - 1)) * 76}%`,
+                  height: "2px",
+                  backgroundColor: "var(--primary)",
+                  zIndex: 0,
+                  transition: "width 0.4s ease"
+                }}
+              />
+
               {ORDER_STEPS.map((step, idx) => {
-                const isPassed = idx <= currentStepIdx;
+                const isPassed = idx < currentStepIdx;
+                const isCurrent = idx === currentStepIdx;
+                const isCompletedOrCurrent = idx <= currentStepIdx;
+
+                const stepDescriptions = [
+                  "Atelier Logged",
+                  "Master Setting",
+                  "Insured Transit",
+                  "Hand Delivered"
+                ];
+
                 return (
-                  <div key={step} style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+                  <div key={step} style={{ textAlign: "center", position: "relative", zIndex: 1, padding: "0 4px" }}>
                     <div
                       style={{
-                        width: "28px",
-                        height: "28px",
+                        width: "34px",
+                        height: "34px",
                         borderRadius: "50%",
                         border: "2px solid",
-                        borderColor: isPassed ? "var(--primary)" : "#EAE4D7",
-                        backgroundColor: isPassed ? "var(--primary)" : "#ffffff",
-                        color: isPassed ? "#ffffff" : "var(--muted-foreground)",
+                        borderColor: isCompletedOrCurrent ? "var(--primary)" : "#D8D1C5",
+                        backgroundColor: isCompletedOrCurrent ? "var(--primary)" : "#ffffff",
+                        color: isCompletedOrCurrent ? "#ffffff" : "var(--muted-foreground)",
                         margin: "0 auto 8px",
                         display: "grid",
                         placeItems: "center",
-                        fontSize: "0.75rem",
+                        fontSize: "0.78rem",
                         fontWeight: 700,
-                        boxShadow: isPassed ? "0 2px 8px rgba(85, 104, 50, 0.3)" : "none",
+                        boxShadow: isCurrent
+                          ? "0 0 0 5px rgba(85, 104, 50, 0.16)"
+                          : isPassed
+                          ? "0 2px 8px rgba(85, 104, 50, 0.25)"
+                          : "none",
                         transition: "all 0.3s ease"
                       }}
                     >
-                      {isPassed ? <Check size={14} strokeWidth={2.4} /> : idx + 1}
+                      {isPassed ? (
+                        <Check size={16} strokeWidth={2.6} />
+                      ) : isCurrent ? (
+                        <Clock size={16} strokeWidth={2.4} />
+                      ) : (
+                        idx + 1
+                      )}
                     </div>
-                    <span
+                    <div
                       style={{
-                        fontSize: "0.76rem",
-                        fontWeight: isPassed ? 600 : 400,
-                        color: isPassed ? "var(--foreground)" : "var(--muted-foreground)",
-                        letterSpacing: "0.02em"
+                        fontSize: "0.82rem",
+                        fontWeight: isCurrent ? 700 : isPassed ? 600 : 500,
+                        color: isCompletedOrCurrent ? "var(--foreground)" : "var(--muted-foreground)",
+                        letterSpacing: "0.01em"
                       }}
                     >
                       {step}
-                    </span>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.7rem",
+                        color: isCurrent ? "var(--primary)" : "var(--muted-foreground)",
+                        marginTop: "2px",
+                        fontWeight: isCurrent ? 600 : 400
+                      }}
+                    >
+                      {stepDescriptions[idx]}
+                    </div>
                   </div>
                 );
               })}
@@ -1060,18 +1234,18 @@ function OrderDetailModal({ order, onClose }) {
           /* Order Cancellation Details Notice */
           <div
             style={{
-              marginTop: "28px",
+              marginTop: "24px",
               backgroundColor: "#FFF8F8",
               border: "1px solid #F5C6CB",
-              borderRadius: "6px",
+              borderRadius: "14px",
               padding: "20px 24px"
             }}
           >
             <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
               <div
                 style={{
-                  width: "36px",
-                  height: "36px",
+                  width: "38px",
+                  height: "38px",
                   borderRadius: "50%",
                   backgroundColor: "#FEE2E2",
                   border: "1px solid #FECACA",
@@ -1081,7 +1255,7 @@ function OrderDetailModal({ order, onClose }) {
                   flexShrink: 0
                 }}
               >
-                <AlertCircle size={18} strokeWidth={2.2} />
+                <AlertCircle size={20} strokeWidth={2.2} />
               </div>
 
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -1095,7 +1269,7 @@ function OrderDetailModal({ order, onClose }) {
                       margin: 0
                     }}
                   >
-                    Order Cancelled
+                    Commission Cancelled
                   </h3>
                   {cancelledAtDisplay && (
                     <span style={{ fontSize: "0.78rem", color: "#B91C1C", fontWeight: 500 }}>
@@ -1120,51 +1294,176 @@ function OrderDetailModal({ order, onClose }) {
           </div>
         )}
 
-        {/* Delivery Destination */}
-        {shippingAddr && (
+        {/* Dual Cards: Delivery Destination + Atelier Guarantees */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "16px",
+            marginTop: "20px"
+          }}
+        >
+          {/* Delivery Destination */}
+          {shippingAddr ? (
+            <div
+              style={{
+                padding: "18px 20px",
+                borderRadius: "14px",
+                backgroundColor: "#FAF9F6",
+                border: "1px solid #EDE8DE"
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                <div
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(85, 104, 50, 0.1)",
+                    display: "grid",
+                    placeItems: "center",
+                    color: "var(--primary)"
+                  }}
+                >
+                  <MapPin size={15} />
+                </div>
+                <span
+                  className="eyebrow"
+                  style={{
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.12em",
+                    color: "var(--foreground)"
+                  }}
+                >
+                  DELIVERY DESTINATION ({shippingAddr.title || "PRIMARY"})
+                </span>
+              </div>
+              <p style={{ fontSize: "0.88rem", color: "var(--foreground)", fontWeight: 600, margin: "0 0 4px 0" }}>
+                {shippingAddr.name || order.customername || "Valued Patron"}
+              </p>
+              <p style={{ color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5, fontSize: "0.84rem" }}>
+                {[shippingAddr.address, shippingAddr.cityname, shippingAddr.statename, shippingAddr.countryname].filter(Boolean).join(", ")}
+                {shippingAddr.pincode ? ` - ${shippingAddr.pincode}` : ""}
+              </p>
+              {(order.customerphone || shippingAddr.phone) && (
+                <p style={{ color: "var(--muted-foreground)", margin: "8px 0 0 0", fontSize: "0.82rem" }}>
+                  Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(order.customerphone || shippingAddr.phone)}</strong>
+                </p>
+              )}
+            </div>
+          ) : (
+            <div
+              style={{
+                padding: "18px 20px",
+                borderRadius: "14px",
+                backgroundColor: "#FAF9F6",
+                border: "1px solid #EDE8DE"
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                <MapPin size={16} style={{ color: "var(--primary)" }} />
+                <span className="eyebrow" style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em" }}>
+                  DELIVERY DESTINATION
+                </span>
+              </div>
+              <p style={{ color: "var(--muted-foreground)", fontSize: "0.84rem", margin: 0 }}>
+                Digital order confirmation or boutique atelier pickup.
+              </p>
+            </div>
+          )}
+
+          {/* Atelier Guarantees Card */}
           <div
             style={{
-              marginTop: "20px",
-              padding: "16px 20px",
-              borderRadius: "4px",
-              backgroundColor: "#ffffff",
+              padding: "18px 20px",
+              borderRadius: "14px",
+              backgroundColor: "#FAF9F6",
               border: "1px solid #EDE8DE",
-              fontSize: "0.86rem"
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between"
             }}
           >
-            <p style={{ fontWeight: 600, color: "var(--foreground)", display: "flex", alignItems: "center", gap: "8px", margin: "0 0 6px 0" }}>
-              <MapPin size={16} style={{ color: "var(--primary)" }} /> Delivery Destination ({shippingAddr.title || "Primary"})
-            </p>
-            <p style={{ color: "var(--muted-foreground)", margin: 0, lineHeight: 1.6 }}>
-              {shippingAddr.address}, {shippingAddr.cityname}, {shippingAddr.statename}, {shippingAddr.countryname} - {shippingAddr.pincode}
-            </p>
-            {(order.customerphone || shippingAddr.phone) && (
-              <p style={{ color: "var(--muted-foreground)", margin: "4px 0 0 0", fontSize: "0.82rem" }}>
-                Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(order.customerphone || shippingAddr.phone)}</strong>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                <div
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(85, 104, 50, 0.1)",
+                    display: "grid",
+                    placeItems: "center",
+                    color: "var(--primary)"
+                  }}
+                >
+                  <ShieldCheck size={15} />
+                </div>
+                <span
+                  className="eyebrow"
+                  style={{
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.12em",
+                    color: "var(--foreground)"
+                  }}
+                >
+                  MAISON PRIVÉE GUARANTEE
+                </span>
+              </div>
+              <p style={{ fontSize: "0.84rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
+                Complimentary insured courier delivery with discreet tamper-evident packaging and certified appraisal authenticity certificate.
               </p>
-            )}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "12px", fontSize: "0.76rem", color: "var(--primary)", fontWeight: 600 }}>
+              <Sparkles size={13} />
+              <span>Lifetime Atelier Craftsmanship Guarantee</span>
+            </div>
           </div>
-        )}
+        </div>
 
         {/* Ordered Item List */}
-        <div style={{ marginTop: "24px", backgroundColor: "#ffffff", borderRadius: "6px", border: "1px solid #EDE8DE", padding: "20px" }}>
-          <p className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem", marginBottom: "14px" }}>
-            Commissioned Creations ({orderItems.length})
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div
+          style={{
+            marginTop: "24px",
+            backgroundColor: "#ffffff",
+            borderRadius: "14px",
+            border: "1px solid #EDE8DE",
+            padding: "24px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.02)"
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", paddingBottom: "12px", borderBottom: "1px solid #EDE8DE" }}>
+            <span
+              className="eyebrow"
+              style={{
+                color: "var(--primary)",
+                letterSpacing: "0.16em",
+                fontSize: "0.72rem",
+                fontWeight: 700
+              }}
+            >
+              COMMISSIONED CREATIONS ({orderItems.length})
+            </span>
+            <span style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", fontWeight: 500 }}>
+              {orderItems.reduce((acc, it) => acc + (it.qty || 1), 0)} Total {orderItems.reduce((acc, it) => acc + (it.qty || 1), 0) === 1 ? "Piece" : "Pieces"}
+            </span>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
             {orderItems.map((it, idx) => {
               const imgSrc = it.image || getProduct(it.itemid || it.productId)?.image;
-              const specs = [
-                it.metalname,
-                it.stonename,
-                it.diamondsize,
-                it.shapename,
-                it.clarityname,
-                it.diamondcolor ? `Dia: ${it.diamondcolor}` : "",
-                it.bandcolor ? `Band: ${it.bandcolor}` : ""
-              ]
-                .filter(Boolean)
-                .join(" • ");
+              const specsList = [
+                it.metalname && { label: "Metal", val: it.metalname },
+                it.diamondsize && { label: "Carat", val: it.diamondsize },
+                it.shapename && { label: "Shape", val: it.shapename },
+                it.clarityname && { label: "Clarity", val: it.clarityname },
+                it.stonename && { label: "Stone", val: it.stonename },
+                it.size && { label: "Size", val: it.size },
+                it.diamondcolor && { label: "Color", val: it.diamondcolor },
+                it.bandcolor && { label: "Band", val: it.bandcolor }
+              ].filter(Boolean);
 
               return (
                 <div
@@ -1172,55 +1471,134 @@ function OrderDetailModal({ order, onClose }) {
                   style={{
                     display: "flex",
                     alignItems: "flex-start",
-                    gap: "16px",
-                    paddingBottom: idx < orderItems.length - 1 ? "16px" : "0",
-                    borderBottom: idx < orderItems.length - 1 ? "1px solid #F2EEE6" : "none"
+                    gap: "18px",
+                    paddingBottom: idx < orderItems.length - 1 ? "18px" : "0",
+                    borderBottom: idx < orderItems.length - 1 ? "1px solid #F4F1EA" : "none"
                   }}
                 >
-                  <img
-                    src={imgSrc}
-                    alt={it.itemname}
+                  {/* Image Frame */}
+                  <div
                     style={{
-                      width: "68px",
-                      height: "68px",
-                      objectFit: "cover",
-                      borderRadius: "3px",
+                      width: "74px",
+                      height: "74px",
+                      borderRadius: "10px",
+                      border: "1.5px solid #EDE8DE",
                       backgroundColor: "#FAF9F6",
-                      border: "1px solid #EDE8DE",
-                      flexShrink: 0
+                      overflow: "hidden",
+                      flexShrink: 0,
+                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)"
                     }}
-                  />
-                  <div style={{ flex: 1, fontSize: "0.88rem" }}>
-                    <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.05rem", fontWeight: 600, margin: 0, color: "var(--foreground)" }}>
-                      {it.itemname || "Fine Jewelry Piece"}
-                    </p>
-                    {specs && (
-                      <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", margin: "4px 0 0 0" }}>
-                        {specs} · Qty {it.qty || 1}
-                      </p>
+                  >
+                    {imgSrc ? (
+                      <img
+                        src={imgSrc}
+                        alt={it.itemname}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block"
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          if (e.currentTarget.nextSibling) {
+                            e.currentTarget.nextSibling.style.display = "grid";
+                          }
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      style={{
+                        display: imgSrc ? "none" : "grid",
+                        width: "100%",
+                        height: "100%",
+                        placeItems: "center",
+                        color: "var(--primary)"
+                      }}
+                    >
+                      <Sparkles size={24} strokeWidth={1.5} />
+                    </div>
+                  </div>
+
+                  {/* Details */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
+                      <div>
+                        <h4
+                          style={{
+                            fontFamily: "var(--font-serif)",
+                            fontSize: "1.15rem",
+                            fontWeight: 600,
+                            margin: 0,
+                            color: "var(--foreground)"
+                          }}
+                        >
+                          {it.itemname || "Fine Jewelry Piece"}
+                        </h4>
+                        <div style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "2px" }}>
+                          Quantity: <strong style={{ color: "var(--foreground)" }}>{it.qty || 1}</strong>
+                          {it.qty > 1 && ` · ${formatPrice(it.price)} each`}
+                        </div>
+                      </div>
+
+                      <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                        <span
+                          style={{
+                            fontFamily: "var(--font-serif)",
+                            fontSize: "1.15rem",
+                            fontWeight: 700,
+                            color: "var(--foreground)"
+                          }}
+                        >
+                          {formatPrice(it.totalprice || (it.price * (it.qty || 1)))}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Spec tags */}
+                    {specsList.length > 0 && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px" }}>
+                        {specsList.map((spec, sIdx) => (
+                          <span
+                            key={sIdx}
+                            style={{
+                              fontSize: "0.72rem",
+                              fontWeight: 500,
+                              padding: "2px 8px",
+                              borderRadius: "6px",
+                              backgroundColor: "#FAF9F6",
+                              border: "1px solid #EDE8DE",
+                              color: "#4A463F"
+                            }}
+                          >
+                            <span style={{ color: "var(--muted-foreground)", marginRight: "4px" }}>{spec.label}:</span>
+                            {spec.val}
+                          </span>
+                        ))}
+                      </div>
                     )}
+
+                    {/* Bespoke instruction */}
                     {it.specialinstruction && (
-                      <p
+                      <div
                         style={{
                           fontSize: "0.78rem",
                           color: "var(--primary)",
-                          margin: "6px 0 0 0",
-                          fontStyle: "italic",
+                          marginTop: "10px",
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "6px",
-                          backgroundColor: "var(--primary-soft)",
-                          padding: "3px 8px",
-                          borderRadius: "2px"
+                          backgroundColor: "rgba(85, 104, 50, 0.08)",
+                          border: "1px solid rgba(85, 104, 50, 0.2)",
+                          padding: "4px 10px",
+                          borderRadius: "6px"
                         }}
                       >
-                        <Sparkles size={12} /> Note: "{it.specialinstruction}"
-                      </p>
+                        <Sparkles size={12} />
+                        <span>Bespoke Engraving / Note: "{it.specialinstruction}"</span>
+                      </div>
                     )}
                   </div>
-                  <span style={{ fontSize: "1rem", fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap" }}>
-                    {format(it.totalprice || (it.price * (it.qty || 1)))}
-                  </span>
                 </div>
               );
             })}
@@ -1231,25 +1609,45 @@ function OrderDetailModal({ order, onClose }) {
         <div
           style={{
             marginTop: "24px",
-            paddingTop: "20px",
+            paddingTop: "24px",
             borderTop: "1px solid #EDE8DE",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            gap: "16px"
+            gap: "20px"
           }}
         >
           <div>
-            <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block" }}>
-              Total Order Investment
+            <span
+              className="eyebrow"
+              style={{
+                fontSize: "0.7rem",
+                color: "var(--muted-foreground)",
+                letterSpacing: "0.14em",
+                display: "block",
+                marginBottom: "2px"
+              }}
+            >
+              TOTAL COMMISSION INVESTMENT
             </span>
-            <span style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", fontWeight: 700, color: "var(--foreground)" }}>
-              {format(order.total)}
+            <span
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "2.2rem",
+                fontWeight: 700,
+                color: "var(--foreground)",
+                letterSpacing: "-0.01em"
+              }}
+            >
+              {formatPrice(order.total)}
             </span>
+            <div style={{ fontSize: "0.74rem", color: "var(--muted-foreground)", marginTop: "2px" }}>
+              All taxes &amp; complimentary insured courier included
+            </div>
           </div>
 
-          {String(status || "").toLowerCase() === "delivered" && (
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
             <button
               onClick={handleDownloadInvoice}
               disabled={downloadingInvoice}
@@ -1257,43 +1655,48 @@ function OrderDetailModal({ order, onClose }) {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "8px",
-                border: "1px solid var(--primary)",
+                gap: "9px",
                 backgroundColor: downloadingInvoice ? "#839463" : "var(--primary)",
                 color: "#ffffff",
-                padding: "12px 24px",
+                border: "none",
+                padding: "13px 26px",
                 cursor: downloadingInvoice ? "not-allowed" : "pointer",
-                borderRadius: "2px",
-                fontWeight: 600,
+                borderRadius: "8px",
+                fontWeight: 700,
                 letterSpacing: "0.12em",
+                fontSize: "0.76rem",
                 transition: "all 0.2s ease",
-                boxShadow: "0 4px 14px rgba(85, 104, 50, 0.2)",
+                boxShadow: "0 4px 16px rgba(85, 104, 50, 0.25)",
                 opacity: downloadingInvoice ? 0.85 : 1
               }}
               onMouseEnter={(e) => {
                 if (!downloadingInvoice) {
                   e.currentTarget.style.backgroundColor = "var(--primary-hover)";
-                  e.currentTarget.style.borderColor = "var(--primary-hover)";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(85, 104, 50, 0.35)";
                 }
               }}
               onMouseLeave={(e) => {
                 if (!downloadingInvoice) {
                   e.currentTarget.style.backgroundColor = "var(--primary)";
-                  e.currentTarget.style.borderColor = "var(--primary)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(85, 104, 50, 0.25)";
                 }
               }}
             >
               {downloadingInvoice ? (
                 <>
-                  <Loader2 size={15} style={{ animation: "spin 1s linear infinite" }} /> Generating Invoice PDF...
+                  <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} />
+                  <span>Generating Invoice PDF...</span>
                 </>
               ) : (
                 <>
-                  <Download size={15} /> Download Official Invoice
+                  <Download size={16} />
+                  <span>Download Official Invoice</span>
                 </>
               )}
             </button>
-          )}
+          </div>
         </div>
       </div>
     </div>
