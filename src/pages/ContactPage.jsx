@@ -1,21 +1,42 @@
 import { useState } from "react";
-import { MapPin, Clock, Phone, Mail, MessageCircle, CalendarDays, X } from "lucide-react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  MessageCircle,
+  ArrowRight,
+  Sparkles,
+  ShieldCheck,
+  Gem,
+  CheckCircle2
+} from "lucide-react";
 import { useStore } from "../lib/store";
+import { formatPhoneNumber } from "../lib/formatters";
+import atelier from "../assets/atelier.jpg";
 
 const validate = (f) => ({
   name: f.name.trim().length < 2 ? "Please enter your full name" : "",
   email: !/^\S+@\S+\.\S+$/.test(f.email) ? "Enter a valid email address" : "",
   phone: f.phone && !/^[+\d\s()-]{7,20}$/.test(f.phone) ? "Enter a valid phone number" : "",
-  message: f.message.trim().length < 10 ? "Message must be at least 10 characters" : "",
+  message: f.message.trim().length < 10 ? "Please share at least a few details (min 10 characters)" : "",
 });
+
+const INQUIRY_TOPICS = [
+  { id: "bespoke", label: "✦ Bespoke Commission", hint: "Custom ring, heirloom redesign, or private bridal set" },
+  { id: "diamond", label: "✦ Diamond Consultation", hint: "Carat, cut grading, certification & stone selection" },
+  { id: "appointment", label: "✦ Salon Appointment", hint: "Reserve private viewing in our flagship salon" },
+  { id: "general", label: "✦ General Inquiry", hint: "Shipping, dossier tracking, or atelier inquiries" }
+];
 
 export default function ContactPage() {
   const { showToast, generalSettings, submitContactUs } = useStore();
+  const [selectedTopic, setSelectedTopic] = useState("bespoke");
   const [f, setF] = useState({ name: "", email: "", phone: "", message: "" });
   const [touched, setTouched] = useState({});
-  const [bookModalOpen, setBookModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedSuccess, setSubmittedSuccess] = useState(false);
 
+  const brandName = generalSettings?.softwarename || "Gemora Diam";
   const errs = validate(f);
 
   const onFieldChange = (key, val) => {
@@ -27,464 +48,783 @@ export default function ContactPage() {
     e.preventDefault();
     setTouched({ name: true, email: true, phone: true, message: true });
     if (Object.values(errs).some(Boolean)) {
-      showToast("Please correct highlighted fields before submitting", "error");
+      showToast("Please review the highlighted fields", "error");
       return;
     }
     setIsSubmitting(true);
-    const fullMessage = `${f.phone ? `Phone: ${f.phone} - ` : ""}${f.message}`;
+    const activeTopic = INQUIRY_TOPICS.find((t) => t.id === selectedTopic)?.label || "Bespoke Commission";
+    const fullMessage = `[Topic: ${activeTopic}] ${f.phone ? `[Phone: ${f.phone}] ` : ""}${f.message}`;
     const res = await submitContactUs({
       name: f.name,
       email: f.email,
       message: fullMessage
     });
     setIsSubmitting(false);
-    if (res.success) {
+    if (res?.success) {
+      setSubmittedSuccess(true);
       setF({ name: "", email: "", phone: "", message: "" });
       setTouched({});
+      setTimeout(() => setSubmittedSuccess(false), 7000);
     }
   };
 
+  const addressString = [
+    generalSettings?.address,
+    generalSettings?.cityname,
+    generalSettings?.statename,
+    generalSettings?.countryname
+  ].filter(Boolean).join(", ") + (generalSettings?.postalcode ? ` - ${generalSettings.postalcode}` : "");
 
   return (
-    <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
-      <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Client Concierge</p>
-      <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.8rem, 5vw, 4.2rem)", marginTop: "12px", lineHeight: 1.15 }}>
-        We're at your service
-      </h1>
+    <div style={{ backgroundColor: "#FAF9F6", color: "var(--foreground)", minHeight: "100vh" }}>
+      {/* High-Jewelry Page CSS */}
+      <style>{`
+        .contact-input-field {
+          width: 100%;
+          border: 1px solid #E5DFD5;
+          background-color: #FFFFFF;
+          border-radius: 10px;
+          padding: 13px 16px;
+          font-size: 0.90rem;
+          color: var(--foreground);
+          outline: none;
+          font-family: var(--font-sans);
+          transition: all 0.25s ease;
+        }
+        .contact-input-field:focus {
+          border-color: var(--gold);
+          box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.16);
+          background-color: #FFFFFF;
+        }
+        .contact-input-field::placeholder {
+          color: #A3A89E;
+        }
+        .contact-topic-pill {
+          padding: 8px 14px;
+          border-radius: 30px;
+          font-size: 0.76rem;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          cursor: pointer;
+          border: 1px solid #E2DCD1;
+          background-color: #FFFFFF;
+          color: var(--foreground);
+          transition: all 0.2s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .contact-topic-pill:hover {
+          border-color: var(--primary);
+          color: var(--primary);
+        }
+        .contact-topic-pill.active {
+          background-color: var(--primary);
+          border-color: var(--primary);
+          color: #FFFFFF;
+          box-shadow: 0 4px 12px rgba(85, 104, 50, 0.25);
+        }
+        .contact-vip-card {
+          background-color: #FFFFFF;
+          border: 1px solid #EBE5DB;
+          border-radius: 12px;
+          padding: 20px 14px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          text-decoration: none;
+          color: var(--foreground);
+          transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .contact-vip-card:hover {
+          border-color: var(--gold);
+          transform: translateY(-3px);
+          box-shadow: 0 10px 24px rgba(28, 34, 23, 0.08);
+        }
+        .contact-trust-card {
+          background-color: #FFFFFF;
+          border: 1px solid #EBE5DB;
+          border-radius: 14px;
+          padding: 24px 22px;
+          display: flex;
+          align-items: flex-start;
+          gap: 16px;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+          transition: transform 0.25s ease;
+        }
+        .contact-trust-card:hover {
+          transform: translateY(-2px);
+          border-color: var(--gold);
+        }
+      `}</style>
 
+      {/* Hero Header Section */}
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
-          gap: "clamp(28px, 4vw, 60px)",
-          marginTop: "50px",
-          alignItems: "start"
+          borderBottom: "1px solid #ECE7DE",
+          backgroundColor: "#FFFFFF",
+          padding: "clamp(48px, 6vw, 76px) 0 clamp(36px, 5vw, 56px) 0"
         }}
       >
-        {/* Left Form */}
-        <form noValidate onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
-            <div>
-              <input
-                type="text"
-                placeholder="Full name *"
-                value={f.name}
-                onChange={(e) => onFieldChange("name", e.target.value)}
-                onBlur={() => setTouched((p) => ({ ...p, name: true }))}
-                style={{
-                  width: "100%",
-                  border: "none",
-                  borderBottom: touched.name && errs.name ? "1px solid #d9534f" : "1px solid var(--border)",
-                  backgroundColor: "transparent",
-                  padding: "12px 0",
-                  fontSize: "0.95rem",
-                  color: "var(--foreground)",
-                  outline: "none"
-                }}
-              />
-              {touched.name && errs.name && (
-                <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "6px" }}>{errs.name}</p>
-              )}
-            </div>
-
-            <div>
-              <input
-                type="email"
-                placeholder="Email *"
-                value={f.email}
-                onChange={(e) => onFieldChange("email", e.target.value)}
-                onBlur={() => setTouched((p) => ({ ...p, email: true }))}
-                style={{
-                  width: "100%",
-                  border: "none",
-                  borderBottom: touched.email && errs.email ? "1px solid #d9534f" : "1px solid var(--border)",
-                  backgroundColor: "transparent",
-                  padding: "12px 0",
-                  fontSize: "0.95rem",
-                  color: "var(--foreground)",
-                  outline: "none"
-                }}
-              />
-              {touched.email && errs.email && (
-                <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "6px" }}>{errs.email}</p>
-              )}
-            </div>
-
-            <div>
-              <input
-                type="tel"
-                placeholder="Phone (optional)"
-                value={f.phone}
-                onChange={(e) => onFieldChange("phone", e.target.value)}
-                onBlur={() => setTouched((p) => ({ ...p, phone: true }))}
-                style={{
-                  width: "100%",
-                  border: "none",
-                  borderBottom: touched.phone && errs.phone ? "1px solid #d9534f" : "1px solid var(--border)",
-                  backgroundColor: "transparent",
-                  padding: "12px 0",
-                  fontSize: "0.95rem",
-                  color: "var(--foreground)",
-                  outline: "none"
-                }}
-              />
-              {touched.phone && errs.phone && (
-                <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "6px" }}>{errs.phone}</p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <textarea
-              rows={5}
-              placeholder="Your message *"
-              value={f.message}
-              onChange={(e) => onFieldChange("message", e.target.value)}
-              onBlur={() => setTouched((p) => ({ ...p, message: true }))}
-              style={{
-                width: "100%",
-                border: "none",
-                borderBottom: touched.message && errs.message ? "1px solid #d9534f" : "1px solid var(--border)",
-                backgroundColor: "transparent",
-                padding: "12px 0",
-                fontSize: "0.95rem",
-                color: "var(--foreground)",
-                outline: "none",
-                resize: "vertical",
-                fontFamily: "inherit"
-              }}
-            />
-            {touched.message && errs.message && (
-              <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "6px" }}>{errs.message}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="eyebrow"
+        <div className="container-luxury" style={{ maxWidth: "1240px", textAlign: "center" }}>
+          <div
             style={{
-              alignSelf: "flex-start",
-              backgroundColor: "var(--primary)",
-              color: "var(--primary-foreground)",
-              padding: "16px 36px",
-              border: "none",
-              cursor: isSubmitting ? "not-allowed" : "pointer",
-              opacity: isSubmitting ? 0.7 : 1,
-              transition: "opacity 0.2s ease"
-            }}
-            onMouseEnter={(e) => {
-              if (!isSubmitting) e.currentTarget.style.opacity = "0.9";
-            }}
-            onMouseLeave={(e) => {
-              if (!isSubmitting) e.currentTarget.style.opacity = "1";
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "6px 16px",
+              borderRadius: "30px",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
+              border: "1px solid rgba(85, 104, 50, 0.2)",
+              marginBottom: "16px"
             }}
           >
-            {isSubmitting ? "Sending..." : "Send Message"}
-          </button>
-        </form>
-
-        {/* Right Info Aside */}
-        <aside style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-          {/* Atelier / Flagship Card */}
-          <div style={{ border: "1px solid var(--border)", backgroundColor: "var(--card)", padding: "32px", borderRadius: "2px" }}>
-            <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-              {generalSettings?.cityname ? `${generalSettings.cityname} Flagship Store` : "Flagship Store & Showroom"}
-            </p>
-            {generalSettings?.address && (
-              <p style={{ display: "flex", gap: "12px", alignItems: "flex-start", marginTop: "18px", fontSize: "0.92rem", color: "var(--foreground)" }}>
-                <MapPin size={18} style={{ color: "var(--gold-deep)", flexShrink: 0, marginTop: "2px" }} />
-                <span>
-                  {[generalSettings.address, generalSettings.cityname, generalSettings.statename, generalSettings.countryname].filter(Boolean).join(", ")}
-                  {generalSettings.postalcode ? ` - ${generalSettings.postalcode}` : ""}
-                </span>
-              </p>
-            )}
-            <p style={{ display: "flex", gap: "12px", alignItems: "flex-start", marginTop: "12px", fontSize: "0.92rem", color: "var(--foreground)" }}>
-              <Clock size={18} style={{ color: "var(--gold-deep)", flexShrink: 0, marginTop: "2px" }} />
-              <span>Mon – Sat 10:00 – 19:00 · Sun by private appointment</span>
-            </p>
-
-            <button
-              onClick={() => setBookModalOpen(true)}
+            <Sparkles size={14} style={{ color: "var(--primary)" }} />
+            <span
               className="eyebrow"
               style={{
-                width: "100%",
-                marginTop: "24px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                backgroundColor: "var(--gold)",
-                color: "#1c2211",
-                padding: "14px",
-                border: "none",
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "opacity 0.2s ease"
+                color: "var(--primary)",
+                fontSize: "0.72rem",
+                fontWeight: 700,
+                letterSpacing: "0.20em"
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.92")}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
             >
-              <CalendarDays size={18} />
-              Book a Store Appointment
-            </button>
+              MAISON PRIVÉE CONCIERGE · BESPOKE SALON
+            </span>
           </div>
 
+          <h1
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(2.6rem, 5vw, 4.2rem)",
+              fontWeight: 400,
+              lineHeight: 1.15,
+              color: "var(--foreground)",
+              margin: "0 auto",
+              letterSpacing: "-0.01em"
+            }}
+          >
+            We're at your service
+          </h1>
 
-
-          {/* Quick Communication Channels */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
-            {generalSettings?.phone && (
-              <a
-                href={`https://wa.me/${generalSettings.phone.replace(/[^0-9]/g, "")}`}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "8px",
-                  border: "1px solid var(--border)",
-                  padding: "16px 8px",
-                  fontSize: "0.75rem",
-                  color: "var(--foreground)",
-                  textAlign: "center",
-                  transition: "border-color 0.2s ease"
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--gold)")}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
-              >
-                <MessageCircle size={20} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
-                <span>WhatsApp</span>
-              </a>
-            )}
-
-            {generalSettings?.phone && (
-              <a
-                href={`tel:${generalSettings.phone.replace(/\s+/g, "")}`}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "8px",
-                  border: "1px solid var(--border)",
-                  padding: "16px 8px",
-                  fontSize: "0.75rem",
-                  color: "var(--foreground)",
-                  textAlign: "center",
-                  transition: "border-color 0.2s ease"
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--gold)")}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
-              >
-                <Phone size={20} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
-                <span>VIP Line</span>
-              </a>
-            )}
-
-            {generalSettings?.email && (
-              <a
-                href={`mailto:${generalSettings.email}`}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "8px",
-                  border: "1px solid var(--border)",
-                  padding: "16px 8px",
-                  fontSize: "0.75rem",
-                  color: "var(--foreground)",
-                  textAlign: "center",
-                  transition: "border-color 0.2s ease"
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--gold)")}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
-              >
-                <Mail size={20} style={{ color: "var(--gold-deep)" }} strokeWidth={1.3} />
-                <span>Email</span>
-              </a>
-            )}
-          </div>
-        </aside>
+          <p
+            style={{
+              fontSize: "clamp(0.92rem, 1.3vw, 1.05rem)",
+              color: "var(--muted-foreground)",
+              maxWidth: "680px",
+              margin: "18px auto 0 auto",
+              lineHeight: 1.65
+            }}
+          >
+            Whether commissioning a one-of-a-kind bespoke heirloom, selecting certified lab-grown diamonds, or reserving an intimate salon viewing, our master jewelers and personal concierges are at your devotion.
+          </p>
+        </div>
       </div>
 
-
-      {/* Booking Dialog Modal */}
-
-      {bookModalOpen && (
-        <BookingDialog
-          onClose={() => setBookModalOpen(false)}
-          onSuccess={(date, time) => {
-            showToast(`Appointment requested for ${date} at ${time}. Our team will confirm shortly.`, "success");
-            setBookModalOpen(false);
-          }}
-        />
-      )}
-    </div>
-  );
-}
-
-function BookingDialog({ onClose, onSuccess }) {
-  const { generalSettings } = useStore();
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedSlot, setSelectedSlot] = useState("");
-  const slots = ["10:30", "12:00", "14:00", "15:30", "17:00"];
-
-  // Generate next 14 available days (skipping Sundays)
-  const availableDates = [];
-  const today = new Date();
-  for (let i = 1; i <= 21 && availableDates.length < 10; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    if (d.getDay() !== 0) {
-      // not Sunday
-      availableDates.push({
-        iso: d.toISOString().split("T")[0],
-        display: d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),
-      });
-    }
-  }
-
-  const handleConfirm = () => {
-    if (!selectedDate || !selectedSlot) return;
-    const match = availableDates.find((d) => d.iso === selectedDate);
-    onSuccess(match ? match.display : selectedDate, selectedSlot);
-  };
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.65)",
-        backdropFilter: "blur(4px)",
-        zIndex: 9999,
-        display: "grid",
-        placeItems: "center",
-        padding: "20px"
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "520px",
-          backgroundColor: "var(--background)",
-          border: "1px solid var(--border)",
-          padding: "36px",
-          position: "relative",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.2)"
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
+      {/* Main Dual-Column Content */}
+      <div className="container-luxury" style={{ maxWidth: "1240px", paddingTop: "52px", paddingBottom: "70px" }}>
+        <div
           style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            background: "none",
-            border: "none",
-            color: "var(--muted-foreground)",
-            cursor: "pointer"
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 460px), 1fr))",
+            gap: "clamp(28px, 4vw, 48px)",
+            alignItems: "start"
           }}
         >
-          <X size={20} />
-        </button>
+          {/* Left Column: The Atelier Inquiries Form */}
+          <div
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderRadius: "18px",
+              border: "1px solid #E8E2D6",
+              padding: "clamp(26px, 4vw, 42px)",
+              boxShadow: "0 10px 30px rgba(28, 34, 23, 0.04)"
+            }}
+          >
+            <div style={{ marginBottom: "26px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                <Gem size={16} style={{ color: "var(--primary)" }} />
+                <span
+                  className="eyebrow"
+                  style={{
+                    color: "var(--primary)",
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.16em"
+                  }}
+                >
+                  DIRECT ATELIER DOSSIER
+                </span>
+              </div>
+              <h3
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "1.75rem",
+                  fontWeight: 400,
+                  color: "var(--foreground)",
+                  margin: "0 0 6px 0"
+                }}
+              >
+                Send an Atelier Inquiry
+              </h3>
+              <p style={{ fontSize: "0.86rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
+                A dedicated private concierge will review your vision and reply within 4 atelier hours.
+              </p>
+            </div>
 
-        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>Store Consultation</p>
-        <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", marginTop: "6px" }}>
-          Book an Appointment
-        </h2>
-        <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", marginTop: "6px" }}>
-          {generalSettings?.description || "Reserve dedicated time with our jewelry specialists for a personalized consultation."}
-        </p>
+            {/* Inquiry Topic Filter Pills */}
+            <div style={{ marginBottom: "26px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "0.74rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "var(--muted-foreground)",
+                  marginBottom: "10px"
+                }}
+              >
+                Nature of Inquiry
+              </label>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {INQUIRY_TOPICS.map((topic) => (
+                  <button
+                    key={topic.id}
+                    type="button"
+                    onClick={() => setSelectedTopic(topic.id)}
+                    className={`contact-topic-pill ${selectedTopic === topic.id ? "active" : ""}`}
+                  >
+                    {topic.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        {/* Date Selection */}
-        <div style={{ marginTop: "24px" }}>
-          <label style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "10px" }}>
-            Select Preferred Date
-          </label>
+            {/* Inquiries Form */}
+            <form noValidate onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "18px" }}>
+                {/* Full Name */}
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "0.76rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      color: "var(--foreground)",
+                      marginBottom: "6px"
+                    }}
+                  >
+                    Full Name <span style={{ color: "#d9534f" }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Eleanor Vance"
+                    value={f.name}
+                    onChange={(e) => onFieldChange("name", e.target.value)}
+                    onBlur={() => setTouched((p) => ({ ...p, name: true }))}
+                    className="contact-input-field"
+                    style={{
+                      borderColor: touched.name && errs.name ? "#d9534f" : undefined
+                    }}
+                  />
+                  {touched.name && errs.name && (
+                    <p style={{ color: "#d9534f", fontSize: "0.74rem", marginTop: "5px", margin: "5px 0 0 0" }}>
+                      {errs.name}
+                    </p>
+                  )}
+                </div>
+
+                {/* Email Address */}
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "0.76rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      color: "var(--foreground)",
+                      marginBottom: "6px"
+                    }}
+                  >
+                    Email Address <span style={{ color: "#d9534f" }}>*</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="e.g. eleanor@maison.com"
+                    value={f.email}
+                    onChange={(e) => onFieldChange("email", e.target.value)}
+                    onBlur={() => setTouched((p) => ({ ...p, email: true }))}
+                    className="contact-input-field"
+                    style={{
+                      borderColor: touched.email && errs.email ? "#d9534f" : undefined
+                    }}
+                  />
+                  {touched.email && errs.email && (
+                    <p style={{ color: "#d9534f", fontSize: "0.74rem", marginTop: "5px", margin: "5px 0 0 0" }}>
+                      {errs.email}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Phone / WhatsApp */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.76rem",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: "var(--foreground)",
+                    marginBottom: "6px"
+                  }}
+                >
+                  Telephone / WhatsApp <span style={{ color: "var(--muted-foreground)", fontWeight: 400 }}>(Optional)</span>
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+1 (555) 000-0000"
+                  value={f.phone}
+                  onChange={(e) => onFieldChange("phone", e.target.value)}
+                  onBlur={() => setTouched((p) => ({ ...p, phone: true }))}
+                  className="contact-input-field"
+                  style={{
+                    borderColor: touched.phone && errs.phone ? "#d9534f" : undefined
+                  }}
+                />
+                {touched.phone && errs.phone && (
+                  <p style={{ color: "#d9534f", fontSize: "0.74rem", marginTop: "5px", margin: "5px 0 0 0" }}>
+                    {errs.phone}
+                  </p>
+                )}
+              </div>
+
+              {/* Message */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.76rem",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: "var(--foreground)",
+                    marginBottom: "6px"
+                  }}
+                >
+                  Your Vision / Inquiry <span style={{ color: "#d9534f" }}>*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Share details regarding your preferred diamond shape, carat, setting style, or appointment date..."
+                  value={f.message}
+                  onChange={(e) => onFieldChange("message", e.target.value)}
+                  onBlur={() => setTouched((p) => ({ ...p, message: true }))}
+                  className="contact-input-field"
+                  style={{
+                    borderColor: touched.message && errs.message ? "#d9534f" : undefined,
+                    resize: "vertical"
+                  }}
+                />
+                {touched.message && errs.message && (
+                  <p style={{ color: "#d9534f", fontSize: "0.74rem", marginTop: "5px", margin: "5px 0 0 0" }}>
+                    {errs.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Submit CTA */}
+              <div style={{ marginTop: "4px" }}>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    backgroundColor: "var(--primary)",
+                    color: "#FFFFFF",
+                    padding: "16px 36px",
+                    borderRadius: "10px",
+                    border: "none",
+                    fontWeight: 600,
+                    fontSize: "0.86rem",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    cursor: isSubmitting ? "not-allowed" : "pointer",
+                    boxShadow: "0 6px 18px rgba(85, 104, 50, 0.28)",
+                    transition: "all 0.25s ease",
+                    width: "100%"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSubmitting) {
+                      e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                      e.currentTarget.style.transform = "translateY(-1px)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSubmitting) {
+                      e.currentTarget.style.backgroundColor = "var(--primary)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }
+                  }}
+                >
+                  <span>{isSubmitting ? "Transmitting Dossier..." : "Send Atelier Message"}</span>
+                  <ArrowRight size={17} />
+                </button>
+              </div>
+
+              {submittedSuccess && (
+                <div
+                  style={{
+                    backgroundColor: "#EEF7EE",
+                    border: "1px solid #C3E6C3",
+                    borderRadius: "10px",
+                    padding: "14px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    color: "#27672B",
+                    fontSize: "0.85rem"
+                  }}
+                >
+                  <CheckCircle2 size={18} style={{ flexShrink: 0 }} />
+                  <span>Your dossier has been transmitted. A master concierge will reply promptly.</span>
+                </div>
+              )}
+
+              <p
+                style={{
+                  fontSize: "0.76rem",
+                  color: "var(--muted-foreground)",
+                  textAlign: "center",
+                  margin: "4px 0 0 0",
+                  lineHeight: 1.4
+                }}
+              >
+                ✦ Confidential &amp; Non-Disclosure Protected · Zero-Spam Assurance
+              </p>
+            </form>
+          </div>
+
+          {/* Right Column: Flagship Salon & VIP Direct Channels */}
+          <aside style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            {/* Flagship Atelier Card with Master Jeweler Header */}
+            <div
+              style={{
+                backgroundColor: "#FFFFFF",
+                borderRadius: "18px",
+                border: "1px solid #E8E2D6",
+                overflow: "hidden",
+                boxShadow: "0 10px 30px rgba(28, 34, 23, 0.04)"
+              }}
+            >
+              {/* Atelier Visual Banner */}
+              <div style={{ position: "relative", height: "160px", overflow: "hidden" }}>
+                <img
+                  src={atelier}
+                  alt="Gemora Diam Master Jeweler Workshop"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    filter: "brightness(0.85)"
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "linear-gradient(to top, rgba(17, 22, 17, 0.85) 0%, rgba(17, 22, 17, 0.2) 100%)"
+                  }}
+                />
+                <div style={{ position: "absolute", bottom: "16px", left: "20px", right: "20px" }}>
+                  <span
+                    className="eyebrow"
+                    style={{
+                      color: "#E8D7A7",
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.20em"
+                    }}
+                  >
+                    MASTER WORKSHOP &amp; SALON
+                  </span>
+                  <h4
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "1.45rem",
+                      color: "#FFFFFF",
+                      margin: "2px 0 0 0",
+                      fontWeight: 500
+                    }}
+                  >
+                    {generalSettings?.cityname ? `${generalSettings.cityname} Flagship Salon` : "Surat Flagship Atelier"}
+                  </h4>
+                </div>
+              </div>
+
+              {/* Salon Details Body */}
+              <div style={{ padding: "26px 28px" }}>
+                {generalSettings?.address && (
+                  <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
+                    <div
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(197, 160, 89, 0.12)",
+                        border: "1px solid rgba(197, 160, 89, 0.3)",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "var(--gold-deep)",
+                        flexShrink: 0,
+                        marginTop: "2px"
+                      }}
+                    >
+                      <MapPin size={17} />
+                    </div>
+                    <div>
+                      <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+                        Salon Location
+                      </span>
+                      <p style={{ fontSize: "0.90rem", color: "var(--foreground)", lineHeight: 1.5, margin: "2px 0 0 0", fontWeight: 500 }}>
+                        {addressString}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 3 VIP Communication Channels */}
+            <div>
+              <span
+                style={{
+                  display: "block",
+                  fontSize: "0.72rem",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--muted-foreground)",
+                  marginBottom: "12px",
+                  fontWeight: 600
+                }}
+              >
+                Direct Concierge Desks
+              </span>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
+                {/* WhatsApp */}
+                {generalSettings?.phone && (
+                  <a
+                    href={`https://wa.me/${generalSettings.phone.replace(/[^0-9]/g, "")}?text=Hello%20Gemora%20Diam,%20I%20would%20like%20to%20inquire%20about%20a%20bespoke%20jewelry%20piece.`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="contact-vip-card"
+                  >
+                    <div
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(37, 211, 102, 0.1)",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "#25D366",
+                        marginBottom: "10px"
+                      }}
+                    >
+                      <MessageCircle size={20} />
+                    </div>
+                    <strong style={{ fontSize: "0.84rem", color: "var(--foreground)", display: "block" }}>
+                      WhatsApp
+                    </strong>
+                    <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", marginTop: "3px" }}>
+                      Instant Chat
+                    </span>
+                  </a>
+                )}
+
+                {/* VIP Line */}
+                {generalSettings?.phone && (
+                  <a
+                    href={`tel:${generalSettings.phone.replace(/\s+/g, "")}`}
+                    className="contact-vip-card"
+                  >
+                    <div
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(85, 104, 50, 0.1)",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "var(--primary)",
+                        marginBottom: "10px"
+                      }}
+                    >
+                      <Phone size={18} />
+                    </div>
+                    <strong style={{ fontSize: "0.84rem", color: "var(--foreground)", display: "block" }}>
+                      VIP Line
+                    </strong>
+                    <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", marginTop: "3px" }}>
+                      Direct Call
+                    </span>
+                  </a>
+                )}
+
+                {/* Email */}
+                {generalSettings?.email && (
+                  <a
+                    href={`mailto:${generalSettings.email}?subject=Bespoke%20Jewelry%20Inquiry%20-%20Gemora%20Diam`}
+                    className="contact-vip-card"
+                  >
+                    <div
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(197, 160, 89, 0.12)",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "var(--gold-deep)",
+                        marginBottom: "10px"
+                      }}
+                    >
+                      <Mail size={18} />
+                    </div>
+                    <strong style={{ fontSize: "0.84rem", color: "var(--foreground)", display: "block" }}>
+                      Concierge
+                    </strong>
+                    <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", marginTop: "3px" }}>
+                      Email Desk
+                    </span>
+                  </a>
+                )}
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        {/* 3 Signature Atelier Experience Privileges */}
+        <div style={{ marginTop: "60px", paddingTop: "40px", borderTop: "1px solid #EBE5DB" }}>
+          <div style={{ textAlign: "center", marginBottom: "32px" }}>
+            <span
+              className="eyebrow"
+              style={{
+                color: "var(--primary)",
+                fontSize: "0.70rem",
+                fontWeight: 700,
+                letterSpacing: "0.22em"
+              }}
+            >
+              BESPOKE COMMITMENTS
+            </span>
+            <h3
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "1.8rem",
+                fontWeight: 400,
+                color: "var(--foreground)",
+                margin: "4px 0 0 0"
+              }}
+            >
+              The Atelier Experience
+            </h3>
+          </div>
+
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
-              gap: "8px",
-              maxHeight: "160px",
-              overflowY: "auto",
-              paddingRight: "4px"
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+              gap: "24px"
             }}
           >
-            {availableDates.map((item) => (
-              <button
-                key={item.iso}
-                type="button"
-                onClick={() => setSelectedDate(item.iso)}
+            <div className="contact-trust-card">
+              <div
                 style={{
-                  border: selectedDate === item.iso ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                  backgroundColor: selectedDate === item.iso ? "var(--primary)" : "transparent",
-                  color: selectedDate === item.iso ? "var(--primary-foreground)" : "var(--foreground)",
-                  padding: "8px 10px",
-                  fontSize: "0.8rem",
-                  cursor: "pointer",
-                  textAlign: "center",
-                  transition: "all 0.15s ease"
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(85, 104, 50, 0.1)",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "var(--primary)",
+                  flexShrink: 0
                 }}
               >
-                {item.display}
-              </button>
-            ))}
-          </div>
-        </div>
+                <Gem size={20} />
+              </div>
+              <div>
+                <h5 style={{ fontSize: "0.95rem", fontWeight: 600, margin: "0 0 4px 0" }}>
+                  Private 1-on-1 Viewing
+                </h5>
+                <p style={{ fontSize: "0.82rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
+                  Inspect loose GIA &amp; IGI certified lab diamonds under 10x gemological loupes in our private VIP salon suite.
+                </p>
+              </div>
+            </div>
 
-        {/* Time Slot Selection */}
-        <div style={{ marginTop: "24px" }}>
-          <label style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "10px" }}>
-            Select Time Slot
-          </label>
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            {slots.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSelectedSlot(s)}
+            <div className="contact-trust-card">
+              <div
                 style={{
-                  border: selectedSlot === s ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                  backgroundColor: selectedSlot === s ? "var(--primary)" : "transparent",
-                  color: selectedSlot === s ? "var(--primary-foreground)" : "var(--foreground)",
-                  padding: "8px 16px",
-                  fontSize: "0.85rem",
-                  cursor: "pointer",
-                  transition: "all 0.15s ease"
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(197, 160, 89, 0.12)",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "var(--gold-deep)",
+                  flexShrink: 0
                 }}
               >
-                {s}
-              </button>
-            ))}
+                <Sparkles size={20} />
+              </div>
+              <div>
+                <h5 style={{ fontSize: "0.95rem", fontWeight: 600, margin: "0 0 4px 0" }}>
+                  Bespoke 3D CAD Modeling
+                </h5>
+                <p style={{ fontSize: "0.82rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
+                  Collaborate directly with our master bench jewelers to visualize and perfect your custom design before casting.
+                </p>
+              </div>
+            </div>
+
+            <div className="contact-trust-card">
+              <div
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(85, 104, 50, 0.1)",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "var(--primary)",
+                  flexShrink: 0
+                }}
+              >
+                <ShieldCheck size={20} />
+              </div>
+              <div>
+                <h5 style={{ fontSize: "0.95rem", fontWeight: 600, margin: "0 0 4px 0" }}>
+                  Lifetime Craftsmanship Care
+                </h5>
+                <p style={{ fontSize: "0.82rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
+                  Enjoy complimentary ultrasonic spa cleanings, annual prong inspections, and certified authenticity dossiers.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Submit */}
-        <button
-          disabled={!selectedDate || !selectedSlot}
-          onClick={handleConfirm}
-          className="eyebrow"
-          style={{
-            width: "100%",
-            marginTop: "32px",
-            backgroundColor: "var(--primary)",
-            color: "var(--primary-foreground)",
-            padding: "16px",
-            border: "none",
-            cursor: !selectedDate || !selectedSlot ? "not-allowed" : "pointer",
-            opacity: !selectedDate || !selectedSlot ? 0.4 : 1,
-            transition: "opacity 0.2s ease"
-          }}
-        >
-          Confirm Appointment Request
-        </button>
       </div>
     </div>
   );
 }
+
