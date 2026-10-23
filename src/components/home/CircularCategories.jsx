@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useStore } from "../../lib/store";
 import SectionHeading from "../SectionHeading";
 
@@ -152,32 +152,6 @@ export default function CircularCategories() {
                       pointerEvents: "none"
                     }}
                   />
-
-                  {/* Top Floating Badge */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "16px",
-                      left: "16px",
-                      backgroundColor: "rgba(255, 255, 255, 0.94)",
-                      backdropFilter: "blur(8px)",
-                      WebkitBackdropFilter: "blur(8px)",
-                      padding: "4px 12px",
-                      borderRadius: "999px",
-                      fontSize: "0.66rem",
-                      fontWeight: 600,
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "var(--foreground)",
-                      border: "1px solid rgba(255, 255, 255, 0.8)",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "5px"
-                    }}
-                  >
-                    <Sparkles size={11} style={{ color: "var(--gold)" }} />
-                    <span>Curated</span>
-                  </div>
                 </div>
 
                 {/* 2. Card Editorial Details Surface */}
