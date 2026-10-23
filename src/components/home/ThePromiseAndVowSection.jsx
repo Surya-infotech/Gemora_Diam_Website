@@ -95,7 +95,7 @@ export default function ThePromiseAndVowSection() {
   const vowsTitle = data.vowsTitle || "";
   const vowsSubtitle = data.vowsSubtitle || "";
   const vowsImage = data.vowsImage || "";
-  const vowsButtonText = data.vowsButtonText || "Shop Now";
+  const vowsButtonText = data.vowsButtonText || "";
   const vowsButtonLink = data.vowsButtonLink || "/collections";
 
   // Dynamic Right Top Card: The Proposal (Engagement Rings)
@@ -103,11 +103,11 @@ export default function ThePromiseAndVowSection() {
   const proposalTitle = data.proposalTitle || "";
   const proposalSubtitle = data.proposalSubtitle || "";
   const proposalImage = data.proposalImage || "";
-  const proposalButtonText = data.proposalButtonText || "Shop Now";
+  const proposalButtonText = data.proposalButtonText || "";
   const proposalButtonLink = data.proposalButtonLink || "/collections";
 
   // Dynamic Right Bottom Box: Shop By Style
-  const styleSectionTitle = data.styleSectionTitle || "SHOP BY STYLE";
+  const styleSectionTitle = data.styleSectionTitle || "";
 
   return (
     <section
@@ -226,6 +226,7 @@ export default function ThePromiseAndVowSection() {
                     fontFamily: "var(--font-serif)",
                     fontSize: "clamp(1.9rem, 3.4vw, 3rem)",
                     fontWeight: 400,
+                    color: "#ffffff",
                     margin: "0 0 6px 0",
                     lineHeight: 1.1,
                     textShadow: "0 2px 14px rgba(0,0,0,0.5)"
@@ -357,8 +358,10 @@ export default function ThePromiseAndVowSection() {
                       fontFamily: "var(--font-serif)",
                       fontSize: "clamp(1.7rem, 2.8vw, 2.6rem)",
                       fontWeight: 400,
+                      color: "#ffffff",
                       margin: "0 0 4px 0",
-                      lineHeight: 1.1
+                      lineHeight: 1.1,
+                      textShadow: "0 2px 14px rgba(0,0,0,0.5)"
                     }}
                   >
                     {proposalTitle}
@@ -412,18 +415,20 @@ export default function ThePromiseAndVowSection() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
-                  <p
-                    className="eyebrow"
-                    style={{
-                      color: "var(--primary)",
-                      letterSpacing: "0.24em",
-                      fontSize: "0.72rem",
-                      fontWeight: 700,
-                      margin: 0
-                    }}
-                  >
-                    {styleSectionTitle}
-                  </p>
+                  {styleSectionTitle ? (
+                    <p
+                      className="eyebrow"
+                      style={{
+                        color: "var(--primary)",
+                        letterSpacing: "0.24em",
+                        fontSize: "0.72rem",
+                        fontWeight: 700,
+                        margin: 0
+                      }}
+                    >
+                      {styleSectionTitle}
+                    </p>
+                  ) : <div />}
 
                   {/* Left / Right Carousel Buttons */}
                   {styles.length > 1 && (

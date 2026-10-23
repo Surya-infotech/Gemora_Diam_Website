@@ -1002,86 +1002,94 @@ export default function ShopByShapeSection() {
                   )}
 
                   {/* Specifications (Best For | Brilliance) */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "14px",
-                      marginBottom: "12px",
-                      textAlign: "left"
-                    }}
-                  >
-                    <div>
-                      <span
-                        style={{
-                          fontSize: "8.5px",
-                          fontWeight: 700,
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "var(--gold-deep)",
-                          display: "block"
-                        }}
-                      >
-                        BEST FOR
-                      </span>
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          color: "#181818",
-                          fontFamily: "var(--font-serif)",
-                          display: "block",
-                          lineHeight: 1.2
-                        }}
-                      >
-                        {activeShape.bestFor || "Graceful"}
-                      </span>
-                    </div>
-
-                    <div style={{ width: "1px", height: "20px", backgroundColor: "rgba(0,0,0,0.12)" }} />
-
-                    <div>
-                      <span
-                        style={{
-                          fontSize: "8.5px",
-                          fontWeight: 700,
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "var(--gold-deep)",
-                          display: "block"
-                        }}
-                      >
-                        BRILLIANCE
-                      </span>
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          color: "#181818",
-                          fontFamily: "var(--font-serif)",
-                          display: "block",
-                          lineHeight: 1.2
-                        }}
-                      >
-                        {activeShape.brilliance || "Very High"}
-                      </span>
-                      {/* 5-pip brilliance meter */}
-                      <div style={{ display: "flex", gap: "2px", marginTop: "2px", width: "48px" }}>
-                        {[1, 2, 3, 4, 5].map((pip) => (
-                          <div
-                            key={pip}
+                  {(activeShape.bestFor || activeShape.brilliance) && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "14px",
+                        marginBottom: "12px",
+                        textAlign: "left"
+                      }}
+                    >
+                      {activeShape.bestFor && (
+                        <div>
+                          <span
                             style={{
-                              flex: 1,
-                              height: "2px",
-                              borderRadius: "2px",
-                              backgroundColor: pip <= brillianceScore ? "var(--gold-deep)" : "rgba(0,0,0,0.18)"
+                              fontSize: "8.5px",
+                              fontWeight: 700,
+                              letterSpacing: "0.14em",
+                              textTransform: "uppercase",
+                              color: "var(--gold-deep)",
+                              display: "block"
                             }}
-                          />
-                        ))}
-                      </div>
+                          >
+                            BEST FOR
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "11px",
+                              fontWeight: 600,
+                              color: "#181818",
+                              fontFamily: "var(--font-serif)",
+                              display: "block",
+                              lineHeight: 1.2
+                            }}
+                          >
+                            {activeShape.bestFor}
+                          </span>
+                        </div>
+                      )}
+
+                      {activeShape.bestFor && activeShape.brilliance && (
+                        <div style={{ width: "1px", height: "20px", backgroundColor: "rgba(0,0,0,0.12)" }} />
+                      )}
+
+                      {activeShape.brilliance && (
+                        <div>
+                          <span
+                            style={{
+                              fontSize: "8.5px",
+                              fontWeight: 700,
+                              letterSpacing: "0.14em",
+                              textTransform: "uppercase",
+                              color: "var(--gold-deep)",
+                              display: "block"
+                            }}
+                          >
+                            BRILLIANCE
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "11px",
+                              fontWeight: 600,
+                              color: "#181818",
+                              fontFamily: "var(--font-serif)",
+                              display: "block",
+                              lineHeight: 1.2
+                            }}
+                          >
+                            {activeShape.brilliance}
+                          </span>
+                          {/* 5-pip brilliance meter */}
+                          <div style={{ display: "flex", gap: "2px", marginTop: "2px", width: "48px" }}>
+                            {[1, 2, 3, 4, 5].map((pip) => (
+                              <div
+                                key={pip}
+                                style={{
+                                  flex: 1,
+                                  height: "2px",
+                                  borderRadius: "2px",
+                                  backgroundColor: pip <= brillianceScore ? "var(--gold-deep)" : "rgba(0,0,0,0.18)"
+                                }}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
 
                   {/* Center Controls: [<] [ SHOP NOW -> ] [>] */}
                   <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -1272,9 +1280,9 @@ export default function ShopByShapeSection() {
                         overflow: "hidden",
                         textOverflow: "ellipsis"
                       }}
-                      title={activeShape.showcaseTitle || `The Elegant ${activeShape.name} Cut Ring`}
+                      title={activeShape.showcaseTitle || activeShape.name}
                     >
-                      {activeShape.showcaseTitle || `The Elegant ${activeShape.name} Cut Ring`}
+                      {activeShape.showcaseTitle || activeShape.name}
                     </h5>
                   </div>
 
