@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Truck,
-  CreditCard,
-  RotateCcw,
-  Headphones,
   ArrowRight,
   MapPin,
   Phone,
@@ -113,124 +109,7 @@ export function Footer() {
 
   return (
     <footer style={{ backgroundColor: "#ffffff", color: "var(--foreground)" }}>
-      {/* 1. Value Badges Bar - Warm Ivory Luxury Finish */}
-      <div style={{ backgroundColor: "#FAF8F5", borderTop: "1px solid #EAE5D8", borderBottom: "1px solid #EAE5D8", padding: "clamp(24px, 4vw, 40px) 0" }}>
-        <div
-          className="container-luxury"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
-            gap: "clamp(20px, 3vw, 32px)",
-            alignItems: "center"
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div
-              style={{
-                width: "52px",
-                height: "52px",
-                borderRadius: "50%",
-                backgroundColor: "var(--primary-soft)",
-                border: "1px solid rgba(85, 104, 50, 0.25)",
-                display: "grid",
-                placeItems: "center",
-                color: "var(--primary)",
-                flexShrink: 0
-              }}
-            >
-              <Truck size={22} strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0, fontFamily: "var(--font-serif)" }}>
-                Complimentary Shipping
-              </h4>
-              <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", margin: "3px 0 0 0" }}>
-                Insured express global delivery
-              </p>
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div
-              style={{
-                width: "52px",
-                height: "52px",
-                borderRadius: "50%",
-                backgroundColor: "var(--primary-soft)",
-                border: "1px solid rgba(85, 104, 50, 0.25)",
-                display: "grid",
-                placeItems: "center",
-                color: "var(--primary)",
-                flexShrink: 0
-              }}
-            >
-              <CreditCard size={22} strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0, fontFamily: "var(--font-serif)" }}>
-                Flexible Payment
-              </h4>
-              <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", margin: "3px 0 0 0" }}>
-                Secure encrypted checkout
-              </p>
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div
-              style={{
-                width: "52px",
-                height: "52px",
-                borderRadius: "50%",
-                backgroundColor: "var(--primary-soft)",
-                border: "1px solid rgba(85, 104, 50, 0.25)",
-                display: "grid",
-                placeItems: "center",
-                color: "var(--primary)",
-                flexShrink: 0
-              }}
-            >
-              <RotateCcw size={22} strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0, fontFamily: "var(--font-serif)" }}>
-                30-Day Returns
-              </h4>
-              <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", margin: "3px 0 0 0" }}>
-                Effortless return &amp; exchange
-              </p>
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div
-              style={{
-                width: "52px",
-                height: "52px",
-                borderRadius: "50%",
-                backgroundColor: "var(--primary-soft)",
-                border: "1px solid rgba(85, 104, 50, 0.25)",
-                display: "grid",
-                placeItems: "center",
-                color: "var(--primary)",
-                flexShrink: 0
-              }}
-            >
-              <Headphones size={22} strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0, fontFamily: "var(--font-serif)" }}>
-                Private Concierge
-              </h4>
-              <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", margin: "3px 0 0 0" }}>
-                Dedicated fine jewelry experts
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Category Navigation Links Strip */}
+      {/* 1. Category Navigation Links Strip */}
       <div style={{ borderBottom: "1px solid #EDE8DE", padding: "20px 0", backgroundColor: "#ffffff" }}>
         <div
           className="container-luxury"
