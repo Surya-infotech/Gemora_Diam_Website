@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useStore } from "../../lib/store";
 
 export default function SplitCollectionBanners() {
@@ -76,31 +76,6 @@ export default function SplitCollectionBanners() {
                     pointerEvents: "none"
                   }}
                 />
-                {/* Floating Inset Badge */}
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "20px",
-                    left: "20px",
-                    backgroundColor: "rgba(255, 255, 255, 0.94)",
-                    backdropFilter: "blur(8px)",
-                    WebkitBackdropFilter: "blur(8px)",
-                    padding: "6px 16px",
-                    borderRadius: "999px",
-                    fontSize: "0.68rem",
-                    fontWeight: 600,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: "var(--foreground)",
-                    boxShadow: "0 4px 14px rgba(0, 0, 0, 0.1)",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px"
-                  }}
-                >
-                  <Sparkles size={11} style={{ color: "var(--gold)" }} />
-                  <span>Haute Joaillerie</span>
-                </div>
               </div>
 
               {/* CONTENT COLUMN */}
