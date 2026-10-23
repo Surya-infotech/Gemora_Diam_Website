@@ -418,13 +418,21 @@ img {
 .categories-balanced-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(18px, 3vw, 36px);
+  gap: clamp(16px, 2vw, 24px);
   justify-content: center;
+  max-width: 1040px;
+  margin: 0 auto;
 }
 
 @media (min-width: 640px) {
   .categories-balanced-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 320px));
+  }
+}
+
+@media (max-width: 639px) {
+  .categories-balanced-grid {
+    grid-template-columns: minmax(0, 320px);
   }
 }
 

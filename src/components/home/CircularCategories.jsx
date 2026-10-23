@@ -35,7 +35,7 @@ export default function CircularCategories() {
   }
 
   return (
-    <section style={{ padding: "clamp(60px, 7vw, 96px) 0", backgroundColor: "#ffffff" }}>
+    <section style={{ padding: "clamp(48px, 5vw, 76px) 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
         {/* Section Header */}
         <SectionHeading
@@ -60,15 +60,18 @@ export default function CircularCategories() {
                   display: "flex",
                   flexDirection: "column",
                   backgroundColor: "#FAF9F6",
-                  borderRadius: "20px",
+                  borderRadius: "14px",
                   border: isHovered ? "1px solid var(--primary)" : "1px solid #EAE5D9",
                   overflow: "hidden",
                   textDecoration: "none",
+                  width: "100%",
+                  maxWidth: "320px",
+                  margin: "0 auto",
                   transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
-                  transform: isHovered ? "translateY(-6px)" : "translateY(0)",
+                  transform: isHovered ? "translateY(-5px)" : "translateY(0)",
                   boxShadow: isHovered
-                    ? "0 20px 45px rgba(85, 104, 50, 0.12)"
-                    : "0 4px 20px rgba(0, 0, 0, 0.03)"
+                    ? "0 14px 32px rgba(85, 104, 50, 0.12)"
+                    : "0 3px 14px rgba(0, 0, 0, 0.03)"
                 }}
               >
                 {/* 1. Portrait Photographic Hero Window */}
@@ -76,7 +79,7 @@ export default function CircularCategories() {
                   style={{
                     position: "relative",
                     width: "100%",
-                    height: "clamp(260px, 28vw, 340px)",
+                    height: "clamp(190px, 18vw, 220px)",
                     overflow: "hidden",
                     backgroundColor: "#f2ece1"
                   }}
@@ -108,7 +111,7 @@ export default function CircularCategories() {
                 {/* 2. Card Editorial Details Surface */}
                 <div
                   style={{
-                    padding: "clamp(22px, 3vw, 30px) clamp(18px, 2.5vw, 26px)",
+                    padding: "18px 16px 20px",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -119,9 +122,9 @@ export default function CircularCategories() {
                   <h3
                     style={{
                       fontFamily: "var(--font-serif)",
-                      fontSize: "clamp(1.4rem, 2.2vw, 1.85rem)",
+                      fontSize: "clamp(1.15rem, 1.4vw, 1.35rem)",
                       color: "var(--foreground)",
-                      margin: "0 0 10px 0",
+                      margin: "0 0 6px 0",
                       fontWeight: 500,
                       lineHeight: 1.2
                     }}
@@ -131,11 +134,11 @@ export default function CircularCategories() {
 
                   <p
                     style={{
-                      fontSize: "0.86rem",
+                      fontSize: "0.8rem",
                       color: "var(--muted-foreground)",
-                      lineHeight: 1.6,
-                      maxWidth: "290px",
-                      margin: "0 0 22px 0",
+                      lineHeight: 1.5,
+                      maxWidth: "250px",
+                      margin: "0 0 14px 0",
                       flexGrow: 1
                     }}
                   >
@@ -148,12 +151,12 @@ export default function CircularCategories() {
                       marginTop: "auto",
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: "7px",
-                      padding: "9px 24px",
+                      gap: "6px",
+                      padding: "7px 18px",
                       borderRadius: "999px",
-                      fontSize: "0.72rem",
+                      fontSize: "0.68rem",
                       fontWeight: 600,
-                      letterSpacing: "0.14em",
+                      letterSpacing: "0.12em",
                       textTransform: "uppercase",
                       backgroundColor: isHovered ? "var(--primary)" : "var(--primary-soft)",
                       color: isHovered ? "#ffffff" : "var(--primary)",
@@ -163,7 +166,7 @@ export default function CircularCategories() {
                     }}
                   >
                     <span>Explore Collection</span>
-                    <ArrowRight size={13} />
+                    <ArrowRight size={12} />
                   </div>
                 </div>
               </Link>
