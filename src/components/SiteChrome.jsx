@@ -8,7 +8,6 @@ import {
   User,
   X,
   Phone,
-  MapPin,
   ArrowRight,
   LogOut,
   Truck,

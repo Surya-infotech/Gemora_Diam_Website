@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Minus, Plus, X, PenLine } from "lucide-react";
 import { useStore } from "../lib/store";
 

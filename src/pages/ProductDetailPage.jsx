@@ -7,7 +7,6 @@ import {
   Truck,
   RotateCcw,
   ChevronDown,
-  ChevronRight,
   Play,
   Share2,
   Sparkles,
@@ -77,7 +76,6 @@ function getMetalType(metalName = "", product = null) {
 }
 
 function ProductDetailContent({ product }) {
-  const navigate = useNavigate();
   const {
     products,
     addToCart,

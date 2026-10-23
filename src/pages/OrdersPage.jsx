@@ -14,9 +14,7 @@ import {
   Clock,
   CheckCircle2,
   User,
-  ShoppingBag,
-  Truck,
-  CreditCard
+  Truck
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import { formatPhoneNumber } from "../lib/formatters";

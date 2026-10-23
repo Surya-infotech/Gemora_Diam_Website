@@ -14,7 +14,6 @@ import {
   ArrowLeft,
   Truck,
   ShieldCheck,
-  Sparkles,
   ShoppingBag,
   Gift
 } from "lucide-react";

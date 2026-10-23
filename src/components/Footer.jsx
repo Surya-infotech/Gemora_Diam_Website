@@ -10,7 +10,6 @@ import {
   Truck,
   Award,
   Lock,
-  Gem,
   CheckCircle2,
   Clock
 } from "lucide-react";

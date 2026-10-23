@@ -57,8 +57,8 @@ export function ProductCard({ product }) {
   const navigate = useNavigate();
   const { toggleWishlist, wishlist, format, getItemPrice } = useStore();
 
-  const rawMetals = product?.metals || [];
   const metals = useMemo(() => {
+    const rawMetals = product?.metals || [];
     return rawMetals.map((m) => {
       if (typeof m === "object" && m !== null) {
         const name = m.name || m.metalname || "";
@@ -66,7 +66,7 @@ export function ProductCard({ product }) {
       }
       return { name: String(m), color: getMetalColor(m) };
     });
-  }, [rawMetals]);
+  }, [product?.metals]);
 
   const [activeMetal, setActiveMetal] = useState(metals[0]?.name || "");
   const isLiked = wishlist.includes(product?.id);

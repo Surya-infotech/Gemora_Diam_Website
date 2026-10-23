@@ -11,7 +11,6 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { useStore } from "../lib/store";
-import { formatPhoneNumber } from "../lib/formatters";
 import atelier from "../assets/atelier.jpg";
 
 const validate = (f) => ({
@@ -27,7 +26,6 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
 
-  const brandName = generalSettings?.softwarename || "Gemora Diam";
   const errs = validate(f);
 
   const onFieldChange = (key, val) => {

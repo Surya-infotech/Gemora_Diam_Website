@@ -9,8 +9,7 @@ import {
   Sparkles,
   ShieldCheck,
   ArrowRight,
-  Gem,
-  CheckCircle2
+  Gem
 } from "lucide-react";
 import atelier from "../assets/atelier.jpg";
 
