@@ -784,26 +784,30 @@ function SettingsTab() {
   };
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "32px" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: "28px" }}>
       {/* Profile Details Card */}
       <div
         style={{
-          backgroundColor: "#FAF9F6",
+          backgroundColor: "#ffffff",
           border: "1px solid #EDE8DE",
-          borderRadius: "4px",
-          padding: "32px 30px"
+          borderRadius: "12px",
+          padding: "34px 30px",
+          boxShadow: "0 2px 12px rgba(0, 0, 0, 0.02)"
         }}
       >
-        <span className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem" }}>
-          Client Credentials
-        </span>
-        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", margin: "6px 0 20px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+          <User size={15} style={{ color: "var(--primary)" }} />
+          <span className="eyebrow" style={{ color: "var(--primary)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.16em" }}>
+            CLIENT CREDENTIALS
+          </span>
+        </div>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.7rem", margin: "6px 0 20px 0", color: "var(--foreground)", fontWeight: 600 }}>
           Profile Details
         </h3>
 
         <form onSubmit={handleProfileSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
           <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+            <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
               Full Name *
             </label>
             <input
@@ -816,7 +820,7 @@ function SettingsTab() {
           </div>
 
           <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+            <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
               Email Address *
             </label>
             <input
@@ -830,7 +834,7 @@ function SettingsTab() {
           </div>
 
           <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+            <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
               Contact Phone
             </label>
             <input
@@ -847,19 +851,38 @@ function SettingsTab() {
             className="eyebrow"
             style={{
               alignSelf: "flex-start",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
               backgroundColor: "var(--primary)",
               color: "#ffffff",
-              padding: "12px 28px",
+              padding: "12px 26px",
               border: "none",
-              borderRadius: "2px",
+              borderRadius: "8px",
               cursor: savingProfile ? "not-allowed" : "pointer",
-              fontWeight: 600,
+              fontWeight: 700,
+              fontSize: "0.76rem",
               letterSpacing: "0.12em",
               opacity: savingProfile ? 0.75 : 1,
-              marginTop: "8px"
+              marginTop: "8px",
+              boxShadow: "0 4px 14px rgba(85, 104, 50, 0.2)",
+              transition: "all 0.2s ease"
+            }}
+            onMouseEnter={(e) => {
+              if (!savingProfile) {
+                e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!savingProfile) {
+                e.currentTarget.style.backgroundColor = "var(--primary)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }
             }}
           >
-            {savingProfile ? "Saving..." : "Save Profile Details"}
+            <CheckCircle2 size={14} />
+            <span>{savingProfile ? "Saving..." : "Save Profile Details"}</span>
           </button>
         </form>
       </div>
@@ -867,22 +890,26 @@ function SettingsTab() {
       {/* Security & Access Card */}
       <div
         style={{
-          backgroundColor: "#FAF9F6",
+          backgroundColor: "#ffffff",
           border: "1px solid #EDE8DE",
-          borderRadius: "4px",
-          padding: "32px 30px"
+          borderRadius: "12px",
+          padding: "34px 30px",
+          boxShadow: "0 2px 12px rgba(0, 0, 0, 0.02)"
         }}
       >
-        <span className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.7rem" }}>
-          Atelier Protection
-        </span>
-        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", margin: "6px 0 20px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+          <Lock size={15} style={{ color: "var(--primary)" }} />
+          <span className="eyebrow" style={{ color: "var(--primary)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.16em" }}>
+            ATELIER PROTECTION
+          </span>
+        </div>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.7rem", margin: "6px 0 20px 0", color: "var(--foreground)", fontWeight: 600 }}>
           Security &amp; Password
         </h3>
 
         <form onSubmit={handlePasswordSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
           <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+            <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
               Current Password *
             </label>
             <input
@@ -895,7 +922,7 @@ function SettingsTab() {
           </div>
 
           <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+            <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
               New Password (Min 8 characters) *
             </label>
             <input
@@ -908,7 +935,7 @@ function SettingsTab() {
           </div>
 
           <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+            <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
               Confirm New Password *
             </label>
             <input
@@ -926,28 +953,39 @@ function SettingsTab() {
             className="eyebrow"
             style={{
               alignSelf: "flex-start",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
               border: "1px solid var(--primary)",
-              backgroundColor: "transparent",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
               color: "var(--primary)",
-              padding: "12px 28px",
-              borderRadius: "2px",
+              padding: "12px 26px",
+              borderRadius: "8px",
               cursor: savingPassword ? "not-allowed" : "pointer",
-              fontWeight: 600,
+              fontWeight: 700,
+              fontSize: "0.76rem",
               letterSpacing: "0.12em",
               opacity: savingPassword ? 0.75 : 1,
               marginTop: "8px",
               transition: "all 0.2s"
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--primary)";
-              e.currentTarget.style.color = "#ffffff";
+              if (!savingPassword) {
+                e.currentTarget.style.backgroundColor = "var(--primary)";
+                e.currentTarget.style.color = "#ffffff";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "var(--primary)";
+              if (!savingPassword) {
+                e.currentTarget.style.backgroundColor = "rgba(85, 104, 50, 0.08)";
+                e.currentTarget.style.color = "var(--primary)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }
             }}
           >
-            {savingPassword ? "Updating..." : "Update Password"}
+            <Lock size={14} />
+            <span>{savingPassword ? "Updating..." : "Update Password"}</span>
           </button>
         </form>
       </div>
@@ -958,9 +996,10 @@ function SettingsTab() {
           gridColumn: "1 / -1",
           marginTop: "12px",
           padding: "28px 32px",
-          backgroundColor: "#FAF9F6",
+          backgroundColor: "#ffffff",
           border: "1px solid #EDE8DE",
-          borderRadius: "4px",
+          borderRadius: "12px",
+          boxShadow: "0 2px 12px rgba(0, 0, 0, 0.02)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -969,10 +1008,10 @@ function SettingsTab() {
         }}
       >
         <div>
-          <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, color: "var(--gold-deep)" }}>
-            Session Management
+          <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.18em", fontWeight: 700, color: "var(--primary)" }}>
+            SESSION MANAGEMENT
           </span>
-          <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", color: "var(--foreground)", margin: "6px 0 4px 0" }}>
+          <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", color: "var(--foreground)", margin: "6px 0 4px 0", fontWeight: 600 }}>
             Account Session &amp; Sign Out
           </h4>
           <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", margin: 0 }}>
@@ -982,33 +1021,37 @@ function SettingsTab() {
         <button
           type="button"
           onClick={logout}
+          className="eyebrow"
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: "10px",
-            backgroundColor: "#FAF9F6",
-            color: "#a83232",
-            border: "1px solid #e5c3c3",
-            padding: "12px 26px",
-            borderRadius: "2px",
+            gap: "8px",
+            backgroundColor: "#fff5f5",
+            color: "#dc2626",
+            border: "1px solid #fecaca",
+            padding: "11px 22px",
+            borderRadius: "8px",
             fontSize: "0.76rem",
-            fontWeight: 600,
+            fontWeight: 700,
             letterSpacing: "0.12em",
-            textTransform: "uppercase",
             cursor: "pointer",
             transition: "all 0.2s ease"
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#a83232";
+            e.currentTarget.style.backgroundColor = "#dc2626";
             e.currentTarget.style.color = "#ffffff";
+            e.currentTarget.style.borderColor = "#dc2626";
+            e.currentTarget.style.transform = "translateY(-1px)";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "#FAF9F6";
-            e.currentTarget.style.color = "#a83232";
+            e.currentTarget.style.backgroundColor = "#fff5f5";
+            e.currentTarget.style.color = "#dc2626";
+            e.currentTarget.style.borderColor = "#fecaca";
+            e.currentTarget.style.transform = "translateY(0)";
           }}
         >
           <LogOut size={15} />
-          Sign Out of Account
+          <span>Sign Out of Account</span>
         </button>
       </div>
     </div>
@@ -1209,13 +1252,27 @@ function AddressesTab() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "32px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "32px", paddingBottom: "20px", borderBottom: "1px solid #EDE8DE" }}>
         <div>
-          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: 0 }}>
-            Saved Addresses
-          </h2>
-          <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", marginTop: "4px" }}>
-            Manage delivery locations for orders and gifts.
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.7rem", margin: 0, fontWeight: 600, color: "var(--foreground)" }}>
+              Saved Delivery Addresses
+            </h2>
+            <span
+              style={{
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                padding: "3px 10px",
+                borderRadius: "999px",
+                backgroundColor: "rgba(85, 104, 50, 0.1)",
+                color: "var(--primary)"
+              }}
+            >
+              {addresses.length} {addresses.length === 1 ? "Location" : "Locations"}
+            </span>
+          </div>
+          <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", marginTop: "4px", margin: "4px 0 0 0" }}>
+            Manage discreet personal residences and atelier appointment destinations worldwide.
           </p>
         </div>
         <button
@@ -1228,51 +1285,70 @@ function AddressesTab() {
             backgroundColor: "var(--primary)",
             color: "#ffffff",
             padding: "12px 24px",
-            borderRadius: "2px",
+            borderRadius: "8px",
+            border: "none",
             cursor: "pointer",
-            transition: "opacity 0.2s"
+            fontWeight: 700,
+            fontSize: "0.76rem",
+            letterSpacing: "0.12em",
+            boxShadow: "0 4px 14px rgba(85, 104, 50, 0.2)",
+            transition: "all 0.2s ease"
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-          onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--primary)";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
         >
-          <Plus size={16} />
-          Add New Address
+          <Plus size={15} />
+          <span>Add New Address</span>
         </button>
       </div>
 
       {loading ? (
-        <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--muted-foreground)" }}>
-          Loading addresses...
+        <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--muted-foreground)", fontSize: "0.9rem" }}>
+          Retrieving saved destinations...
         </div>
       ) : addresses.length === 0 ? (
         <div
           style={{
             textAlign: "center",
-            padding: "80px 20px",
-            border: "1px dashed var(--border)",
-            borderRadius: "4px",
-            backgroundColor: "var(--card)"
+            padding: "80px 24px",
+            border: "1px dashed #EDE8DE",
+            borderRadius: "12px",
+            backgroundColor: "#ffffff",
+            boxShadow: "0 2px 14px rgba(0, 0, 0, 0.02)"
           }}
         >
           <div
             style={{
-              width: "60px",
-              height: "60px",
+              width: "72px",
+              height: "72px",
               borderRadius: "50%",
-              backgroundColor: "var(--primary-soft)",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
+              border: "1px solid rgba(85, 104, 50, 0.18)",
               display: "grid",
               placeItems: "center",
-              margin: "0 auto 16px",
+              margin: "0 auto 18px",
               color: "var(--primary)"
             }}
           >
-            <MapPin size={28} />
+            <MapPin size={30} strokeWidth={1.5} />
           </div>
-          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.6rem", marginBottom: "8px" }}>
-            No Addresses Saved
+          <span
+            className="eyebrow"
+            style={{ color: "var(--primary)", letterSpacing: "0.2em", fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "6px" }}
+          >
+            GLOBAL DESTINATIONS
+          </span>
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.9rem", marginBottom: "8px", fontWeight: 600, color: "var(--foreground)" }}>
+            No Delivery Destinations
           </h3>
-          <p style={{ fontSize: "0.9rem", color: "var(--muted-foreground)", maxWidth: "420px", margin: "0 auto 24px" }}>
-            You haven't added any delivery addresses yet. Add an address now to enjoy faster checkout.
+          <p style={{ fontSize: "0.9rem", color: "var(--muted-foreground)", maxWidth: "420px", margin: "0 auto 24px", lineHeight: 1.6 }}>
+            You haven't saved any delivery addresses yet. Register your address now for seamless bespoke acquisitions.
           </p>
           <button
             onClick={openAddModal}
@@ -1283,19 +1359,24 @@ function AddressesTab() {
               gap: "8px",
               backgroundColor: "var(--primary)",
               color: "#ffffff",
-              padding: "12px 28px",
-              borderRadius: "2px",
-              cursor: "pointer"
+              padding: "13px 28px",
+              borderRadius: "8px",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: 700,
+              fontSize: "0.76rem",
+              letterSpacing: "0.12em",
+              boxShadow: "0 4px 14px rgba(85, 104, 50, 0.2)"
             }}
           >
-            <Plus size={16} /> Add Your First Address
+            <Plus size={15} /> <span>Add Your First Address</span>
           </button>
         </div>
       ) : (
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
             gap: "24px"
           }}
         >
@@ -1305,25 +1386,38 @@ function AddressesTab() {
               <div
                 key={addr.addressid}
                 style={{
-                  border: isDef ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                  backgroundColor: "var(--card)",
-                  padding: "24px",
-                  borderRadius: "2px",
+                  border: isDef ? "1.5px solid var(--primary)" : "1px solid #EDE8DE",
+                  backgroundColor: "#ffffff",
+                  padding: "26px",
+                  borderRadius: "12px",
                   position: "relative",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
-                  boxShadow: isDef ? "0 4px 16px rgba(85, 104, 50, 0.08)" : "none",
+                  boxShadow: isDef ? "0 8px 24px rgba(85, 104, 50, 0.08)" : "0 2px 10px rgba(0, 0, 0, 0.02)",
                   transition: "all 0.2s ease"
                 }}
               >
                 <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      {addr.title === "Home" && <Home size={16} style={{ color: "var(--primary)" }} />}
-                      {addr.title === "Office" && <Building size={16} style={{ color: "var(--primary)" }} />}
-                      {!["Home", "Office"].includes(addr.title) && <MapPin size={16} style={{ color: "var(--primary)" }} />}
-                      <span style={{ fontWeight: 600, fontSize: "0.95rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div
+                        style={{
+                          width: "34px",
+                          height: "34px",
+                          borderRadius: "50%",
+                          backgroundColor: isDef ? "rgba(85, 104, 50, 0.12)" : "#FAF9F6",
+                          border: "1px solid #EDE8DE",
+                          display: "grid",
+                          placeItems: "center",
+                          color: "var(--primary)"
+                        }}
+                      >
+                        {addr.title === "Home" && <Home size={15} />}
+                        {addr.title === "Office" && <Building size={15} />}
+                        {!["Home", "Office"].includes(addr.title) && <MapPin size={15} />}
+                      </div>
+                      <span style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--foreground)" }}>
                         {addr.title || "Address"}
                       </span>
                     </div>
@@ -1331,11 +1425,13 @@ function AddressesTab() {
                       <span
                         className="eyebrow"
                         style={{
-                          backgroundColor: "var(--primary-soft)",
+                          backgroundColor: "rgba(85, 104, 50, 0.12)",
                           color: "var(--primary)",
-                          padding: "3px 8px",
-                          borderRadius: "2px",
-                          fontSize: "0.62rem"
+                          padding: "3px 10px",
+                          borderRadius: "999px",
+                          fontSize: "0.66rem",
+                          fontWeight: 700,
+                          letterSpacing: "0.1em"
                         }}
                       >
                         Default
@@ -1351,7 +1447,7 @@ function AddressesTab() {
                     {addr.cityname}, {addr.statename} {addr.pincode ? ` - ${addr.pincode}` : ""}
                   </p>
 
-                  <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", fontWeight: 500 }}>
+                  <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", fontWeight: 600 }}>
                     {addr.countryname}
                   </p>
                 </div>
@@ -1363,11 +1459,11 @@ function AddressesTab() {
                     alignItems: "center",
                     marginTop: "24px",
                     paddingTop: "16px",
-                    borderTop: "1px solid var(--border-subtle)",
+                    borderTop: "1px solid #EDE8DE",
                     fontSize: "0.82rem"
                   }}
                 >
-                  <div style={{ display: "flex", gap: "16px" }}>
+                  <div style={{ display: "flex", gap: "14px" }}>
                     <button
                       onClick={() => openEditModal(addr)}
                       style={{
@@ -1377,38 +1473,63 @@ function AddressesTab() {
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
-                        gap: "5px",
-                        fontWeight: 500
+                        gap: "6px",
+                        fontWeight: 600,
+                        fontSize: "0.8rem",
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = "var(--primary)";
+                        e.currentTarget.style.backgroundColor = "rgba(85, 104, 50, 0.08)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = "var(--foreground)";
+                        e.currentTarget.style.backgroundColor = "transparent";
                       }}
                     >
-                      <Edit2 size={13} /> Edit
+                      <Edit2 size={13} /> <span>Edit</span>
                     </button>
                     <button
                       onClick={() => handleDelete(addr)}
                       style={{
                         background: "none",
                         border: "none",
-                        color: "#c33",
+                        color: "#dc2626",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
-                        gap: "5px",
-                        fontWeight: 500
+                        gap: "6px",
+                        fontWeight: 600,
+                        fontSize: "0.8rem",
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#fff5f5";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
                       }}
                     >
-                      <Trash2 size={13} /> Delete
+                      <Trash2 size={13} /> <span>Delete</span>
                     </button>
                   </div>
 
                   {!isDef && (
                     <button
                       onClick={() => handleSetDefault(addr)}
+                      className="eyebrow"
                       style={{
                         background: "none",
                         border: "none",
                         color: "var(--primary)",
                         cursor: "pointer",
-                        fontWeight: 600,
+                        fontWeight: 700,
+                        fontSize: "0.72rem",
+                        letterSpacing: "0.1em",
                         textDecoration: "underline"
                       }}
                     >
@@ -1443,12 +1564,12 @@ function AddressesTab() {
               maxWidth: "640px",
               maxHeight: "92vh",
               overflowY: "auto",
-              backgroundColor: "#FAF9F6",
+              backgroundColor: "#ffffff",
               border: "1px solid #EDE8DE",
-              padding: "36px",
+              padding: "36px 32px",
               position: "relative",
-              borderRadius: "6px",
-              boxShadow: "0 24px 60px rgba(0,0,0,0.22)"
+              borderRadius: "14px",
+              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.22)"
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -1459,7 +1580,7 @@ function AddressesTab() {
                 position: "absolute",
                 top: "20px",
                 right: "20px",
-                background: "#ffffff",
+                background: "#FAF9F6",
                 border: "1px solid #EDE8DE",
                 width: "34px",
                 height: "34px",
@@ -1482,17 +1603,17 @@ function AddressesTab() {
               <X size={18} />
             </button>
 
-            <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-              {editingAddress ? "Update Location" : "New Location"}
-            </p>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.9rem", margin: "6px 0 24px" }}>
+            <span className="eyebrow" style={{ color: "var(--primary)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.16em" }}>
+              {editingAddress ? "UPDATE LOCATION" : "NEW LOCATION"}
+            </span>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.9rem", margin: "6px 0 24px", fontWeight: 600, color: "var(--foreground)" }}>
               {editingAddress ? "Edit Address Details" : "Add Address Details"}
             </h2>
 
             <form onSubmit={handleSave} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               {/* Address Type / Label */}
               <div>
-                <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
                   Address Type
                 </label>
                 <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -1502,14 +1623,15 @@ function AddressesTab() {
                       type="button"
                       onClick={() => setTitle(t)}
                       style={{
-                        padding: "8px 18px",
+                        padding: "9px 20px",
                         fontSize: "0.82rem",
-                        borderRadius: "2px",
-                        border: title === t ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                        backgroundColor: title === t ? "var(--primary-soft)" : "transparent",
+                        borderRadius: "6px",
+                        border: title === t ? "1.5px solid var(--primary)" : "1px solid #EDE8DE",
+                        backgroundColor: title === t ? "rgba(85, 104, 50, 0.1)" : "#FAF9F6",
                         color: title === t ? "var(--primary)" : "var(--foreground)",
                         cursor: "pointer",
-                        fontWeight: title === t ? 600 : 400
+                        fontWeight: title === t ? 700 : 500,
+                        transition: "all 0.2s ease"
                       }}
                     >
                       {t}
@@ -1529,7 +1651,7 @@ function AddressesTab() {
 
               {/* Street Address */}
               <div>
-                <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
+                <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
                   Address (House / Flat / Street / Landmark) *
                 </label>
                 <textarea
@@ -1544,18 +1666,18 @@ function AddressesTab() {
                     ...fieldStyle,
                     resize: "vertical",
                     fontFamily: "inherit",
-                    borderColor: errors.address ? "#d9534f" : "var(--border)"
+                    borderColor: errors.address ? "#dc2626" : "#EDE8DE"
                   }}
                 />
                 {errors.address && (
-                  <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "4px" }}>{errors.address}</p>
+                  <p style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "4px" }}>{errors.address}</p>
                 )}
               </div>
 
-              {/* Country & State Dropdowns (Same as General.jsx) */}
+              {/* Country & State Dropdowns */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px" }}>
                 <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
                     Country *
                   </label>
                   <select
@@ -1568,7 +1690,7 @@ function AddressesTab() {
                       ...fieldStyle,
                       cursor: "pointer",
                       backgroundColor: "#fff",
-                      borderColor: errors.country ? "#d9534f" : "var(--border)"
+                      borderColor: errors.country ? "#dc2626" : "#EDE8DE"
                     }}
                   >
                     <option value="">Select Country</option>
@@ -1579,12 +1701,12 @@ function AddressesTab() {
                     ))}
                   </select>
                   {errors.country && (
-                    <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "4px" }}>{errors.country}</p>
+                    <p style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "4px" }}>{errors.country}</p>
                   )}
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
                     State / Region *
                   </label>
                   <select
@@ -1597,8 +1719,8 @@ function AddressesTab() {
                     style={{
                       ...fieldStyle,
                       cursor: !selectedCountry || states.length === 0 ? "not-allowed" : "pointer",
-                      backgroundColor: !selectedCountry || states.length === 0 ? "#f9f9f9" : "#fff",
-                      borderColor: errors.state ? "#d9534f" : "var(--border)"
+                      backgroundColor: !selectedCountry || states.length === 0 ? "#FAF9F6" : "#fff",
+                      borderColor: errors.state ? "#dc2626" : "#EDE8DE"
                     }}
                   >
                     <option value="">
@@ -1615,7 +1737,7 @@ function AddressesTab() {
                     ))}
                   </select>
                   {errors.state && (
-                    <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "4px" }}>{errors.state}</p>
+                    <p style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "4px" }}>{errors.state}</p>
                   )}
                 </div>
               </div>
@@ -1623,7 +1745,7 @@ function AddressesTab() {
               {/* City Dropdown & Pincode */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px" }}>
                 <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
                     City *
                   </label>
                   {cities.length > 0 ? (
@@ -1637,8 +1759,8 @@ function AddressesTab() {
                       style={{
                         ...fieldStyle,
                         cursor: !selectedState ? "not-allowed" : "pointer",
-                        backgroundColor: !selectedState ? "#f9f9f9" : "#fff",
-                        borderColor: errors.city ? "#d9534f" : "var(--border)"
+                        backgroundColor: !selectedState ? "#FAF9F6" : "#fff",
+                        borderColor: errors.city ? "#dc2626" : "#EDE8DE"
                       }}
                     >
                       <option value="">
@@ -1662,18 +1784,18 @@ function AddressesTab() {
                       }}
                       style={{
                         ...fieldStyle,
-                        backgroundColor: !selectedState ? "#f9f9f9" : "transparent",
-                        borderColor: errors.city ? "#d9534f" : "var(--border)"
+                        backgroundColor: !selectedState ? "#FAF9F6" : "transparent",
+                        borderColor: errors.city ? "#dc2626" : "#EDE8DE"
                       }}
                     />
                   )}
                   {errors.city && (
-                    <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "4px" }}>{errors.city}</p>
+                    <p style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "4px" }}>{errors.city}</p>
                   )}
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
                     Pincode / Postal Code *
                   </label>
                   <input
@@ -1686,11 +1808,11 @@ function AddressesTab() {
                     }}
                     style={{
                       ...fieldStyle,
-                      borderColor: errors.postalCode ? "#d9534f" : "var(--border)"
+                      borderColor: errors.postalCode ? "#dc2626" : "#EDE8DE"
                     }}
                   />
                   {errors.postalCode && (
-                    <p style={{ color: "#d9534f", fontSize: "0.75rem", marginTop: "4px" }}>{errors.postalCode}</p>
+                    <p style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "4px" }}>{errors.postalCode}</p>
                   )}
                 </div>
               </div>
@@ -1703,7 +1825,7 @@ function AddressesTab() {
                   onChange={(e) => setIsDefault(e.target.checked)}
                   style={{ width: "16px", height: "16px", accentColor: "var(--primary)", cursor: "pointer" }}
                 />
-                <span style={{ fontSize: "0.85rem", color: "var(--foreground)" }}>
+                <span style={{ fontSize: "0.85rem", color: "var(--foreground)", fontWeight: 500 }}>
                   Set as default shipping address
                 </span>
               </label>
@@ -1716,10 +1838,14 @@ function AddressesTab() {
                   className="eyebrow"
                   style={{
                     padding: "12px 24px",
-                    border: "1px solid var(--border)",
-                    backgroundColor: "transparent",
+                    border: "1px solid #EDE8DE",
+                    backgroundColor: "#FAF9F6",
                     color: "var(--foreground)",
-                    cursor: "pointer"
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    fontSize: "0.76rem",
+                    letterSpacing: "0.1em"
                   }}
                 >
                   Cancel
@@ -1733,8 +1859,13 @@ function AddressesTab() {
                     backgroundColor: "var(--primary)",
                     color: "#ffffff",
                     border: "none",
+                    borderRadius: "8px",
                     cursor: submitting ? "not-allowed" : "pointer",
-                    opacity: submitting ? 0.7 : 1
+                    opacity: submitting ? 0.7 : 1,
+                    fontWeight: 700,
+                    fontSize: "0.76rem",
+                    letterSpacing: "0.12em",
+                    boxShadow: "0 4px 14px rgba(85, 104, 50, 0.2)"
                   }}
                 >
                   {submitting ? "Saving..." : editingAddress ? "Update Address" : "Save Address"}
@@ -1787,22 +1918,22 @@ function SignInView() {
     <div className="container-luxury" style={{ paddingTop: "70px", paddingBottom: "110px", maxWidth: "520px", margin: "0 auto" }}>
       <div
         style={{
-          backgroundColor: "#FAF9F6",
+          backgroundColor: "#ffffff",
           border: "1px solid #EDE8DE",
           padding: "48px 38px",
-          borderRadius: "6px",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.06)",
+          borderRadius: "14px",
+          boxShadow: "0 20px 50px rgba(0, 0, 0, 0.04)",
           textAlign: "center"
         }}
       >
         {/* Atelier Crest */}
         <div
           style={{
-            width: "56px",
-            height: "56px",
+            width: "60px",
+            height: "60px",
             borderRadius: "50%",
-            backgroundColor: "var(--primary-soft)",
-            border: "1px solid rgba(197, 160, 89, 0.35)",
+            backgroundColor: "rgba(85, 104, 50, 0.08)",
+            border: "1.5px solid rgba(85, 104, 50, 0.25)",
             display: "grid",
             placeItems: "center",
             margin: "0 auto 16px",
@@ -1812,10 +1943,10 @@ function SignInView() {
           <Sparkles size={24} strokeWidth={1.5} />
         </div>
 
-        <p className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.72rem" }}>
-          Gemora Diam • Private Client Portal
+        <p className="eyebrow" style={{ color: "var(--primary)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em" }}>
+          GEMORA DIAM · PRIVATE CLIENT PORTAL
         </p>
-        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.4rem", margin: "8px 0 10px 0", color: "var(--foreground)", letterSpacing: "-0.01em" }}>
+        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.3rem", margin: "8px 0 10px 0", color: "var(--foreground)", fontWeight: 600, letterSpacing: "-0.01em" }}>
           {isRegister ? "Join The Atelier" : "Welcome Back"}
         </h1>
         <p style={{ fontSize: "0.9rem", color: "var(--muted-foreground)", lineHeight: 1.6, margin: "0 0 28px 0" }}>
@@ -1830,8 +1961,8 @@ function SignInView() {
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             padding: "4px",
-            backgroundColor: "#ffffff",
-            borderRadius: "4px",
+            backgroundColor: "#FAF9F6",
+            borderRadius: "8px",
             border: "1px solid #EDE8DE",
             marginBottom: "24px"
           }}
@@ -1846,13 +1977,15 @@ function SignInView() {
             style={{
               padding: "10px",
               border: "none",
-              borderRadius: "3px",
+              borderRadius: "6px",
               backgroundColor: !isRegister ? "var(--primary)" : "transparent",
               color: !isRegister ? "#ffffff" : "var(--muted-foreground)",
               cursor: "pointer",
-              fontWeight: 600,
-              letterSpacing: "0.1em",
-              transition: "all 0.2s"
+              fontWeight: 700,
+              fontSize: "0.74rem",
+              letterSpacing: "0.12em",
+              transition: "all 0.2s ease",
+              boxShadow: !isRegister ? "0 2px 8px rgba(85, 104, 50, 0.25)" : "none"
             }}
           >
             Sign In
@@ -1867,13 +2000,15 @@ function SignInView() {
             style={{
               padding: "10px",
               border: "none",
-              borderRadius: "3px",
+              borderRadius: "6px",
               backgroundColor: isRegister ? "var(--primary)" : "transparent",
               color: isRegister ? "#ffffff" : "var(--muted-foreground)",
               cursor: "pointer",
-              fontWeight: 600,
-              letterSpacing: "0.1em",
-              transition: "all 0.2s"
+              fontWeight: 700,
+              fontSize: "0.74rem",
+              letterSpacing: "0.12em",
+              transition: "all 0.2s ease",
+              boxShadow: isRegister ? "0 2px 8px rgba(85, 104, 50, 0.25)" : "none"
             }}
           >
             Create Account
@@ -1887,9 +2022,9 @@ function SignInView() {
               padding: "12px 16px",
               backgroundColor: "#fff2f2",
               border: "1px solid #fedcdc",
-              color: "#a83232",
+              color: "#dc2626",
               fontSize: "0.85rem",
-              borderRadius: "3px",
+              borderRadius: "6px",
               textAlign: "left"
             }}
           >
@@ -1900,7 +2035,7 @@ function SignInView() {
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px", textAlign: "left" }}>
           {isRegister && (
             <div>
-              <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+              <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
                 Full Name *
               </label>
               <input
@@ -1915,7 +2050,7 @@ function SignInView() {
           )}
 
           <div>
-            <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
+            <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block", marginBottom: "6px" }}>
               Email Address *
             </label>
             <input
@@ -1930,7 +2065,7 @@ function SignInView() {
 
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted-foreground)" }}>
+              <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)" }}>
                 Password *
               </label>
             </div>
@@ -1954,13 +2089,14 @@ function SignInView() {
               color: "#ffffff",
               padding: "14px",
               border: "none",
-              borderRadius: "2px",
+              borderRadius: "8px",
               cursor: loading ? "not-allowed" : "pointer",
-              fontWeight: 600,
+              fontWeight: 700,
+              fontSize: "0.78rem",
               letterSpacing: "0.16em",
               textAlign: "center",
               opacity: loading ? 0.75 : 1,
-              transition: "background 0.2s ease",
+              transition: "all 0.2s ease",
               boxShadow: "0 6px 18px rgba(85, 104, 50, 0.25)"
             }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
