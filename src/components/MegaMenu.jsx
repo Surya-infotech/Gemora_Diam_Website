@@ -310,6 +310,61 @@ function hasMenuDropdownContent(menu) {
   return hasCol1 || hasCol2 || hasCol3 || hasBanner || hasBottom;
 }
 
+const DEFAULT_ENGAGEMENT_MENU = {
+  menuid: "default-engagement-rings",
+  title: "Engagement Rings",
+  slug: "/collections?category=Engagement+Rings",
+  column1: {
+    title: "Shop By Style",
+    items: [
+      { label: "Solitaire", slug: "/collections?style=Solitaire" },
+      { label: "Hidden Halo", slug: "/collections?style=Hidden+Halo" },
+      { label: "Three Stone", slug: "/collections?style=Three+Stone" },
+      { label: "Pavé Band", slug: "/collections?style=Pave" },
+      { label: "Bezel Setting", slug: "/collections?style=Bezel" },
+      { label: "Vintage Inspired", slug: "/collections?style=Vintage" }
+    ],
+    bottomText: "Explore All Ring Styles",
+    bottomLink: "/collections?category=Engagement+Rings"
+  },
+  column2: {
+    title: "Shop By Shape",
+    items: [
+      { label: "Round Brilliant", shape: "round", slug: "/collections?shape=Round" },
+      { label: "Oval Cut", shape: "oval", slug: "/collections?shape=Oval" },
+      { label: "Emerald Cut", shape: "emerald", slug: "/collections?shape=Emerald" },
+      { label: "Radiant Cut", shape: "radiant", slug: "/collections?shape=Radiant" },
+      { label: "Cushion Cut", shape: "cushion", slug: "/collections?shape=Cushion" },
+      { label: "Pear Shape", shape: "pear", slug: "/collections?shape=Pear" }
+    ],
+    bottomText: "View All Diamond Cuts",
+    bottomLink: "/collections?category=Diamonds"
+  },
+  column3: {
+    title: "Shop By Metal",
+    items: [
+      { label: "18K Yellow Gold", slug: "/collections?metal=Yellow+Gold" },
+      { label: "18K White Gold", slug: "/collections?metal=White+Gold" },
+      { label: "18K Rose Gold", slug: "/collections?metal=Rose+Gold" },
+      { label: "950 Platinum", slug: "/collections?metal=Platinum" }
+    ],
+    bottomText: "Custom Bespoke Orders",
+    bottomLink: "/contact"
+  },
+  banner: {
+    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=700&q=80",
+    eyebrow: "Handcrafted in Atelier",
+    title: "The Solitaire Collection",
+    description: "Ethically lab-grown diamonds set in 100% recycled gold.",
+    buttonText: "Discover Solitaires",
+    buttonLink: "/collections?category=Engagement+Rings"
+  },
+  bottomBar: {
+    text: "Complimentary Bespoke Sizing & Lifetime Atelier Warranty on All Rings",
+    link: "/contact"
+  }
+};
+
 // ==========================================
 // 5. Main Dynamic Mega Menu Component
 export default function MegaMenu({ inline = false }) {
@@ -329,7 +384,13 @@ export default function MegaMenu({ inline = false }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const activeMenus = Array.isArray(menus) ? menus : [];
+  const backendMenus = Array.isArray(menus) ? menus : [];
+  const hasEngagement = backendMenus.some((m) => toSafeString(m?.title).toLowerCase().includes("engagement"));
+  const rawActiveMenus = hasEngagement ? backendMenus : [DEFAULT_ENGAGEMENT_MENU, ...backendMenus];
+  const activeMenus = rawActiveMenus.filter((m) => {
+    const title = toSafeString(m?.title).toLowerCase();
+    return !title.includes("wedding") && !title.includes("contact");
+  });
 
   const handleMouseEnter = (menuId) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -468,53 +529,6 @@ export default function MegaMenu({ inline = false }) {
           );
         })}
 
-        {/* If no Wedding Bands menu exists, add direct link */}
-        {!activeMenus.some((m) => toSafeString(m?.title).toLowerCase().includes("wedding")) && (
-          <div onMouseEnter={closeMenu} style={{ position: "relative" }}>
-            <Link
-              to="/collections?category=Wedding+Bands"
-              onClick={closeMenu}
-              className={`nav-link-luxury ${location.search.includes("Wedding") ? "active" : ""}`}
-              style={{
-                fontSize: inline ? "0.78rem" : "0.82rem",
-                fontWeight: 600,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                display: "inline-flex",
-                alignItems: "center",
-                color: location.search.includes("Wedding") ? "var(--primary)" : "var(--foreground)",
-                padding: "6px 2px",
-                whiteSpace: "nowrap"
-              }}
-            >
-              Wedding Bands
-            </Link>
-          </div>
-        )}
-
-        {/* Tesora signature "+ DESIGN YOUR RING" */}
-        <div onMouseEnter={closeMenu} style={{ position: "relative" }}>
-          <Link
-            to="/collections"
-            onClick={closeMenu}
-            className="nav-link-luxury"
-            style={{
-              fontSize: inline ? "0.78rem" : "0.82rem",
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "4px",
-              color: "var(--primary)",
-              padding: "6px 2px",
-              whiteSpace: "nowrap"
-            }}
-          >
-            <span style={{ fontSize: "0.95rem", lineHeight: 0.9, color: "var(--gold-deep)" }}>+</span>
-            <span>Design Your Ring</span>
-          </Link>
-        </div>
 
         {/* Ensure Collections tab appears if no collection menu created */}
         {!activeMenus.some((m) => toSafeString(m?.title).toLowerCase().includes("collection") || toSafeString(m?.slug).toLowerCase().includes("/collection")) && (
@@ -540,48 +554,6 @@ export default function MegaMenu({ inline = false }) {
           </div>
         )}
 
-        {/* STATIC TABS: ABOUT US & CONTACT */}
-        <div onMouseEnter={closeMenu} style={{ position: "relative" }}>
-          <Link
-            to="/about"
-            onClick={closeMenu}
-            className={`nav-link-luxury ${location.pathname === "/about" ? "active" : ""}`}
-            style={{
-              fontSize: inline ? "0.78rem" : "0.82rem",
-              fontWeight: 600,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              display: "inline-flex",
-              alignItems: "center",
-              color: location.pathname === "/about" ? "var(--primary)" : "var(--foreground)",
-              padding: "6px 2px",
-              whiteSpace: "nowrap"
-            }}
-          >
-            About Us
-          </Link>
-        </div>
-
-        <div onMouseEnter={closeMenu} style={{ position: "relative" }}>
-          <Link
-            to="/contact"
-            onClick={closeMenu}
-            className={`nav-link-luxury ${location.pathname === "/contact" ? "active" : ""}`}
-            style={{
-              fontSize: inline ? "0.78rem" : "0.82rem",
-              fontWeight: 600,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              display: "inline-flex",
-              alignItems: "center",
-              color: location.pathname === "/contact" ? "var(--primary)" : "var(--foreground)",
-              padding: "6px 2px",
-              whiteSpace: "nowrap"
-            }}
-          >
-            Contact
-          </Link>
-        </div>
       </div>
 
       {/* ---------------- Full-Width Dynamic Mega Menu Dropdown Panel ---------------- */}
