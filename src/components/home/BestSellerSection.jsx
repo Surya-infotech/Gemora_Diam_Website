@@ -19,9 +19,10 @@ export default function BestSellerSection() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("");
   const [selectedMetals, setSelectedMetals] = useState({});
-  const { products, categories, productsLoading, wishlist, toggleWishlist, format } = useStore();
+  const { products, categories, productsLoading, wishlist, toggleWishlist, format, getItemPrice } = useStore();
 
   const handleMetalSelect = (itemId, metalName, e) => {
+    e.preventDefault();
     e.stopPropagation();
     setSelectedMetals((prev) => ({ ...prev, [itemId]: metalName }));
   };
@@ -176,7 +177,10 @@ export default function BestSellerSection() {
               }
               return { name: String(m), color: getMetalColor(m) };
             });
-            const activeMetal = selectedMetals[item.id] || metals[0]?.name;
+            const activeMetal = selectedMetals[item.id] || metals[0]?.name || "";
+            const currentPrice = getItemPrice
+              ? getItemPrice(item, activeMetal)
+              : (item.price || 0);
             const itemImage = item.image || item.galleryImages?.[0] || item.gallery?.[0] || "";
 
             return (
@@ -359,16 +363,17 @@ export default function BestSellerSection() {
                     )}
                   </div>
 
-                  {/* Row 2: Price */}
+                  {/* Row 2: Price dynamically updated by selected metal */}
                   <div
                     style={{
                       fontSize: "0.88rem",
                       fontWeight: 600,
                       color: "#222222",
-                      marginTop: "6px"
+                      marginTop: "6px",
+                      transition: "color 0.2s ease"
                     }}
                   >
-                    {format ? format(item.price) : `$${item.price?.toLocaleString()}`}
+                    {format ? format(currentPrice) : `$${currentPrice?.toLocaleString()}`}
                   </div>
                 </div>
               </div>
