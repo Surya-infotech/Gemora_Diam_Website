@@ -10,7 +10,11 @@ import {
   Phone,
   MapPin,
   ArrowRight,
-  LogOut
+  LogOut,
+  Truck,
+  ShieldCheck,
+  Lock,
+  Sparkles
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import { formatPhoneNumber } from "../lib/formatters";
@@ -1099,9 +1103,11 @@ function CartDrawer() {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 9999,
-        backgroundColor: "rgba(22, 30, 18, 0.65)",
-        backdropFilter: "blur(6px)"
+        zIndex: 99999,
+        backgroundColor: "rgba(18, 26, 15, 0.62)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+        transition: "opacity 0.25s ease"
       }}
       onClick={() => setCartOpen(false)}
     >
@@ -1111,13 +1117,13 @@ function CartDrawer() {
           top: 0,
           right: 0,
           width: "100%",
-          maxWidth: "480px",
+          maxWidth: "min(460px, 100vw)",
           height: "100%",
           backgroundColor: "#ffffff",
           display: "flex",
           flexDirection: "column",
-          animation: "slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-          boxShadow: "var(--shadow-luxury)"
+          animation: "slideInRight 0.32s cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "-8px 0 36px rgba(0, 0, 0, 0.16)"
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -1127,57 +1133,151 @@ function CartDrawer() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "24px 30px",
-            borderBottom: "1px solid #ede8de",
-            backgroundColor: "#faf9f6"
+            padding: "20px 24px",
+            borderBottom: "1px solid #EDE8DE",
+            backgroundColor: "#FAF9F6"
           }}
         >
           <div>
-            <h3 style={{ fontSize: "1.35rem", margin: 0, fontFamily: "var(--font-serif)", fontWeight: 500 }}>
-              Shopping Bag
-            </h3>
-            <span style={{ fontSize: "0.78rem", color: "var(--muted-foreground)" }}>
-              {cartCount} {cartCount === 1 ? "creation" : "creations"} selected
+            <span
+              className="eyebrow"
+              style={{
+                fontSize: "0.68rem",
+                letterSpacing: "0.18em",
+                color: "var(--primary)",
+                fontWeight: 700,
+                display: "block",
+                marginBottom: "3px"
+              }}
+            >
+              ATELIER SHOPPING BAG
             </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <h3
+                style={{
+                  fontSize: "1.35rem",
+                  margin: 0,
+                  fontFamily: "var(--font-serif)",
+                  fontWeight: 600,
+                  letterSpacing: "-0.01em",
+                  color: "var(--foreground)"
+                }}
+              >
+                Shopping Bag
+              </h3>
+              <span
+                style={{
+                  fontSize: "0.74rem",
+                  fontWeight: 600,
+                  padding: "3px 9px",
+                  borderRadius: "999px",
+                  backgroundColor: "rgba(85, 104, 50, 0.1)",
+                  color: "var(--primary)",
+                  letterSpacing: "0.02em"
+                }}
+              >
+                {cartCount} {cartCount === 1 ? "creation" : "creations"}
+              </span>
+            </div>
           </div>
+
           <button
             onClick={() => setCartOpen(false)}
-            aria-label="Close bag"
+            aria-label="Close shopping bag"
             style={{
-              color: "var(--foreground)",
-              padding: "6px",
+              width: "36px",
+              height: "36px",
               borderRadius: "50%",
+              border: "1px solid #EDE8DE",
+              backgroundColor: "#ffffff",
+              color: "var(--foreground)",
               display: "grid",
               placeItems: "center",
-              cursor: "pointer"
+              cursor: "pointer",
+              transition: "all 0.2s ease"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#F4F1EA";
+              e.currentTarget.style.borderColor = "#D8D1C5";
+              e.currentTarget.style.transform = "rotate(90deg)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#ffffff";
+              e.currentTarget.style.borderColor = "#EDE8DE";
+              e.currentTarget.style.transform = "rotate(0deg)";
             }}
           >
-            <X size={22} strokeWidth={1.5} />
+            <X size={18} strokeWidth={1.8} />
           </button>
         </div>
 
+        {/* Complimentary Delivery Banner */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            padding: "10px 24px",
+            backgroundColor: "rgba(85, 104, 50, 0.06)",
+            borderBottom: "1px solid rgba(85, 104, 50, 0.12)",
+            fontSize: "0.76rem",
+            color: "#38471e",
+            letterSpacing: "0.01em"
+          }}
+        >
+          <Truck size={15} style={{ flexShrink: 0, color: "var(--primary)" }} />
+          <span>
+            <strong>Complimentary Insured Shipping</strong> &amp; Signature Gift Box
+          </span>
+        </div>
+
         {/* Drawer Body */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "20px 30px" }}>
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "4px 24px 20px",
+            scrollbarWidth: "thin",
+            scrollbarColor: "#D8D1C5 transparent"
+          }}
+        >
           {cart.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "80px 20px", color: "var(--muted-foreground)" }}>
+            <div style={{ textAlign: "center", padding: "70px 20px 40px", color: "var(--muted-foreground)" }}>
               <div
                 style={{
-                  width: "70px",
-                  height: "70px",
+                  width: "72px",
+                  height: "72px",
                   borderRadius: "50%",
-                  backgroundColor: "var(--primary-soft)",
+                  backgroundColor: "rgba(85, 104, 50, 0.08)",
+                  border: "1px solid rgba(85, 104, 50, 0.15)",
                   display: "grid",
                   placeItems: "center",
                   margin: "0 auto 20px",
                   color: "var(--primary)"
                 }}
               >
-                <ShoppingBag size={34} strokeWidth={1.4} />
+                <ShoppingBag size={32} strokeWidth={1.4} />
               </div>
-              <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.4rem", color: "var(--foreground)" }}>
+              <h4
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "1.35rem",
+                  color: "var(--foreground)",
+                  margin: "0 0 8px",
+                  fontWeight: 600
+                }}
+              >
                 Your Bag is Empty
-              </p>
-              <p style={{ fontSize: "0.88rem", marginTop: "8px", maxWidth: "280px", marginInline: "auto", lineHeight: 1.6 }}>
+              </h4>
+              <p
+                style={{
+                  fontSize: "0.85rem",
+                  maxWidth: "280px",
+                  marginInline: "auto",
+                  lineHeight: 1.6,
+                  color: "var(--muted-foreground)"
+                }}
+              >
                 Explore our fine jewelry collection to select your handcrafted bespoke pieces.
               </p>
               <Link
@@ -1185,23 +1285,36 @@ function CartDrawer() {
                 onClick={() => setCartOpen(false)}
                 className="eyebrow"
                 style={{
-                  display: "inline-block",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
                   marginTop: "24px",
-                  padding: "14px 32px",
+                  padding: "13px 28px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
-                  borderRadius: "2px",
-                  letterSpacing: "0.16em",
-                  transition: "background-color 0.2s"
+                  borderRadius: "8px",
+                  letterSpacing: "0.14em",
+                  fontSize: "0.74rem",
+                  fontWeight: 600,
+                  transition: "all 0.2s ease",
+                  boxShadow: "0 4px 14px rgba(85, 104, 50, 0.2)"
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--primary)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
               >
-                Discover Collection
+                <span>Discover Collections</span>
+                <ArrowRight size={14} />
               </Link>
             </div>
           ) : (
-            <CartLines />
+            <CartLines compact={true} onProductClick={() => setCartOpen(false)} />
           )}
         </div>
 
@@ -1209,20 +1322,56 @@ function CartDrawer() {
         {cart.length > 0 && (
           <div
             style={{
-              borderTop: "1px solid #ede8de",
-              padding: "24px 30px",
-              backgroundColor: "#faf9f6"
+              borderTop: "1px solid #EDE8DE",
+              padding: "18px 24px 22px",
+              backgroundColor: "#FAF9F6",
+              boxShadow: "0 -8px 24px rgba(0, 0, 0, 0.03)"
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", fontSize: "1.1rem" }}>
-              <span style={{ fontFamily: "var(--font-serif)", fontWeight: 500 }}>Subtotal</span>
-              <span style={{ fontWeight: 700, color: "var(--primary)", fontSize: "1.3rem" }}>
-                {format(subtotal)}
-              </span>
+            {/* Price rows */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline"
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: "1.1rem",
+                    fontWeight: 600,
+                    color: "var(--foreground)"
+                  }}
+                >
+                  Estimated Subtotal
+                </span>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    color: "var(--primary)",
+                    fontSize: "1.3rem",
+                    fontFamily: "var(--font-serif)"
+                  }}
+                >
+                  {format(subtotal)}
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "0.78rem",
+                  color: "var(--muted-foreground)"
+                }}
+              >
+                <span>Insured Armoured Transit</span>
+                <span style={{ color: "var(--primary)", fontWeight: 600 }}>COMPLIMENTARY</span>
+              </div>
             </div>
-            <p style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", marginTop: "6px", lineHeight: 1.5 }}>
-              Complimentary insured worldwide shipping • 30-day effortless returns.
-            </p>
+
+            {/* Checkout Action Button */}
             <button
               onClick={() => {
                 setCartOpen(false);
@@ -1231,34 +1380,67 @@ function CartDrawer() {
               className="eyebrow"
               style={{
                 width: "100%",
-                marginTop: "18px",
                 backgroundColor: "var(--primary)",
                 color: "#ffffff",
-                padding: "16px",
-                borderRadius: "2px",
+                padding: "15px 20px",
+                borderRadius: "8px",
                 textAlign: "center",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "10px",
-                letterSpacing: "0.18em",
+                letterSpacing: "0.14em",
+                fontSize: "0.78rem",
                 fontWeight: 600,
                 boxShadow: "0 6px 20px rgba(85, 104, 50, 0.28)",
                 cursor: "pointer",
-                transition: "all 0.2s"
+                transition: "all 0.2s ease",
+                border: "none"
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = "var(--primary-hover)";
                 e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow = "0 8px 24px rgba(85, 104, 50, 0.35)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = "var(--primary)";
                 e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 6px 20px rgba(85, 104, 50, 0.28)";
               }}
             >
               <span>View Bag &amp; Checkout</span>
-              <ArrowRight size={16} />
+              <ArrowRight size={15} />
             </button>
+
+            {/* Luxury Trust Indicators */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "14px",
+                marginTop: "14px",
+                paddingTop: "12px",
+                borderTop: "1px dashed #E5DFD3",
+                fontSize: "0.7rem",
+                color: "var(--muted-foreground)"
+              }}
+            >
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
+                <Lock size={12} strokeWidth={2} style={{ color: "var(--primary)" }} />
+                <span>256-Bit SSL</span>
+              </span>
+              <span>•</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
+                <ShieldCheck size={12} strokeWidth={2} style={{ color: "var(--primary)" }} />
+                <span>Certified Genuine</span>
+              </span>
+              <span>•</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
+                <Sparkles size={12} strokeWidth={2} style={{ color: "var(--primary)" }} />
+                <span>30-Day Returns</span>
+              </span>
+            </div>
           </div>
         )}
       </div>

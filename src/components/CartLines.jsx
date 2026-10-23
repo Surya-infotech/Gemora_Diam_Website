@@ -1,181 +1,318 @@
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Minus, Plus, X, PenLine } from "lucide-react";
 import { useStore } from "../lib/store";
 
-export function CartLines({ compact = false }) {
+export function CartLines({ compact = false, onProductClick = null }) {
   const { cart, updateQty, updateItemInstruction, removeItem, format, getProduct } = useStore();
+  const navigate = useNavigate();
+  const [activeInstructionKey, setActiveInstructionKey] = useState(null);
 
   return (
-    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+    <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column" }}>
       {cart.map((item) => {
         const p = getProduct(item.productId);
         if (!p) return null;
+
+        const productUrl = `/product/${p._id || p.id}`;
+
+        const handleItemClick = () => {
+          if (onProductClick) onProductClick();
+          navigate(productUrl);
+        };
+
+        const hasCustomInstruction = Boolean(item.specialinstruction && item.specialinstruction.trim());
+        const isEditingInstruction = activeInstructionKey === item.key;
 
         return (
           <li
             key={item.key}
             style={{
               display: "flex",
-              gap: "18px",
-              padding: "22px 0",
-              borderBottom: "1px solid #EDE8DE"
+              gap: compact ? "14px" : "20px",
+              padding: compact ? "18px 0" : "24px 0",
+              borderBottom: "1px solid #EDE8DE",
+              alignItems: "flex-start"
             }}
           >
-            <img
-              src={p.image}
-              alt={p.name}
+            {/* Thumbnail */}
+            <div
+              onClick={handleItemClick}
               style={{
-                width: compact ? "80px" : "clamp(84px, 18vw, 116px)",
-                height: compact ? "96px" : "clamp(100px, 22vw, 138px)",
-                objectFit: "contain",
-                padding: "8px",
-                borderRadius: "4px",
+                width: compact ? "76px" : "clamp(88px, 16vw, 110px)",
+                height: compact ? "76px" : "clamp(88px, 16vw, 110px)",
+                aspectRatio: "1 / 1",
+                borderRadius: "10px",
                 backgroundColor: "#FAF9F6",
                 border: "1px solid #ECE7DD",
-                flexShrink: 0
+                overflow: "hidden",
+                flexShrink: 0,
+                cursor: "pointer",
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
               }}
-            />
+            >
+              <img
+                src={p.image}
+                alt={p.name}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                  transition: "transform 0.3s ease"
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              />
+            </div>
 
-            <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+            {/* Info and Actions */}
+            <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "8px" }}>
-                <div>
+                <div style={{ minWidth: 0, flex: 1 }}>
                   <h4
+                    onClick={handleItemClick}
+                    title={p.name}
                     style={{
                       fontFamily: "var(--font-serif)",
-                      fontSize: compact ? "1.1rem" : "clamp(1.05rem, 2.5vw, 1.3rem)",
-                      lineHeight: 1.25,
+                      fontSize: compact ? "0.95rem" : "clamp(1.02rem, 2.2vw, 1.25rem)",
+                      lineHeight: 1.3,
                       margin: 0,
-                      fontWeight: 500
+                      fontWeight: 500,
+                      color: "#182015",
+                      cursor: "pointer",
+                      display: "-webkit-box",
+                      WebkitLineClamp: compact ? 2 : 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      transition: "color 0.2s"
                     }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#182015")}
                   >
                     {p.name}
                   </h4>
-                  <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "4px", lineHeight: 1.5 }}>
-                    {item.metal}
-                    {item.stone ? ` • ${item.stone}` : ""}
-                    {item.carat ? ` • ${item.carat}` : ""}
-                    {item.shape || item.shapename ? ` • ${item.shape || item.shapename}` : ""}
-                    {item.clarity || item.clarityname ? ` • ${item.clarity || item.clarityname}` : ""}
-                    {item.diamondcolor ? ` • Dia: ${item.diamondcolor}` : ""}
-                    {item.bandcolor ? ` • Band: ${item.bandcolor}` : ""}
-                    {item.size ? ` • Size: ${item.size}` : ""}
-                  </p>
-                  <p style={{ fontSize: "0.8rem", color: "var(--primary)", fontWeight: 600, marginTop: "2px" }}>
-                    {format(item.price ?? p.price)} each
-                  </p>
+
+                  {/* Specifications Line */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "3px 6px",
+                      fontSize: "0.74rem",
+                      color: "#6b7566",
+                      marginTop: "4px",
+                      lineHeight: 1.4
+                    }}
+                  >
+                    {item.metal && <span style={{ fontWeight: 600, color: "var(--foreground)" }}>{item.metal}</span>}
+                    {item.stone && <span>• {item.stone}</span>}
+                    {item.carat && <span>• {item.carat}</span>}
+                    {(item.shape || item.shapename) && <span>• {item.shape || item.shapename}</span>}
+                    {(item.clarity || item.clarityname) && <span>• {item.clarity || item.clarityname}</span>}
+                    {item.diamondcolor && <span>• {item.diamondcolor}</span>}
+                    {item.bandcolor && <span>• Band: {item.bandcolor}</span>}
+                    {item.size && <span>• Size {item.size}</span>}
+                  </div>
                 </div>
 
+                {/* Remove button */}
                 <button
+                  type="button"
                   onClick={() => removeItem(item.key)}
                   aria-label="Remove item"
-                  style={{ color: "var(--muted-foreground)", padding: "4px", cursor: "pointer", transition: "color 0.2s" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--destructive)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-foreground)")}
+                  title="Remove from bag"
+                  style={{
+                    color: "var(--muted-foreground)",
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "50%",
+                    display: "grid",
+                    placeItems: "center",
+                    cursor: "pointer",
+                    border: "none",
+                    background: "transparent",
+                    transition: "all 0.2s",
+                    flexShrink: 0
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "#d93838";
+                    e.currentTarget.style.backgroundColor = "#fff1f1";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = "var(--muted-foreground)";
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
                 >
-                  <X size={17} strokeWidth={1.5} />
+                  <X size={15} strokeWidth={1.7} />
                 </button>
               </div>
 
+              {/* Price and Quantity Stepper Row */}
               <div
                 style={{
-                  marginTop: "auto",
-                  paddingTop: "12px",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between"
+                  justifyContent: "space-between",
+                  marginTop: "10px"
                 }}
               >
+                {/* Quantity Stepper */}
                 <div
                   style={{
-                    display: "flex",
+                    display: "inline-flex",
                     alignItems: "center",
                     border: "1px solid #EDE8DE",
-                    borderRadius: "3px",
-                    backgroundColor: "#FAF9F6"
+                    borderRadius: "6px",
+                    backgroundColor: "#FAF9F6",
+                    height: "30px"
                   }}
                 >
                   <button
+                    type="button"
                     aria-label="Decrease quantity"
                     onClick={() => updateQty(item.key, item.qty - 1)}
-                    style={{ padding: "6px 10px", display: "flex", alignItems: "center", cursor: "pointer", color: "var(--foreground)" }}
+                    style={{
+                      width: "28px",
+                      height: "100%",
+                      display: "grid",
+                      placeItems: "center",
+                      cursor: "pointer",
+                      color: "var(--foreground)",
+                      background: "transparent",
+                      border: "none",
+                      padding: 0
+                    }}
                   >
-                    <Minus size={12} />
+                    <Minus size={11} />
                   </button>
-                  <span style={{ width: "32px", textAlign: "center", fontSize: "0.85rem", fontWeight: 600, color: "var(--foreground)" }}>
+                  <span style={{ width: "24px", textAlign: "center", fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>
                     {item.qty}
                   </span>
                   <button
+                    type="button"
                     aria-label="Increase quantity"
                     onClick={() => updateQty(item.key, item.qty + 1)}
-                    style={{ padding: "6px 10px", display: "flex", alignItems: "center", cursor: "pointer", color: "var(--foreground)" }}
+                    style={{
+                      width: "28px",
+                      height: "100%",
+                      display: "grid",
+                      placeItems: "center",
+                      cursor: "pointer",
+                      color: "var(--foreground)",
+                      background: "transparent",
+                      border: "none",
+                      padding: 0
+                    }}
                   >
-                    <Plus size={12} />
+                    <Plus size={11} />
                   </button>
                 </div>
 
-                <span style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--primary)" }}>
-                  {format((item.price ?? p.price) * item.qty)}
-                </span>
-              </div>
-
-              {/* Item-wise Special Instruction Option */}
-              <div
-                style={{
-                  marginTop: "12px",
-                  paddingTop: "10px",
-                  borderTop: "1px dashed #EDE8DE"
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
-                  <label
-                    style={{
-                      fontSize: "0.74rem",
-                      fontWeight: 600,
-                      color: "var(--foreground)",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "5px",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.08em"
-                    }}
-                  >
-                    <PenLine size={12} style={{ color: "var(--primary)" }} /> Special Instruction
-                  </label>
-                  {item.specialinstruction && (
-                    <button
-                      type="button"
-                      onClick={() => updateItemInstruction(item.key, "")}
-                      style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
-                    >
-                      Clear
-                    </button>
+                {/* Total Price */}
+                <div style={{ textAlign: "right" }}>
+                  <span style={{ fontSize: "0.98rem", fontWeight: 700, color: "var(--primary)" }}>
+                    {format((item.price ?? p.price) * item.qty)}
+                  </span>
+                  {item.qty > 1 && (
+                    <div style={{ fontSize: "0.7rem", color: "var(--muted-foreground)" }}>
+                      {format(item.price ?? p.price)} each
+                    </div>
                   )}
                 </div>
-                <input
-                  type="text"
-                  value={item.specialinstruction || ""}
-                  onChange={(e) => updateItemInstruction(item.key, e.target.value)}
-                  placeholder="e.g. Custom engraving text, sizing note, gift message..."
-                  style={{
-                    width: "100%",
-                    padding: compact ? "6px 10px" : "8px 12px",
-                    fontSize: "0.8rem",
-                    border: "1px solid #EDE8DE",
-                    borderRadius: "3px",
-                    backgroundColor: "#FAF9F6",
-                    color: "var(--foreground)",
-                    outline: "none",
-                    boxSizing: "border-box",
-                    transition: "border-color 0.2s, background-color 0.2s"
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "var(--primary)";
-                    e.target.style.backgroundColor = "#ffffff";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#EDE8DE";
-                    e.target.style.backgroundColor = "#FAF9F6";
-                  }}
-                />
+              </div>
+
+              {/* Collapsible Bespoke Note / Engraving */}
+              <div style={{ marginTop: "8px", paddingTop: "6px" }}>
+                {isEditingInstruction || hasCustomInstruction ? (
+                  <div style={{ marginTop: "4px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                      <label
+                        style={{
+                          fontSize: "0.7rem",
+                          fontWeight: 600,
+                          color: "var(--foreground)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.06em",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px"
+                        }}
+                      >
+                        <PenLine size={11} color="var(--primary)" />
+                        Custom Note / Engraving
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateItemInstruction(item.key, "");
+                          setActiveInstructionKey(null);
+                        }}
+                        style={{
+                          fontSize: "0.68rem",
+                          color: "var(--muted-foreground)",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          textDecoration: "underline"
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={item.specialinstruction || ""}
+                      onChange={(e) => updateItemInstruction(item.key, e.target.value)}
+                      placeholder="e.g. Ring engraving 'Forever', gift note..."
+                      style={{
+                        width: "100%",
+                        padding: "6px 10px",
+                        fontSize: "0.78rem",
+                        border: "1px solid #E5DFD3",
+                        borderRadius: "6px",
+                        backgroundColor: "#FAF9F6",
+                        color: "var(--foreground)",
+                        outline: "none",
+                        boxSizing: "border-box",
+                        transition: "all 0.2s"
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = "var(--primary)";
+                        e.target.style.backgroundColor = "#ffffff";
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = "#E5DFD3";
+                        e.target.style.backgroundColor = "#FAF9F6";
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setActiveInstructionKey(item.key)}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      fontSize: "0.72rem",
+                      color: "var(--primary)",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: "2px 0",
+                      fontWeight: 500
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+                    onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+                  >
+                    <PenLine size={11} />
+                    <span>+ Add Bespoke Note or Engraving</span>
+                  </button>
+                )}
               </div>
             </div>
           </li>
@@ -184,3 +321,5 @@ export function CartLines({ compact = false }) {
     </ul>
   );
 }
+
+export default CartLines;
