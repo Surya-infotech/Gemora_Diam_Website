@@ -11,7 +11,12 @@ import {
   Building,
   AlertCircle,
   ArrowRight,
-  Truck
+  ArrowLeft,
+  Truck,
+  ShieldCheck,
+  Sparkles,
+  ShoppingBag,
+  Gift
 } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
@@ -470,57 +475,325 @@ export default function CartPage() {
 
   if (!cart.length) {
     return (
-      <div className="container-luxury" style={{ maxWidth: "600px", padding: "120px 20px", textAlign: "center" }}>
-        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.5rem, 5vw, 3.6rem)" }}>
-          Your bag is empty
-        </h1>
-        <p style={{ marginTop: "16px", fontSize: "0.95rem", color: "var(--muted-foreground)" }}>
-          Discover timeless heirloom pieces made to be treasured across generations.
-        </p>
-        <Link
-          to="/collections"
-          className="eyebrow"
+      <div className="container-luxury" style={{ maxWidth: "780px", padding: "100px 20px 140px", textAlign: "center" }}>
+        <div
           style={{
-            marginTop: "36px",
-            display: "inline-block",
-            backgroundColor: "var(--primary)",
-            color: "var(--primary-foreground)",
-            padding: "16px 36px"
+            width: "84px",
+            height: "84px",
+            borderRadius: "50%",
+            backgroundColor: "rgba(85, 104, 50, 0.08)",
+            border: "1px solid rgba(85, 104, 50, 0.16)",
+            color: "var(--primary)",
+            display: "grid",
+            placeItems: "center",
+            margin: "0 auto 24px"
           }}
         >
-          Explore Collections
-        </Link>
+          <ShoppingBag size={40} strokeWidth={1.4} />
+        </div>
+        <span
+          className="eyebrow"
+          style={{ color: "var(--primary)", letterSpacing: "0.22em", fontSize: "0.74rem", fontWeight: 700, display: "block", marginBottom: "8px" }}
+        >
+          HAUTE JOAILLERIE ATELIER
+        </span>
+        <h1
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2.4rem, 4.5vw, 3.4rem)",
+            margin: "0 0 16px",
+            fontWeight: 600,
+            color: "var(--foreground)"
+          }}
+        >
+          Your Shopping Bag is Empty
+        </h1>
+        <p
+          style={{
+            fontSize: "0.98rem",
+            color: "var(--muted-foreground)",
+            maxWidth: "500px",
+            margin: "0 auto 36px",
+            lineHeight: 1.6
+          }}
+        >
+          Discover timeless heirloom pieces handcrafted with certified diamonds, designed to be cherished for generations.
+        </p>
+        <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
+          <Link
+            to="/collections"
+            className="eyebrow"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "10px",
+              backgroundColor: "var(--primary)",
+              color: "#ffffff",
+              padding: "15px 34px",
+              borderRadius: "8px",
+              boxShadow: "0 6px 20px rgba(85, 104, 50, 0.28)",
+              transition: "all 0.2s ease"
+            }}
+          >
+            <span>Explore Fine Collections</span>
+            <ArrowRight size={16} />
+          </Link>
+        </div>
       </div>
     );
   }
 
-  return (
-    <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
-      <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.5rem, 5vw, 3.8rem)" }}>
-        Shopping Bag
-      </h1>
+  const totalItemCount = cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0);
 
-      <div
+  return (
+    <div className="container-luxury" style={{ maxWidth: "1340px", paddingTop: "36px", paddingBottom: "110px" }}>
+      {/* Breadcrumb Navigation */}
+      <nav
+        aria-label="Breadcrumb"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
-          gap: "clamp(28px, 4vw, 60px)",
-          marginTop: "40px",
-          alignItems: "start"
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          fontSize: "0.8rem",
+          color: "var(--muted-foreground)",
+          marginBottom: "18px"
         }}
       >
-        {/* Left Column: Cart Items & Saved Delivery Addresses */}
-        <div style={{ flex: 1 }}>
-          {/* Cart Item Lines */}
-          <CartLines />
+        <Link to="/" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>
+          Home
+        </Link>
+        <span>/</span>
+        <Link to="/collections" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>
+          Collections
+        </Link>
+        <span>/</span>
+        <span style={{ color: "var(--foreground)", fontWeight: 600 }}>Shopping Bag</span>
+      </nav>
 
-          {/* Delivery Address Selection Section */}
+      {/* Header Row: Title & Flow Steps */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+          flexWrap: "wrap",
+          gap: "20px",
+          paddingBottom: "22px",
+          borderBottom: "1px solid #EDE8DE",
+          marginBottom: "28px"
+        }}
+      >
+        <div>
+          <span
+            className="eyebrow"
+            style={{
+              color: "var(--primary)",
+              letterSpacing: "0.2em",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+              display: "block",
+              marginBottom: "4px"
+            }}
+          >
+            ATELIER SHOPPING EXPERIENCE
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+            <h1
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(2rem, 3.8vw, 3rem)",
+                margin: 0,
+                fontWeight: 600,
+                letterSpacing: "-0.01em",
+                color: "var(--foreground)"
+              }}
+            >
+              Shopping Bag
+            </h1>
+            <span
+              style={{
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                padding: "3px 11px",
+                borderRadius: "999px",
+                backgroundColor: "rgba(85, 104, 50, 0.1)",
+                color: "var(--primary)",
+                letterSpacing: "0.02em"
+              }}
+            >
+              {totalItemCount} {totalItemCount === 1 ? "Creation" : "Creations"}
+            </span>
+          </div>
+        </div>
+
+        {/* Checkout Flow Step Indicator */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "0.78rem",
+            backgroundColor: "#FAF9F6",
+            padding: "8px 18px",
+            borderRadius: "999px",
+            border: "1px solid #EDE8DE"
+          }}
+        >
+          <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--primary)", fontWeight: 700 }}>
+            <span
+              style={{
+                width: "20px",
+                height: "20px",
+                borderRadius: "50%",
+                backgroundColor: "var(--primary)",
+                color: "#ffffff",
+                fontSize: "0.68rem",
+                display: "grid",
+                placeItems: "center"
+              }}
+            >
+              1
+            </span>
+            Bag Review
+          </span>
+          <span style={{ color: "#D1C9BC" }}>—</span>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              color: selectedAddress ? "var(--primary)" : "var(--foreground)",
+              fontWeight: selectedAddress ? 700 : 500
+            }}
+          >
+            <span
+              style={{
+                width: "20px",
+                height: "20px",
+                borderRadius: "50%",
+                backgroundColor: selectedAddress ? "var(--primary)" : "#EAE5DC",
+                color: selectedAddress ? "#ffffff" : "var(--foreground)",
+                fontSize: "0.68rem",
+                display: "grid",
+                placeItems: "center"
+              }}
+            >
+              2
+            </span>
+            Delivery Address
+          </span>
+          <span style={{ color: "#D1C9BC" }}>—</span>
+          <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--muted-foreground)" }}>
+            <span
+              style={{
+                width: "20px",
+                height: "20px",
+                borderRadius: "50%",
+                backgroundColor: "#EAE5DC",
+                color: "var(--muted-foreground)",
+                fontSize: "0.68rem",
+                display: "grid",
+                placeItems: "center"
+              }}
+            >
+              3
+            </span>
+            Payment
+          </span>
+        </div>
+      </div>
+
+      {/* Main Two-Column Layout */}
+      <div className="cart-checkout-layout">
+        {/* Left Column: Cart Items Card & Delivery Address Section */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+          {/* Card 1: Selected Line Items */}
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              border: "1px solid #EDE8DE",
+              borderRadius: "10px",
+              padding: "24px 28px",
+              boxShadow: "0 4px 24px rgba(0, 0, 0, 0.02)"
+            }}
+          >
+            {/* Header row */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: "16px",
+                borderBottom: "1px solid #F0EDE6",
+                marginBottom: "8px"
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <ShoppingBag size={18} style={{ color: "var(--primary)" }} />
+                <h2
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: "1.3rem",
+                    margin: 0,
+                    fontWeight: 600,
+                    color: "var(--foreground)"
+                  }}
+                >
+                  Selected Creations ({totalItemCount})
+                </h2>
+              </div>
+              <Link
+                to="/collections"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontSize: "0.8rem",
+                  color: "var(--primary)",
+                  textDecoration: "none",
+                  fontWeight: 600
+                }}
+              >
+                <ArrowLeft size={14} />
+                <span>Continue Shopping</span>
+              </Link>
+            </div>
+
+            {/* Cart Item Lines */}
+            <CartLines />
+
+            {/* Complimentary Gift Packaging Perk Strip */}
+            <div
+              style={{
+                marginTop: "20px",
+                padding: "14px 18px",
+                backgroundColor: "rgba(85, 104, 50, 0.05)",
+                border: "1px solid rgba(85, 104, 50, 0.12)",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "12px"
+              }}
+            >
+              <Gift size={20} style={{ color: "var(--primary)", flexShrink: 0, marginTop: "2px" }} />
+              <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
+                <strong style={{ color: "var(--foreground)" }}>Complimentary Signature Velvet Packaging Included</strong>
+                <p style={{ margin: "2px 0 0", color: "var(--muted-foreground)" }}>
+                  Each fine jewelry creation is presented in our handcrafted velvet gift box, tied with ribbon and accompanied by official certification.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Delivery Address Selection Section */}
           <section
             id="delivery-address-section"
             style={{
-              marginTop: "50px",
-              borderTop: "1px solid var(--border)",
-              paddingTop: "36px"
+              backgroundColor: "#ffffff",
+              border: "1px solid #EDE8DE",
+              borderRadius: "10px",
+              padding: "24px 28px",
+              boxShadow: "0 4px 24px rgba(0, 0, 0, 0.02)"
             }}
           >
             <div
@@ -530,18 +803,33 @@ export default function CartPage() {
                 alignItems: "center",
                 flexWrap: "wrap",
                 gap: "16px",
+                paddingBottom: "16px",
+                borderBottom: "1px solid #F0EDE6",
                 marginBottom: "20px"
               }}
             >
               <div>
+                <span
+                  className="eyebrow"
+                  style={{
+                    color: "var(--primary)",
+                    letterSpacing: "0.18em",
+                    fontSize: "0.68rem",
+                    fontWeight: 700,
+                    display: "block",
+                    marginBottom: "3px"
+                  }}
+                >
+                  STEP 2 OF 3
+                </span>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <MapPin size={22} style={{ color: "var(--primary)" }} />
-                  <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", margin: 0 }}>
+                  <MapPin size={20} style={{ color: "var(--primary)" }} />
+                  <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", margin: 0, fontWeight: 600 }}>
                     Shipping & Delivery Address
                   </h2>
                 </div>
-                <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", marginTop: "4px" }}>
-                  Select an address for insured courier delivery of your order.
+                <p style={{ fontSize: "0.84rem", color: "var(--muted-foreground)", marginTop: "4px", marginBottom: 0 }}>
+                  Select or add a destination for fully insured armoured courier delivery.
                 </p>
               </div>
 
@@ -554,14 +842,14 @@ export default function CartPage() {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "6px",
-                    backgroundColor: "var(--primary-soft)",
+                    backgroundColor: "rgba(85, 104, 50, 0.08)",
                     color: "var(--primary)",
-                    border: "1px solid var(--primary)",
-                    padding: "10px 18px",
-                    borderRadius: "2px",
+                    border: "1px solid rgba(85, 104, 50, 0.25)",
+                    padding: "9px 16px",
+                    borderRadius: "6px",
                     cursor: "pointer",
                     fontWeight: 600,
-                    fontSize: "0.75rem",
+                    fontSize: "0.74rem",
                     transition: "all 0.2s ease"
                   }}
                   onMouseEnter={(e) => {
@@ -569,7 +857,7 @@ export default function CartPage() {
                     e.currentTarget.style.color = "#ffffff";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+                    e.currentTarget.style.backgroundColor = "rgba(85, 104, 50, 0.08)";
                     e.currentTarget.style.color = "var(--primary)";
                   }}
                 >
@@ -588,14 +876,14 @@ export default function CartPage() {
                   backgroundColor: "#fff5f5",
                   border: "1px solid #fecaca",
                   color: "#b91c1c",
-                  padding: "14px 18px",
-                  borderRadius: "3px",
+                  padding: "12px 16px",
+                  borderRadius: "6px",
                   marginBottom: "20px",
-                  fontSize: "0.88rem"
+                  fontSize: "0.85rem"
                 }}
               >
                 <AlertCircle size={18} style={{ flexShrink: 0 }} />
-                <span style={{ fontWeight: 500 }}>{addressError}</span>
+                <span style={{ fontWeight: 600 }}>{addressError}</span>
               </div>
             )}
 
@@ -603,19 +891,32 @@ export default function CartPage() {
             {!user ? (
               <div
                 style={{
-                  backgroundColor: "var(--card)",
-                  border: "1px dashed var(--border)",
-                  padding: "36px",
+                  backgroundColor: "#FAF9F6",
+                  border: "1px dashed #EDE8DE",
+                  padding: "36px 24px",
                   textAlign: "center",
-                  borderRadius: "4px"
+                  borderRadius: "8px"
                 }}
               >
-                <MapPin size={32} style={{ color: "var(--muted-foreground)", margin: "0 auto 12px", display: "block" }} />
-                <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.3rem", marginBottom: "6px" }}>
+                <div
+                  style={{
+                    width: "56px",
+                    height: "56px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(85, 104, 50, 0.08)",
+                    color: "var(--primary)",
+                    display: "grid",
+                    placeItems: "center",
+                    margin: "0 auto 14px"
+                  }}
+                >
+                  <MapPin size={26} />
+                </div>
+                <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.3rem", margin: "0 0 6px", fontWeight: 600 }}>
                   Sign in to Select Delivery Address
                 </h3>
-                <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", maxWidth: "420px", margin: "0 auto 20px" }}>
-                  Please sign in to view your saved addresses or add a new shipping address before placing your order.
+                <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", maxWidth: "440px", margin: "0 auto 20px", lineHeight: 1.5 }}>
+                  Please sign in to access your saved addresses or add a new shipping destination before finalizing your fine jewelry order.
                 </p>
                 <button
                   type="button"
@@ -627,35 +928,39 @@ export default function CartPage() {
                     gap: "8px",
                     backgroundColor: "var(--primary)",
                     color: "#ffffff",
-                    padding: "12px 28px",
-                    borderRadius: "2px",
+                    padding: "13px 28px",
+                    borderRadius: "8px",
                     border: "none",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    fontSize: "0.76rem",
+                    fontWeight: 600,
+                    boxShadow: "0 4px 14px rgba(85, 104, 50, 0.25)"
                   }}
                 >
-                  Sign In to Continue <ArrowRight size={14} />
+                  <span>Sign In to Continue</span>
+                  <ArrowRight size={14} />
                 </button>
               </div>
             ) : loadingAddresses ? (
-              <div style={{ textAlign: "center", padding: "40px", color: "var(--muted-foreground)" }}>
-                Loading saved addresses...
+              <div style={{ textAlign: "center", padding: "40px", color: "var(--muted-foreground)", fontSize: "0.88rem" }}>
+                Loading saved delivery addresses...
               </div>
             ) : addresses.length === 0 ? (
               <div
                 style={{
-                  backgroundColor: "var(--card)",
-                  border: "1px dashed var(--border)",
-                  padding: "40px 24px",
+                  backgroundColor: "#FAF9F6",
+                  border: "1px dashed #EDE8DE",
+                  padding: "36px 24px",
                   textAlign: "center",
-                  borderRadius: "4px"
+                  borderRadius: "8px"
                 }}
               >
                 <MapPin size={34} style={{ color: "var(--muted-foreground)", margin: "0 auto 12px", display: "block" }} />
-                <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.35rem", marginBottom: "6px" }}>
+                <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.35rem", marginBottom: "6px", fontWeight: 600 }}>
                   No Saved Delivery Address
                 </h3>
-                <p style={{ fontSize: "0.88rem", color: "var(--muted-foreground)", maxWidth: "420px", margin: "0 auto 20px" }}>
-                  You must have a delivery address selected before processing the order. Add your address to proceed.
+                <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", maxWidth: "420px", margin: "0 auto 20px" }}>
+                  A verified shipping address is required for armoured courier delivery. Add your address to proceed.
                 </p>
                 <button
                   type="button"
@@ -667,10 +972,13 @@ export default function CartPage() {
                     gap: "8px",
                     backgroundColor: "var(--primary)",
                     color: "#ffffff",
-                    padding: "12px 26px",
-                    borderRadius: "2px",
+                    padding: "13px 26px",
+                    borderRadius: "8px",
                     border: "none",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    fontSize: "0.76rem",
+                    fontWeight: 600,
+                    boxShadow: "0 4px 14px rgba(85, 104, 50, 0.25)"
                   }}
                 >
                   <Plus size={16} /> Add Delivery Address
@@ -681,7 +989,7 @@ export default function CartPage() {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                  gap: "18px"
+                  gap: "16px"
                 }}
               >
                 {addresses.map((addr) => {
@@ -693,14 +1001,14 @@ export default function CartPage() {
                       key={addr.addressid}
                       onClick={() => handleSelectAddress(addr.addressid)}
                       style={{
-                        border: isSelected ? "2px solid var(--primary)" : "1px solid var(--border)",
-                        backgroundColor: isSelected ? "var(--primary-soft)" : "var(--card)",
-                        padding: "20px",
-                        borderRadius: "3px",
+                        border: isSelected ? "2px solid var(--primary)" : "1px solid #EDE8DE",
+                        backgroundColor: isSelected ? "rgba(85, 104, 50, 0.05)" : "#ffffff",
+                        padding: "18px 20px",
+                        borderRadius: "8px",
                         cursor: "pointer",
                         position: "relative",
                         transition: "all 0.2s ease",
-                        boxShadow: isSelected ? "0 4px 18px rgba(85, 104, 50, 0.12)" : "none",
+                        boxShadow: isSelected ? "0 4px 18px rgba(85, 104, 50, 0.12)" : "0 2px 8px rgba(0,0,0,0.02)",
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "space-between"
@@ -720,7 +1028,7 @@ export default function CartPage() {
                             {isSelected ? (
                               <CheckCircle2 size={20} style={{ color: "var(--primary)", flexShrink: 0 }} />
                             ) : (
-                              <Circle size={20} style={{ color: "var(--muted-foreground)", opacity: 0.45, flexShrink: 0 }} />
+                              <Circle size={20} style={{ color: "#C8C2B6", flexShrink: 0 }} />
                             )}
                             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                               {addr.title === "Home" && <Home size={15} style={{ color: "var(--primary)" }} />}
@@ -728,7 +1036,7 @@ export default function CartPage() {
                               {!["Home", "Office"].includes(addr.title) && (
                                 <MapPin size={15} style={{ color: "var(--primary)" }} />
                               )}
-                              <span style={{ fontWeight: 600, fontSize: "0.95rem" }}>
+                              <span style={{ fontWeight: 600, fontSize: "0.92rem", color: "var(--foreground)" }}>
                                 {addr.title || "Address"}
                               </span>
                             </div>
@@ -738,10 +1046,10 @@ export default function CartPage() {
                             <span
                               className="eyebrow"
                               style={{
-                                backgroundColor: "rgba(85, 104, 50, 0.12)",
+                                backgroundColor: "rgba(85, 104, 50, 0.1)",
                                 color: "var(--primary)",
-                                padding: "2px 7px",
-                                borderRadius: "2px",
+                                padding: "2px 8px",
+                                borderRadius: "999px",
                                 fontSize: "0.62rem",
                                 fontWeight: 700
                               }}
@@ -754,24 +1062,24 @@ export default function CartPage() {
                         {/* Address Details */}
                         <p
                           style={{
-                            fontSize: "0.88rem",
+                            fontSize: "0.85rem",
                             lineHeight: 1.5,
                             color: "var(--foreground)",
-                            marginBottom: "6px",
+                            marginBottom: "4px",
                             whiteSpace: "pre-line",
                             paddingLeft: "30px"
                           }}
                         >
                           {addr.address}
                         </p>
-                        <p style={{ fontSize: "0.82rem", color: "var(--muted-foreground)", paddingLeft: "30px" }}>
+                        <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", paddingLeft: "30px", margin: "2px 0 0" }}>
                           {addr.cityname}, {addr.statename} {addr.pincode ? `· ${addr.pincode}` : ""}
                         </p>
-                        <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", paddingLeft: "30px", marginTop: "2px" }}>
+                        <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", paddingLeft: "30px", marginTop: "2px", marginBottom: "4px" }}>
                           {addr.countryname}
                         </p>
                         {addr.phone && (
-                          <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", paddingLeft: "30px", marginTop: "4px" }}>
+                          <p style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", paddingLeft: "30px", marginTop: "4px" }}>
                             Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(addr.phone)}</strong>
                           </p>
                         )}
@@ -791,7 +1099,7 @@ export default function CartPage() {
                           <span
                             style={{
                               fontSize: "0.74rem",
-                              fontWeight: 600,
+                              fontWeight: 700,
                               color: "var(--primary)",
                               display: "flex",
                               alignItems: "center",
@@ -825,62 +1133,88 @@ export default function CartPage() {
           style={{
             border: "1px solid #EDE8DE",
             backgroundColor: "#FAF9F6",
-            padding: "clamp(20px, 4vw, 36px)",
-            boxShadow: "0 8px 30px rgba(0,0,0,0.04)",
-            borderRadius: "6px",
+            padding: "26px 26px 28px",
+            boxShadow: "0 10px 32px rgba(0,0,0,0.04)",
+            borderRadius: "10px",
             position: "sticky",
             top: "100px",
-            width: "100%",
             boxSizing: "border-box"
           }}
         >
-          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: 400, margin: 0 }}>
+          <span
+            className="eyebrow"
+            style={{
+              color: "var(--primary)",
+              letterSpacing: "0.18em",
+              fontSize: "0.68rem",
+              fontWeight: 700,
+              display: "block",
+              marginBottom: "4px"
+            }}
+          >
+            ATELIER CHECKOUT
+          </span>
+          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.65rem", fontWeight: 600, margin: 0, color: "var(--foreground)" }}>
             Order Summary
           </h2>
 
-          <div style={{ marginTop: "24px", display: "flex", flexDirection: "column", gap: "14px", fontSize: "0.92rem" }}>
+          <div style={{ marginTop: "22px", display: "flex", flexDirection: "column", gap: "12px", fontSize: "0.88rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>Subtotal</span>
-              <span style={{ fontWeight: 600 }}>{format(subtotal)}</span>
+              <span style={{ color: "var(--muted-foreground)" }}>Items Subtotal ({totalItemCount} {totalItemCount === 1 ? "piece" : "pieces"})</span>
+              <span style={{ fontWeight: 600, color: "var(--foreground)" }}>{format(subtotal)}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>Insured Global Delivery</span>
-              <span style={{ color: "var(--primary)", fontWeight: 600 }}>Complimentary</span>
+              <span style={{ color: "var(--muted-foreground)" }}>Insured Armoured Transit</span>
+              <span style={{ color: "var(--primary)", fontWeight: 700, fontSize: "0.78rem" }}>COMPLIMENTARY</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: "var(--muted-foreground)" }}>Atelier Velvet Presentation Box</span>
+              <span style={{ color: "var(--foreground)", fontWeight: 600, fontSize: "0.78rem" }}>INCLUDED</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: "var(--muted-foreground)" }}>Lifetime Authenticity Certificate</span>
+              <span style={{ color: "var(--foreground)", fontWeight: 600, fontSize: "0.78rem" }}>INCLUDED</span>
             </div>
           </div>
 
-          {/* Total */}
+          {/* Total Price Row */}
           <div
             style={{
-              marginTop: "24px",
+              marginTop: "20px",
               borderTop: "1px solid #EDE8DE",
-              paddingTop: "20px",
+              paddingTop: "18px",
               display: "flex",
               justifyContent: "space-between",
-              alignItems: "baseline",
-              fontFamily: "var(--font-serif)",
-              fontSize: "1.9rem"
+              alignItems: "baseline"
             }}
           >
-            <span>Total</span>
-            <span style={{ color: "var(--primary)", fontWeight: 700 }}>{format(total)}</span>
+            <div>
+              <span style={{ fontFamily: "var(--font-serif)", fontSize: "1.25rem", fontWeight: 600, color: "var(--foreground)", display: "block" }}>
+                Total
+              </span>
+              <span style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>
+                All taxes &amp; insurance included
+              </span>
+            </div>
+            <span style={{ fontFamily: "var(--font-serif)", fontSize: "1.85rem", color: "var(--primary)", fontWeight: 700 }}>
+              {format(total)}
+            </span>
           </div>
 
-          {/* Selected Delivery Address Preview Box */}
-          <div
-            style={{
-              marginTop: "24px",
-              padding: "16px",
-              borderRadius: "4px",
-              backgroundColor: selectedAddress ? "var(--primary-soft)" : "#FFFBF0",
-              border: selectedAddress ? "1px solid var(--primary-light)" : "1px solid #FDE68A",
-              fontSize: "0.84rem"
-            }}
-          >
+          {/* Selected Delivery Address Status Box */}
+          <div style={{ marginTop: "20px" }}>
             {selectedAddress ? (
-              <div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
-                  <span style={{ fontWeight: 600, color: "var(--primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+              <div
+                style={{
+                  padding: "14px 16px",
+                  borderRadius: "8px",
+                  backgroundColor: "rgba(85, 104, 50, 0.08)",
+                  border: "1px solid rgba(85, 104, 50, 0.2)",
+                  fontSize: "0.82rem"
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
+                  <span style={{ fontWeight: 700, color: "var(--primary)", display: "flex", alignItems: "center", gap: "6px" }}>
                     <CheckCircle2 size={16} /> Delivering to: {selectedAddress.title}
                   </span>
                   <button
@@ -893,9 +1227,9 @@ export default function CartPage() {
                       border: "none",
                       color: "var(--primary)",
                       textDecoration: "underline",
-                      fontSize: "0.75rem",
+                      fontSize: "0.74rem",
                       cursor: "pointer",
-                      fontWeight: 600
+                      fontWeight: 700
                     }}
                   >
                     Change
@@ -904,7 +1238,7 @@ export default function CartPage() {
                 <p
                   style={{
                     color: "var(--foreground)",
-                    fontSize: "0.8rem",
+                    fontSize: "0.78rem",
                     margin: 0,
                     lineHeight: 1.4,
                     overflow: "hidden",
@@ -916,19 +1250,54 @@ export default function CartPage() {
                 </p>
               </div>
             ) : (
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", color: "#92400E" }}>
-                <AlertCircle size={16} style={{ flexShrink: 0, marginTop: "2px" }} />
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: "0.82rem" }}>Address Selection Required</div>
-                  <div style={{ fontSize: "0.76rem", marginTop: "2px", color: "#B45309" }}>
-                    Please select a single delivery address from the list before placing your order.
+              <div
+                style={{
+                  padding: "14px 16px",
+                  borderRadius: "8px",
+                  backgroundColor: "#FFFBEB",
+                  border: "1px solid #FDE68A",
+                  fontSize: "0.82rem"
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", color: "#92400E" }}>
+                  <AlertCircle size={16} style={{ flexShrink: 0, marginTop: "2px", color: "#D97706" }} />
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: "0.82rem" }}>Address Selection Required</div>
+                    <div style={{ fontSize: "0.76rem", marginTop: "2px", color: "#B45309", lineHeight: 1.4 }}>
+                      Please select a delivery address below before placing your order.
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!user) {
+                          navigate("/profile");
+                        } else if (addresses.length === 0) {
+                          openAddModal();
+                        } else {
+                          document.getElementById("delivery-address-section")?.scrollIntoView({ behavior: "smooth" });
+                        }
+                      }}
+                      style={{
+                        marginTop: "8px",
+                        background: "#92400E",
+                        color: "#ffffff",
+                        border: "none",
+                        padding: "5px 12px",
+                        borderRadius: "4px",
+                        fontSize: "0.72rem",
+                        fontWeight: 600,
+                        cursor: "pointer"
+                      }}
+                    >
+                      {!user ? "Sign In Now" : addresses.length === 0 ? "+ Add Address" : "Select Address Below ↓"}
+                    </button>
                   </div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Checkout Button */}
+          {/* Checkout CTA Button */}
           <button
             onClick={handleProceedToCheckout}
             disabled={submittingOrder}
@@ -936,49 +1305,56 @@ export default function CartPage() {
             style={{
               width: "100%",
               marginTop: "20px",
-              height: "54px",
+              height: "52px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "10px",
               backgroundColor: "var(--primary)",
               color: "#ffffff",
-              border: "1px solid rgba(197, 160, 89, 0.4)",
-              borderRadius: "4px",
+              border: "none",
+              borderRadius: "8px",
               cursor: submittingOrder ? "not-allowed" : "pointer",
               opacity: submittingOrder ? 0.75 : 1,
-              letterSpacing: "0.18em",
-              fontWeight: 600,
-              fontSize: "0.82rem",
-              boxShadow: "0 6px 22px rgba(85, 104, 50, 0.3)",
+              letterSpacing: "0.14em",
+              fontWeight: 700,
+              fontSize: "0.8rem",
+              boxShadow: "0 6px 22px rgba(85, 104, 50, 0.28)",
               transition: "all 0.25s ease"
             }}
             onMouseEnter={(e) => {
               if (!submittingOrder) {
                 e.currentTarget.style.backgroundColor = "var(--primary-hover)";
                 e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow = "0 8px 26px rgba(85, 104, 50, 0.35)";
               }
             }}
             onMouseLeave={(e) => {
               if (!submittingOrder) {
                 e.currentTarget.style.backgroundColor = "var(--primary)";
                 e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 6px 22px rgba(85, 104, 50, 0.28)";
               }
             }}
           >
-            <Lock size={15} /> {submittingOrder ? "Processing Order..." : "Proceed to Secure Checkout"}
+            <Lock size={15} />
+            <span>{submittingOrder ? "Processing Order..." : "Proceed to Secure Checkout"}</span>
+            <ArrowRight size={15} />
           </button>
 
           {/* Payment Badges */}
-          <div style={{ marginTop: "20px", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px" }}>
-            {["PayPal", "Visa", "Mastercard"].map((p) => (
+          <div style={{ marginTop: "18px", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px" }}>
+            {["PayPal", "Visa", "Mastercard", "AMEX", "Apple Pay"].map((p) => (
               <span
                 key={p}
                 style={{
-                  border: "1px solid var(--border)",
+                  border: "1px solid #E5DFD3",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "4px",
                   padding: "3px 8px",
                   fontSize: "0.68rem",
-                  color: "var(--muted-foreground)"
+                  fontWeight: 600,
+                  color: "var(--foreground)"
                 }}
               >
                 {p}
@@ -986,9 +1362,32 @@ export default function CartPage() {
             ))}
           </div>
 
-          <p style={{ marginTop: "14px", textAlign: "center", fontSize: "0.75rem", color: "var(--muted-foreground)" }}>
-            256-bit SSL encrypted · Fully insured courier delivery
-          </p>
+          {/* Micro Trust Row */}
+          <div
+            style={{
+              marginTop: "16px",
+              paddingTop: "14px",
+              borderTop: "1px dashed #EDE8DE",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              fontSize: "0.72rem",
+              color: "var(--muted-foreground)"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Lock size={13} style={{ color: "var(--primary)", flexShrink: 0 }} />
+              <span>256-Bit SSL Encrypted &amp; PCI-DSS Compliant</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <ShieldCheck size={13} style={{ color: "var(--primary)", flexShrink: 0 }} />
+              <span>Lifetime Authenticity &amp; Gemological Warranty</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Truck size={13} style={{ color: "var(--primary)", flexShrink: 0 }} />
+              <span>100% Insured Armoured Transit to Your Doorstep</span>
+            </div>
+          </div>
         </aside>
       </div>
 
