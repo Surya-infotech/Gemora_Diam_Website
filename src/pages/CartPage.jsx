@@ -1167,14 +1167,6 @@ export default function CartPage() {
               <span style={{ color: "var(--muted-foreground)" }}>Insured Armoured Transit</span>
               <span style={{ color: "var(--primary)", fontWeight: 700, fontSize: "0.78rem" }}>COMPLIMENTARY</span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>Atelier Velvet Presentation Box</span>
-              <span style={{ color: "var(--foreground)", fontWeight: 600, fontSize: "0.78rem" }}>INCLUDED</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>Lifetime Authenticity Certificate</span>
-              <span style={{ color: "var(--foreground)", fontWeight: 600, fontSize: "0.78rem" }}>INCLUDED</span>
-            </div>
           </div>
 
           {/* Total Price Row */}
@@ -1344,7 +1336,7 @@ export default function CartPage() {
 
           {/* Payment Badges */}
           <div style={{ marginTop: "18px", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px" }}>
-            {["PayPal", "Visa", "Mastercard", "AMEX", "Apple Pay"].map((p) => (
+            {["PayPal", "Visa", "Mastercard"].map((p) => (
               <span
                 key={p}
                 style={{
