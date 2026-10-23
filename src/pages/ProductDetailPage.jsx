@@ -12,7 +12,8 @@ import {
   Share2,
   Sparkles,
   ArrowLeft,
-  MessageCircle
+  MessageCircle,
+  Check
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import SectionHeading from "../components/SectionHeading";
@@ -1230,12 +1231,103 @@ function ProductDetailContent({ product }) {
             </button>
           </div>
 
-          <div style={{ padding: "32px 0", maxWidth: "860px", lineHeight: 1.8, fontSize: "0.94rem", color: "var(--foreground)" }}>
+          <div style={{ padding: "32px 0", width: "100%", lineHeight: 1.8, fontSize: "0.94rem", color: "var(--foreground)" }}>
             {hasDescription && currentTab === "description" && (
-              <div>
-                <p style={{ color: "var(--muted-foreground)", whiteSpace: "pre-line" }}>
-                  {product.description}
-                </p>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
+                  gap: "40px",
+                  alignItems: "start"
+                }}
+              >
+                {/* Left Column: Description Narrative */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                  <h3
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "1.35rem",
+                      fontWeight: 500,
+                      color: "#182015",
+                      margin: 0
+                    }}
+                  >
+                    The Story &amp; Craftsmanship
+                  </h3>
+                  <p style={{ color: "var(--muted-foreground)", whiteSpace: "pre-line", fontSize: "0.94rem", lineHeight: 1.85, margin: 0 }}>
+                    {product.description}
+                  </p>
+                </div>
+
+                {/* Right Column: Atelier Standards & Presentation Card */}
+                <div
+                  style={{
+                    backgroundColor: "#FAF9F6",
+                    border: "1px solid #EAE4D7",
+                    borderRadius: "14px",
+                    padding: "26px 28px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "18px"
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div
+                      style={{
+                        width: "38px",
+                        height: "38px",
+                        borderRadius: "50%",
+                        backgroundColor: "var(--primary-soft)",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "var(--primary)"
+                      }}
+                    >
+                      <Sparkles size={18} />
+                    </div>
+                    <div>
+                      <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.1rem", margin: 0, color: "var(--foreground)", fontWeight: 600 }}>
+                        The Atelier Standard
+                      </h4>
+                      <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.12em" }}>
+                        Gemora Haute Joaillerie
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "14px", borderTop: "1px solid #EDE8DE", paddingTop: "16px" }}>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                      <ShieldCheck size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
+                      <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
+                        <strong style={{ color: "var(--foreground)" }}>Certified Ethical Origin:</strong> Hand-selected Type IIa lab-grown stones crafted to highest diamond color &amp; clarity parameters.
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                      <Check size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
+                      <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
+                        <strong style={{ color: "var(--foreground)" }}>Master Artisan Setting:</strong> Secured with precision micro-prongs individually hand-examined under 10x gemological magnification.
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                      <Truck size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
+                      <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
+                        <strong style={{ color: "var(--foreground)" }}>Signature Presentation:</strong> Delivered in our bespoke illuminated velvet presentation box with authenticity dossier.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ borderTop: "1px solid #EDE8DE", paddingTop: "14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: "0.76rem", color: "var(--muted-foreground)" }}>Have bespoke questions?</span>
+                    <a
+                      href={`https://wa.me/917845120369?text=${encodeURIComponent(`Hello, I have questions regarding the craftsmanship of ${product.name}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontSize: "0.78rem", color: "var(--primary)", fontWeight: 600, textDecoration: "none" }}
+                    >
+                      Ask Concierge &rarr;
+                    </a>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -1243,11 +1335,11 @@ function ProductDetailContent({ product }) {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
                   gap: "14px",
                   backgroundColor: "#FAF9F6",
-                  padding: "24px",
-                  borderRadius: "12px",
+                  padding: "26px",
+                  borderRadius: "14px",
                   border: "1px solid #EDE8DE"
                 }}
               >
@@ -1295,13 +1387,48 @@ function ProductDetailContent({ product }) {
             )}
 
             {currentTab === "delivery" && (
-              <div>
-                <ul style={{ paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "12px", color: "var(--muted-foreground)" }}>
-                  <li><strong style={{ color: "var(--foreground)" }}>Complimentary Insured Delivery:</strong> Shipped securely via armoured courier with signature confirmation required upon delivery.</li>
-                  <li><strong style={{ color: "var(--foreground)" }}>Delivery Timelines:</strong> In-stock pieces are dispatched within 2 business days. Customized pieces require 7-10 business days.</li>
-                  <li><strong style={{ color: "var(--foreground)" }}>7-Day Bespoke Returns:</strong> If you are not entirely mesmerized by your jewel, return it in its unworn condition within 7 days for a full refund or exchange.</li>
-                  <li><strong style={{ color: "var(--foreground)" }}>Lifetime Warranty:</strong> Includes complimentary annual prong inspection, sonic cleaning, and surface polishing.</li>
-                </ul>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
+                  gap: "28px"
+                }}
+              >
+                <div
+                  style={{
+                    backgroundColor: "#FAF9F6",
+                    border: "1px solid #EDE8DE",
+                    borderRadius: "14px",
+                    padding: "24px"
+                  }}
+                >
+                  <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.1rem", marginBottom: "12px", color: "var(--foreground)" }}>
+                    Complimentary Armoured Delivery
+                  </h4>
+                  <ul style={{ paddingLeft: "18px", display: "flex", flexDirection: "column", gap: "10px", color: "var(--muted-foreground)", fontSize: "0.86rem" }}>
+                    <li><strong>Fully Insured Courier:</strong> Dispatched via specialized armored transport with required adult signature confirmation.</li>
+                    <li><strong>Dispatch Timeline:</strong> In-stock creations ship within 48 hours. Custom metal &amp; carat variations require 7-10 atelier business days.</li>
+                    <li><strong>Discreet Packaging:</strong> Outer boxes are plain and unmarked to maintain surprise and security.</li>
+                  </ul>
+                </div>
+
+                <div
+                  style={{
+                    backgroundColor: "#FAF9F6",
+                    border: "1px solid #EDE8DE",
+                    borderRadius: "14px",
+                    padding: "24px"
+                  }}
+                >
+                  <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.1rem", marginBottom: "12px", color: "var(--foreground)" }}>
+                    7-Day Bespoke Returns &amp; Warranty
+                  </h4>
+                  <ul style={{ paddingLeft: "18px", display: "flex", flexDirection: "column", gap: "10px", color: "var(--muted-foreground)", fontSize: "0.86rem" }}>
+                    <li><strong>7-Day Returns:</strong> If you are not completely enchanted, return unworn in original presentation packaging within 7 days for full refund.</li>
+                    <li><strong>Complimentary First Sizing:</strong> We offer one complimentary ring resizing within 60 days of delivery.</li>
+                    <li><strong>Lifetime Atelier Warranty:</strong> Includes annual prong inspections, sonic deep-cleaning, and rhodium/gold repolishing.</li>
+                  </ul>
+                </div>
               </div>
             )}
           </div>
