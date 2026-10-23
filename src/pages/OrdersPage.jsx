@@ -1002,14 +1002,14 @@ function OrderDetailModal({ order, onClose }) {
         <div
           style={{
             background: "linear-gradient(180deg, #F9F7F3 0%, #FFFFFF 100%)",
-            padding: "24px 32px 18px 32px",
+            padding: "20px 28px 16px 28px",
             borderBottom: "1px solid #EDE8DE",
             position: "relative",
             flexShrink: 0
           }}
         >
           {/* Eyebrow & Status Badge Row */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", marginBottom: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", marginBottom: "6px" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
               <div
                 style={{
@@ -1079,14 +1079,14 @@ function OrderDetailModal({ order, onClose }) {
             <h2
               style={{
                 fontFamily: "var(--font-serif)",
-                fontSize: "2.3rem",
+                fontSize: "2.2rem",
                 margin: 0,
                 letterSpacing: "-0.01em",
                 color: "var(--foreground)",
                 fontWeight: 600
               }}
             >
-              Order #{orderNum}
+              Order <span style={{ fontVariantNumeric: "lining-nums tabular-nums", color: "var(--primary)" }}>#{orderNum}</span>
             </h2>
             <span style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", fontWeight: 500 }}>
               {orderItems.length} {orderItems.length === 1 ? "Bespoke Creation" : "Bespoke Creations"}
@@ -1126,11 +1126,11 @@ function OrderDetailModal({ order, onClose }) {
         <div
           className="atelier-modal-scroll"
           style={{
-            padding: "24px 32px",
+            padding: "20px 28px",
             overflowY: "auto",
             display: "flex",
             flexDirection: "column",
-            gap: "20px"
+            gap: "16px"
           }}
         >
           {/* Stepper Progress Bar (Hidden when order is cancelled) */}
@@ -1664,7 +1664,7 @@ function OrderDetailModal({ order, onClose }) {
         <div
           style={{
             background: "#FAF9F6",
-            padding: "20px 32px",
+            padding: "16px 28px",
             borderTop: "1px solid #EDE8DE",
             display: "flex",
             justifyContent: "space-between",
