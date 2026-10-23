@@ -17,13 +17,12 @@ import atelier from "../assets/atelier.jpg";
 const validate = (f) => ({
   name: f.name.trim().length < 2 ? "Please enter your full name" : "",
   email: !/^\S+@\S+\.\S+$/.test(f.email) ? "Enter a valid email address" : "",
-  phone: f.phone && !/^[+\d\s()-]{7,20}$/.test(f.phone) ? "Enter a valid phone number" : "",
   message: f.message.trim().length < 10 ? "Please share at least a few details (min 10 characters)" : "",
 });
 
 export default function ContactPage() {
   const { showToast, generalSettings, submitContactUs } = useStore();
-  const [f, setF] = useState({ name: "", email: "", phone: "", message: "" });
+  const [f, setF] = useState({ name: "", email: "", message: "" });
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
@@ -38,22 +37,21 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setTouched({ name: true, email: true, phone: true, message: true });
+    setTouched({ name: true, email: true, message: true });
     if (Object.values(errs).some(Boolean)) {
       showToast("Please review the highlighted fields", "error");
       return;
     }
     setIsSubmitting(true);
-    const fullMessage = `${f.phone ? `[Phone: ${f.phone}] ` : ""}${f.message}`;
     const res = await submitContactUs({
       name: f.name,
       email: f.email,
-      message: fullMessage
+      message: f.message
     });
     setIsSubmitting(false);
     if (res?.success) {
       setSubmittedSuccess(true);
-      setF({ name: "", email: "", phone: "", message: "" });
+      setF({ name: "", email: "", message: "" });
       setTouched({});
       setTimeout(() => setSubmittedSuccess(false), 7000);
     }
@@ -332,39 +330,6 @@ export default function ContactPage() {
                     </p>
                   )}
                 </div>
-              </div>
-
-              {/* Phone / WhatsApp */}
-              <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: "0.76rem",
-                    fontWeight: 600,
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                    color: "var(--foreground)",
-                    marginBottom: "6px"
-                  }}
-                >
-                  Telephone / WhatsApp <span style={{ color: "var(--muted-foreground)", fontWeight: 400 }}>(Optional)</span>
-                </label>
-                <input
-                  type="tel"
-                  placeholder="+1 (555) 000-0000"
-                  value={f.phone}
-                  onChange={(e) => onFieldChange("phone", e.target.value)}
-                  onBlur={() => setTouched((p) => ({ ...p, phone: true }))}
-                  className="contact-input-field"
-                  style={{
-                    borderColor: touched.phone && errs.phone ? "#d9534f" : undefined
-                  }}
-                />
-                {touched.phone && errs.phone && (
-                  <p style={{ color: "#d9534f", fontSize: "0.74rem", marginTop: "5px", margin: "5px 0 0 0" }}>
-                    {errs.phone}
-                  </p>
-                )}
               </div>
 
               {/* Message */}
