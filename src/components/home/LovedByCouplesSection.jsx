@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowLeft, ArrowRight, Star, X } from "lucide-react";
-import SectionHeading from "../SectionHeading";
 
 const DEFAULT_COUPLE_DATA = {
   headerEyebrow: "Real Love Stories",
@@ -181,111 +180,170 @@ export default function LovedByCouplesSection() {
       }}
     >
       <div className="container-luxury" style={{ maxWidth: "1540px", margin: "0 auto", padding: "0 24px" }}>
-        {/* Section Header */}
-        <SectionHeading
-          eyebrow={sectionData.headerEyebrow || "Real Stories"}
-          title={sectionData.headerTitle || "Loved by couples"}
-          description={sectionData.headerDescription || "Hear directly from couples who embarked on their forever journey with Gemora Diam."}
+        {/* Section Header matching Tesora */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            flexWrap: "wrap",
+            gap: "24px",
+            marginBottom: "36px"
+          }}
         >
-          {/* Rating Badge */}
-          {(sectionData.ratingScore || sectionData.reviewCountText) && (
-            <div
+          {/* Left Column: Eyebrow, Title & Subtitle */}
+          <div style={{ maxWidth: "640px" }}>
+            <p
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "10px",
-                backgroundColor: "#FAF8F5",
-                padding: "8px 20px",
-                borderRadius: "999px",
-                border: "1px solid #ECE7DD"
+                fontSize: "0.72rem",
+                fontWeight: 600,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "#8d8070",
+                margin: "0 0 10px 0"
               }}
             >
-              <div style={{ display: "flex", gap: "3px", color: "var(--gold)" }}>
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} fill="var(--gold)" color="var(--gold)" />
-                ))}
+              {sectionData.headerEyebrow || "Real Love Stories"}
+            </p>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(2rem, 3.2vw, 2.75rem)",
+                fontWeight: 400,
+                color: "#181818",
+                lineHeight: 1.15,
+                margin: "0 0 12px 0"
+              }}
+            >
+              {sectionData.headerTitle || "Loved by couples"}
+            </h2>
+            <p
+              style={{
+                fontSize: "clamp(13px, 1.2vw, 15px)",
+                color: "rgba(24, 24, 24, 0.65)",
+                lineHeight: 1.55,
+                margin: 0
+              }}
+            >
+              {sectionData.headerDescription || "Proposals, promises, and the rings that made them. In their own words."}
+            </p>
+          </div>
+
+          {/* Right Column: Rating score + Stars & Review Count + Carousel Navigation Arrows */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "28px",
+              flexWrap: "wrap"
+            }}
+          >
+            {/* Rating summary */}
+            {(sectionData.ratingScore || sectionData.reviewCountText) && (
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <span
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: "2.1rem",
+                    fontWeight: 500,
+                    color: "#181818",
+                    lineHeight: 1
+                  }}
+                >
+                  {sectionData.ratingScore || "5.0"}
+                </span>
+                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                  <div style={{ display: "flex", gap: "2px", color: "var(--gold, #d4af37)" }}>
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={13} fill="var(--gold, #d4af37)" color="var(--gold, #d4af37)" />
+                    ))}
+                  </div>
+                  <span
+                    style={{
+                      fontSize: "0.74rem",
+                      color: "rgba(24, 24, 24, 0.58)",
+                      whiteSpace: "nowrap"
+                    }}
+                  >
+                    {sectionData.reviewCountText || "from 5 verified reviews"}
+                  </span>
+                </div>
               </div>
-              <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--foreground)" }}>
-                {sectionData.ratingScore || "5.0"}
-              </span>
-              <span style={{ fontSize: "0.78rem", color: "var(--muted-foreground)" }}>
-                · {sectionData.reviewCountText || "from 120+ verified reviews"}
-              </span>
+            )}
+
+            {/* Carousel Navigation Buttons */}
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <button
+                type="button"
+                aria-label="Previous story"
+                onClick={() => scrollByDirection(-1)}
+                disabled={!canScrollLeft}
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "50%",
+                  border: canScrollLeft ? "1px solid rgba(24, 24, 24, 0.25)" : "1px solid rgba(24, 24, 24, 0.12)",
+                  backgroundColor: "transparent",
+                  color: canScrollLeft ? "#181818" : "rgba(24, 24, 24, 0.25)",
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: canScrollLeft ? "pointer" : "not-allowed",
+                  transition: "all 0.25s ease"
+                }}
+                onMouseEnter={(e) => {
+                  if (canScrollLeft) {
+                    e.currentTarget.style.backgroundColor = "#181818";
+                    e.currentTarget.style.color = "#ffffff";
+                    e.currentTarget.style.borderColor = "#181818";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (canScrollLeft) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#181818";
+                    e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.25)";
+                  }
+                }}
+              >
+                <ArrowLeft size={18} strokeWidth={1.7} />
+              </button>
+
+              <button
+                type="button"
+                aria-label="Next story"
+                onClick={() => scrollByDirection(1)}
+                disabled={!canScrollRight}
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "50%",
+                  border: canScrollRight ? "1px solid rgba(24, 24, 24, 0.25)" : "1px solid rgba(24, 24, 24, 0.12)",
+                  backgroundColor: "transparent",
+                  color: canScrollRight ? "#181818" : "rgba(24, 24, 24, 0.25)",
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: canScrollRight ? "pointer" : "not-allowed",
+                  transition: "all 0.25s ease"
+                }}
+                onMouseEnter={(e) => {
+                  if (canScrollRight) {
+                    e.currentTarget.style.backgroundColor = "#181818";
+                    e.currentTarget.style.color = "#ffffff";
+                    e.currentTarget.style.borderColor = "#181818";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (canScrollRight) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#181818";
+                    e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.25)";
+                  }
+                }}
+              >
+                <ArrowRight size={18} strokeWidth={1.7} />
+              </button>
             </div>
-          )}
-        </SectionHeading>
-
-        {/* Carousel Slider Navigation Controls */}
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginBottom: "18px" }}>
-          <button
-            type="button"
-            aria-label="Previous story"
-            onClick={() => scrollByDirection(-1)}
-            disabled={!canScrollLeft}
-            style={{
-              width: "44px",
-              height: "44px",
-              borderRadius: "50%",
-              border: canScrollLeft ? "1px solid rgba(24, 24, 24, 0.25)" : "1px solid rgba(24, 24, 24, 0.1)",
-              backgroundColor: "transparent",
-              color: canScrollLeft ? "#181818" : "rgba(24, 24, 24, 0.25)",
-              display: "grid",
-              placeItems: "center",
-              cursor: canScrollLeft ? "pointer" : "not-allowed",
-              transition: "all 0.25s ease"
-            }}
-            onMouseEnter={(e) => {
-              if (canScrollLeft) {
-                e.currentTarget.style.backgroundColor = "#181818";
-                e.currentTarget.style.color = "#ffffff";
-                e.currentTarget.style.borderColor = "#181818";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (canScrollLeft) {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.color = "#181818";
-                e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.25)";
-              }
-            }}
-          >
-            <ArrowLeft size={18} />
-          </button>
-
-          <button
-            type="button"
-            aria-label="Next story"
-            onClick={() => scrollByDirection(1)}
-            disabled={!canScrollRight}
-            style={{
-              width: "44px",
-              height: "44px",
-              borderRadius: "50%",
-              border: canScrollRight ? "1px solid rgba(24, 24, 24, 0.25)" : "1px solid rgba(24, 24, 24, 0.1)",
-              backgroundColor: "transparent",
-              color: canScrollRight ? "#181818" : "rgba(24, 24, 24, 0.25)",
-              display: "grid",
-              placeItems: "center",
-              cursor: canScrollRight ? "pointer" : "not-allowed",
-              transition: "all 0.25s ease"
-            }}
-            onMouseEnter={(e) => {
-              if (canScrollRight) {
-                e.currentTarget.style.backgroundColor = "#181818";
-                e.currentTarget.style.color = "#ffffff";
-                e.currentTarget.style.borderColor = "#181818";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (canScrollRight) {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.color = "#181818";
-                e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.25)";
-              }
-            }}
-          >
-            <ArrowRight size={18} />
-          </button>
+          </div>
         </div>
 
         {/* Carousel Track */}
