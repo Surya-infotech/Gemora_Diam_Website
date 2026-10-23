@@ -438,28 +438,6 @@ function ProductDetailContent({ product }) {
                 />
               )}
 
-              {/* Atelier Luxury Watermark */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "16px",
-                  left: "18px",
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "0.68rem",
-                  letterSpacing: "0.22em",
-                  color: "rgba(197, 160, 89, 0.8)",
-                  textTransform: "uppercase",
-                  pointerEvents: "none",
-                  zIndex: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px"
-                }}
-              >
-                <span style={{ display: "inline-block", width: "4px", height: "4px", borderRadius: "50%", backgroundColor: "var(--gold)" }} />
-                Gemora Studio
-              </div>
-
               {/* Floating Wishlist Button */}
               <button
                 onClick={() => toggleWishlist(product.id)}

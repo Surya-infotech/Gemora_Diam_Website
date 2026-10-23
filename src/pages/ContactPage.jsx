@@ -21,16 +21,8 @@ const validate = (f) => ({
   message: f.message.trim().length < 10 ? "Please share at least a few details (min 10 characters)" : "",
 });
 
-const INQUIRY_TOPICS = [
-  { id: "bespoke", label: "✦ Bespoke Commission", hint: "Custom ring, heirloom redesign, or private bridal set" },
-  { id: "diamond", label: "✦ Diamond Consultation", hint: "Carat, cut grading, certification & stone selection" },
-  { id: "appointment", label: "✦ Showroom Appointment", hint: "Reserve private viewing in our flagship showroom" },
-  { id: "general", label: "✦ General Inquiry", hint: "Shipping, order tracking, or studio inquiries" }
-];
-
 export default function ContactPage() {
   const { showToast, generalSettings, submitContactUs } = useStore();
-  const [selectedTopic, setSelectedTopic] = useState("bespoke");
   const [f, setF] = useState({ name: "", email: "", phone: "", message: "" });
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,8 +44,7 @@ export default function ContactPage() {
       return;
     }
     setIsSubmitting(true);
-    const activeTopic = INQUIRY_TOPICS.find((t) => t.id === selectedTopic)?.label || "Bespoke Commission";
-    const fullMessage = `[Topic: ${activeTopic}] ${f.phone ? `[Phone: ${f.phone}] ` : ""}${f.message}`;
+    const fullMessage = `${f.phone ? `[Phone: ${f.phone}] ` : ""}${f.message}`;
     const res = await submitContactUs({
       name: f.name,
       email: f.email,
@@ -271,35 +262,6 @@ export default function ContactPage() {
               <p style={{ fontSize: "0.86rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
                 A dedicated private concierge will review your vision and reply within 4 business hours.
               </p>
-            </div>
-
-            {/* Inquiry Topic Filter Pills */}
-            <div style={{ marginBottom: "26px" }}>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "0.74rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: "var(--muted-foreground)",
-                  marginBottom: "10px"
-                }}
-              >
-                Nature of Inquiry
-              </label>
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {INQUIRY_TOPICS.map((topic) => (
-                  <button
-                    key={topic.id}
-                    type="button"
-                    onClick={() => setSelectedTopic(topic.id)}
-                    className={`contact-topic-pill ${selectedTopic === topic.id ? "active" : ""}`}
-                  >
-                    {topic.label}
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* Inquiries Form */}
