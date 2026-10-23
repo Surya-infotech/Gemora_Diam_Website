@@ -47,7 +47,7 @@ export default function ProfilePage() {
   }
 
   const tabs = [
-    { id: "wishlist", label: "Wishlist Atelier", icon: Heart, badge: wishlist?.length || 0 },
+    { id: "wishlist", label: "Saved Wishlist", icon: Heart, badge: wishlist?.length || 0 },
     { id: "settings", label: "Security & Profile", icon: User },
     { id: "addresses", label: "Delivery Addresses", icon: MapPin }
   ];
@@ -99,7 +99,7 @@ export default function ProfilePage() {
                   fontWeight: 700
                 }}
               >
-                MAISON PRIVÉE · CLIENT ATELIER
+                PRIVATE CLIENT PORTAL
               </span>
               <span
                 style={{
@@ -114,7 +114,7 @@ export default function ProfilePage() {
                   fontWeight: 700
                 }}
               >
-                <Sparkles size={11} /> Verified Atelier Patron
+                <Sparkles size={11} /> Verified Member
               </span>
             </div>
 
@@ -297,7 +297,7 @@ function WishlistTab() {
           className="eyebrow"
           style={{ color: "var(--primary)", letterSpacing: "0.2em", fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "6px" }}
         >
-          ATELIER WISHLIST
+          SAVED WISHLIST
         </span>
         <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: "0 0 10px 0", color: "var(--foreground)", fontWeight: 600 }}>
           Your Wishlist is Empty
@@ -789,7 +789,7 @@ function SettingsTab() {
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
           <Lock size={15} style={{ color: "var(--primary)" }} />
           <span className="eyebrow" style={{ color: "var(--primary)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.16em" }}>
-            ATELIER PROTECTION
+            ACCOUNT SECURITY
           </span>
         </div>
         <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.7rem", margin: "6px 0 20px 0", color: "var(--foreground)", fontWeight: 600 }}>
@@ -1161,7 +1161,7 @@ function AddressesTab() {
             </span>
           </div>
           <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", marginTop: "4px", margin: "4px 0 0 0" }}>
-            Manage discreet personal residences and atelier appointment destinations worldwide.
+            Manage personal residences and delivery destinations worldwide.
           </p>
         </div>
         <button
@@ -1836,11 +1836,11 @@ function SignInView() {
           GEMORA DIAM · PRIVATE CLIENT PORTAL
         </p>
         <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.3rem", margin: "8px 0 10px 0", color: "var(--foreground)", fontWeight: 600, letterSpacing: "-0.01em" }}>
-          {isRegister ? "Join The Atelier" : "Welcome Back"}
+          {isRegister ? "Create An Account" : "Welcome Back"}
         </h1>
         <p style={{ fontSize: "0.9rem", color: "var(--muted-foreground)", lineHeight: 1.6, margin: "0 0 28px 0" }}>
           {isRegister
-            ? "Create your private account to curate wishlists, view order dossiers, and commission bespoke pieces."
+            ? "Create your private account to curate wishlists, view order details, and explore bespoke pieces."
             : "Sign in to access your order history, authenticated invoices, and saved fine jewelry."}
         </p>
 

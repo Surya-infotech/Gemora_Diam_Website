@@ -68,7 +68,7 @@ export default function JustForYouGallery() {
       <div className="container-luxury">
         {/* Section Header */}
         <SectionHeading
-          eyebrow="Atelier Perspectives"
+          eyebrow="Artisan Perspectives"
           title="Just For You"
           description="Every angle captured with artisan fidelity and unparalleled gemstone brilliance."
         />
@@ -100,7 +100,7 @@ export default function JustForYouGallery() {
                   fontSize: "0.72rem"
                 }}
               >
-                ✦ {t.category ? t.category.toUpperCase() : "ATELIER PIECE"} ✦
+                ✦ {t.category ? t.category.toUpperCase() : "SIGNATURE PIECE"} ✦
               </span>
 
               <h4 className="just-for-you-title">

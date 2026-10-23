@@ -192,7 +192,7 @@ export default function AboutPage() {
               </div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
                 <span style={{ color: "var(--gold-deep)" }}>✦</span>
-                <span>Lifetime Atelier Provenance</span>
+                <span>Lifetime Studio Provenance</span>
               </div>
             </div>
           </div>
@@ -242,7 +242,7 @@ export default function AboutPage() {
                   letterSpacing: "-0.01em"
                 }}
               >
-                The Foundations of Atelier Excellence
+                The Foundations of Craftsmanship Excellence
               </h2>
             </div>
 
@@ -526,7 +526,7 @@ export default function AboutPage() {
                     <div style={{ position: "relative", borderRadius: "12px", overflow: "hidden" }}>
                       <img
                         src={aboutUs?.studioImage || atelier}
-                        alt={aboutUs?.studioTitle || "Master Atelier Craftsmanship"}
+                        alt={aboutUs?.studioTitle || "Master Studio Craftsmanship"}
                         loading="lazy"
                         style={{
                           width: "100%",
@@ -583,7 +583,7 @@ export default function AboutPage() {
                           display: "block"
                         }}
                       >
-                        MASTER ATELIER BENCH
+                        MASTER WORKSHOP BENCH
                       </span>
                       <strong style={{ fontSize: "0.82rem", color: "#FFFFFF", fontWeight: 500 }}>
                         Surat Flagship Workshop

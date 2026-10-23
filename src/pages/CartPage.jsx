@@ -328,7 +328,7 @@ export default function CartPage() {
               margin: "14px auto 0"
             }}
           >
-            Your order has been recorded in the database and registered with our fine atelier for shipment.
+            Your order has been recorded in the database and registered with our workshop for shipment.
           </p>
 
           <div
@@ -495,7 +495,7 @@ export default function CartPage() {
           className="eyebrow"
           style={{ color: "var(--primary)", letterSpacing: "0.22em", fontSize: "0.74rem", fontWeight: 700, display: "block", marginBottom: "8px" }}
         >
-          HAUTE JOAILLERIE ATELIER
+          FINE JEWELRY STUDIO
         </span>
         <h1
           style={{
@@ -595,7 +595,7 @@ export default function CartPage() {
               marginBottom: "4px"
             }}
           >
-            ATELIER SHOPPING EXPERIENCE
+            LUXURY SHOPPING EXPERIENCE
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
             <h1
@@ -1152,7 +1152,7 @@ export default function CartPage() {
               marginBottom: "4px"
             }}
           >
-            ATELIER CHECKOUT
+            SECURE CHECKOUT
           </span>
           <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.65rem", fontWeight: 600, margin: 0, color: "var(--foreground)" }}>
             Order Summary

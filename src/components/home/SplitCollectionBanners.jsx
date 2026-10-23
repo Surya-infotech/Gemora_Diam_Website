@@ -19,7 +19,7 @@ export default function SplitCollectionBanners() {
           const bannerId = b._id || b.bannerid || i;
           const isHovered = hoveredId === bannerId;
 
-          const tagText = b.tag || "Featured Atelier";
+          const tagText = b.tag || "Featured Collection";
 
           return (
             <div
@@ -158,7 +158,7 @@ export default function SplitCollectionBanners() {
                   </div>
                   <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.8rem", color: "#555" }}>
                     <span style={{ color: "var(--primary)", fontWeight: 700 }}>✦</span>
-                    <span>Lifetime Atelier Warranty</span>
+                    <span>Lifetime Warranty</span>
                   </div>
                 </div>
 

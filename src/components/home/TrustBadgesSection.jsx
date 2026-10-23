@@ -14,7 +14,7 @@ const PROMISES = [
   },
   {
     icon: ShieldCheck,
-    title: "Lifetime Atelier Warranty",
+    title: "Lifetime Warranty",
     desc: "Annual prong inspection, ultrasonic diamond cleaning, and lifetime craftsmanship guarantee."
   },
   {
@@ -40,7 +40,7 @@ export default function TrustBadgesSection() {
         <SectionHeading
           eyebrow="The Gemora Promise"
           title="Craftsmanship & Care"
-          description="Every bespoke design is backed by our lifetime warranty, certified diamonds, and master atelier service."
+          description="Every bespoke design is backed by our lifetime warranty, certified diamonds, and master craftsmanship."
         />
         <div
           style={{

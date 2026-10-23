@@ -85,7 +85,7 @@ export default function PayPalCheckoutModal({
               const res = await createPayPalOrder({
                 amount: orderData.total,
                 currency,
-                description: `Gemora Diam Atelier - ${orderData.items?.length || 1} fine jewelry item(s)`
+                description: `Gemora Diam Studio - ${orderData.items?.length || 1} fine jewelry item(s)`
               });
 
               if (!res.success || !res.id) {

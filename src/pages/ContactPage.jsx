@@ -24,8 +24,8 @@ const validate = (f) => ({
 const INQUIRY_TOPICS = [
   { id: "bespoke", label: "✦ Bespoke Commission", hint: "Custom ring, heirloom redesign, or private bridal set" },
   { id: "diamond", label: "✦ Diamond Consultation", hint: "Carat, cut grading, certification & stone selection" },
-  { id: "appointment", label: "✦ Salon Appointment", hint: "Reserve private viewing in our flagship salon" },
-  { id: "general", label: "✦ General Inquiry", hint: "Shipping, dossier tracking, or atelier inquiries" }
+  { id: "appointment", label: "✦ Showroom Appointment", hint: "Reserve private viewing in our flagship showroom" },
+  { id: "general", label: "✦ General Inquiry", hint: "Shipping, order tracking, or studio inquiries" }
 ];
 
 export default function ContactPage() {
@@ -190,7 +190,7 @@ export default function ContactPage() {
                 letterSpacing: "0.20em"
               }}
             >
-              MAISON PRIVÉE CONCIERGE · BESPOKE SALON
+              PRIVATE CONCIERGE · BESPOKE SHOWROOM
             </span>
           </div>
 
@@ -217,7 +217,7 @@ export default function ContactPage() {
               lineHeight: 1.65
             }}
           >
-            Whether commissioning a one-of-a-kind bespoke heirloom, selecting certified lab-grown diamonds, or reserving an intimate salon viewing, our master jewelers and personal concierges are at your devotion.
+            Whether commissioning a one-of-a-kind bespoke heirloom, selecting certified lab-grown diamonds, or reserving an intimate showroom viewing, our master jewelers and personal concierges are at your devotion.
           </p>
         </div>
       </div>
@@ -254,7 +254,7 @@ export default function ContactPage() {
                     letterSpacing: "0.16em"
                   }}
                 >
-                  DIRECT ATELIER DOSSIER
+                  DIRECT STUDIO INQUIRY
                 </span>
               </div>
               <h3
@@ -266,10 +266,10 @@ export default function ContactPage() {
                   margin: "0 0 6px 0"
                 }}
               >
-                Send an Atelier Inquiry
+                Send a Studio Inquiry
               </h3>
               <p style={{ fontSize: "0.86rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
-                A dedicated private concierge will review your vision and reply within 4 atelier hours.
+                A dedicated private concierge will review your vision and reply within 4 business hours.
               </p>
             </div>
 
@@ -355,7 +355,7 @@ export default function ContactPage() {
                   </label>
                   <input
                     type="email"
-                    placeholder="e.g. eleanor@maison.com"
+                    placeholder="e.g. eleanor@gemora.com"
                     value={f.email}
                     onChange={(e) => onFieldChange("email", e.target.value)}
                     onBlur={() => setTouched((p) => ({ ...p, email: true }))}
@@ -476,7 +476,7 @@ export default function ContactPage() {
                     }
                   }}
                 >
-                  <span>{isSubmitting ? "Transmitting Dossier..." : "Send Atelier Message"}</span>
+                  <span>{isSubmitting ? "Sending Inquiry..." : "Send Message"}</span>
                   <ArrowRight size={17} />
                 </button>
               </div>
@@ -496,7 +496,7 @@ export default function ContactPage() {
                   }}
                 >
                   <CheckCircle2 size={18} style={{ flexShrink: 0 }} />
-                  <span>Your dossier has been transmitted. A master concierge will reply promptly.</span>
+                  <span>Your inquiry has been sent. A master concierge will reply promptly.</span>
                 </div>
               )}
 
@@ -555,7 +555,7 @@ export default function ContactPage() {
                       letterSpacing: "0.20em"
                     }}
                   >
-                    MASTER WORKSHOP &amp; SALON
+                    MASTER WORKSHOP &amp; SHOWROOM
                   </span>
                   <h4
                     style={{
@@ -566,7 +566,7 @@ export default function ContactPage() {
                       fontWeight: 500
                     }}
                   >
-                    {generalSettings?.cityname ? `${generalSettings.cityname} Flagship Salon` : "Surat Flagship Atelier"}
+                    {generalSettings?.cityname ? `${generalSettings.cityname} Flagship Showroom` : "Surat Flagship Studio"}
                   </h4>
                 </div>
               </div>
@@ -593,7 +593,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
-                        Salon Location
+                        Showroom Location
                       </span>
                       <p style={{ fontSize: "0.90rem", color: "var(--foreground)", lineHeight: 1.5, margin: "2px 0 0 0", fontWeight: 500 }}>
                         {addressString}
@@ -736,7 +736,7 @@ export default function ContactPage() {
                 margin: "4px 0 0 0"
               }}
             >
-              The Atelier Experience
+              The Studio Experience
             </h3>
           </div>
 
@@ -767,7 +767,7 @@ export default function ContactPage() {
                   Private 1-on-1 Viewing
                 </h5>
                 <p style={{ fontSize: "0.82rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
-                  Inspect loose GIA &amp; IGI certified lab diamonds under 10x gemological loupes in our private VIP salon suite.
+                  Inspect loose GIA &amp; IGI certified lab diamonds under 10x gemological loupes in our private VIP showroom suite.
                 </p>
               </div>
             </div>
@@ -817,7 +817,7 @@ export default function ContactPage() {
                   Lifetime Craftsmanship Care
                 </h5>
                 <p style={{ fontSize: "0.82rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
-                  Enjoy complimentary ultrasonic spa cleanings, annual prong inspections, and certified authenticity dossiers.
+                  Enjoy complimentary ultrasonic spa cleanings, annual prong inspections, and certified authenticity certificates.
                 </p>
               </div>
             </div>

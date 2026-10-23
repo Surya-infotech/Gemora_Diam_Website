@@ -52,7 +52,7 @@ export default function ShopTheLookSection() {
       <div className="container-luxury">
         {/* Luxury Gold-Lined Section Heading */}
         <SectionHeading
-          eyebrow="Atelier Lookbook"
+          eyebrow="Curated Lookbook"
           title="Curated Ensembles"
           description="Discover how our master jewelers layer and harmonize timeless solitaire and bridal pieces."
         />

@@ -24,7 +24,7 @@ export default function HeroSlider() {
           if (isMounted && list.length > 0) {
             const mapped = list.map((b) => ({
               img: b.image || "",
-              tag: b.tag || "Atelier Collection",
+              tag: b.tag || "Signature Collection",
               headingLine1: b.headingLine1 || b.title || "",
               headingLine2: b.headingLine2 || "",
               desc: b.description || "",

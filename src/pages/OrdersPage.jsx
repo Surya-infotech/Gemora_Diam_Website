@@ -109,7 +109,7 @@ export default function OrdersPage() {
                   fontWeight: 700
                 }}
               >
-                MAISON PRIVÉE · CLIENT CONCIERGE
+                CLIENT CONCIERGE & ORDERS
               </span>
               <span
                 style={{
@@ -178,7 +178,7 @@ export default function OrdersPage() {
           }}
         >
           <User size={15} />
-          <span>Client Atelier</span>
+          <span>Client Account</span>
         </Link>
       </div>
 
@@ -299,14 +299,14 @@ export default function OrdersPage() {
             className="eyebrow"
             style={{ color: "var(--primary)", letterSpacing: "0.2em", fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "6px" }}
           >
-            ATELIER COMMISSIONS
+            ORDER HISTORY
           </span>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", color: "var(--foreground)", margin: "0 0 10px 0", fontWeight: 600 }}>
             No Orders on Record
           </h3>
           <p style={{ fontSize: "0.92rem", color: "var(--muted-foreground)", maxWidth: "460px", margin: "0 auto 28px", lineHeight: 1.6 }}>
             {user
-              ? "You have not placed any orders yet. Discover our latest ethically crafted fine jewelry collections and bespoke atelier pieces."
+              ? "You have not placed any orders yet. Discover our latest ethically crafted fine jewelry collections and bespoke custom pieces."
               : "Please sign in to view your orders, live courier tracking, and authenticated invoices."}
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "14px" }}>
@@ -576,7 +576,7 @@ function OrderRow({ order, onSelect, format }) {
             transform: isHovered ? "translateX(2px)" : "none"
           }}
         >
-          <span>View Dossier</span>
+          <span>View Order Details</span>
           <ArrowRight
             size={13}
             style={{
@@ -1036,7 +1036,7 @@ function OrderDetailModal({ order, onClose }) {
                   fontWeight: 700
                 }}
               >
-                MAISON PRIVÉE · ATELIER COMMISSION DOSSIER
+                CLIENT ORDER SUMMARY & DETAILS
               </span>
             </div>
 
@@ -1205,7 +1205,7 @@ function OrderDetailModal({ order, onClose }) {
                   const isCompletedOrCurrent = idx <= currentStepIdx;
 
                   const stepDescriptions = [
-                    "Atelier Logged",
+                    "Order Confirmed",
                     "Master Setting",
                     "Insured Transit",
                     "Hand Delivered"
@@ -1369,7 +1369,7 @@ function OrderDetailModal({ order, onClose }) {
                   </span>
                 </div>
                 <p style={{ fontSize: "0.88rem", color: "var(--foreground)", fontWeight: 600, margin: "0 0 4px 0" }}>
-                  {shippingAddr.name || order.customername || "Valued Patron"}
+                  {shippingAddr.name || order.customername || "Valued Customer"}
                 </p>
                 <p style={{ color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5, fontSize: "0.84rem" }}>
                   {[shippingAddr.address, shippingAddr.cityname, shippingAddr.statename, shippingAddr.countryname].filter(Boolean).join(", ")}
@@ -1398,7 +1398,7 @@ function OrderDetailModal({ order, onClose }) {
                 </span>
               </div>
               <p style={{ color: "var(--muted-foreground)", fontSize: "0.84rem", margin: 0 }}>
-                Digital order confirmation or boutique atelier pickup.
+                Digital order confirmation or showroom pickup.
               </p>
             </div>
           )}

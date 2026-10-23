@@ -5,8 +5,8 @@ const MARQUEE_ITEMS = [
   { prefix: "Handcrafted For Your", accent: "Forever", highlight: true },
   { prefix: "100% Ethically Certified", accent: "Lab Diamonds", highlight: false },
   { prefix: "Complimentary Insured", accent: "Global Delivery", highlight: false },
-  { prefix: "Bespoke Atelier", accent: "Craftsmanship", highlight: true },
-  { prefix: "Lifetime Atelier", accent: "Warranty", highlight: false },
+  { prefix: "Bespoke Studio", accent: "Craftsmanship", highlight: true },
+  { prefix: "Lifetime Comprehensive", accent: "Warranty", highlight: false },
   { prefix: "Custom Fine Jewelry", accent: "Designed For You", highlight: true },
 ];
 

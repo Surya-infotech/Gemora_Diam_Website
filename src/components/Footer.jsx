@@ -96,12 +96,12 @@ const ATELIER_PROMISES = [
   },
   {
     icon: ShieldCheck,
-    title: "Lifetime Atelier Warranty",
+    title: "Lifetime Warranty",
     desc: "Complimentary ultrasonic spa cleaning, annual prong checks & polish."
   },
   {
     icon: Award,
-    title: "Bespoke Salon Concierge",
+    title: "Personal Jewelry Concierge",
     desc: "Private consultations with master jewelers in person or virtually."
   }
 ];
@@ -120,7 +120,7 @@ export function Footer() {
     .map((p) => [p.policyname, `/${slugifyPolicy(p.policyname)}`]);
 
   const defaultPolicies = [
-    ["Lifetime Atelier Warranty", "/warranty"],
+    ["Lifetime Warranty", "/warranty"],
     ["Complimentary Returns & Exchange", "/returns"],
     ["Privacy & Confidentiality", "/privacy"],
     ["Terms of Bespoke Commission", "/terms"],
@@ -132,7 +132,7 @@ export function Footer() {
   const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
-      notify("Email Required", "Please enter a valid email address to join the Atelier Circle.");
+      notify("Email Required", "Please enter a valid email address to join our VIP Circle.");
       return;
     }
     setSubscribing(true);
@@ -143,17 +143,17 @@ export function Footer() {
         setSubscribedSuccess(true);
         notify(
           `Welcome to ${brandName}`,
-          "You have been granted exclusive access to our private salon releases."
+          "You have been granted exclusive access to our private collection releases."
         );
         setEmail("");
         setTimeout(() => setSubscribedSuccess(false), 5000);
       } else {
-        notify("Atelier Circle", res?.message || "Your private subscription has been noted.");
+        notify("VIP Circle", res?.message || "Your private subscription has been noted.");
         setEmail("");
       }
     } catch {
       setSubscribing(false);
-      notify("Atelier Circle", "Thank you for expressing your interest in Gemora Diam.");
+      notify("VIP Circle", "Thank you for expressing your interest in Gemora Diam.");
       setEmail("");
     }
   };
@@ -171,7 +171,7 @@ export function Footer() {
         { label: "ALL BESPOKE COLLECTIONS", to: "/collections" },
         { label: "ENGAGEMENT RINGS", to: "/collections?category=Engagement%20Rings" },
         { label: "DIAMOND BANDS", to: "/collections?category=Bands" },
-        { label: "HAUTE BRACELETS", to: "/collections?category=Bracelets" },
+        { label: "LUXURY BRACELETS", to: "/collections?category=Bracelets" },
         { label: "SOLITAIRE EARRINGS", to: "/collections?category=Earrings" }
       ];
 
@@ -385,7 +385,7 @@ export function Footer() {
                 letterSpacing: "0.22em"
               }}
             >
-              {brandName ? `THE ${brandName.toUpperCase()} CIRCLE` : "THE ATELIER CIRCLE"}
+              {brandName ? `THE ${brandName.toUpperCase()} CIRCLE` : "THE VIP CIRCLE"}
             </span>
           </div>
 
@@ -411,7 +411,7 @@ export function Footer() {
               margin: "0 0 20px 0"
             }}
           >
-            Receive private salon invitations, high jewelry collection debuts, and bespoke commission opportunities.
+            Receive private showroom invitations, fine jewelry collection debuts, and bespoke commission opportunities.
           </p>
 
           {/* Newsletter Input Box */}
@@ -433,7 +433,7 @@ export function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address..."
-                aria-label="Email address for private salon newsletter"
+                aria-label="Email address for newsletter"
                 style={{
                   flex: 1,
                   border: "none",
@@ -446,7 +446,7 @@ export function Footer() {
               />
               <button
                 type="submit"
-                aria-label="Subscribe to bespoke salon updates"
+                aria-label="Subscribe to VIP updates"
                 disabled={subscribing}
                 style={{
                   width: "36px",
@@ -496,7 +496,7 @@ export function Footer() {
                   fontWeight: 600
                 }}
               >
-                Private Salon Socials
+                Connect With Us
               </span>
               <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                 {socialMedia.map((net, idx) => (
@@ -531,7 +531,7 @@ export function Footer() {
                 letterSpacing: "0.02em"
               }}
             >
-              The Atelier
+              The Studio
             </h4>
           </div>
 
@@ -554,7 +554,7 @@ export function Footer() {
                   <MapPin size={14} />
                 </div>
                 <p style={{ fontSize: "0.84rem", color: "#B8C1B0", lineHeight: 1.6, margin: 0 }}>
-                  <strong style={{ color: "#FFFFFF", display: "block", fontWeight: 600 }}>Master Workshop &amp; Salon</strong>
+                  <strong style={{ color: "#FFFFFF", display: "block", fontWeight: 600 }}>Master Workshop &amp; Showroom</strong>
                   {generalSettings.address}, {generalSettings.cityname}
                   <br />
                   {generalSettings.statename}, {generalSettings.countryname}
@@ -639,7 +639,7 @@ export function Footer() {
             >
               <Clock size={13} style={{ color: "#D4AF37" }} />
               <span style={{ fontSize: "0.74rem", color: "#A4AD9B" }}>
-                Salon Viewings By Appointment
+                Showroom Viewings By Appointment
               </span>
             </div>
           </div>
@@ -668,7 +668,7 @@ export function Footer() {
               ["Frequently Asked Questions", "/faq"],
               ["Book Private Consultation", "/contact"],
               ["Bespoke Commission Journey", "/about"],
-              ["Track Atelier Order Dossier", "/orders"],
+              ["Track Order Status", "/orders"],
               ["Diamond Education & Carat Guide", "/about"]
             ].map(([label, to]) => (
               <li key={label}>
@@ -745,7 +745,7 @@ export function Footer() {
                 letterSpacing: "0.02em"
               }}
             >
-              The Maison
+              The Brand
             </h4>
           </div>
 
@@ -753,8 +753,8 @@ export function Footer() {
             {[
               ["Our Heritage & Craftsmanship", "/about"],
               ["Ethical Lab Diamond Manifesto", "/about"],
-              ["All Haute Joaillerie Collections", "/collections"],
-              ["Contact & Salon Appointments", "/contact"],
+              ["All Fine Jewelry Collections", "/collections"],
+              ["Contact & Showroom Appointments", "/contact"],
               ["Customer Care Portal", "/orders"]
             ].map(([label, to]) => (
               <li key={label}>
@@ -804,7 +804,7 @@ export function Footer() {
               {generalSettings?.copyright || `© ${new Date().getFullYear()} ${brandName}. All Rights Reserved.`}
             </p>
             <span style={{ fontSize: "0.70rem", color: "#616A5A", letterSpacing: "0.06em" }}>
-              Haute Joaillerie &amp; Sustainable Fine Jewelry Atelier
+              Luxury &amp; Sustainable Fine Jewelry Studio
             </span>
           </div>
 

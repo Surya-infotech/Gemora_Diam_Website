@@ -249,12 +249,12 @@ export default function CollectionsPage({ slugOverride = null }) {
     if (searchParams.get("search")) title = `Search: "${searchParams.get("search")}"`;
     else if (shape) title = `${shape.charAt(0).toUpperCase() + shape.slice(1)} Cut Diamonds`;
     else if (style) title = `${style.charAt(0).toUpperCase() + style.slice(1)} Style`;
-    else if (featured === "bestseller") title = "Atelier Best Sellers";
-    else if (featured === "new") title = "New Atelier Arrivals";
+    else if (featured === "bestseller") title = "Best Sellers";
+    else if (featured === "new") title = "New Arrivals";
   }
 
   useEffect(() => {
-    document.title = `${title} | Gemora Diam Haute Joaillerie`;
+    document.title = `${title} | Gemora Diam Fine Jewelry`;
   }, [title]);
 
   return (
@@ -276,7 +276,7 @@ export default function CollectionsPage({ slugOverride = null }) {
           }}
         >
           <span style={{ height: "1px", width: "20px", backgroundColor: "var(--gold)" }} />
-          The Atelier Archive
+          The Collection Archive
           <span style={{ height: "1px", width: "20px", backgroundColor: "var(--gold)" }} />
         </p>
         <h1

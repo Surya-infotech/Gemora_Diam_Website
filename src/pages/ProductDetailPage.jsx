@@ -457,7 +457,7 @@ function ProductDetailContent({ product }) {
                 }}
               >
                 <span style={{ display: "inline-block", width: "4px", height: "4px", borderRadius: "50%", backgroundColor: "var(--gold)" }} />
-                Gemora Atelier
+                Gemora Studio
               </div>
 
               {/* Floating Wishlist Button */}
@@ -1060,7 +1060,7 @@ function ProductDetailContent({ product }) {
             {/* Concierge & Appointment Links */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
               <a
-                href={`https://wa.me/917845120369?text=${encodeURIComponent(`Hello Gemora Atelier, I would like to inquire about ${product.name}`)}`}
+                href={`https://wa.me/917845120369?text=${encodeURIComponent(`Hello Gemora Studio, I would like to inquire about ${product.name}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -1090,7 +1090,7 @@ function ProductDetailContent({ product }) {
                 }}
               >
                 <MessageCircle size={15} color="var(--primary)" />
-                <span>Atelier Concierge</span>
+                <span>Studio Concierge</span>
               </a>
               <Link
                 to="/contact"
@@ -1162,7 +1162,7 @@ function ProductDetailContent({ product }) {
               <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
                 <Sparkles size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
                 <div>
-                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Lifetime Atelier Warranty</div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Lifetime Warranty</div>
                   <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Annual prong check &amp; ultrasonic polish</div>
                 </div>
               </div>
@@ -1209,7 +1209,7 @@ function ProductDetailContent({ product }) {
                 transition: "all 0.2s"
               }}
             >
-              Atelier Specifications
+              Piece Specifications
             </button>
             <button
               onClick={() => setActiveTab("delivery")}
@@ -1287,10 +1287,10 @@ function ProductDetailContent({ product }) {
                     </div>
                     <div>
                       <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.1rem", margin: 0, color: "var(--foreground)", fontWeight: 600 }}>
-                        The Atelier Standard
+                        Craftsmanship Standard
                       </h4>
                       <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                        Gemora Haute Joaillerie
+                        Gemora Fine Jewelry
                       </span>
                     </div>
                   </div>
@@ -1311,7 +1311,7 @@ function ProductDetailContent({ product }) {
                     <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                       <Truck size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
                       <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
-                        <strong style={{ color: "var(--foreground)" }}>Signature Presentation:</strong> Delivered in our bespoke illuminated velvet presentation box with authenticity dossier.
+                        <strong style={{ color: "var(--foreground)" }}>Signature Presentation:</strong> Delivered in our bespoke illuminated velvet presentation box with certificate of authenticity.
                       </div>
                     </div>
                   </div>
@@ -1377,7 +1377,7 @@ function ProductDetailContent({ product }) {
                 )}
                 <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
                   <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Craftsmanship Origin</span>
-                  <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>Gemora Haute Atelier</span>
+                  <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>Gemora Design Studio</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
                   <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Certification</span>
@@ -1407,7 +1407,7 @@ function ProductDetailContent({ product }) {
                   </h4>
                   <ul style={{ paddingLeft: "18px", display: "flex", flexDirection: "column", gap: "10px", color: "var(--muted-foreground)", fontSize: "0.86rem" }}>
                     <li><strong>Fully Insured Courier:</strong> Dispatched via specialized armored transport with required adult signature confirmation.</li>
-                    <li><strong>Dispatch Timeline:</strong> In-stock creations ship within 48 hours. Custom metal &amp; carat variations require 7-10 atelier business days.</li>
+                    <li><strong>Dispatch Timeline:</strong> In-stock creations ship within 48 hours. Custom metal &amp; carat variations require 7-10 business days.</li>
                     <li><strong>Discreet Packaging:</strong> Outer boxes are plain and unmarked to maintain surprise and security.</li>
                   </ul>
                 </div>
@@ -1426,7 +1426,7 @@ function ProductDetailContent({ product }) {
                   <ul style={{ paddingLeft: "18px", display: "flex", flexDirection: "column", gap: "10px", color: "var(--muted-foreground)", fontSize: "0.86rem" }}>
                     <li><strong>7-Day Returns:</strong> If you are not completely enchanted, return unworn in original presentation packaging within 7 days for full refund.</li>
                     <li><strong>Complimentary First Sizing:</strong> We offer one complimentary ring resizing within 60 days of delivery.</li>
-                    <li><strong>Lifetime Atelier Warranty:</strong> Includes annual prong inspections, sonic deep-cleaning, and rhodium/gold repolishing.</li>
+                    <li><strong>Lifetime Warranty:</strong> Includes annual prong inspections, sonic deep-cleaning, and rhodium/gold repolishing.</li>
                   </ul>
                 </div>
               </div>
@@ -1500,7 +1500,7 @@ export default function ProductDetailPage() {
       <div style={{ minHeight: "65vh", display: "grid", placeItems: "center", backgroundColor: "#ffffff" }}>
         <div style={{ textAlign: "center", padding: "60px 20px" }}>
           <p className="eyebrow" style={{ color: "var(--primary)", marginBottom: "12px" }}>
-            Haute Joaillerie
+            Fine Jewelry
           </p>
           <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.8rem", color: "var(--foreground)" }}>
             Loading Product Details...

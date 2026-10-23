@@ -98,7 +98,7 @@ export function Logo() {
             whiteSpace: "nowrap"
           }}
         >
-          Fine Jewelry • Atelier
+          Fine Jewelry • Design Studio
         </span>
       </div>
     </Link>
@@ -446,7 +446,7 @@ export function Header() {
             <span style={{ color: "var(--gold-light)", opacity: 0.9 }}>•</span>
             <span>7-Day Bespoke Returns</span>
             <span style={{ color: "var(--gold-light)", opacity: 0.9 }}>•</span>
-            <span>Lifetime Atelier Warranty</span>
+            <span>Lifetime Warranty</span>
             <span style={{ color: "var(--gold-light)", opacity: 0.9 }} className="tablet-up-nav">•</span>
             <span className="tablet-up-nav">100% Certified Lab Diamonds</span>
           </div>
@@ -876,7 +876,7 @@ export function Header() {
                   padding: "4px 0"
                 }}
               >
-                About Our Atelier
+                About Gemora
               </Link>
               <Link
                 to="/contact"
@@ -1150,7 +1150,7 @@ function CartDrawer() {
                 marginBottom: "3px"
               }}
             >
-              ATELIER SHOPPING BAG
+              SHOPPING BAG
             </span>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <h3

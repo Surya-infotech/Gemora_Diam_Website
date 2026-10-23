@@ -39,7 +39,7 @@ export default function CircularCategories() {
       <div className="container-luxury">
         {/* Section Header */}
         <SectionHeading
-          eyebrow="Atelier Curations"
+          eyebrow="Featured Curations"
           title="Signature Collections"
           description="Explore masterfully sculpted designs crafted with ethical lab-grown diamonds and recycled precious metals."
         />
