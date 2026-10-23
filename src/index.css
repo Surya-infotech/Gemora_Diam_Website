@@ -436,6 +436,21 @@ img {
   }
 }
 
+/* Tesora-Style Single-Row Luxury Navbar */
+.site-navbar-tesora {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .site-navbar-tesora {
+    height: 64px !important;
+  }
+}
+
 /* Responsive Hero Slider */
 .hero-slider-section {
   position: relative;

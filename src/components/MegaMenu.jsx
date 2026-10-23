@@ -312,8 +312,7 @@ function hasMenuDropdownContent(menu) {
 
 // ==========================================
 // 5. Main Dynamic Mega Menu Component
-// ==========================================
-export default function MegaMenu() {
+export default function MegaMenu({ inline = false }) {
   const { menus } = useStore();
   const location = useLocation();
   const [activeMenuId, setActiveMenuId] = useState(null);
@@ -373,18 +372,23 @@ export default function MegaMenu() {
   return (
     <div
       ref={containerRef}
-      style={{ position: "relative", width: "100%" }}
+      style={{
+        position: inline ? "static" : "relative",
+        width: inline ? "auto" : "100%",
+        display: inline ? "flex" : "block",
+        alignItems: inline ? "center" : "initial"
+      }}
       onMouseLeave={handleMouseLeave}
     >
       {/* ---------------- Navigation Bar Row ---------------- */}
       <div
         style={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: inline ? "flex-end" : "center",
           alignItems: "center",
-          gap: "clamp(18px, 2.5vw, 42px)",
-          padding: "10px 0 14px",
-          borderTop: "1px solid rgba(235, 229, 218, 0.6)"
+          gap: inline ? "clamp(10px, 1.25vw, 22px)" : "clamp(18px, 2.5vw, 42px)",
+          padding: inline ? 0 : "10px 0 14px",
+          borderTop: inline ? "none" : "1px solid rgba(235, 229, 218, 0.6)"
         }}
         className="desktop-only-nav"
       >
@@ -411,9 +415,9 @@ export default function MegaMenu() {
                   }}
                   className={`nav-link-luxury ${isMenuOpen ? "active" : ""}`}
                   style={{
-                    fontSize: "0.82rem",
+                    fontSize: inline ? "0.78rem" : "0.82rem",
                     fontWeight: 600,
-                    letterSpacing: "0.14em",
+                    letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     display: "inline-flex",
                     alignItems: "center",
@@ -423,7 +427,8 @@ export default function MegaMenu() {
                     background: "none",
                     border: "none",
                     cursor: "pointer",
-                    fontFamily: "inherit"
+                    fontFamily: "inherit",
+                    whiteSpace: "nowrap"
                   }}
                 >
                   {menuTitle}
@@ -443,16 +448,17 @@ export default function MegaMenu() {
                   onClick={closeMenu}
                   className={`nav-link-luxury ${isPageActive ? "active" : ""}`}
                   style={{
-                    fontSize: "0.82rem",
+                    fontSize: inline ? "0.78rem" : "0.82rem",
                     fontWeight: 600,
-                    letterSpacing: "0.14em",
+                    letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "4px",
                     color: isPageActive ? "var(--primary)" : "var(--foreground)",
                     padding: "6px 2px",
-                    textDecoration: "none"
+                    textDecoration: "none",
+                    whiteSpace: "nowrap"
                   }}
                 >
                   {menuTitle}
@@ -462,22 +468,71 @@ export default function MegaMenu() {
           );
         })}
 
+        {/* If no Wedding Bands menu exists, add direct link */}
+        {!activeMenus.some((m) => toSafeString(m?.title).toLowerCase().includes("wedding")) && (
+          <div onMouseEnter={closeMenu} style={{ position: "relative" }}>
+            <Link
+              to="/collections?category=Wedding+Bands"
+              onClick={closeMenu}
+              className={`nav-link-luxury ${location.search.includes("Wedding") ? "active" : ""}`}
+              style={{
+                fontSize: inline ? "0.78rem" : "0.82rem",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                display: "inline-flex",
+                alignItems: "center",
+                color: location.search.includes("Wedding") ? "var(--primary)" : "var(--foreground)",
+                padding: "6px 2px",
+                whiteSpace: "nowrap"
+              }}
+            >
+              Wedding Bands
+            </Link>
+          </div>
+        )}
+
+        {/* Tesora signature "+ DESIGN YOUR RING" */}
+        <div onMouseEnter={closeMenu} style={{ position: "relative" }}>
+          <Link
+            to="/collections"
+            onClick={closeMenu}
+            className="nav-link-luxury"
+            style={{
+              fontSize: inline ? "0.78rem" : "0.82rem",
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              color: "var(--primary)",
+              padding: "6px 2px",
+              whiteSpace: "nowrap"
+            }}
+          >
+            <span style={{ fontSize: "0.95rem", lineHeight: 0.9, color: "var(--gold-deep)" }}>+</span>
+            <span>Design Your Ring</span>
+          </Link>
+        </div>
+
         {/* Ensure Collections tab appears if no collection menu created */}
         {!activeMenus.some((m) => toSafeString(m?.title).toLowerCase().includes("collection") || toSafeString(m?.slug).toLowerCase().includes("/collection")) && (
           <div onMouseEnter={closeMenu} style={{ position: "relative" }}>
             <Link
-              to="/collection"
+              to="/collections"
               onClick={closeMenu}
               className={`nav-link-luxury ${location.pathname === "/collections" || location.pathname === "/collection" ? "active" : ""}`}
               style={{
-                fontSize: "0.82rem",
+                fontSize: inline ? "0.78rem" : "0.82rem",
                 fontWeight: 600,
-                letterSpacing: "0.14em",
+                letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 display: "inline-flex",
                 alignItems: "center",
                 color: location.pathname === "/collections" || location.pathname === "/collection" ? "var(--primary)" : "var(--foreground)",
-                padding: "6px 2px"
+                padding: "6px 2px",
+                whiteSpace: "nowrap"
               }}
             >
               Collections
@@ -492,14 +547,15 @@ export default function MegaMenu() {
             onClick={closeMenu}
             className={`nav-link-luxury ${location.pathname === "/about" ? "active" : ""}`}
             style={{
-              fontSize: "0.82rem",
+              fontSize: inline ? "0.78rem" : "0.82rem",
               fontWeight: 600,
-              letterSpacing: "0.14em",
+              letterSpacing: "0.12em",
               textTransform: "uppercase",
               display: "inline-flex",
               alignItems: "center",
               color: location.pathname === "/about" ? "var(--primary)" : "var(--foreground)",
-              padding: "6px 2px"
+              padding: "6px 2px",
+              whiteSpace: "nowrap"
             }}
           >
             About Us
@@ -512,14 +568,15 @@ export default function MegaMenu() {
             onClick={closeMenu}
             className={`nav-link-luxury ${location.pathname === "/contact" ? "active" : ""}`}
             style={{
-              fontSize: "0.82rem",
+              fontSize: inline ? "0.78rem" : "0.82rem",
               fontWeight: 600,
-              letterSpacing: "0.14em",
+              letterSpacing: "0.12em",
               textTransform: "uppercase",
               display: "inline-flex",
               alignItems: "center",
               color: location.pathname === "/contact" ? "var(--primary)" : "var(--foreground)",
-              padding: "6px 2px"
+              padding: "6px 2px",
+              whiteSpace: "nowrap"
             }}
           >
             Contact

@@ -25,41 +25,78 @@ export function Logo() {
       to="/"
       style={{
         display: "inline-flex",
-        flexDirection: "column",
         alignItems: "center",
+        gap: "10px",
         textDecoration: "none",
-        transition: "opacity 0.2s"
+        transition: "opacity 0.2s",
+        flexShrink: 0
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
+      onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
       onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
     >
-      <span
-        style={{
-          fontFamily: "var(--font-serif)",
-          fontSize: "clamp(1.2rem, 3.2vw, 2.3rem)",
-          fontWeight: 600,
-          fontStyle: "italic",
-          letterSpacing: "0.02em",
-          color: "var(--foreground)",
-          lineHeight: 1,
-          whiteSpace: "nowrap"
-        }}
+      {/* Exquisite Diamond Atelier Crest */}
+      <svg
+        width="34"
+        height="34"
+        viewBox="0 0 36 36"
+        fill="none"
+        style={{ flexShrink: 0 }}
+        aria-hidden="true"
       >
-        {brandName}
-      </span>
-      <span
-        style={{
-          fontSize: "0.58rem",
-          letterSpacing: "0.26em",
-          textTransform: "uppercase",
-          color: "var(--primary)",
-          fontWeight: 600,
-          marginTop: "4px",
-          whiteSpace: "nowrap"
-        }}
-      >
-        Fine Jewelry • Atelier
-      </span>
+        <path
+          d="M18 2.5L32 9.5V18.5C32 26 25.5 32 18 34C10.5 32 4 26 4 18.5V9.5L18 2.5Z"
+          stroke="url(#gemoraCrestGrad)"
+          strokeWidth="1.2"
+          fill="rgba(85, 104, 50, 0.05)"
+        />
+        <path
+          d="M18 8L26 14L18 28.5L10 14L18 8Z"
+          stroke="var(--primary)"
+          strokeWidth="1.1"
+        />
+        <path
+          d="M10 14H26M18 8V28.5M14 14L18 28.5L22 14"
+          stroke="#b38728"
+          strokeWidth="0.8"
+          strokeOpacity="0.85"
+        />
+        <defs>
+          <linearGradient id="gemoraCrestGrad" x1="4" y1="2.5" x2="32" y2="34" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#d4af37" />
+            <stop offset="0.5" stopColor="#556832" />
+            <stop offset="1" stopColor="#b38728" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+        <span
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(1.15rem, 1.6vw, 1.45rem)",
+            fontWeight: 600,
+            fontStyle: "italic",
+            letterSpacing: "0.02em",
+            color: "var(--foreground)",
+            whiteSpace: "nowrap"
+          }}
+        >
+          {brandName}
+        </span>
+        <span
+          style={{
+            fontSize: "0.50rem",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "var(--primary)",
+            fontWeight: 600,
+            marginTop: "3px",
+            whiteSpace: "nowrap"
+          }}
+        >
+          Fine Jewelry • Atelier
+        </span>
+      </div>
     </Link>
   );
 }
@@ -446,13 +483,13 @@ export function Header() {
         </div>
       </div>
 
-      {/* 3. Main Sticky Navigation Header */}
+      {/* 3. Main Sticky Navigation Header (Single-Row Tesora Design) */}
       <header
         style={{
           position: "sticky",
           top: 0,
           zIndex: 100,
-          backgroundColor: "rgba(255, 255, 255, 0.96)",
+          backgroundColor: "rgba(255, 255, 255, 0.98)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
           borderBottom: "1px solid #ebe5da",
@@ -460,9 +497,10 @@ export function Header() {
           transition: "all 0.3s ease"
         }}
       >
-        <div className="container-luxury site-header-grid">
-          {/* Left: Mobile Burger / Desktop Capsule Search */}
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        <div className="container-luxury site-navbar-tesora">
+          {/* Left Cluster: Mobile Burger Toggle + Brand Logo + Desktop Capsule Search */}
+          <div style={{ display: "flex", alignItems: "center", gap: "clamp(12px, 1.6vw, 24px)", flexShrink: 0 }}>
+            {/* Mobile Navigation Drawer Toggle */}
             <button
               aria-label="Toggle navigation menu"
               onClick={() => setMobile(true)}
@@ -471,67 +509,93 @@ export function Header() {
                 alignItems: "center",
                 justifyContent: "center",
                 color: "var(--foreground)",
-                padding: "8px",
-                borderRadius: "4px"
+                padding: "6px",
+                borderRadius: "4px",
+                background: "none",
+                border: "none",
+                cursor: "pointer"
               }}
               className="mobile-only-btn"
             >
               <Menu size={24} strokeWidth={1.5} />
             </button>
 
-            {/* Desktop Capsule Search */}
+            {/* Brand Identity Logo with Diamond Atelier Crest */}
+            <Logo />
+
+            {/* Desktop Capsule Search Bar (Tesora Style: right-aligned magnifying glass) */}
             <form
               onSubmit={handleSearchSubmit}
               style={{
                 position: "relative",
                 display: "flex",
                 alignItems: "center",
-                maxWidth: "280px",
-                width: "100%"
+                width: "clamp(190px, 16vw, 280px)"
               }}
               className="desktop-only-nav"
             >
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search fine jewelry..."
+                placeholder="Search fine jewelry, rings, bands..."
                 style={{
                   width: "100%",
-                  padding: "9px 18px 9px 38px",
+                  padding: "8px 38px 8px 16px",
                   borderRadius: "50px",
-                  border: "1px solid #d8d2c4",
-                  fontSize: "0.82rem",
+                  border: "1px solid #dcd7ce",
+                  fontSize: "0.80rem",
+                  letterSpacing: "0.01em",
                   outline: "none",
-                  backgroundColor: "#faf8f5",
+                  backgroundColor: "#ffffff",
                   color: "var(--foreground)",
                   transition: "all 0.25s ease"
                 }}
                 onFocus={(e) => {
                   e.target.style.borderColor = "var(--primary)";
-                  e.target.style.backgroundColor = "#ffffff";
                   e.target.style.boxShadow = "0 0 0 3px rgba(85, 104, 50, 0.12)";
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = "#d8d2c4";
-                  e.target.style.backgroundColor = "#faf8f5";
+                  e.target.style.borderColor = "#dcd7ce";
                   e.target.style.boxShadow = "none";
                 }}
               />
-              <Search
-                size={15}
-                strokeWidth={1.7}
-                style={{ position: "absolute", left: "14px", color: "var(--primary)", pointerEvents: "none" }}
-              />
+              <button
+                type="submit"
+                aria-label="Submit search"
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  color: "var(--foreground)",
+                  opacity: 0.75,
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.color = "var(--primary)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "0.75";
+                  e.currentTarget.style.color = "var(--foreground)";
+                }}
+              >
+                <Search size={15} strokeWidth={1.7} />
+              </button>
             </form>
           </div>
 
-          {/* Center: Brand Identity Logo */}
-          <div style={{ textAlign: "center" }}>
-            <Logo />
+          {/* Center-Right: Inline Navigation Links & Dynamic MegaMenu Dropdown */}
+          <div style={{ display: "flex", alignItems: "center", marginLeft: "auto", marginRight: "clamp(8px, 1.4vw, 22px)" }}>
+            <MegaMenu inline={true} />
           </div>
 
-          {/* Right: Client Action Icons */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "clamp(8px, 1.8vw, 18px)" }}>
+          {/* Far Right: Client Action Icons */}
+          <div style={{ display: "flex", alignItems: "center", gap: "clamp(8px, 1.2vw, 16px)", flexShrink: 0 }}>
             {/* Mobile Search Button */}
             <button
               onClick={() => setSearch(true)}
@@ -543,7 +607,8 @@ export function Header() {
                 padding: "6px",
                 borderRadius: "50%",
                 display: "inline-flex",
-                alignItems: "center"
+                alignItems: "center",
+                cursor: "pointer"
               }}
               className="mobile-only-btn"
             >
@@ -592,7 +657,10 @@ export function Header() {
                 justifyContent: "center",
                 padding: "6px",
                 borderRadius: "50%",
-                transition: "all 0.2s ease"
+                transition: "all 0.2s ease",
+                background: "none",
+                border: "none",
+                cursor: "pointer"
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = "var(--primary-soft)";
@@ -608,9 +676,6 @@ export function Header() {
             </button>
           </div>
         </div>
-
-        {/* Desktop Luxury Navigation Bar & Mega Menu */}
-        <MegaMenu />
       </header>
 
       {/* Mobile Drawer Menu */}
