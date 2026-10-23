@@ -149,142 +149,8 @@ function DiamondVectorIcon({ shape, size = 22, color = "#c5a059" }) {
   );
 }
 
-const DEFAULT_SHAPE_DATA = {
-  headerEyebrow: "Find Your Ring",
-  headerTitle: "Shop by shape",
-  headerDescription: "Start with the diamond. Every ring is handcrafted and set with an ethically certified stone.",
-  designEyebrow: "Create Your Own",
-  designTitle: "Design your ring",
-  designDescription: "Start with a setting and add the perfect center stone, or the other way round. It's entirely up to you, and we'll handcraft the result.",
-  step1Num: "01",
-  step1Title: "Choose your setting",
-  step1Desc: "Solitaire, halo, hidden halo, or vintage-inspired.",
-  step2Num: "02",
-  step2Title: "Pair your diamond",
-  step2Desc: "Pick the shape, carat, and certified stone you love.",
-  step3Num: "03",
-  step3Title: "We handcraft it",
-  step3Desc: "Set by hand and delivered ready to propose.",
-  primaryBtnText: "Start Designing",
-  primaryBtnLink: "/collections",
-  secondaryBtnText: "Talk to a Designer",
-  secondaryBtnLink: "/contact",
-  shapes: [
-    {
-      shapeid: "round",
-      name: "Round",
-      tagline: "The classic shape with unmatched 58-facet brilliance",
-      description: "The round brilliant cut is engineered with 58 precision facets to maximize light reflection, fire, and scintillation.",
-      bestFor: "Maximum Sparkle",
-      brilliance: "Very High",
-      showcaseImage: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Timeless Round Brilliant Ring",
-      buttonLink: "/collections?shape=Round"
-    },
-    {
-      shapeid: "oval",
-      name: "Oval",
-      tagline: "Graceful elegance with flattering finger elongation",
-      description: "An elongated brilliant silhouette offering comparable fire to the round cut while creating an illusion of slender, graceful hands.",
-      bestFor: "Finger Elongation",
-      brilliance: "Very High",
-      showcaseImage: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Luminous Oval Solitaire",
-      buttonLink: "/collections?shape=Oval"
-    },
-    {
-      shapeid: "cushion",
-      name: "Cushion",
-      tagline: "Romantic rounded pillow corners with antique warmth",
-      description: "Combining a square cut with rounded corners, the pillow cut exudes heirloom charm with deep, pillowy flashes of rainbow fire.",
-      bestFor: "Vintage Romance",
-      brilliance: "High",
-      showcaseImage: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Heirloom Cushion Halo Ring",
-      buttonLink: "/collections?shape=Cushion"
-    },
-    {
-      shapeid: "pear",
-      name: "Pear",
-      tagline: "An exquisite teardrop cut balancing poise and drama",
-      description: "A distinctive hybrid cut combining the brilliance of a round cut with the dramatic point of a marquise for bold beauty.",
-      bestFor: "Dramatic Grace",
-      brilliance: "Very High",
-      showcaseImage: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Royal Pear Pavé Ring",
-      buttonLink: "/collections?shape=Pear"
-    },
-    {
-      shapeid: "emerald",
-      name: "Emerald",
-      tagline: "Art Deco step facets with hall-of-mirrors clarity",
-      description: "Clean rectangular step cuts produce mesmerizing hall-of-mirrors flashes, highlighting exceptional gemstone clarity and regal refinement.",
-      bestFor: "Architectural Elegance",
-      brilliance: "Medium",
-      showcaseImage: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Grand Emerald Cut Solitaire",
-      buttonLink: "/collections?shape=Emerald"
-    },
-    {
-      shapeid: "princess",
-      name: "Princess",
-      tagline: "Crisp modern square geometry with fiery brilliance",
-      description: "Featuring sharp 90-degree corners and intricate pyramid chevron faceting for a bold, modern expression of intense fire.",
-      bestFor: "Contemporary Sparkle",
-      brilliance: "Very High",
-      showcaseImage: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Modern Princess Solitaire",
-      buttonLink: "/collections?shape=Princess"
-    },
-    {
-      shapeid: "radiant",
-      name: "Radiant",
-      tagline: "Emerald silhouette infused with 70 brilliant facets",
-      description: "Combines the elegant emerald outline with brilliant-cut facet arrangement, delivering extraordinary multidirectional sparkle.",
-      bestFor: "Intense Fire & Symmetry",
-      brilliance: "Very High",
-      showcaseImage: "https://images.unsplash.com/photo-1598560917505-59a3ad559071?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Fiery Radiant Cut Masterpiece",
-      buttonLink: "/collections?shape=Radiant"
-    },
-    {
-      shapeid: "elongated-cushion",
-      name: "Elongated Cushion",
-      tagline: "Modern slender proportions on the classic pillow silhouette",
-      description: "A stretched length-to-width ratio on the beloved cushion cut that elongates the finger while maintaining soft rounded corners.",
-      bestFor: "Slender Elegance",
-      brilliance: "High",
-      showcaseImage: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Bespoke Elongated Cushion Ring",
-      buttonLink: "/collections?shape=Cushion"
-    },
-    {
-      shapeid: "marquise",
-      name: "Marquise",
-      tagline: "Royal elongated cut maximizing surface carat presence",
-      description: "Commissioned by King Louis XV of France, this regal football silhouette provides the greatest face-up size per carat weight.",
-      bestFor: "Maximizing Carat Appearance",
-      brilliance: "Very High",
-      showcaseImage: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Sovereign Marquise Solitaire",
-      buttonLink: "/collections?shape=Marquise"
-    },
-    {
-      shapeid: "asscher",
-      name: "Asscher",
-      tagline: "Vintage Parisian step cut with octagonal depth",
-      description: "Developed in 1902 by the Asscher Brothers, featuring square step facets and cropped corners creating a hypnotic windmill optical pattern.",
-      bestFor: "Vintage Sophistication",
-      brilliance: "Medium",
-      showcaseImage: "https://images.unsplash.com/photo-1529636798458-92182e662485?q=80&w=800&auto=format&fit=crop",
-      showcaseTitle: "The Parisian Asscher Step Cut",
-      buttonLink: "/collections?shape=Asscher"
-    }
-  ]
-};
-
 export default function ShopByShapeSection() {
-  const [data, setData] = useState(DEFAULT_SHAPE_DATA);
+  const [data, setData] = useState(null);
   const [activeState, setActiveState] = useState({ index: 0, rotation: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [sparkleKey, setSparkleKey] = useState(0);
@@ -534,280 +400,306 @@ export default function ShopByShapeSection() {
               </p>
 
               {/* 3 Step Cards */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: "10px",
-                  marginBottom: "28px"
-                }}
-                className="shape-steps-grid"
-              >
-                {/* Step 1 */}
+              {(data.step1Title || data.step2Title || data.step3Title) && (
                 <div
                   style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: "14px",
-                    padding: "14px 12px",
-                    boxShadow: "0 2px 8px rgba(60, 40, 15, 0.05)",
-                    border: "1px solid rgba(225, 210, 190, 0.5)",
-                    position: "relative",
-                    overflow: "hidden",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: "10px",
+                    marginBottom: "28px"
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-3px)";
-                    e.currentTarget.style.boxShadow = "0 8px 18px rgba(60, 40, 15, 0.12)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(60, 40, 15, 0.05)";
-                  }}
+                  className="shape-steps-grid"
                 >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: "2.5px",
-                      background: "linear-gradient(to right, var(--gold), transparent)"
-                    }}
-                  />
-                  <span
-                    style={{
-                      display: "block",
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "17px",
-                      fontWeight: 700,
-                      color: "var(--gold-deep)"
-                    }}
-                  >
-                    {data.step1Num}
-                  </span>
-                  <span
-                    style={{
-                      display: "block",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      color: "#181818",
-                      lineHeight: 1.25,
-                      marginTop: "2px"
-                    }}
-                  >
-                    {data.step1Title}
-                  </span>
-                  <p
-                    style={{
-                      fontSize: "11px",
-                      color: "#666666",
-                      lineHeight: 1.4,
-                      marginTop: "6px",
-                      margin: 0
-                    }}
-                  >
-                    {data.step1Desc}
-                  </p>
-                </div>
+                  {/* Step 1 */}
+                  {data.step1Title && (
+                    <div
+                      style={{
+                        backgroundColor: "#ffffff",
+                        borderRadius: "14px",
+                        padding: "14px 12px",
+                        boxShadow: "0 2px 8px rgba(60, 40, 15, 0.05)",
+                        border: "1px solid rgba(225, 210, 190, 0.5)",
+                        position: "relative",
+                        overflow: "hidden",
+                        transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "translateY(-3px)";
+                        e.currentTarget.style.boxShadow = "0 8px 18px rgba(60, 40, 15, 0.12)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow = "0 2px 8px rgba(60, 40, 15, 0.05)";
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: "2.5px",
+                          background: "linear-gradient(to right, var(--gold), transparent)"
+                        }}
+                      />
+                      {data.step1Num && (
+                        <span
+                          style={{
+                            display: "block",
+                            fontFamily: "var(--font-serif)",
+                            fontSize: "17px",
+                            fontWeight: 700,
+                            color: "var(--gold-deep)"
+                          }}
+                        >
+                          {data.step1Num}
+                        </span>
+                      )}
+                      <span
+                        style={{
+                          display: "block",
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          color: "#181818",
+                          lineHeight: 1.25,
+                          marginTop: "2px"
+                        }}
+                      >
+                        {data.step1Title}
+                      </span>
+                      {data.step1Desc && (
+                        <p
+                          style={{
+                            fontSize: "11px",
+                            color: "#666666",
+                            lineHeight: 1.4,
+                            marginTop: "6px",
+                            margin: 0
+                          }}
+                        >
+                          {data.step1Desc}
+                        </p>
+                      )}
+                    </div>
+                  )}
 
-                {/* Step 2 */}
-                <div
-                  style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: "14px",
-                    padding: "14px 12px",
-                    boxShadow: "0 2px 8px rgba(60, 40, 15, 0.05)",
-                    border: "1px solid rgba(225, 210, 190, 0.5)",
-                    position: "relative",
-                    overflow: "hidden",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-3px)";
-                    e.currentTarget.style.boxShadow = "0 8px 18px rgba(60, 40, 15, 0.12)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(60, 40, 15, 0.05)";
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: "2.5px",
-                      background: "linear-gradient(to right, var(--gold), transparent)"
-                    }}
-                  />
-                  <span
-                    style={{
-                      display: "block",
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "17px",
-                      fontWeight: 700,
-                      color: "var(--gold-deep)"
-                    }}
-                  >
-                    {data.step2Num}
-                  </span>
-                  <span
-                    style={{
-                      display: "block",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      color: "#181818",
-                      lineHeight: 1.25,
-                      marginTop: "2px"
-                    }}
-                  >
-                    {data.step2Title}
-                  </span>
-                  <p
-                    style={{
-                      fontSize: "11px",
-                      color: "#666666",
-                      lineHeight: 1.4,
-                      marginTop: "6px",
-                      margin: 0
-                    }}
-                  >
-                    {data.step2Desc}
-                  </p>
-                </div>
+                  {/* Step 2 */}
+                  {data.step2Title && (
+                    <div
+                      style={{
+                        backgroundColor: "#ffffff",
+                        borderRadius: "14px",
+                        padding: "14px 12px",
+                        boxShadow: "0 2px 8px rgba(60, 40, 15, 0.05)",
+                        border: "1px solid rgba(225, 210, 190, 0.5)",
+                        position: "relative",
+                        overflow: "hidden",
+                        transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "translateY(-3px)";
+                        e.currentTarget.style.boxShadow = "0 8px 18px rgba(60, 40, 15, 0.12)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow = "0 2px 8px rgba(60, 40, 15, 0.05)";
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: "2.5px",
+                          background: "linear-gradient(to right, var(--gold), transparent)"
+                        }}
+                      />
+                      {data.step2Num && (
+                        <span
+                          style={{
+                            display: "block",
+                            fontFamily: "var(--font-serif)",
+                            fontSize: "17px",
+                            fontWeight: 700,
+                            color: "var(--gold-deep)"
+                          }}
+                        >
+                          {data.step2Num}
+                        </span>
+                      )}
+                      <span
+                        style={{
+                          display: "block",
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          color: "#181818",
+                          lineHeight: 1.25,
+                          marginTop: "2px"
+                        }}
+                      >
+                        {data.step2Title}
+                      </span>
+                      {data.step2Desc && (
+                        <p
+                          style={{
+                            fontSize: "11px",
+                            color: "#666666",
+                            lineHeight: 1.4,
+                            marginTop: "6px",
+                            margin: 0
+                          }}
+                        >
+                          {data.step2Desc}
+                        </p>
+                      )}
+                    </div>
+                  )}
 
-                {/* Step 3 */}
-                <div
-                  style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: "14px",
-                    padding: "14px 12px",
-                    boxShadow: "0 2px 8px rgba(60, 40, 15, 0.05)",
-                    border: "1px solid rgba(225, 210, 190, 0.5)",
-                    position: "relative",
-                    overflow: "hidden",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-3px)";
-                    e.currentTarget.style.boxShadow = "0 8px 18px rgba(60, 40, 15, 0.12)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(60, 40, 15, 0.05)";
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: "2.5px",
-                      background: "linear-gradient(to right, var(--gold), transparent)"
-                    }}
-                  />
-                  <span
-                    style={{
-                      display: "block",
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "17px",
-                      fontWeight: 700,
-                      color: "var(--gold-deep)"
-                    }}
-                  >
-                    {data.step3Num}
-                  </span>
-                  <span
-                    style={{
-                      display: "block",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      color: "#181818",
-                      lineHeight: 1.25,
-                      marginTop: "2px"
-                    }}
-                  >
-                    {data.step3Title}
-                  </span>
-                  <p
-                    style={{
-                      fontSize: "11px",
-                      color: "#666666",
-                      lineHeight: 1.4,
-                      marginTop: "6px",
-                      margin: 0
-                    }}
-                  >
-                    {data.step3Desc}
-                  </p>
+                  {/* Step 3 */}
+                  {data.step3Title && (
+                    <div
+                      style={{
+                        backgroundColor: "#ffffff",
+                        borderRadius: "14px",
+                        padding: "14px 12px",
+                        boxShadow: "0 2px 8px rgba(60, 40, 15, 0.05)",
+                        border: "1px solid rgba(225, 210, 190, 0.5)",
+                        position: "relative",
+                        overflow: "hidden",
+                        transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "translateY(-3px)";
+                        e.currentTarget.style.boxShadow = "0 8px 18px rgba(60, 40, 15, 0.12)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow = "0 2px 8px rgba(60, 40, 15, 0.05)";
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: "2.5px",
+                          background: "linear-gradient(to right, var(--gold), transparent)"
+                        }}
+                      />
+                      {data.step3Num && (
+                        <span
+                          style={{
+                            display: "block",
+                            fontFamily: "var(--font-serif)",
+                            fontSize: "17px",
+                            fontWeight: 700,
+                            color: "var(--gold-deep)"
+                          }}
+                        >
+                          {data.step3Num}
+                        </span>
+                      )}
+                      <span
+                        style={{
+                          display: "block",
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          color: "#181818",
+                          lineHeight: 1.25,
+                          marginTop: "2px"
+                        }}
+                      >
+                        {data.step3Title}
+                      </span>
+                      {data.step3Desc && (
+                        <p
+                          style={{
+                            fontSize: "11px",
+                            color: "#666666",
+                            lineHeight: 1.4,
+                            marginTop: "6px",
+                            margin: 0
+                          }}
+                        >
+                          {data.step3Desc}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
 
               {/* Action Buttons */}
-              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                <Link
-                  to={data.primaryBtnLink || "/collections"}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    backgroundColor: "var(--primary)",
-                    color: "#ffffff",
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    padding: "12px 24px",
-                    borderRadius: "999px",
-                    boxShadow: "0 4px 14px rgba(85, 104, 50, 0.35)",
-                    transition: "all 0.3s ease"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "var(--primary-hover)";
-                    e.currentTarget.style.transform = "translateY(-1.5px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "var(--primary)";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }}
-                >
-                  {data.primaryBtnText || "START DESIGNING"}
-                  <ArrowRight size={14} />
-                </Link>
+              {(data.primaryBtnText || data.secondaryBtnText) && (
+                <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                  {data.primaryBtnText && (
+                    <Link
+                      to={data.primaryBtnLink || "/collections"}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        backgroundColor: "var(--primary)",
+                        color: "#ffffff",
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        padding: "12px 24px",
+                        borderRadius: "999px",
+                        boxShadow: "0 4px 14px rgba(85, 104, 50, 0.35)",
+                        transition: "all 0.3s ease"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                        e.currentTarget.style.transform = "translateY(-1.5px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "var(--primary)";
+                        e.currentTarget.style.transform = "translateY(0)";
+                      }}
+                    >
+                      {data.primaryBtnText}
+                      <ArrowRight size={14} />
+                    </Link>
+                  )}
 
-                <Link
-                  to={data.secondaryBtnLink || "/contact"}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    backgroundColor: "transparent",
-                    color: "#181818",
-                    border: "1px solid rgba(24, 24, 24, 0.4)",
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    padding: "12px 24px",
-                    borderRadius: "999px",
-                    transition: "all 0.3s ease"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = "#181818";
-                    e.currentTarget.style.backgroundColor = "#181818";
-                    e.currentTarget.style.color = "#ffffff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.4)";
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "#181818";
-                  }}
-                >
-                  {data.secondaryBtnText || "TALK TO A DESIGNER"}
-                </Link>
-              </div>
+                  {data.secondaryBtnText && (
+                    <Link
+                      to={data.secondaryBtnLink || "/contact"}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        backgroundColor: "transparent",
+                        color: "#181818",
+                        border: "1px solid rgba(24, 24, 24, 0.4)",
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        padding: "12px 24px",
+                        borderRadius: "999px",
+                        transition: "all 0.3s ease"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = "#181818";
+                        e.currentTarget.style.backgroundColor = "#181818";
+                        e.currentTarget.style.color = "#ffffff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = "rgba(24, 24, 24, 0.4)";
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "#181818";
+                      }}
+                    >
+                      {data.secondaryBtnText}
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* COLUMN 2: Interactive Shape Selector Dial Wheel */}
