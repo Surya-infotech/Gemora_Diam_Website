@@ -3,146 +3,68 @@ import { Link, useNavigate } from "react-router-dom";
 import { Heart, ArrowRight } from "lucide-react";
 import { useStore } from "../../lib/store";
 
-const BESTSELLER_ENGAGEMENT_RINGS = [
-  {
-    id: "oval-cut-1ct-igi",
-    name: "Oval Cut 1Ct IGI Certified Lab Grown Diamond Engagement Ring",
-    price: 1850,
-    image: "/bestsellers/oval_cut_ring.jpg",
-    category: "Engagement Rings",
-    metals: [
-      { name: "Yellow Gold", color: "#e5c158" },
-      { name: "White Gold", color: "#e0e2e5" },
-      { name: "Rose Gold", color: "#e8a896" },
-      { name: "Platinum", color: "#cbd3db" }
-    ],
-    link: "/collections?category=Engagement+Rings"
-  },
-  {
-    id: "round-cut-4ct-igi",
-    name: "Round Cut 4Ct IGI Certified Lab Grown Diamond Cluster Ring",
-    price: 4220,
-    image: "/bestsellers/marquise_cut_ring.jpg",
-    category: "Engagement Rings",
-    metals: [
-      { name: "Yellow Gold", color: "#e5c158" },
-      { name: "White Gold", color: "#e0e2e5" },
-      { name: "Rose Gold", color: "#e8a896" },
-      { name: "Platinum", color: "#cbd3db" }
-    ],
-    link: "/collections?category=Engagement+Rings"
-  },
-  {
-    id: "round-cut-1ct-bezel",
-    name: "Round Cut 1Ct IGI Certified Solitaire Cathedral Bezel Ring",
-    price: 2150,
-    image: "/bestsellers/round_cut_ring.jpg",
-    category: "Engagement Rings",
-    metals: [
-      { name: "Yellow Gold", color: "#e5c158" },
-      { name: "White Gold", color: "#e0e2e5" },
-      { name: "Rose Gold", color: "#e8a896" },
-      { name: "Platinum", color: "#cbd3db" }
-    ],
-    link: "/collections?category=Engagement+Rings"
-  },
-  {
-    id: "emerald-cut-1-5ct-solitaire",
-    name: "Emerald Cut 1.5Ct IGI Certified Lab Grown Diamond Solitaire Ring",
-    price: 2650,
-    image: "/bestsellers/emerald_cut_ring.jpg",
-    category: "Engagement Rings",
-    metals: [
-      { name: "Yellow Gold", color: "#e5c158" },
-      { name: "White Gold", color: "#e0e2e5" },
-      { name: "Rose Gold", color: "#e8a896" },
-      { name: "Platinum", color: "#cbd3db" }
-    ],
-    link: "/collections?category=Engagement+Rings"
+function getMetalColor(metalName = "") {
+  const norm = String(metalName).toLowerCase();
+  if (norm.includes("rose")) return "#e8a896";
+  if (norm.includes("yellow") || norm.includes("gold")) {
+    if (norm.includes("white")) return "#e0e2e5";
+    return "#e5c158";
   }
-];
-
-const BESTSELLER_WEDDING_BANDS = [
-  {
-    id: "french-pave-eternity",
-    name: "French Pavé Micro-Diamond Eternity Band in 18K Solid Gold",
-    price: 980,
-    image: "/bestsellers/pave_band.jpg",
-    category: "Wedding Bands",
-    metals: [
-      { name: "Yellow Gold", color: "#e5c158" },
-      { name: "White Gold", color: "#e0e2e5" },
-      { name: "Rose Gold", color: "#e8a896" },
-      { name: "Platinum", color: "#cbd3db" }
-    ],
-    link: "/collections?category=Wedding+Bands"
-  },
-  {
-    id: "chevron-contoured-band",
-    name: "Chevron Contoured Diamond Ring Guard Band in 950 Platinum",
-    price: 1120,
-    image: "/bestsellers/chevron_band.jpg",
-    category: "Wedding Bands",
-    metals: [
-      { name: "Platinum", color: "#cbd3db" },
-      { name: "White Gold", color: "#e0e2e5" },
-      { name: "Yellow Gold", color: "#e5c158" },
-      { name: "Rose Gold", color: "#e8a896" }
-    ],
-    link: "/collections?category=Wedding+Bands"
-  },
-  {
-    id: "classic-domed-band",
-    name: "Classic Domed Comfort-Fit 18K Yellow Gold Wedding Band",
-    price: 680,
-    image: "/bestsellers/classic_band.jpg",
-    category: "Wedding Bands",
-    metals: [
-      { name: "Yellow Gold", color: "#e5c158" },
-      { name: "White Gold", color: "#e0e2e5" },
-      { name: "Rose Gold", color: "#e8a896" },
-      { name: "Platinum", color: "#cbd3db" }
-    ],
-    link: "/collections?category=Wedding+Bands"
-  },
-  {
-    id: "alternating-baguette-band",
-    name: "Alternating Baguette & Round Brilliant Diamond Eternity Band",
-    price: 1450,
-    image: "/bestsellers/baguette_band.jpg",
-    category: "Wedding Bands",
-    metals: [
-      { name: "Rose Gold", color: "#e8a896" },
-      { name: "Yellow Gold", color: "#e5c158" },
-      { name: "White Gold", color: "#e0e2e5" },
-      { name: "Platinum", color: "#cbd3db" }
-    ],
-    link: "/collections?category=Wedding+Bands"
-  }
-];
+  if (norm.includes("platinum")) return "#cbd3db";
+  if (norm.includes("white") || norm.includes("silver")) return "#e0e2e5";
+  return "#e5c158";
+}
 
 export default function BestSellerSection() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("engagement");
+  const [activeTab, setActiveTab] = useState("");
   const [selectedMetals, setSelectedMetals] = useState({});
-  const { wishlist, toggleWishlist, format } = useStore();
+  const { products, categories, productsLoading, wishlist, toggleWishlist, format } = useStore();
 
   const handleMetalSelect = (itemId, metalName, e) => {
     e.stopPropagation();
     setSelectedMetals((prev) => ({ ...prev, [itemId]: metalName }));
   };
 
-  const currentItems = activeTab === "engagement"
-    ? BESTSELLER_ENGAGEMENT_RINGS
-    : BESTSELLER_WEDDING_BANDS;
+  // Derive dynamic categories with products from database
+  const categoriesWithProducts = (categories || [])
+    .map((c) => c.categoryname || c.name || c.title)
+    .filter(Boolean)
+    .filter((catName) =>
+      (products || []).some((p) => p.category?.toLowerCase() === catName.toLowerCase())
+    );
 
-  const currentCategoryLink = activeTab === "engagement"
-    ? "/collections?category=Engagement+Rings"
-    : "/collections?category=Wedding+Bands";
+  const extraProductCategories = Array.from(
+    new Set(
+      (products || [])
+        .map((p) => p.category)
+        .filter(Boolean)
+        .filter(
+          (pCat) =>
+            !categoriesWithProducts.some(
+              (c) => c.toLowerCase() === pCat.toLowerCase()
+            )
+        )
+    )
+  );
 
-  const currentCategoryLabel = activeTab === "engagement"
-    ? "Shop all engagement rings"
-    : "Shop all wedding bands";
+  const dynamicTabs = [...categoriesWithProducts, ...extraProductCategories];
+
+  // If no dynamic products exist in the database, cleanly do not render default mock data
+  if (!productsLoading && (!products || products.length === 0 || dynamicTabs.length === 0)) {
+    return null;
+  }
+
+  const currentTab = activeTab && dynamicTabs.includes(activeTab)
+    ? activeTab
+    : dynamicTabs[0] || "";
+
+  const currentItems = (products || []).filter(
+    (p) => p.category?.toLowerCase() === currentTab.toLowerCase()
+  );
+
+  const currentCategoryLink = `/collections?category=${encodeURIComponent(currentTab)}`;
+  const currentCategoryLabel = `Shop all ${currentTab.toLowerCase()}`;
 
   return (
     <section style={{ padding: "clamp(50px, 6vw, 90px) 0 clamp(60px, 7vw, 100px) 0", backgroundColor: "#ffffff" }}>
@@ -175,7 +97,7 @@ export default function BestSellerSection() {
           </h2>
         </div>
 
-        {/* Tesora-Style Filter Tabs & Category Link */}
+        {/* Dynamic Filter Tabs & Category Link */}
         <div
           style={{
             display: "flex",
@@ -189,69 +111,58 @@ export default function BestSellerSection() {
           }}
         >
           {/* Underlined Minimal Tabs */}
-          <div style={{ display: "flex", gap: "clamp(24px, 3.5vw, 40px)" }}>
-            <button
-              type="button"
-              onClick={() => setActiveTab("engagement")}
-              style={{
-                background: "none",
-                border: "none",
-                padding: "0 0 12px 0",
-                fontSize: "0.76rem",
-                fontWeight: 600,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: activeTab === "engagement" ? "var(--foreground)" : "#8c867a",
-                borderBottom: activeTab === "engagement" ? "2px solid var(--primary)" : "2px solid transparent",
-                cursor: "pointer",
-                transition: "all 0.2s ease"
-              }}
-            >
-              Engagement Rings
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("wedding")}
-              style={{
-                background: "none",
-                border: "none",
-                padding: "0 0 12px 0",
-                fontSize: "0.76rem",
-                fontWeight: 600,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: activeTab === "wedding" ? "var(--foreground)" : "#8c867a",
-                borderBottom: activeTab === "wedding" ? "2px solid var(--primary)" : "2px solid transparent",
-                cursor: "pointer",
-                transition: "all 0.2s ease"
-              }}
-            >
-              Wedding Bands
-            </button>
+          <div style={{ display: "flex", gap: "clamp(24px, 3.5vw, 40px)", flexWrap: "wrap" }}>
+            {dynamicTabs.map((tab) => {
+              const isSelected = currentTab === tab;
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: "0 0 12px 0",
+                    fontSize: "0.76rem",
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: isSelected ? "var(--foreground)" : "#8c867a",
+                    borderBottom: isSelected ? "2px solid var(--primary)" : "2px solid transparent",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  {tab}
+                </button>
+              );
+            })}
           </div>
 
           {/* Right Action Link */}
-          <Link
-            to={currentCategoryLink}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              fontSize: "0.72rem",
-              fontWeight: 700,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "var(--foreground)",
-              paddingBottom: "12px",
-              textDecoration: "none",
-              transition: "color 0.2s"
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
-          >
-            <span>{currentCategoryLabel}</span>
-            <ArrowRight size={13} strokeWidth={2} style={{ color: "var(--primary)" }} />
-          </Link>
+          {currentTab && (
+            <Link
+              to={currentCategoryLink}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "0.72rem",
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "var(--foreground)",
+                paddingBottom: "12px",
+                textDecoration: "none",
+                transition: "color 0.2s"
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
+            >
+              <span>{currentCategoryLabel}</span>
+              <ArrowRight size={13} strokeWidth={2} style={{ color: "var(--primary)" }} />
+            </Link>
+          )}
         </div>
 
         {/* 4-Column Product Grid */}
@@ -264,12 +175,20 @@ export default function BestSellerSection() {
         >
           {currentItems.map((item) => {
             const isLiked = wishlist.includes(item.id);
-            const activeMetal = selectedMetals[item.id] || item.metals?.[0]?.name;
+            const rawMetals = item.metals || [];
+            const metals = rawMetals.map((m) => {
+              if (typeof m === "object" && m !== null) {
+                return { name: m.name || m.metalname || "", color: m.color || getMetalColor(m.name || m.metalname) };
+              }
+              return { name: String(m), color: getMetalColor(m) };
+            });
+            const activeMetal = selectedMetals[item.id] || metals[0]?.name;
+            const itemImage = item.image || item.galleryImages?.[0] || item.gallery?.[0] || "";
 
             return (
               <div
                 key={item.id}
-                onClick={() => navigate(item.link || `/collections`)}
+                onClick={() => navigate(item.link || `/product/${item.id || item._id}` || `/collections`)}
                 style={{
                   display: "flex",
                   flexDirection: "column",
@@ -300,20 +219,26 @@ export default function BestSellerSection() {
                     overflow: "hidden"
                   }}
                 >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      objectPosition: "center",
-                      display: "block",
-                      transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                  />
+                  {itemImage ? (
+                    <img
+                      src={itemImage}
+                      alt={item.name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        objectPosition: "center",
+                        display: "block",
+                        transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                    />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", color: "#bbb", fontSize: "12px" }}>
+                      No Image
+                    </div>
+                  )}
 
                   {/* Top-Left: IGI Certified Pill Badge */}
                   <div
@@ -420,43 +345,45 @@ export default function BestSellerSection() {
                     </h3>
 
                     {/* Circular Metal Color Swatches */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "5px",
-                        marginTop: "3px",
-                        flexShrink: 0
-                      }}
-                    >
-                      {item.metals.map((metal) => {
-                        const isSelected = activeMetal === metal.name;
-                        return (
-                          <button
-                            key={metal.name}
-                            type="button"
-                            title={metal.name}
-                            onClick={(e) => handleMetalSelect(item.id, metal.name, e)}
-                            style={{
-                              width: "10px",
-                              height: "10px",
-                              borderRadius: "50%",
-                              backgroundColor: metal.color,
-                              border: "none",
-                              padding: 0,
-                              cursor: "pointer",
-                              outline: "none",
-                              boxShadow: isSelected
-                                ? "0 0 0 1.5px #ffffff, 0 0 0 2.5px var(--primary)"
-                                : "none",
-                              transition: "transform 0.15s ease"
-                            }}
-                            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.2)")}
-                            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                          />
-                        );
-                      })}
-                    </div>
+                    {metals.length > 0 && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "5px",
+                          marginTop: "3px",
+                          flexShrink: 0
+                        }}
+                      >
+                        {metals.map((metal) => {
+                          const isSelected = activeMetal === metal.name;
+                          return (
+                            <button
+                              key={metal.name}
+                              type="button"
+                              title={metal.name}
+                              onClick={(e) => handleMetalSelect(item.id, metal.name, e)}
+                              style={{
+                                width: "10px",
+                                height: "10px",
+                                borderRadius: "50%",
+                                backgroundColor: metal.color,
+                                border: "none",
+                                padding: 0,
+                                cursor: "pointer",
+                                outline: "none",
+                                boxShadow: isSelected
+                                  ? "0 0 0 1.5px #ffffff, 0 0 0 2.5px var(--primary)"
+                                  : "none",
+                                transition: "transform 0.15s ease"
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.2)")}
+                              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   {/* Row 2: Price */}
@@ -468,7 +395,7 @@ export default function BestSellerSection() {
                       marginTop: "6px"
                     }}
                   >
-                    {format(item.price)}
+                    {format ? format(item.price) : `$${item.price?.toLocaleString()}`}
                   </div>
                 </div>
               </div>
