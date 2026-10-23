@@ -12,8 +12,6 @@ import {
   Sparkles,
   Heart,
   ShoppingBag,
-  ShieldCheck,
-  Truck,
   ArrowRight,
   User,
   CheckCircle2,
@@ -173,115 +171,6 @@ export default function ProfilePage() {
           <LogOut size={15} />
           <span>Sign Out</span>
         </button>
-      </div>
-
-      {/* Luxury Client Privileges Strip */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "14px",
-          marginTop: "20px"
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            padding: "14px 18px",
-            borderRadius: "8px",
-            backgroundColor: "#FAF9F6",
-            border: "1px solid #EDE8DE"
-          }}
-        >
-          <div
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              backgroundColor: "rgba(85, 104, 50, 0.08)",
-              color: "var(--primary)",
-              display: "grid",
-              placeItems: "center",
-              flexShrink: 0
-            }}
-          >
-            <Heart size={16} />
-          </div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--foreground)" }}>
-              {wishlist?.length || 0} Saved Creations
-            </div>
-            <div style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>In your personal curation</div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            padding: "14px 18px",
-            borderRadius: "8px",
-            backgroundColor: "#FAF9F6",
-            border: "1px solid #EDE8DE"
-          }}
-        >
-          <div
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              backgroundColor: "rgba(85, 104, 50, 0.08)",
-              color: "var(--primary)",
-              display: "grid",
-              placeItems: "center",
-              flexShrink: 0
-            }}
-          >
-            <Truck size={16} />
-          </div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--foreground)" }}>
-              Insured Armoured Transit
-            </div>
-            <div style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>Complimentary on all orders</div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            padding: "14px 18px",
-            borderRadius: "8px",
-            backgroundColor: "#FAF9F6",
-            border: "1px solid #EDE8DE"
-          }}
-        >
-          <div
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              backgroundColor: "rgba(85, 104, 50, 0.08)",
-              color: "var(--primary)",
-              display: "grid",
-              placeItems: "center",
-              flexShrink: 0
-            }}
-          >
-            <ShieldCheck size={16} />
-          </div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--foreground)" }}>
-              Lifetime Authenticity
-            </div>
-            <div style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>Certified Gemological Dossier</div>
-          </div>
-        </div>
       </div>
 
       {/* Tabs Navigation */}
