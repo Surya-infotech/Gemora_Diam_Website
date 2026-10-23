@@ -165,14 +165,8 @@ export default function BestSellerSection() {
           )}
         </div>
 
-        {/* 4-Column Product Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))",
-            gap: "clamp(16px, 1.8vw, 24px)"
-          }}
-        >
+        {/* 4-Column Product Grid (Strict 4 columns matching Tesora proportions) */}
+        <div className="bestseller-grid">
           {currentItems.map((item) => {
             const isLiked = wishlist.includes(item.id);
             const rawMetals = item.metals || [];
@@ -403,6 +397,31 @@ export default function BestSellerSection() {
           })}
         </div>
       </div>
+
+      <style>{`
+        .bestseller-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: clamp(16px, 1.8vw, 24px);
+        }
+        @media (max-width: 1024px) {
+          .bestseller-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+        @media (max-width: 768px) {
+          .bestseller-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+          }
+        }
+        @media (max-width: 480px) {
+          .bestseller-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+          }
+        }
+      `}</style>
     </section>
   );
 }
