@@ -4,71 +4,51 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { useStore } from "../../lib/store";
 import SectionHeading from "../SectionHeading";
 
-const CURATED_LOOKS = [
-  {
-    id: "look-01",
-    lookNumber: "01",
-    suiteTag: "THE SOLITAIRE SUITE",
-    title: "Halo Solitaire & Pavé Band",
-    specs: "1.80ct Lab Diamond • Platinum & Rose Gold",
-    description: "A brilliant round center diamond crowned by a vintage milgrain halo and diamond-set split shank.",
-    price: 2450,
-    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=900&q=85",
-    hotspot: { top: "56%", left: "50%" },
-    piecesCount: "2 Pieces Styled",
-    defaultLink: "/collections?category=Engagement+Rings"
-  },
-  {
-    id: "look-02",
-    lookNumber: "02",
-    suiteTag: "BLUSH RADIANCE",
-    title: "Fancy Pink Radiant & Pavé Setting",
-    specs: "2.20ct Fancy Vivid • 18K Rose Gold",
-    description: "An extraordinary fancy pink radiant diamond with a micro-pavé halo and pavé band in warm rose gold.",
-    price: 3200,
-    image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=900&q=85",
-    hotspot: { top: "53%", left: "49%" },
-    piecesCount: "2 Pieces Styled",
-    defaultLink: "/collections?category=Bridal+Sets"
-  },
-  {
-    id: "look-03",
-    lookNumber: "03",
-    suiteTag: "ATELIER GALA",
-    title: "Emerald Cut Solitaire Pendant",
-    specs: "3.00ct Cut Gem • 18K Solid Gold Chain",
-    description: "An architectural step-cut diamond pendant suspended on a delicate double-layer artisan link chain.",
-    price: 3950,
-    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=85",
-    hotspot: { top: "63%", left: "51%" },
-    piecesCount: "2 Pieces Styled",
-    defaultLink: "/collections?category=Earrings"
-  }
-];
-
 export default function ShopTheLookSection() {
   const navigate = useNavigate();
-  const { products: dynamicProducts, format } = useStore();
+  const { products, productsLoading, format } = useStore();
   const [hoveredIdx, setHoveredIdx] = useState(null);
 
-  // Integrate with dynamic products if available
-  const looks = CURATED_LOOKS.map((look, idx) => {
-    const matchedProduct = dynamicProducts?.[idx];
-    const targetLink = (matchedProduct?._id || matchedProduct?.id)
-      ? `/product/${matchedProduct._id || matchedProduct.id}`
-      : look.defaultLink;
-    const displayPrice = matchedProduct?.price ? format(matchedProduct.price) : format(look.price);
-    
+  // If no dynamic products exist in the database, cleanly do not render default mock data
+  if (!productsLoading && (!products || products.length === 0)) {
+    return null;
+  }
+
+  // Derive dynamic look items purely from active backend products
+  const looks = (products || []).slice(0, 3).map((item) => {
+    const rawMetals = item.metals || [];
+    const firstMetal = rawMetals[0]
+      ? (typeof rawMetals[0] === "object" ? rawMetals[0].name || rawMetals[0].metalname : String(rawMetals[0]))
+      : null;
+
+    const specsList = [
+      item.shapes?.[0],
+      item.clarities?.[0],
+      firstMetal
+    ].filter(Boolean);
+
+    const specs = specsList.length > 0 ? specsList.join(" • ") : (item.subcategory || item.category || "");
+    const image = item.image || item.galleryImages?.[0] || item.gallery?.[0] || "";
+    const targetLink = `/product/${item.id || item._id}`;
+    const displayPrice = format ? format(item.price) : `$${item.price?.toLocaleString()}`;
+
     return {
-      ...look,
+      id: item.id || item._id,
+      title: item.name,
+      suiteTag: (item.category || "Fine Jewelry").toUpperCase(),
+      specs,
+      image,
       targetLink,
-      displayPrice,
-      product: matchedProduct
+      displayPrice
     };
   });
 
+  if (looks.length === 0) {
+    return null;
+  }
+
   return (
-    <section style={{ padding: "90px 0 110px 0", backgroundColor: "#ffffff" }}>
+    <section style={{ padding: "clamp(60px, 7vw, 100px) 0", backgroundColor: "#ffffff" }}>
       <div className="container-luxury">
         {/* Luxury Gold-Lined Section Heading */}
         <SectionHeading
@@ -81,9 +61,10 @@ export default function ShopTheLookSection() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
             gap: "clamp(20px, 2.5vw, 32px)",
-            marginTop: "16px"
+            marginTop: "24px",
+            justifyContent: "center"
           }}
         >
           {looks.map((look, idx) => {
@@ -96,7 +77,7 @@ export default function ShopTheLookSection() {
                 onMouseLeave={() => setHoveredIdx(null)}
                 style={{
                   position: "relative",
-                  height: "clamp(490px, 44vw, 600px)",
+                  height: "clamp(460px, 42vw, 560px)",
                   borderRadius: "22px",
                   overflow: "hidden",
                   backgroundColor: "#FAF9F6",
@@ -106,22 +87,31 @@ export default function ShopTheLookSection() {
                     : "0 10px 30px rgba(28, 34, 23, 0.05)",
                   transform: isHovered ? "translateY(-6px)" : "translateY(0)",
                   transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-                  cursor: "pointer"
+                  cursor: "pointer",
+                  maxWidth: "420px",
+                  width: "100%",
+                  margin: "0 auto"
                 }}
               >
                 {/* Background Editorial Jewelry Photography */}
-                <img
-                  src={look.image}
-                  alt={look.title}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    transform: isHovered ? "scale(1.05)" : "scale(1)",
-                    transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)"
-                  }}
-                />
+                {look.image ? (
+                  <img
+                    src={look.image}
+                    alt={look.title}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                      transform: isHovered ? "scale(1.05)" : "scale(1)",
+                      transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)"
+                    }}
+                  />
+                ) : (
+                  <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", color: "#999", backgroundColor: "#f4f1ea" }}>
+                    No Image Available
+                  </div>
+                )}
 
                 {/* Refined Luxury Vignettes (Top & Bottom) */}
                 <div
@@ -129,12 +119,10 @@ export default function ShopTheLookSection() {
                     position: "absolute",
                     inset: 0,
                     background:
-                      "linear-gradient(180deg, rgba(16, 22, 13, 0.45) 0%, rgba(0,0,0,0) 30%), linear-gradient(0deg, rgba(16, 22, 13, 0.82) 0%, rgba(16, 22, 13, 0.25) 45%, rgba(0,0,0,0) 70%)",
+                      "linear-gradient(180deg, rgba(16, 22, 13, 0.35) 0%, rgba(0,0,0,0) 30%), linear-gradient(0deg, rgba(16, 22, 13, 0.85) 0%, rgba(16, 22, 13, 0.3) 45%, rgba(0,0,0,0) 70%)",
                     pointerEvents: "none"
                   }}
                 />
-
-
 
                 {/* Bottom Inset Glassmorphic Look Card */}
                 <div
@@ -193,28 +181,37 @@ export default function ShopTheLookSection() {
                   <h4
                     style={{
                       fontFamily: "var(--font-serif)",
-                      fontSize: "1.15rem",
+                      fontSize: "1.1rem",
                       fontWeight: 600,
                       color: "var(--foreground)",
                       margin: "0 0 6px 0",
                       lineHeight: 1.25,
-                      letterSpacing: "0.01em"
+                      letterSpacing: "0.01em",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden"
                     }}
                   >
                     {look.title}
                   </h4>
 
                   {/* Specs & Description */}
-                  <p
-                    style={{
-                      fontSize: "0.74rem",
-                      color: "var(--muted-foreground)",
-                      margin: "0 0 14px 0",
-                      lineHeight: 1.4
-                    }}
-                  >
-                    {look.specs}
-                  </p>
+                  {look.specs && (
+                    <p
+                      style={{
+                        fontSize: "0.74rem",
+                        color: "var(--muted-foreground)",
+                        margin: "0 0 14px 0",
+                        lineHeight: 1.4,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}
+                    >
+                      {look.specs}
+                    </p>
+                  )}
 
                   {/* Bottom Action Row: Call to Action Pill */}
                   <div
