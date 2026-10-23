@@ -1,6 +1,22 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Check, Download, X, Package, MapPin, Sparkles, Loader2, AlertCircle } from "lucide-react";
+import {
+  Check,
+  Download,
+  X,
+  Package,
+  MapPin,
+  Sparkles,
+  Loader2,
+  AlertCircle,
+  Calendar,
+  ArrowRight,
+  Clock,
+  CheckCircle2,
+  User,
+  ShoppingBag,
+  Truck
+} from "lucide-react";
 import { useStore } from "../lib/store";
 import { formatPhoneNumber } from "../lib/formatters";
 import { StatusBadge } from "../components/StatusBadge";
@@ -14,6 +30,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
     let isMounted = true;
@@ -45,21 +62,193 @@ export default function OrdersPage() {
     (o) => (o.orderstatus || o.status) === "Delivered" || (o.orderstatus || o.status) === "Cancelled"
   );
 
+  const displayedOrders = activeTab === "active" ? active : activeTab === "completed" ? done : orders;
+
   return (
-    <div className="container-luxury" style={{ maxWidth: "1000px", paddingTop: "60px", paddingBottom: "100px" }}>
-      {/* Page Header */}
-      <div style={{ marginBottom: "40px" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-          <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "var(--gold)" }} />
-          <p className="eyebrow" style={{ color: "var(--gold-deep)", margin: 0 }}>Client Concierge • Atelier Orders</p>
+    <div className="container-luxury" style={{ maxWidth: "1340px", paddingTop: "40px", paddingBottom: "100px" }}>
+      {/* Atelier Client Concierge Banner */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "24px",
+          paddingBottom: "26px",
+          borderBottom: "1px solid #EDE8DE"
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          {/* Concierge Crest */}
+          <div
+            style={{
+              width: "60px",
+              height: "60px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
+              border: "1.5px solid rgba(85, 104, 50, 0.25)",
+              color: "var(--primary)",
+              display: "grid",
+              placeItems: "center",
+              flexShrink: 0,
+              boxShadow: "0 4px 12px rgba(85, 104, 50, 0.08)"
+            }}
+          >
+            <Package size={26} strokeWidth={1.6} />
+          </div>
+
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "4px" }}>
+              <span
+                className="eyebrow"
+                style={{
+                  color: "var(--primary)",
+                  letterSpacing: "0.2em",
+                  fontSize: "0.7rem",
+                  fontWeight: 700
+                }}
+              >
+                MAISON PRIVÉE · CLIENT CONCIERGE
+              </span>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "2px 9px",
+                  borderRadius: "999px",
+                  backgroundColor: "rgba(85, 104, 50, 0.1)",
+                  color: "var(--primary)",
+                  fontSize: "0.7rem",
+                  fontWeight: 700
+                }}
+              >
+                <Truck size={11} /> Live Courier Tracking
+              </span>
+            </div>
+
+            <h1
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(2rem, 3.8vw, 3rem)",
+                margin: 0,
+                letterSpacing: "-0.01em",
+                color: "var(--foreground)",
+                fontWeight: 600
+              }}
+            >
+              Orders &amp; Tracking
+            </h1>
+            <p style={{ color: "var(--muted-foreground)", fontSize: "0.88rem", marginTop: "4px", margin: 0 }}>
+              Follow the craftsmanship journey of your fine jewelry commissions, live courier delivery, and certified invoices.
+            </p>
+          </div>
         </div>
-        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.5rem, 5vw, 3.8rem)", margin: "8px 0 12px 0", letterSpacing: "-0.01em" }}>
-          Orders &amp; Tracking
-        </h1>
-        <p style={{ color: "var(--muted-foreground)", fontSize: "0.95rem", maxWidth: "600px", margin: 0 }}>
-          Follow the craftsmanship journey of your fine jewelry commissions, live courier delivery, and certified invoices.
-        </p>
+
+        {/* Action Button: Link to Profile */}
+        <Link
+          to="/profile"
+          className="eyebrow"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+            backgroundColor: "#FAF9F6",
+            color: "var(--foreground)",
+            border: "1px solid #EDE8DE",
+            padding: "11px 20px",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: 600,
+            fontSize: "0.76rem",
+            letterSpacing: "0.12em",
+            textDecoration: "none",
+            transition: "all 0.2s ease"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "var(--primary)";
+            e.currentTarget.style.color = "var(--primary)";
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "#EDE8DE";
+            e.currentTarget.style.color = "var(--foreground)";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          <User size={15} />
+          <span>Client Atelier</span>
+        </Link>
       </div>
+
+      {/* Commission Tabs Navigation */}
+      {orders.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            borderBottom: "1px solid #EDE8DE",
+            marginTop: "32px",
+            marginBottom: "32px",
+            gap: "8px"
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: "28px",
+              overflowX: "auto",
+              scrollbarWidth: "none"
+            }}
+          >
+            {[
+              { id: "all", label: "All Commissions", icon: Package, count: orders.length },
+              { id: "active", label: "Active In Progress", icon: Clock, count: active.length },
+              { id: "completed", label: "Completed & Delivered", icon: CheckCircle2, count: done.length }
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className="eyebrow"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    borderBottom: isActive ? "2.5px solid var(--primary)" : "2.5px solid transparent",
+                    padding: "0 4px 14px 4px",
+                    color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
+                    fontWeight: isActive ? 700 : 500,
+                    letterSpacing: "0.14em",
+                    fontSize: "0.78rem",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    whiteSpace: "nowrap",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px"
+                  }}
+                >
+                  <Icon size={14} style={{ color: isActive ? "var(--primary)" : "inherit" }} />
+                  <span>{tab.label}</span>
+                  <span
+                    style={{
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      padding: "2px 7px",
+                      borderRadius: "999px",
+                      backgroundColor: isActive ? "rgba(85, 104, 50, 0.12)" : "#EDE8DE",
+                      color: isActive ? "var(--primary)" : "var(--muted-foreground)"
+                    }}
+                  >
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div style={{ textAlign: "center", padding: "100px 20px" }}>
@@ -84,9 +273,10 @@ export default function OrdersPage() {
           style={{
             textAlign: "center",
             padding: "80px 24px",
-            backgroundColor: "#FAF9F6",
+            backgroundColor: "#ffffff",
             border: "1px solid #EDE8DE",
-            borderRadius: "6px"
+            borderRadius: "14px",
+            boxShadow: "0 2px 14px rgba(0, 0, 0, 0.02)"
           }}
         >
           <div
@@ -94,25 +284,31 @@ export default function OrdersPage() {
               width: "76px",
               height: "76px",
               borderRadius: "50%",
-              backgroundColor: "var(--primary-soft)",
-              border: "1px solid rgba(197, 160, 89, 0.3)",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
+              border: "1px solid rgba(85, 104, 50, 0.2)",
               display: "grid",
               placeItems: "center",
-              margin: "0 auto 24px",
+              margin: "0 auto 22px",
               color: "var(--primary)"
             }}
           >
-            <Package size={34} strokeWidth={1.4} />
+            <Package size={34} strokeWidth={1.5} />
           </div>
-          <p style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", color: "var(--foreground)", margin: "0 0 12px 0" }}>
+          <span
+            className="eyebrow"
+            style={{ color: "var(--primary)", letterSpacing: "0.2em", fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "6px" }}
+          >
+            ATELIER COMMISSIONS
+          </span>
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", color: "var(--foreground)", margin: "0 0 10px 0", fontWeight: 600 }}>
             No Orders on Record
-          </p>
-          <p style={{ fontSize: "0.95rem", color: "var(--muted-foreground)", maxWidth: "460px", marginInline: "auto", lineHeight: 1.6 }}>
+          </h3>
+          <p style={{ fontSize: "0.92rem", color: "var(--muted-foreground)", maxWidth: "460px", margin: "0 auto 28px", lineHeight: 1.6 }}>
             {user
-              ? "You have not placed any orders yet. Discover our latest ethically crafted fine jewelry collections and atelier pieces."
+              ? "You have not placed any orders yet. Discover our latest ethically crafted fine jewelry collections and bespoke atelier pieces."
               : "Please sign in to view your orders, live courier tracking, and authenticated invoices."}
           </p>
-          <div style={{ marginTop: "32px", display: "flex", justifyContent: "center", gap: "14px" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "14px" }}>
             {user ? (
               <Link
                 to="/collections"
@@ -120,18 +316,20 @@ export default function OrdersPage() {
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "10px",
-                  padding: "14px 34px",
+                  gap: "8px",
+                  padding: "13px 32px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
-                  borderRadius: "2px",
+                  borderRadius: "8px",
                   textDecoration: "none",
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  boxShadow: "0 6px 18px rgba(85, 104, 50, 0.25)"
+                  fontWeight: 700,
+                  fontSize: "0.76rem",
+                  letterSpacing: "0.14em",
+                  boxShadow: "0 4px 16px rgba(85, 104, 50, 0.25)"
                 }}
               >
-                Explore Collection ✦
+                <span>Explore Collections</span>
+                <ArrowRight size={15} />
               </Link>
             ) : (
               <Link
@@ -140,72 +338,39 @@ export default function OrdersPage() {
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "10px",
-                  padding: "14px 34px",
+                  gap: "8px",
+                  padding: "13px 32px",
                   backgroundColor: "var(--primary)",
                   color: "#ffffff",
-                  borderRadius: "2px",
+                  borderRadius: "8px",
                   textDecoration: "none",
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  boxShadow: "0 6px 18px rgba(85, 104, 50, 0.25)"
+                  fontWeight: 700,
+                  fontSize: "0.76rem",
+                  letterSpacing: "0.14em",
+                  boxShadow: "0 4px 16px rgba(85, 104, 50, 0.25)"
                 }}
               >
-                Sign In to Account
+                <span>Sign In to Account</span>
+                <ArrowRight size={15} />
               </Link>
             )}
           </div>
         </div>
+      ) : displayedOrders.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--muted-foreground)", backgroundColor: "#ffffff", borderRadius: "12px", border: "1px solid #EDE8DE" }}>
+          <p style={{ margin: 0, fontSize: "0.95rem" }}>No orders in this status category.</p>
+        </div>
       ) : (
-        <>
-          {/* Active Orders */}
-          {active.length > 0 && (
-            <div style={{ marginBottom: "50px" }}>
-              <div style={{ display: "flex", alignItems: "baseline", gap: "12px", borderBottom: "1px solid #EDE8DE", paddingBottom: "14px", marginBottom: "20px" }}>
-                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.7rem", margin: 0 }}>
-                  Active Orders
-                </h2>
-                <span style={{ fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--gold-deep)" }}>
-                  ({active.length} In Progress)
-                </span>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {active.map((o) => (
-                  <OrderRow
-                    key={o._id || o.orderid || o.id}
-                    order={o}
-                    onSelect={() => setSelectedOrder(o)}
-                    format={format}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Past / Completed Orders */}
-          {done.length > 0 && (
-            <div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: "12px", borderBottom: "1px solid #EDE8DE", paddingBottom: "14px", marginBottom: "20px" }}>
-                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.7rem", margin: 0 }}>
-                  Past Orders
-                </h2>
-                <span style={{ fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--muted-foreground)" }}>
-                  ({done.length} Delivered / Archived)
-                </span>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {done.map((o) => (
-                  <OrderRow
-                    key={o._id || o.orderid || o.id}
-                    order={o}
-                    onSelect={() => setSelectedOrder(o)}
-                    format={format}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {displayedOrders.map((o) => (
+            <OrderRow
+              key={o._id || o.orderid || o.id}
+              order={o}
+              onSelect={() => setSelectedOrder(o)}
+              format={format}
+            />
+          ))}
+        </div>
       )}
 
       {/* Order Detail Modal */}
@@ -225,6 +390,10 @@ function OrderRow({ order, onSelect, format }) {
     ? new Date(order.createdAt).toLocaleDateString("en-US", { dateStyle: "long" })
     : (order.date || "Recent");
 
+  const primaryItem = orderItems[0];
+  const primaryItemName = primaryItem?.itemname || primaryItem?.name || "Fine Jewelry Piece";
+  const primarySpecs = [primaryItem?.metalname, primaryItem?.diamondsize, primaryItem?.shapename].filter(Boolean).join(" · ");
+
   return (
     <div
       onClick={onSelect}
@@ -232,133 +401,166 @@ function OrderRow({ order, onSelect, format }) {
         width: "100%",
         display: "flex",
         alignItems: "center",
+        justifyContent: "space-between",
         flexWrap: "wrap",
         gap: "24px",
         border: "1px solid #EDE8DE",
-        backgroundColor: "#FAF9F6",
-        padding: "24px 28px",
-        borderRadius: "4px",
+        backgroundColor: "#ffffff",
+        padding: "22px 28px",
+        borderRadius: "14px",
         cursor: "pointer",
-        transition: "all 0.25s ease",
-        position: "relative"
+        transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.02)"
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "var(--primary)";
-        e.currentTarget.style.boxShadow = "0 10px 28px rgba(85,104,50,0.08)";
-        e.currentTarget.style.transform = "translateY(-1px)";
+        e.currentTarget.style.borderColor = "#D8D1C5";
+        e.currentTarget.style.boxShadow = "0 12px 30px rgba(85, 104, 50, 0.07)";
+        e.currentTarget.style.transform = "translateY(-2px)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.borderColor = "#EDE8DE";
-        e.currentTarget.style.boxShadow = "none";
-        e.currentTarget.style.transform = "none";
+        e.currentTarget.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.02)";
+        e.currentTarget.style.transform = "translateY(0)";
       }}
     >
-      {/* Product Thumbnails with Gold Border Rings */}
-      <div style={{ display: "flex", alignItems: "center" }}>
-        {orderItems.slice(0, 4).map((it, idx) => {
-          const imgSrc = it.image || getProduct(it.itemid || it.productId)?.image;
-          return (
+      <div style={{ display: "flex", alignItems: "center", gap: "20px", flex: "1 1 340px", minWidth: 0 }}>
+        {/* Product Preview Stage with Gold/Olive Borders */}
+        <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+          {orderItems.slice(0, 3).map((it, idx) => {
+            const imgSrc = it.image || getProduct(it.itemid || it.productId)?.image;
+            return (
+              <div
+                key={idx}
+                style={{
+                  width: "66px",
+                  height: "66px",
+                  borderRadius: "10px",
+                  border: "1.5px solid #EDE8DE",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+                  backgroundColor: "#FAF9F6",
+                  marginLeft: idx === 0 ? "0" : "-20px",
+                  overflow: "hidden",
+                  zIndex: 3 - idx,
+                  flexShrink: 0,
+                  transition: "transform 0.2s ease"
+                }}
+              >
+                <img
+                  src={imgSrc}
+                  alt=""
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover"
+                  }}
+                />
+              </div>
+            );
+          })}
+          {orderItems.length > 3 && (
             <div
-              key={idx}
               style={{
-                width: "56px",
-                height: "56px",
+                width: "40px",
+                height: "40px",
                 borderRadius: "50%",
-                border: "2px solid #FAF9F6",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                backgroundColor: "#ffffff",
-                marginLeft: idx === 0 ? "0" : "-16px",
-                overflow: "hidden",
-                zIndex: 4 - idx,
-                flexShrink: 0
+                backgroundColor: "rgba(85, 104, 50, 0.1)",
+                color: "var(--primary)",
+                fontSize: "0.74rem",
+                fontWeight: 700,
+                display: "grid",
+                placeItems: "center",
+                marginLeft: "-14px",
+                border: "2px solid #ffffff",
+                zIndex: 0
               }}
             >
-              <img
-                src={imgSrc}
-                alt=""
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover"
-                }}
-              />
+              +{orderItems.length - 3}
             </div>
-          );
-        })}
-        {orderItems.length > 4 && (
-          <div
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              backgroundColor: "var(--primary-soft)",
-              color: "var(--primary)",
-              fontSize: "0.72rem",
-              fontWeight: 700,
-              display: "grid",
-              placeItems: "center",
-              marginLeft: "-10px",
-              border: "2px solid #FAF9F6",
-              zIndex: 0
-            }}
-          >
-            +{orderItems.length - 4}
+          )}
+        </div>
+
+        {/* Order Details */}
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "4px" }}>
+            <span style={{ fontFamily: "var(--font-serif)", fontSize: "1.35rem", fontWeight: 600, color: "var(--foreground)" }}>
+              Order #{orderNum}
+            </span>
+            <span
+              style={{
+                fontSize: "0.68rem",
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "3px 9px",
+                borderRadius: "999px",
+                backgroundColor: "rgba(85, 104, 50, 0.1)",
+                color: "var(--primary)"
+              }}
+            >
+              {orderItems.length} {orderItems.length === 1 ? "Piece" : "Pieces"}
+            </span>
           </div>
-        )}
+
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.82rem", color: "var(--muted-foreground)", marginBottom: "4px" }}>
+            <Calendar size={13} style={{ color: "var(--primary)" }} />
+            <span>Commissioned on {dateFormatted}</span>
+            {String(status || "").toLowerCase() === "cancelled" && (order.cancelledat || order.cancelreason) && (
+              <span style={{ color: "#dc2626", fontWeight: 600, marginLeft: "6px" }}>
+                · Cancelled
+              </span>
+            )}
+          </div>
+
+          {/* Primary Item Name & Specs Preview */}
+          <div style={{ fontSize: "0.84rem", color: "var(--foreground)", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <span>{primaryItemName}</span>
+            {primarySpecs && (
+              <span style={{ color: "var(--muted-foreground)", fontWeight: 400, marginLeft: "6px" }}>
+                ({primarySpecs})
+              </span>
+            )}
+            {orderItems.length > 1 && (
+              <span style={{ color: "var(--primary)", fontWeight: 600, marginLeft: "6px" }}>
+                &amp; {orderItems.length - 1} more
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Order info */}
-      <div style={{ flex: 1, minWidth: "200px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-          <span style={{ fontFamily: "var(--font-serif)", fontSize: "1.3rem", fontWeight: 600, color: "var(--foreground)" }}>
-            Order #{orderNum}
+      {/* Right Column: Price, StatusBadge, Action Button */}
+      <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+        <div style={{ textAlign: "right" }}>
+          <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-foreground)", display: "block" }}>
+            Total Value
           </span>
-          <span
-            style={{
-              fontSize: "0.68rem",
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              padding: "2px 8px",
-              borderRadius: "2px",
-              backgroundColor: "rgba(197, 160, 89, 0.12)",
-              color: "var(--gold-deep)"
-            }}
-          >
-            {orderItems.length} {orderItems.length === 1 ? "Piece" : "Pieces"}
+          <span style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", fontWeight: 700, color: "var(--foreground)" }}>
+            {format(order.total)}
           </span>
         </div>
-        <p style={{ fontSize: "0.82rem", color: "var(--muted-foreground)", marginTop: "4px", margin: 0 }}>
-          Commissioned on {dateFormatted}
-          {String(status || "").toLowerCase() === "cancelled" && (order.cancelledat || order.cancelreason) && (
-            <span style={{ color: "#B91C1C", fontWeight: 500, marginLeft: "8px" }}>
-              · Cancelled{order.cancelreason ? `: ${order.cancelreason}` : ""}
-            </span>
-          )}
-        </p>
-      </div>
-
-      {/* Price & Status */}
-      <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
-        <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--foreground)", letterSpacing: "0.02em" }}>
-          {format(order.total)}
-        </span>
 
         <StatusBadge s={status} />
 
-        <span
+        <div
           className="eyebrow"
           style={{
-            fontSize: "0.7rem",
-            color: "var(--primary)",
-            fontWeight: 600,
             display: "inline-flex",
             alignItems: "center",
-            gap: "4px"
+            gap: "6px",
+            backgroundColor: "rgba(85, 104, 50, 0.08)",
+            color: "var(--primary)",
+            border: "1px solid rgba(85, 104, 50, 0.25)",
+            padding: "10px 18px",
+            borderRadius: "8px",
+            fontWeight: 700,
+            fontSize: "0.74rem",
+            letterSpacing: "0.1em",
+            transition: "all 0.2s ease"
           }}
         >
-          Details →
-        </span>
+          <span>View Dossier</span>
+          <ArrowRight size={13} />
+        </div>
       </div>
     </div>
   );
