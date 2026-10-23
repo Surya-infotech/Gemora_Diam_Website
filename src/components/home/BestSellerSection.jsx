@@ -234,28 +234,7 @@ export default function BestSellerSection() {
                     </div>
                   )}
 
-                  {/* Top-Left: IGI Certified Pill Badge */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "12px",
-                      left: "12px",
-                      zIndex: 2,
-                      backgroundColor: "rgba(255, 255, 255, 0.94)",
-                      backdropFilter: "blur(6px)",
-                      border: "1px solid rgba(220, 215, 205, 0.8)",
-                      borderRadius: "50px",
-                      padding: "4px 10px",
-                      fontSize: "0.58rem",
-                      fontWeight: 700,
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "#3d372e",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)"
-                    }}
-                  >
-                    IGI CERTIFIED
-                  </div>
+
 
                   {/* Top-Right: Circular Wishlist Button */}
                   <button
