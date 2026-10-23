@@ -795,8 +795,9 @@ export function StoreProvider({ children }) {
         fetch(`${backendUrl}/Support/GetActivePolicies`)
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
-            if (!isMounted || !Array.isArray(data)) return;
-            setPolicies(data);
+            if (!isMounted || !data) return;
+            const list = Array.isArray(data) ? data : Array.isArray(data.value) ? data.value : [];
+            setPolicies(list);
           })
           .catch((err) => console.warn("Failed to fetch policies:", err));
 
@@ -805,7 +806,7 @@ export function StoreProvider({ children }) {
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
             if (!isMounted || !data) return;
-            const list = Array.isArray(data) ? data : [data];
+            const list = Array.isArray(data) ? data : Array.isArray(data.value) ? data.value : [data];
             setFaqs(list);
           })
           .catch((err) => console.warn("Failed to fetch FAQs:", err));
@@ -814,8 +815,9 @@ export function StoreProvider({ children }) {
         fetch(`${backendUrl}/Support/GetActiveBanners`)
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
-            if (!isMounted || !Array.isArray(data)) return;
-            setBanners(data);
+            if (!isMounted || !data) return;
+            const list = Array.isArray(data) ? data : Array.isArray(data.value) ? data.value : [];
+            setBanners(list);
           })
           .catch((err) => console.warn("Failed to fetch banners:", err));
 
@@ -823,8 +825,9 @@ export function StoreProvider({ children }) {
         fetch(`${backendUrl}/Support/GetActiveCollectionBanners`)
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
-            if (!isMounted || !Array.isArray(data)) return;
-            setCollectionBanners(data);
+            if (!isMounted || !data) return;
+            const list = Array.isArray(data) ? data : Array.isArray(data.value) ? data.value : [];
+            setCollectionBanners(list);
           })
           .catch((err) => console.warn("Failed to fetch collection banners:", err));
 
@@ -841,8 +844,9 @@ export function StoreProvider({ children }) {
         fetch(`${backendUrl}/Support/GetActiveMenus`)
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
-            if (!isMounted || !Array.isArray(data)) return;
-            setMenus(data);
+            if (!isMounted || !data) return;
+            const list = Array.isArray(data) ? data : Array.isArray(data.value) ? data.value : [];
+            setMenus(list);
           })
           .catch((err) => console.warn("Failed to fetch active menus:", err));
       } finally {
