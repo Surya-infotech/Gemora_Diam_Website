@@ -2,48 +2,13 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 
-const DEFAULT_SLIDES = [
-  {
-    img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=2000&auto=format&fit=crop",
-    tag: "Handcrafted Fine Jewelry",
-    headingLine1: "Handcrafted for",
-    headingLine2: "your forever",
-    desc: "Engagement rings and wedding bands set with certified lab-grown diamonds and finished by hand to be worn for a lifetime.",
-    buttonText: "Shop Engagement Rings",
-    buttonLink: "/collections?category=Engagement+Rings",
-    secondaryButtonText: "Shop Wedding Bands",
-    secondaryButtonLink: "/collections?category=Wedding+Bands"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2000&auto=format&fit=crop",
-    tag: "Bespoke Atelier Collection",
-    headingLine1: "Pure brilliance.",
-    headingLine2: "Zero compromise.",
-    desc: "Each diamond is masterfully cut for exceptional fire and set in 100% recycled gold or platinum.",
-    buttonText: "Explore Solitaires",
-    buttonLink: "/collections",
-    secondaryButtonText: "Book an Appointment",
-    secondaryButtonLink: "/contact"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=2000&auto=format&fit=crop",
-    tag: "The Vows & Beyond",
-    headingLine1: "Two rings.",
-    headingLine2: "One forever.",
-    desc: "Sculpted with continuous brilliance to celebrate your milestone moments and everlasting love.",
-    buttonText: "Discover Eternity Bands",
-    buttonLink: "/collections?category=Wedding+Bands",
-    secondaryButtonText: "Design Your Ring",
-    secondaryButtonLink: "/collections"
-  }
-];
-
 export default function HeroSlider() {
-  const [slides, setSlides] = useState(DEFAULT_SLIDES);
+  const [slides, setSlides] = useState([]);
   const [active, setActive] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchBanners = async () => {
       try {
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -51,8 +16,13 @@ export default function HeroSlider() {
         const res = await fetch(`${backendUrl}/Support/GetActiveBanners`);
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
-            const mapped = data.map((b) => ({
+          const list = Array.isArray(data)
+            ? data
+            : Array.isArray(data?.value)
+            ? data.value
+            : [];
+          if (isMounted && list.length > 0) {
+            const mapped = list.map((b) => ({
               img: b.image || "",
               tag: b.tag || "Atelier Collection",
               headingLine1: b.headingLine1 || b.title || "",
@@ -67,11 +37,14 @@ export default function HeroSlider() {
           }
         }
       } catch (err) {
-        console.warn("Using curated luxury hero slides:", err);
+        console.warn("Error fetching hero slides:", err);
       }
     };
 
     fetchBanners();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -82,11 +55,15 @@ export default function HeroSlider() {
     return () => clearInterval(timer);
   }, [slides.length, isPaused]);
 
+  if (!slides || slides.length === 0) {
+    return null;
+  }
+
   const prevSlide = () => setActive((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   const nextSlide = () => setActive((prev) => (prev + 1) % slides.length);
 
   const cur = slides[active] || slides[0];
-  const cleanTag = cur.tag ? cur.tag.replace(/^[?✦\s]+/, "").trim() : "";
+  const cleanTag = cur?.tag ? cur.tag.replace(/^[?✦\s]+/, "").trim() : "";
 
   return (
     <section

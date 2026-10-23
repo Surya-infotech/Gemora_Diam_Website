@@ -4,68 +4,10 @@ import { ArrowRight } from "lucide-react";
 import { useStore } from "../../lib/store";
 import SectionHeading from "../SectionHeading";
 
-const CURATED_FALLBACKS = {
-  bracelets: {
-    img: "https://images.unsplash.com/photo-1611591475155-426475489c36?q=80&w=1000&auto=format&fit=crop",
-    desc: "Handcrafted tennis and cuff bracelets sculpted with certified conflict-free diamonds."
-  },
-  "bridal sets": {
-    img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop",
-    desc: "Harmonized engagement and wedding eternity bands designed to sit flush forever."
-  },
-  earrings: {
-    img: "https://images.unsplash.com/photo-1630019852942-f89202989a59?q=80&w=1000&auto=format&fit=crop",
-    desc: "Luminous diamond studs, drops, and cascading chandeliers cut for exceptional brilliance."
-  },
-  "engagement rings": {
-    img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=1000&auto=format&fit=crop",
-    desc: "Solitaire, halo, and three-stone silhouettes set with certified lab-grown diamonds."
-  },
-  "wedding bands": {
-    img: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?q=80&w=1000&auto=format&fit=crop",
-    desc: "Eternity and comfort-fit wedding bands forged in recycled 18k gold and platinum."
-  }
-};
-
-const DEFAULT_CATEGORIES = [
-  {
-    id: "cat-1",
-    img: "https://images.unsplash.com/photo-1611591475155-426475489c36?q=80&w=1000&auto=format&fit=crop",
-    title: "Bracelets",
-    desc: "Handcrafted tennis and cuff bracelets sculpted with certified conflict-free diamonds.",
-    link: "/collections?category=Bracelets"
-  },
-  {
-    id: "cat-2",
-    img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop",
-    title: "Bridal Sets",
-    desc: "Harmonized engagement and wedding eternity bands designed to sit flush forever.",
-    link: "/collections?category=Bridal+Sets"
-  },
-  {
-    id: "cat-3",
-    img: "https://images.unsplash.com/photo-1630019852942-f89202989a59?q=80&w=1000&auto=format&fit=crop",
-    title: "Earrings",
-    desc: "Luminous diamond studs, drops, and cascading chandeliers cut for exceptional brilliance.",
-    link: "/collections?category=Earrings"
-  }
-];
-
 function cleanCategoryData(c, i) {
   const title = c.categoryname || c.title || "Jewelry";
-  const key = title.trim().toLowerCase();
-  const fallback = CURATED_FALLBACKS[key] || {
-    img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1000&auto=format&fit=crop",
-    desc: "Masterfully sculpted fine jewelry pieces crafted with ethical diamonds and recycled precious metals."
-  };
-
-  const rawDesc = c.description || c.desc || "";
-  const isGibberish = !rawDesc || rawDesc.trim().length < 8 || /sdfsdf|asdf|test|lorem|qwerty/i.test(rawDesc);
-  const desc = isGibberish ? fallback.desc : rawDesc.trim();
-
-  // If image is missing, use curated fallback
-  const rawImg = c.image || c.categoryimage || c.img || "";
-  const img = rawImg && rawImg.trim() ? rawImg : fallback.img;
+  const desc = c.description || c.desc || "";
+  const img = c.image || c.categoryimage || c.img || "";
 
   return {
     id: c._id || c.categoryid || c.id || i,
@@ -80,8 +22,17 @@ export default function CircularCategories() {
   const { categories } = useStore();
   const [hoveredIdx, setHoveredIdx] = useState(null);
 
-  const rawCards = (categories && categories.length > 0) ? categories : DEFAULT_CATEGORIES;
-  const cards = rawCards.map(cleanCategoryData);
+  if (!categories || categories.length === 0) {
+    return null;
+  }
+
+  const cards = categories
+    .filter((c) => c && (c.categoryname || c.title))
+    .map(cleanCategoryData);
+
+  if (cards.length === 0) {
+    return null;
+  }
 
   return (
     <section style={{ padding: "clamp(60px, 7vw, 96px) 0", backgroundColor: "#ffffff" }}>

@@ -1,85 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowLeft, ArrowRight, Star, X } from "lucide-react";
 
-const DEFAULT_COUPLE_DATA = {
-  headerEyebrow: "Real Love Stories",
-  headerTitle: "Loved by couples",
-  headerDescription: "Proposals, promises, and the rings that made them. In their own words.",
-  ratingScore: "5.0",
-  reviewCountText: "from 120+ verified reviews",
-  stories: [
-    {
-      storyId: "s1",
-      coupleName: "Meera & Arjun",
-      location: "Udaipur, India",
-      storySnippet: "Our day was so special, filled with family and so much love. Arjun surprised me by the lake where we had our first date with the most radiant custom solitaire ring...",
-      fullStory: "Our day was so special, filled with family and so much love. Arjun surprised me by the lake where we had our first date with the most radiant custom solitaire ring. The team at Gemora Diam helped him select a certified lab-grown diamond that captured every beam of sunlight.",
-      coupleImage: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=1200&auto=format&fit=crop",
-      ringTitle: "Custom Oval Solitaire in 18k Yellow Gold"
-    },
-    {
-      storyId: "s2",
-      coupleName: "Ananya & Rohan",
-      location: "Shimla, India",
-      storySnippet: "We got engaged on a mountain trip we'd been planning for years. Rohan proposed right as the sun broke over the pine ridges with a hidden halo diamond band...",
-      fullStory: "We got engaged on a mountain trip we'd been planning for years. Rohan proposed right as the sun broke over the pine ridges with a hidden halo diamond band. The ring was beyond everything I had dreamed of—the diamond fire is magical in every light.",
-      coupleImage: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200&auto=format&fit=crop",
-      ringTitle: "The Hidden Halo Round Brilliant Ring"
-    },
-    {
-      storyId: "s3",
-      coupleName: "Priya & Karan",
-      location: "Mumbai, India",
-      storySnippet: "Our families flew in from three different cities to celebrate with us. It was the most beautiful chaos we could have asked for, sealed with bespoke eternity bands...",
-      fullStory: "Our families flew in from three different cities to celebrate with us. It was the most beautiful chaos we could have asked for, sealed with bespoke eternity bands that fit together flawlessly. The craftsmanship is pure perfection.",
-      coupleImage: "https://images.unsplash.com/photo-1529636798458-92182e662485?q=80&w=1200&auto=format&fit=crop",
-      ringTitle: "Pavé Band & Cushion Cut Centerpiece"
-    },
-    {
-      storyId: "s4",
-      coupleName: "Siddharth & Rhea",
-      location: "Jaipur, India",
-      storySnippet: "He proposed at sunset during our trip to the pink city. The emerald-cut lab diamond ring was breathtaking against the golden palace walls...",
-      fullStory: "He proposed at sunset during our trip to the pink city. The emerald-cut lab diamond ring was breathtaking against the golden palace walls. Choosing ethical lab diamonds meant we got twice the carat size with zero ethical compromise.",
-      coupleImage: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?q=80&w=1200&auto=format&fit=crop",
-      ringTitle: "The Emerald Cut Heritage Solitaire"
-    }
-  ],
-  reviews: [
-    {
-      reviewId: "r1",
-      clientName: "Priya S.",
-      location: "Verified Client",
-      quote: "Gemora Diam made it so effortless to customize and select the dream ring for my fiancé. If you're hesitant to shop for fine jewelry online, don't be! The diamond brilliance is extraordinary.",
-      rating: 5
-    },
-    {
-      reviewId: "r2",
-      clientName: "Arjun K.",
-      location: "Verified Client",
-      quote: "100% recommend. I searched fine jewelry houses for months before discovering Gemora Diam. The custom ring builder allowed me to pick the exact stone shape and carat weight. Outstanding service!",
-      rating: 5
-    },
-    {
-      reviewId: "r3",
-      clientName: "Meera V.",
-      location: "Verified Client",
-      quote: "The interactive 3D shape dial made it so easy to envision the ring on my hand before ordering. The bespoke package arrived overnight with full certification documents. Truly royal experience.",
-      rating: 5
-    },
-    {
-      reviewId: "r4",
-      clientName: "Rohan D.",
-      location: "Verified Client",
-      quote: "Exceptional craftsmanship and attentive concierge care from consultation to delivery. The finished engagement ring took my partner's breath away. Thank you Gemora Diam!",
-      rating: 5
-    }
-  ]
-};
-
 export default function LovedByCouplesSection() {
-  const [sectionData, setSectionData] = useState(DEFAULT_COUPLE_DATA);
-  const [loading, setLoading] = useState(false);
+  const [sectionData, setSectionData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [selectedStory, setSelectedStory] = useState(null);
