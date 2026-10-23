@@ -10,8 +10,7 @@ import {
   OutlineMarquee,
   ShopTheLookSection,
   LovedByCouplesSection,
-  TrustBadgesSection,
-  JustForYouGallery
+  TrustBadgesSection
 } from "../components/home";
 
 export default function HomePage() {
@@ -61,8 +60,6 @@ export default function HomePage() {
       {/* 10. The Gemora Diam Promise Trust Guarantees */}
       <TrustBadgesSection />
 
-      {/* 11. Just For You Curated Editorial Gallery */}
-      <JustForYouGallery />
 
       {/* Floating Back to Top Button */}
       {showScrollTop && (
