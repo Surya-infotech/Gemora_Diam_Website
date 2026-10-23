@@ -950,13 +950,13 @@ function OrderDetailModal({ order, onClose }) {
       style={{
         position: "fixed",
         inset: 0,
-        backgroundColor: "rgba(18, 22, 14, 0.72)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
+        backgroundColor: "rgba(18, 22, 14, 0.75)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
         zIndex: 9999,
         display: "grid",
         placeItems: "center",
-        padding: "24px 16px",
+        padding: "20px 16px",
         animation: "modalFadeIn 0.25s ease-out"
       }}
       onClick={onClose}
@@ -967,91 +967,115 @@ function OrderDetailModal({ order, onClose }) {
           to { opacity: 1; }
         }
         @keyframes modalSlideUp {
-          from { opacity: 0; transform: translateY(18px) scale(0.98); }
+          from { opacity: 0; transform: translateY(20px) scale(0.98); }
           to { opacity: 1; transform: translateY(0) scale(1); }
         }
+        .atelier-modal-scroll::-webkit-scrollbar {
+          width: 5px;
+        }
+        .atelier-modal-scroll::-webkit-scrollbar-track {
+          background: #FAF9F6;
+        }
+        .atelier-modal-scroll::-webkit-scrollbar-thumb {
+          background: #D8D1C5;
+          border-radius: 999px;
+        }
       `}</style>
+
       <div
         style={{
           width: "100%",
-          maxWidth: "760px",
-          maxHeight: "90vh",
-          overflowY: "auto",
+          maxWidth: "860px",
+          maxHeight: "92vh",
+          display: "flex",
+          flexDirection: "column",
           backgroundColor: "#ffffff",
           border: "1px solid #EDE8DE",
-          padding: "36px 40px",
-          position: "relative",
-          borderRadius: "16px",
-          boxShadow: "0 28px 70px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(85, 104, 50, 0.04)",
-          animation: "modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+          borderRadius: "18px",
+          boxShadow: "0 30px 80px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(85, 104, 50, 0.05)",
+          animation: "modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+          overflow: "hidden"
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          onClick={onClose}
+        {/* Modal Top Header Banner */}
+        <div
           style={{
-            position: "absolute",
-            top: "22px",
-            right: "22px",
-            background: "#FAF9F6",
-            border: "1px solid #EDE8DE",
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            display: "grid",
-            placeItems: "center",
-            color: "var(--foreground)",
-            cursor: "pointer",
-            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.03)"
+            background: "linear-gradient(180deg, #F9F7F3 0%, #FFFFFF 100%)",
+            padding: "24px 32px 18px 32px",
+            borderBottom: "1px solid #EDE8DE",
+            position: "relative",
+            flexShrink: 0
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(85, 104, 50, 0.1)";
-            e.currentTarget.style.borderColor = "var(--primary)";
-            e.currentTarget.style.color = "var(--primary)";
-            e.currentTarget.style.transform = "rotate(90deg)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "#FAF9F6";
-            e.currentTarget.style.borderColor = "#EDE8DE";
-            e.currentTarget.style.color = "var(--foreground)";
-            e.currentTarget.style.transform = "rotate(0deg)";
-          }}
-          aria-label="Close modal"
         >
-          <X size={17} />
-        </button>
-
-        {/* Modal Top Header */}
-        <div>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <div
-              style={{
-                width: "20px",
-                height: "20px",
-                borderRadius: "50%",
-                backgroundColor: "rgba(85, 104, 50, 0.1)",
-                color: "var(--primary)",
-                display: "grid",
-                placeItems: "center"
-              }}
-            >
-              <Sparkles size={11} />
+          {/* Eyebrow & Status Badge Row */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", marginBottom: "8px" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              <div
+                style={{
+                  width: "22px",
+                  height: "22px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(85, 104, 50, 0.1)",
+                  color: "var(--primary)",
+                  display: "grid",
+                  placeItems: "center"
+                }}
+              >
+                <Sparkles size={12} />
+              </div>
+              <span
+                className="eyebrow"
+                style={{
+                  color: "var(--primary)",
+                  letterSpacing: "0.2em",
+                  fontSize: "0.7rem",
+                  fontWeight: 700
+                }}
+              >
+                MAISON PRIVÉE · ATELIER COMMISSION DOSSIER
+              </span>
             </div>
-            <span
-              className="eyebrow"
-              style={{
-                color: "var(--primary)",
-                letterSpacing: "0.2em",
-                fontSize: "0.7rem",
-                fontWeight: 700
-              }}
-            >
-              ATELIER COMMISSION DOSSIER · AUTHENTICATED
-            </span>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <StatusBadge s={status} />
+              {/* Close Button */}
+              <button
+                onClick={onClose}
+                style={{
+                  background: "#ffffff",
+                  border: "1px solid #EDE8DE",
+                  width: "34px",
+                  height: "34px",
+                  borderRadius: "50%",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "var(--foreground)",
+                  cursor: "pointer",
+                  transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.03)"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "rgba(85, 104, 50, 0.1)";
+                  e.currentTarget.style.borderColor = "var(--primary)";
+                  e.currentTarget.style.color = "var(--primary)";
+                  e.currentTarget.style.transform = "rotate(90deg)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#ffffff";
+                  e.currentTarget.style.borderColor = "#EDE8DE";
+                  e.currentTarget.style.color = "var(--foreground)";
+                  e.currentTarget.style.transform = "rotate(0deg)";
+                }}
+                aria-label="Close modal"
+              >
+                <X size={16} />
+              </button>
+            </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginTop: "4px" }}>
+          {/* Heading */}
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
             <h2
               style={{
                 fontFamily: "var(--font-serif)",
@@ -1064,23 +1088,26 @@ function OrderDetailModal({ order, onClose }) {
             >
               Order #{orderNum}
             </h2>
-            <StatusBadge s={status} />
+            <span style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", fontWeight: 500 }}>
+              {orderItems.length} {orderItems.length === 1 ? "Bespoke Creation" : "Bespoke Creations"}
+            </span>
           </div>
 
+          {/* Meta Info Strip */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: "18px",
               flexWrap: "wrap",
-              marginTop: "10px",
-              fontSize: "0.84rem",
+              marginTop: "8px",
+              fontSize: "0.82rem",
               color: "var(--muted-foreground)"
             }}
           >
             <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
               <Calendar size={13} style={{ color: "var(--primary)" }} />
-              <span>Commissioned {order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-US", { dateStyle: "long" }) : "Recently"}</span>
+              <span>Commissioned on {order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-US", { dateStyle: "long" }) : "Recently"}</span>
             </div>
             {order.paymentstatus && (
               <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
@@ -1088,541 +1115,570 @@ function OrderDetailModal({ order, onClose }) {
                 <span>Payment: <strong style={{ color: "var(--foreground)" }}>{order.paymentstatus}</strong></span>
               </div>
             )}
-            {order.paymentmethod && (
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                <CreditCard size={13} style={{ color: "var(--primary)" }} />
-                <span>Via {order.paymentmethod}</span>
-              </div>
-            )}
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "var(--primary)", fontWeight: 600 }}>
+              <Truck size={13} />
+              <span>Fully Insured Direct Courier</span>
+            </div>
           </div>
         </div>
 
-        {/* Stepper Progress Bar (Hidden when order is cancelled) */}
-        {!isCancelled ? (
+        {/* Scrollable Modal Content */}
+        <div
+          className="atelier-modal-scroll"
+          style={{
+            padding: "24px 32px",
+            overflowY: "auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px"
+          }}
+        >
+          {/* Stepper Progress Bar (Hidden when order is cancelled) */}
+          {!isCancelled ? (
+            <div
+              style={{
+                padding: "20px 24px",
+                backgroundColor: "#FAF9F6",
+                borderRadius: "14px",
+                border: "1px solid #EDE8DE"
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
+                <span
+                  className="eyebrow"
+                  style={{
+                    color: "var(--primary)",
+                    letterSpacing: "0.16em",
+                    fontSize: "0.7rem",
+                    fontWeight: 700
+                  }}
+                >
+                  COURIER &amp; CRAFTSMANSHIP TIMELINE
+                </span>
+                <span
+                  style={{
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    color: "var(--primary)",
+                    backgroundColor: "rgba(85, 104, 50, 0.1)",
+                    padding: "3px 10px",
+                    borderRadius: "999px"
+                  }}
+                >
+                  Phase {currentStepIdx + 1} of {ORDER_STEPS.length}: {ORDER_STEPS[currentStepIdx]}
+                </span>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: `repeat(${ORDER_STEPS.length}, 1fr)`, position: "relative" }}>
+                {/* Background Track line */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "17px",
+                    left: "12%",
+                    right: "12%",
+                    height: "2px",
+                    backgroundColor: "#EDE8DE",
+                    zIndex: 0
+                  }}
+                />
+                {/* Active Track line */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "17px",
+                    left: "12%",
+                    width: currentStepIdx === 0 ? "0%" : `${(currentStepIdx / (ORDER_STEPS.length - 1)) * 76}%`,
+                    height: "2px",
+                    backgroundColor: "var(--primary)",
+                    zIndex: 0,
+                    transition: "width 0.4s ease"
+                  }}
+                />
+
+                {ORDER_STEPS.map((step, idx) => {
+                  const isPassed = idx < currentStepIdx;
+                  const isCurrent = idx === currentStepIdx;
+                  const isCompletedOrCurrent = idx <= currentStepIdx;
+
+                  const stepDescriptions = [
+                    "Atelier Logged",
+                    "Master Setting",
+                    "Insured Transit",
+                    "Hand Delivered"
+                  ];
+
+                  return (
+                    <div key={step} style={{ textAlign: "center", position: "relative", zIndex: 1, padding: "0 4px" }}>
+                      <div
+                        style={{
+                          width: "34px",
+                          height: "34px",
+                          borderRadius: "50%",
+                          border: "2px solid",
+                          borderColor: isCompletedOrCurrent ? "var(--primary)" : "#D8D1C5",
+                          backgroundColor: isCompletedOrCurrent ? "var(--primary)" : "#ffffff",
+                          color: isCompletedOrCurrent ? "#ffffff" : "var(--muted-foreground)",
+                          margin: "0 auto 8px",
+                          display: "grid",
+                          placeItems: "center",
+                          fontSize: "0.78rem",
+                          fontWeight: 700,
+                          boxShadow: isCurrent
+                            ? "0 0 0 5px rgba(85, 104, 50, 0.18)"
+                            : isPassed
+                            ? "0 2px 8px rgba(85, 104, 50, 0.25)"
+                            : "none",
+                          transition: "all 0.3s ease"
+                        }}
+                      >
+                        {isPassed ? (
+                          <Check size={16} strokeWidth={2.6} />
+                        ) : isCurrent ? (
+                          <Clock size={16} strokeWidth={2.4} />
+                        ) : (
+                          idx + 1
+                        )}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.82rem",
+                          fontWeight: isCurrent ? 700 : isPassed ? 600 : 500,
+                          color: isCompletedOrCurrent ? "var(--foreground)" : "var(--muted-foreground)",
+                          letterSpacing: "0.01em"
+                        }}
+                      >
+                        {step}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.7rem",
+                          color: isCurrent ? "var(--primary)" : "var(--muted-foreground)",
+                          marginTop: "2px",
+                          fontWeight: isCurrent ? 600 : 400
+                        }}
+                      >
+                        {stepDescriptions[idx]}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            /* Order Cancellation Details Notice */
+            <div
+              style={{
+                backgroundColor: "#FFF8F8",
+                border: "1px solid #F5C6CB",
+                borderRadius: "14px",
+                padding: "20px 24px"
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
+                <div
+                  style={{
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "50%",
+                    backgroundColor: "#FEE2E2",
+                    border: "1px solid #FECACA",
+                    display: "grid",
+                    placeItems: "center",
+                    color: "#B91C1C",
+                    flexShrink: 0
+                  }}
+                >
+                  <AlertCircle size={20} strokeWidth={2.2} />
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "4px" }}>
+                    <h3
+                      style={{
+                        fontFamily: "var(--font-serif)",
+                        fontSize: "1.2rem",
+                        fontWeight: 600,
+                        color: "#991B1B",
+                        margin: 0
+                      }}
+                    >
+                      Commission Cancelled
+                    </h3>
+                    {cancelledAtDisplay && (
+                      <span style={{ fontSize: "0.78rem", color: "#B91C1C", fontWeight: 500 }}>
+                        Cancelled on {cancelledAtDisplay}
+                      </span>
+                    )}
+                  </div>
+
+                  <p style={{ fontSize: "0.85rem", color: "#7F1D1D", margin: 0, lineHeight: 1.5 }}>
+                    {cancelReason
+                      ? `Reason: "${cancelReason}"`
+                      : "This commission has been cancelled. Courier dispatch and craftsmanship progress have ceased."}
+                  </p>
+
+                  {cancelledByDisplay && (
+                    <p style={{ fontSize: "0.76rem", color: "#991B1B", margin: "6px 0 0 0", opacity: 0.85 }}>
+                      Processed by: {cancelledByDisplay}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Dual Cards: Delivery Destination + Maison Privée Guarantee */}
           <div
             style={{
-              marginTop: "28px",
-              padding: "24px 26px",
-              backgroundColor: "#FAF9F6",
-              borderRadius: "14px",
-              border: "1px solid #EDE8DE"
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gap: "16px"
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "22px" }}>
+            {/* Delivery Destination */}
+            {shippingAddr ? (
+              <div
+                style={{
+                  padding: "18px 20px",
+                  borderRadius: "14px",
+                  backgroundColor: "#FAF9F6",
+                  border: "1px solid #EDE8DE",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between"
+                }}
+              >
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                    <div
+                      style={{
+                        width: "28px",
+                        height: "28px",
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(85, 104, 50, 0.1)",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "var(--primary)"
+                      }}
+                    >
+                      <MapPin size={15} />
+                    </div>
+                    <span
+                      className="eyebrow"
+                      style={{
+                        fontSize: "0.72rem",
+                        fontWeight: 700,
+                        letterSpacing: "0.12em",
+                        color: "var(--foreground)"
+                      }}
+                    >
+                      DELIVERY DESTINATION ({shippingAddr.title || "PRIMARY"})
+                    </span>
+                  </div>
+                  <p style={{ fontSize: "0.88rem", color: "var(--foreground)", fontWeight: 600, margin: "0 0 4px 0" }}>
+                    {shippingAddr.name || order.customername || "Valued Patron"}
+                  </p>
+                  <p style={{ color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5, fontSize: "0.84rem" }}>
+                    {[shippingAddr.address, shippingAddr.cityname, shippingAddr.statename, shippingAddr.countryname].filter(Boolean).join(", ")}
+                    {shippingAddr.pincode ? ` - ${shippingAddr.pincode}` : ""}
+                  </p>
+                  {(order.customerphone || shippingAddr.phone) && (
+                    <p style={{ color: "var(--muted-foreground)", margin: "8px 0 0 0", fontSize: "0.82rem" }}>
+                      Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(order.customerphone || shippingAddr.phone)}</strong>
+                    </p>
+                  )}
+                </div>
+                <div style={{ marginTop: "12px", paddingTop: "10px", borderTop: "1px dashed #EDE8DE", fontSize: "0.74rem", color: "var(--muted-foreground)" }}>
+                  ✦ White-glove direct courier · Signature required
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  padding: "18px 20px",
+                  borderRadius: "14px",
+                  backgroundColor: "#FAF9F6",
+                  border: "1px solid #EDE8DE"
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                  <MapPin size={16} style={{ color: "var(--primary)" }} />
+                  <span className="eyebrow" style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em" }}>
+                    DELIVERY DESTINATION
+                  </span>
+                </div>
+                <p style={{ color: "var(--muted-foreground)", fontSize: "0.84rem", margin: 0 }}>
+                  Digital order confirmation or boutique atelier pickup.
+                </p>
+              </div>
+            )}
+
+            {/* Atelier Guarantees Card */}
+            <div
+              style={{
+                padding: "18px 20px",
+                borderRadius: "14px",
+                backgroundColor: "#FAF9F6",
+                border: "1px solid #EDE8DE",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between"
+              }}
+            >
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                  <div
+                    style={{
+                      width: "28px",
+                      height: "28px",
+                      borderRadius: "50%",
+                      backgroundColor: "rgba(85, 104, 50, 0.1)",
+                      display: "grid",
+                      placeItems: "center",
+                      color: "var(--primary)"
+                    }}
+                  >
+                    <ShieldCheck size={15} />
+                  </div>
+                  <span
+                    className="eyebrow"
+                    style={{
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.12em",
+                      color: "var(--foreground)"
+                    }}
+                  >
+                    MAISON PRIVÉE GUARANTEE
+                  </span>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontSize: "0.82rem", color: "var(--muted-foreground)", marginTop: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ color: "var(--primary)", fontWeight: 700 }}>✦</span>
+                    <span>100% Certified Ethical Lab Diamonds</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ color: "var(--primary)", fontWeight: 700 }}>✦</span>
+                    <span>Complimentary Lifetime Atelier Warranty</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ color: "var(--primary)", fontWeight: 700 }}>✦</span>
+                    <span>Discreet Tamper-Evident Presentation Box</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ color: "var(--primary)", fontWeight: 700 }}>✦</span>
+                    <span>Certified Appraisal Authenticity Dossier</span>
+                  </div>
+                </div>
+              </div>
+              <div style={{ marginTop: "12px", paddingTop: "10px", borderTop: "1px dashed #EDE8DE", fontSize: "0.74rem", color: "var(--primary)", fontWeight: 600 }}>
+                Haute Joaillerie Certified Atelier Standards
+              </div>
+            </div>
+          </div>
+
+          {/* Ordered Item List */}
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "14px",
+              border: "1px solid #EDE8DE",
+              padding: "20px 24px",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.02)"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", paddingBottom: "12px", borderBottom: "1px solid #EDE8DE" }}>
               <span
                 className="eyebrow"
                 style={{
                   color: "var(--primary)",
                   letterSpacing: "0.16em",
-                  fontSize: "0.7rem",
+                  fontSize: "0.72rem",
                   fontWeight: 700
                 }}
               >
-                COURIER &amp; CRAFTSMANSHIP TIMELINE
+                COMMISSIONED CREATIONS ({orderItems.length})
               </span>
-              <span
-                style={{
-                  fontSize: "0.72rem",
-                  fontWeight: 700,
-                  color: "var(--primary)",
-                  backgroundColor: "rgba(85, 104, 50, 0.1)",
-                  padding: "3px 10px",
-                  borderRadius: "999px"
-                }}
-              >
-                Phase {currentStepIdx + 1} of {ORDER_STEPS.length}: {ORDER_STEPS[currentStepIdx]}
+              <span style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", fontWeight: 500 }}>
+                {orderItems.reduce((acc, it) => acc + (it.qty || 1), 0)} Total {orderItems.reduce((acc, it) => acc + (it.qty || 1), 0) === 1 ? "Piece" : "Pieces"}
               </span>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${ORDER_STEPS.length}, 1fr)`, position: "relative" }}>
-              {/* Background Track line */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: "16px",
-                  left: "12%",
-                  right: "12%",
-                  height: "2px",
-                  backgroundColor: "#EDE8DE",
-                  zIndex: 0
-                }}
-              />
-              {/* Active Track line */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: "16px",
-                  left: "12%",
-                  width: currentStepIdx === 0 ? "0%" : `${(currentStepIdx / (ORDER_STEPS.length - 1)) * 76}%`,
-                  height: "2px",
-                  backgroundColor: "var(--primary)",
-                  zIndex: 0,
-                  transition: "width 0.4s ease"
-                }}
-              />
-
-              {ORDER_STEPS.map((step, idx) => {
-                const isPassed = idx < currentStepIdx;
-                const isCurrent = idx === currentStepIdx;
-                const isCompletedOrCurrent = idx <= currentStepIdx;
-
-                const stepDescriptions = [
-                  "Atelier Logged",
-                  "Master Setting",
-                  "Insured Transit",
-                  "Hand Delivered"
-                ];
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {orderItems.map((it, idx) => {
+                const imgSrc = it.image || getProduct(it.itemid || it.productId)?.image;
+                const specsList = [
+                  it.metalname && { label: "Metal", val: it.metalname },
+                  it.diamondsize && { label: "Carat", val: it.diamondsize },
+                  it.shapename && { label: "Shape", val: it.shapename },
+                  it.clarityname && { label: "Clarity", val: it.clarityname },
+                  it.stonename && { label: "Stone", val: it.stonename },
+                  it.size && { label: "Size", val: it.size },
+                  it.diamondcolor && { label: "Color", val: it.diamondcolor },
+                  it.bandcolor && { label: "Band", val: it.bandcolor }
+                ].filter(Boolean);
 
                 return (
-                  <div key={step} style={{ textAlign: "center", position: "relative", zIndex: 1, padding: "0 4px" }}>
+                  <div
+                    key={idx}
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: "18px",
+                      paddingBottom: idx < orderItems.length - 1 ? "16px" : "0",
+                      borderBottom: idx < orderItems.length - 1 ? "1px solid #F4F1EA" : "none"
+                    }}
+                  >
+                    {/* Image Frame */}
                     <div
                       style={{
-                        width: "34px",
-                        height: "34px",
-                        borderRadius: "50%",
-                        border: "2px solid",
-                        borderColor: isCompletedOrCurrent ? "var(--primary)" : "#D8D1C5",
-                        backgroundColor: isCompletedOrCurrent ? "var(--primary)" : "#ffffff",
-                        color: isCompletedOrCurrent ? "#ffffff" : "var(--muted-foreground)",
-                        margin: "0 auto 8px",
-                        display: "grid",
-                        placeItems: "center",
-                        fontSize: "0.78rem",
-                        fontWeight: 700,
-                        boxShadow: isCurrent
-                          ? "0 0 0 5px rgba(85, 104, 50, 0.16)"
-                          : isPassed
-                          ? "0 2px 8px rgba(85, 104, 50, 0.25)"
-                          : "none",
-                        transition: "all 0.3s ease"
+                        width: "78px",
+                        height: "78px",
+                        borderRadius: "12px",
+                        border: "1.5px solid #EDE8DE",
+                        backgroundColor: "#FAF9F6",
+                        overflow: "hidden",
+                        flexShrink: 0,
+                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)"
                       }}
                     >
-                      {isPassed ? (
-                        <Check size={16} strokeWidth={2.6} />
-                      ) : isCurrent ? (
-                        <Clock size={16} strokeWidth={2.4} />
-                      ) : (
-                        idx + 1
+                      {imgSrc ? (
+                        <img
+                          src={imgSrc}
+                          alt={it.itemname}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            display: "block"
+                          }}
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                            if (e.currentTarget.nextSibling) {
+                              e.currentTarget.nextSibling.style.display = "grid";
+                            }
+                          }}
+                        />
+                      ) : null}
+                      <div
+                        style={{
+                          display: imgSrc ? "none" : "grid",
+                          width: "100%",
+                          height: "100%",
+                          placeItems: "center",
+                          color: "var(--primary)"
+                        }}
+                      >
+                        <Sparkles size={24} strokeWidth={1.5} />
+                      </div>
+                    </div>
+
+                    {/* Details */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
+                        <div>
+                          <h4
+                            style={{
+                              fontFamily: "var(--font-serif)",
+                              fontSize: "1.2rem",
+                              fontWeight: 600,
+                              margin: 0,
+                              color: "var(--foreground)"
+                            }}
+                          >
+                            {it.itemname || "Fine Jewelry Piece"}
+                          </h4>
+                          <div style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "3px" }}>
+                            Quantity: <strong style={{ color: "var(--foreground)" }}>{it.qty || 1}</strong>
+                            {it.qty > 1 && ` · ${formatPrice(it.price)} each`}
+                          </div>
+                        </div>
+
+                        <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                          <span
+                            style={{
+                              fontFamily: "var(--font-serif)",
+                              fontSize: "1.25rem",
+                              fontWeight: 700,
+                              color: "var(--foreground)"
+                            }}
+                          >
+                            {formatPrice(it.totalprice || (it.price * (it.qty || 1)))}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Spec tags */}
+                      {specsList.length > 0 && (
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px" }}>
+                          {specsList.map((spec, sIdx) => (
+                            <span
+                              key={sIdx}
+                              style={{
+                                fontSize: "0.72rem",
+                                fontWeight: 500,
+                                padding: "3px 9px",
+                                borderRadius: "6px",
+                                backgroundColor: "#FAF9F6",
+                                border: "1px solid #EDE8DE",
+                                color: "#4A463F"
+                              }}
+                            >
+                              <span style={{ color: "var(--muted-foreground)", marginRight: "4px" }}>{spec.label}:</span>
+                              {spec.val}
+                            </span>
+                          ))}
+                        </div>
                       )}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "0.82rem",
-                        fontWeight: isCurrent ? 700 : isPassed ? 600 : 500,
-                        color: isCompletedOrCurrent ? "var(--foreground)" : "var(--muted-foreground)",
-                        letterSpacing: "0.01em"
-                      }}
-                    >
-                      {step}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "0.7rem",
-                        color: isCurrent ? "var(--primary)" : "var(--muted-foreground)",
-                        marginTop: "2px",
-                        fontWeight: isCurrent ? 600 : 400
-                      }}
-                    >
-                      {stepDescriptions[idx]}
+
+                      {/* Bespoke instruction */}
+                      {it.specialinstruction && (
+                        <div
+                          style={{
+                            fontSize: "0.78rem",
+                            color: "var(--primary)",
+                            marginTop: "10px",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            backgroundColor: "rgba(85, 104, 50, 0.08)",
+                            border: "1px solid rgba(85, 104, 50, 0.2)",
+                            padding: "4px 10px",
+                            borderRadius: "6px"
+                          }}
+                        >
+                          <Sparkles size={12} />
+                          <span>Bespoke Engraving / Note: "{it.specialinstruction}"</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
               })}
             </div>
           </div>
-        ) : (
-          /* Order Cancellation Details Notice */
-          <div
-            style={{
-              marginTop: "24px",
-              backgroundColor: "#FFF8F8",
-              border: "1px solid #F5C6CB",
-              borderRadius: "14px",
-              padding: "20px 24px"
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
-              <div
-                style={{
-                  width: "38px",
-                  height: "38px",
-                  borderRadius: "50%",
-                  backgroundColor: "#FEE2E2",
-                  border: "1px solid #FECACA",
-                  display: "grid",
-                  placeItems: "center",
-                  color: "#B91C1C",
-                  flexShrink: 0
-                }}
-              >
-                <AlertCircle size={20} strokeWidth={2.2} />
-              </div>
-
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "4px" }}>
-                  <h3
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "1.2rem",
-                      fontWeight: 600,
-                      color: "#991B1B",
-                      margin: 0
-                    }}
-                  >
-                    Commission Cancelled
-                  </h3>
-                  {cancelledAtDisplay && (
-                    <span style={{ fontSize: "0.78rem", color: "#B91C1C", fontWeight: 500 }}>
-                      Cancelled on {cancelledAtDisplay}
-                    </span>
-                  )}
-                </div>
-
-                <p style={{ fontSize: "0.85rem", color: "#7F1D1D", margin: 0, lineHeight: 1.5 }}>
-                  {cancelReason
-                    ? `Reason: "${cancelReason}"`
-                    : "This commission has been cancelled. Courier dispatch and craftsmanship progress have ceased."}
-                </p>
-
-                {cancelledByDisplay && (
-                  <p style={{ fontSize: "0.76rem", color: "#991B1B", margin: "6px 0 0 0", opacity: 0.85 }}>
-                    Processed by: {cancelledByDisplay}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Dual Cards: Delivery Destination + Atelier Guarantees */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "16px",
-            marginTop: "20px"
-          }}
-        >
-          {/* Delivery Destination */}
-          {shippingAddr ? (
-            <div
-              style={{
-                padding: "18px 20px",
-                borderRadius: "14px",
-                backgroundColor: "#FAF9F6",
-                border: "1px solid #EDE8DE"
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "50%",
-                    backgroundColor: "rgba(85, 104, 50, 0.1)",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "var(--primary)"
-                  }}
-                >
-                  <MapPin size={15} />
-                </div>
-                <span
-                  className="eyebrow"
-                  style={{
-                    fontSize: "0.72rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.12em",
-                    color: "var(--foreground)"
-                  }}
-                >
-                  DELIVERY DESTINATION ({shippingAddr.title || "PRIMARY"})
-                </span>
-              </div>
-              <p style={{ fontSize: "0.88rem", color: "var(--foreground)", fontWeight: 600, margin: "0 0 4px 0" }}>
-                {shippingAddr.name || order.customername || "Valued Patron"}
-              </p>
-              <p style={{ color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5, fontSize: "0.84rem" }}>
-                {[shippingAddr.address, shippingAddr.cityname, shippingAddr.statename, shippingAddr.countryname].filter(Boolean).join(", ")}
-                {shippingAddr.pincode ? ` - ${shippingAddr.pincode}` : ""}
-              </p>
-              {(order.customerphone || shippingAddr.phone) && (
-                <p style={{ color: "var(--muted-foreground)", margin: "8px 0 0 0", fontSize: "0.82rem" }}>
-                  Contact: <strong style={{ color: "var(--foreground)" }}>{formatPhoneNumber(order.customerphone || shippingAddr.phone)}</strong>
-                </p>
-              )}
-            </div>
-          ) : (
-            <div
-              style={{
-                padding: "18px 20px",
-                borderRadius: "14px",
-                backgroundColor: "#FAF9F6",
-                border: "1px solid #EDE8DE"
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                <MapPin size={16} style={{ color: "var(--primary)" }} />
-                <span className="eyebrow" style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em" }}>
-                  DELIVERY DESTINATION
-                </span>
-              </div>
-              <p style={{ color: "var(--muted-foreground)", fontSize: "0.84rem", margin: 0 }}>
-                Digital order confirmation or boutique atelier pickup.
-              </p>
-            </div>
-          )}
-
-          {/* Atelier Guarantees Card */}
-          <div
-            style={{
-              padding: "18px 20px",
-              borderRadius: "14px",
-              backgroundColor: "#FAF9F6",
-              border: "1px solid #EDE8DE",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between"
-            }}
-          >
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "50%",
-                    backgroundColor: "rgba(85, 104, 50, 0.1)",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "var(--primary)"
-                  }}
-                >
-                  <ShieldCheck size={15} />
-                </div>
-                <span
-                  className="eyebrow"
-                  style={{
-                    fontSize: "0.72rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.12em",
-                    color: "var(--foreground)"
-                  }}
-                >
-                  MAISON PRIVÉE GUARANTEE
-                </span>
-              </div>
-              <p style={{ fontSize: "0.84rem", color: "var(--muted-foreground)", margin: 0, lineHeight: 1.5 }}>
-                Complimentary insured courier delivery with discreet tamper-evident packaging and certified appraisal authenticity certificate.
-              </p>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "12px", fontSize: "0.76rem", color: "var(--primary)", fontWeight: 600 }}>
-              <Sparkles size={13} />
-              <span>Lifetime Atelier Craftsmanship Guarantee</span>
-            </div>
-          </div>
         </div>
 
-        {/* Ordered Item List */}
+        {/* Footer with Total and Invoice Download Action */}
         <div
           style={{
-            marginTop: "24px",
-            backgroundColor: "#ffffff",
-            borderRadius: "14px",
-            border: "1px solid #EDE8DE",
-            padding: "24px",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.02)"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", paddingBottom: "12px", borderBottom: "1px solid #EDE8DE" }}>
-            <span
-              className="eyebrow"
-              style={{
-                color: "var(--primary)",
-                letterSpacing: "0.16em",
-                fontSize: "0.72rem",
-                fontWeight: 700
-              }}
-            >
-              COMMISSIONED CREATIONS ({orderItems.length})
-            </span>
-            <span style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", fontWeight: 500 }}>
-              {orderItems.reduce((acc, it) => acc + (it.qty || 1), 0)} Total {orderItems.reduce((acc, it) => acc + (it.qty || 1), 0) === 1 ? "Piece" : "Pieces"}
-            </span>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-            {orderItems.map((it, idx) => {
-              const imgSrc = it.image || getProduct(it.itemid || it.productId)?.image;
-              const specsList = [
-                it.metalname && { label: "Metal", val: it.metalname },
-                it.diamondsize && { label: "Carat", val: it.diamondsize },
-                it.shapename && { label: "Shape", val: it.shapename },
-                it.clarityname && { label: "Clarity", val: it.clarityname },
-                it.stonename && { label: "Stone", val: it.stonename },
-                it.size && { label: "Size", val: it.size },
-                it.diamondcolor && { label: "Color", val: it.diamondcolor },
-                it.bandcolor && { label: "Band", val: it.bandcolor }
-              ].filter(Boolean);
-
-              return (
-                <div
-                  key={idx}
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: "18px",
-                    paddingBottom: idx < orderItems.length - 1 ? "18px" : "0",
-                    borderBottom: idx < orderItems.length - 1 ? "1px solid #F4F1EA" : "none"
-                  }}
-                >
-                  {/* Image Frame */}
-                  <div
-                    style={{
-                      width: "74px",
-                      height: "74px",
-                      borderRadius: "10px",
-                      border: "1.5px solid #EDE8DE",
-                      backgroundColor: "#FAF9F6",
-                      overflow: "hidden",
-                      flexShrink: 0,
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)"
-                    }}
-                  >
-                    {imgSrc ? (
-                      <img
-                        src={imgSrc}
-                        alt={it.itemname}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          display: "block"
-                        }}
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          if (e.currentTarget.nextSibling) {
-                            e.currentTarget.nextSibling.style.display = "grid";
-                          }
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      style={{
-                        display: imgSrc ? "none" : "grid",
-                        width: "100%",
-                        height: "100%",
-                        placeItems: "center",
-                        color: "var(--primary)"
-                      }}
-                    >
-                      <Sparkles size={24} strokeWidth={1.5} />
-                    </div>
-                  </div>
-
-                  {/* Details */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
-                      <div>
-                        <h4
-                          style={{
-                            fontFamily: "var(--font-serif)",
-                            fontSize: "1.15rem",
-                            fontWeight: 600,
-                            margin: 0,
-                            color: "var(--foreground)"
-                          }}
-                        >
-                          {it.itemname || "Fine Jewelry Piece"}
-                        </h4>
-                        <div style={{ fontSize: "0.78rem", color: "var(--muted-foreground)", marginTop: "2px" }}>
-                          Quantity: <strong style={{ color: "var(--foreground)" }}>{it.qty || 1}</strong>
-                          {it.qty > 1 && ` · ${formatPrice(it.price)} each`}
-                        </div>
-                      </div>
-
-                      <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-serif)",
-                            fontSize: "1.15rem",
-                            fontWeight: 700,
-                            color: "var(--foreground)"
-                          }}
-                        >
-                          {formatPrice(it.totalprice || (it.price * (it.qty || 1)))}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Spec tags */}
-                    {specsList.length > 0 && (
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px" }}>
-                        {specsList.map((spec, sIdx) => (
-                          <span
-                            key={sIdx}
-                            style={{
-                              fontSize: "0.72rem",
-                              fontWeight: 500,
-                              padding: "2px 8px",
-                              borderRadius: "6px",
-                              backgroundColor: "#FAF9F6",
-                              border: "1px solid #EDE8DE",
-                              color: "#4A463F"
-                            }}
-                          >
-                            <span style={{ color: "var(--muted-foreground)", marginRight: "4px" }}>{spec.label}:</span>
-                            {spec.val}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Bespoke instruction */}
-                    {it.specialinstruction && (
-                      <div
-                        style={{
-                          fontSize: "0.78rem",
-                          color: "var(--primary)",
-                          marginTop: "10px",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "6px",
-                          backgroundColor: "rgba(85, 104, 50, 0.08)",
-                          border: "1px solid rgba(85, 104, 50, 0.2)",
-                          padding: "4px 10px",
-                          borderRadius: "6px"
-                        }}
-                      >
-                        <Sparkles size={12} />
-                        <span>Bespoke Engraving / Note: "{it.specialinstruction}"</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Footer with Total and Invoice download button */}
-        <div
-          style={{
-            marginTop: "24px",
-            paddingTop: "24px",
+            background: "#FAF9F6",
+            padding: "20px 32px",
             borderTop: "1px solid #EDE8DE",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            gap: "20px"
+            gap: "18px",
+            flexShrink: 0
           }}
         >
           <div>
             <span
               className="eyebrow"
               style={{
-                fontSize: "0.7rem",
+                fontSize: "0.68rem",
                 color: "var(--muted-foreground)",
                 letterSpacing: "0.14em",
                 display: "block",
@@ -1634,7 +1690,7 @@ function OrderDetailModal({ order, onClose }) {
             <span
               style={{
                 fontFamily: "var(--font-serif)",
-                fontSize: "2.2rem",
+                fontSize: "2.1rem",
                 fontWeight: 700,
                 color: "var(--foreground)",
                 letterSpacing: "-0.01em"
@@ -1642,8 +1698,8 @@ function OrderDetailModal({ order, onClose }) {
             >
               {formatPrice(order.total)}
             </span>
-            <div style={{ fontSize: "0.74rem", color: "var(--muted-foreground)", marginTop: "2px" }}>
-              All taxes &amp; complimentary insured courier included
+            <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", marginTop: "2px" }}>
+              All taxes, duties &amp; complimentary armed courier delivery included
             </div>
           </div>
 
@@ -1665,7 +1721,7 @@ function OrderDetailModal({ order, onClose }) {
                 fontWeight: 700,
                 letterSpacing: "0.12em",
                 fontSize: "0.76rem",
-                transition: "all 0.2s ease",
+                transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
                 boxShadow: "0 4px 16px rgba(85, 104, 50, 0.25)",
                 opacity: downloadingInvoice ? 0.85 : 1
               }}
