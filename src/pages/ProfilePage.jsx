@@ -1,6 +1,24 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { Trash2, LogOut, Plus, MapPin, Edit2, X, Building, Home, Sparkles } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Trash2,
+  LogOut,
+  Plus,
+  MapPin,
+  Edit2,
+  X,
+  Building,
+  Home,
+  Sparkles,
+  Heart,
+  ShoppingBag,
+  ShieldCheck,
+  Truck,
+  ArrowRight,
+  User,
+  CheckCircle2,
+  Lock
+} from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
 
@@ -11,7 +29,7 @@ const fieldStyle = {
   padding: "12px 16px",
   fontSize: "0.9rem",
   color: "var(--foreground)",
-  borderRadius: "3px",
+  borderRadius: "6px",
   outline: "none",
   transition: "all 0.2s ease"
 };
@@ -20,7 +38,7 @@ export default function ProfilePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const rawTab = searchParams.get("tab");
   const currentTab = rawTab === "settings" ? "settings" : rawTab === "addresses" ? "addresses" : "wishlist";
-  const { user, logout } = useStore();
+  const { user, logout, wishlist } = useStore();
 
   const setTab = (tab) => {
     setSearchParams({ tab });
@@ -31,26 +49,96 @@ export default function ProfilePage() {
   }
 
   const tabs = [
-    { id: "wishlist", label: "Wishlist Atelier" },
-    { id: "settings", label: "Security & Profile" },
-    { id: "addresses", label: "Delivery Addresses" }
+    { id: "wishlist", label: "Wishlist Atelier", icon: Heart, badge: wishlist?.length || 0 },
+    { id: "settings", label: "Security & Profile", icon: User },
+    { id: "addresses", label: "Delivery Addresses", icon: MapPin }
   ];
 
   return (
-    <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "20px" }}>
-        <div>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "var(--gold)" }} />
-            <p className="eyebrow" style={{ color: "var(--gold-deep)", margin: 0 }}>Private Client Portal</p>
+    <div className="container-luxury" style={{ maxWidth: "1340px", paddingTop: "40px", paddingBottom: "100px" }}>
+      {/* Atelier Client Suite Banner */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "24px",
+          paddingBottom: "26px",
+          borderBottom: "1px solid #EDE8DE"
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          {/* Client Monogram Crest */}
+          <div
+            style={{
+              width: "60px",
+              height: "60px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
+              border: "1.5px solid rgba(85, 104, 50, 0.25)",
+              color: "var(--primary)",
+              display: "grid",
+              placeItems: "center",
+              fontFamily: "var(--font-serif)",
+              fontSize: "1.6rem",
+              fontWeight: 700,
+              flexShrink: 0,
+              boxShadow: "0 4px 12px rgba(85, 104, 50, 0.08)"
+            }}
+          >
+            {user.fullname ? user.fullname.charAt(0).toUpperCase() : "C"}
           </div>
-          <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2.5rem, 5vw, 3.6rem)", margin: "8px 0 0 0", letterSpacing: "-0.01em" }}>
-            Welcome, {user.fullname ? user.fullname.split(" ")[0] : "Client"}
-          </h1>
-          <p style={{ color: "var(--muted-foreground)", fontSize: "0.92rem", marginTop: "8px", margin: 0 }}>
-            Manage your fine jewelry wishlist, bespoke preferences, and global delivery destinations.
-          </p>
+
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "4px" }}>
+              <span
+                className="eyebrow"
+                style={{
+                  color: "var(--primary)",
+                  letterSpacing: "0.2em",
+                  fontSize: "0.7rem",
+                  fontWeight: 700
+                }}
+              >
+                MAISON PRIVÉE · CLIENT ATELIER
+              </span>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "2px 9px",
+                  borderRadius: "999px",
+                  backgroundColor: "rgba(85, 104, 50, 0.1)",
+                  color: "var(--primary)",
+                  fontSize: "0.7rem",
+                  fontWeight: 700
+                }}
+              >
+                <Sparkles size={11} /> Verified Atelier Patron
+              </span>
+            </div>
+
+            <h1
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(2rem, 3.8vw, 3rem)",
+                margin: 0,
+                letterSpacing: "-0.01em",
+                color: "var(--foreground)",
+                fontWeight: 600
+              }}
+            >
+              Welcome, {user.fullname || "Client"}
+            </h1>
+            <p style={{ color: "var(--muted-foreground)", fontSize: "0.88rem", marginTop: "4px", margin: 0 }}>
+              Curate your fine jewelry wishlist, manage global delivery addresses, and tailor your bespoke commissions.
+            </p>
+          </div>
         </div>
+
+        {/* Sign Out Button */}
         <button
           onClick={logout}
           className="eyebrow"
@@ -59,29 +147,141 @@ export default function ProfilePage() {
             alignItems: "center",
             gap: "8px",
             backgroundColor: "#FAF9F6",
-            color: "#666",
+            color: "var(--foreground)",
             border: "1px solid #EDE8DE",
-            padding: "11px 22px",
-            borderRadius: "3px",
+            padding: "11px 20px",
+            borderRadius: "8px",
             cursor: "pointer",
             fontWeight: 600,
+            fontSize: "0.76rem",
             letterSpacing: "0.12em",
             transition: "all 0.2s ease"
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "#c33";
-            e.currentTarget.style.color = "#c33";
-            e.currentTarget.style.backgroundColor = "#fff8f8";
+            e.currentTarget.style.borderColor = "#dc2626";
+            e.currentTarget.style.color = "#dc2626";
+            e.currentTarget.style.backgroundColor = "#fff5f5";
+            e.currentTarget.style.transform = "translateY(-1px)";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.borderColor = "#EDE8DE";
-            e.currentTarget.style.color = "#666";
+            e.currentTarget.style.color = "var(--foreground)";
             e.currentTarget.style.backgroundColor = "#FAF9F6";
+            e.currentTarget.style.transform = "translateY(0)";
           }}
         >
           <LogOut size={15} />
-          Sign Out
+          <span>Sign Out</span>
         </button>
+      </div>
+
+      {/* Luxury Client Privileges Strip */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+          gap: "14px",
+          marginTop: "20px"
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "14px 18px",
+            borderRadius: "8px",
+            backgroundColor: "#FAF9F6",
+            border: "1px solid #EDE8DE"
+          }}
+        >
+          <div
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
+              color: "var(--primary)",
+              display: "grid",
+              placeItems: "center",
+              flexShrink: 0
+            }}
+          >
+            <Heart size={16} />
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--foreground)" }}>
+              {wishlist?.length || 0} Saved Creations
+            </div>
+            <div style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>In your personal curation</div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "14px 18px",
+            borderRadius: "8px",
+            backgroundColor: "#FAF9F6",
+            border: "1px solid #EDE8DE"
+          }}
+        >
+          <div
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
+              color: "var(--primary)",
+              display: "grid",
+              placeItems: "center",
+              flexShrink: 0
+            }}
+          >
+            <Truck size={16} />
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--foreground)" }}>
+              Insured Armoured Transit
+            </div>
+            <div style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>Complimentary on all orders</div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "14px 18px",
+            borderRadius: "8px",
+            backgroundColor: "#FAF9F6",
+            border: "1px solid #EDE8DE"
+          }}
+        >
+          <div
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
+              color: "var(--primary)",
+              display: "grid",
+              placeItems: "center",
+              flexShrink: 0
+            }}
+          >
+            <ShieldCheck size={16} />
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--foreground)" }}>
+              Lifetime Authenticity
+            </div>
+            <div style={{ fontSize: "0.74rem", color: "var(--muted-foreground)" }}>Certified Gemological Dossier</div>
+          </div>
+        </div>
       </div>
 
       {/* Tabs Navigation */}
@@ -89,43 +289,66 @@ export default function ProfilePage() {
         style={{
           display: "flex",
           borderBottom: "1px solid #EDE8DE",
-          marginTop: "40px",
+          marginTop: "32px",
           gap: "8px"
         }}
       >
         <div
           style={{
             display: "flex",
-            gap: "32px",
+            gap: "28px",
             overflowX: "auto",
             scrollbarWidth: "none"
           }}
         >
-          {tabs.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className="eyebrow"
-              style={{
-                background: "none",
-                border: "none",
-                borderBottom: currentTab === t.id ? "2.5px solid var(--primary)" : "2.5px solid transparent",
-                padding: "0 4px 14px 4px",
-                color: currentTab === t.id ? "var(--foreground)" : "var(--muted-foreground)",
-                fontWeight: currentTab === t.id ? 700 : 500,
-                letterSpacing: "0.12em",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                whiteSpace: "nowrap"
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
+          {tabs.map((t) => {
+            const Icon = t.icon;
+            const isActive = currentTab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className="eyebrow"
+                style={{
+                  background: "none",
+                  border: "none",
+                  borderBottom: isActive ? "2.5px solid var(--primary)" : "2.5px solid transparent",
+                  padding: "0 4px 14px 4px",
+                  color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
+                  fontWeight: isActive ? 700 : 500,
+                  letterSpacing: "0.14em",
+                  fontSize: "0.78rem",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  whiteSpace: "nowrap",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px"
+                }}
+              >
+                {Icon && <Icon size={14} style={{ color: isActive ? "var(--primary)" : "inherit" }} />}
+                <span>{t.label}</span>
+                {t.badge !== undefined && (
+                  <span
+                    style={{
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      padding: "2px 7px",
+                      borderRadius: "999px",
+                      backgroundColor: isActive ? "rgba(85, 104, 50, 0.12)" : "#EDE8DE",
+                      color: isActive ? "var(--primary)" : "var(--muted-foreground)"
+                    }}
+                  >
+                    {t.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div style={{ marginTop: "40px" }}>
+      <div style={{ marginTop: "36px" }}>
         {currentTab === "wishlist" && <WishlistTab />}
         {currentTab === "settings" && <SettingsTab key={user?._id || user?.id || "guest"} />}
         {currentTab === "addresses" && <AddressesTab key={user?._id || user?.id || "guest"} />}
@@ -134,56 +357,84 @@ export default function ProfilePage() {
   );
 }
 
-
 function WishlistTab() {
-  const { wishlist, toggleWishlist, addToCart, format, getProduct } = useStore();
+  const { wishlist, toggleWishlist, addToCart, format, getProduct, showToast } = useStore();
+  const navigate = useNavigate();
+
+  const handleMoveAllToBag = () => {
+    if (!wishlist.length) return;
+    let addedCount = 0;
+    wishlist.forEach((id) => {
+      const p = getProduct(id);
+      if (p) {
+        const metal = p.metals?.[0]?.name || (typeof p.metals?.[0] === "string" ? p.metals[0] : "14K White Gold");
+        addToCart(p.id || p._id, metal);
+        addedCount++;
+      }
+    });
+    if (showToast) {
+      showToast(`${addedCount} creation${addedCount === 1 ? "" : "s"} moved to your Shopping Bag!`, "success");
+    }
+  };
 
   if (!wishlist.length) {
     return (
       <div
         style={{
           textAlign: "center",
-          padding: "80px 24px",
-          backgroundColor: "#FAF9F6",
+          padding: "90px 24px",
+          backgroundColor: "#ffffff",
           border: "1px solid #EDE8DE",
-          borderRadius: "6px"
+          borderRadius: "12px",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.02)"
         }}
       >
         <div
           style={{
-            width: "68px",
-            height: "68px",
+            width: "72px",
+            height: "72px",
             borderRadius: "50%",
-            backgroundColor: "var(--primary-soft)",
+            backgroundColor: "rgba(85, 104, 50, 0.08)",
+            border: "1px solid rgba(85, 104, 50, 0.18)",
             display: "grid",
             placeItems: "center",
             margin: "0 auto 20px",
             color: "var(--primary)"
           }}
         >
-          <Sparkles size={30} strokeWidth={1.5} />
+          <Heart size={32} strokeWidth={1.5} />
         </div>
-        <p style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: "0 0 10px 0", color: "var(--foreground)" }}>
-          Your Atelier Wishlist is Empty
-        </p>
-        <p style={{ fontSize: "0.92rem", color: "var(--muted-foreground)", maxWidth: "440px", margin: "0 auto 28px" }}>
-          Explore our signature collections to save your favorite lab grown diamond pieces and bridal sets.
+        <span
+          className="eyebrow"
+          style={{ color: "var(--primary)", letterSpacing: "0.2em", fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "6px" }}
+        >
+          ATELIER WISHLIST
+        </span>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", margin: "0 0 10px 0", color: "var(--foreground)", fontWeight: 600 }}>
+          Your Wishlist is Empty
+        </h3>
+        <p style={{ fontSize: "0.92rem", color: "var(--muted-foreground)", maxWidth: "440px", margin: "0 auto 28px", lineHeight: 1.6 }}>
+          Explore our signature collections to curate your personal heirloom jewelry pieces and bespoke bridal creations.
         </p>
         <Link
           to="/collections"
           className="eyebrow"
           style={{
-            display: "inline-block",
-            padding: "13px 32px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+            padding: "14px 34px",
             backgroundColor: "var(--primary)",
             color: "#ffffff",
-            borderRadius: "2px",
+            borderRadius: "8px",
             textDecoration: "none",
             fontWeight: 600,
-            letterSpacing: "0.14em"
+            letterSpacing: "0.14em",
+            boxShadow: "0 4px 16px rgba(85, 104, 50, 0.25)"
           }}
         >
-          Explore Collection ✦
+          <span>Discover Collections</span>
+          <ArrowRight size={15} />
         </Link>
       </div>
     );
@@ -191,123 +442,288 @@ function WishlistTab() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "24px" }}>
-        <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.7rem", margin: 0 }}>
-          Saved Fine Jewelry ({wishlist.length})
-        </h2>
-        <span style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>
-          Curated selection ready for commission
-        </span>
+      {/* Header bar */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "16px",
+          paddingBottom: "20px",
+          borderBottom: "1px solid #EDE8DE",
+          marginBottom: "28px"
+        }}
+      >
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.7rem", margin: 0, fontWeight: 600, color: "var(--foreground)" }}>
+              Saved Fine Jewelry
+            </h2>
+            <span
+              style={{
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                padding: "3px 10px",
+                borderRadius: "999px",
+                backgroundColor: "rgba(85, 104, 50, 0.1)",
+                color: "var(--primary)"
+              }}
+            >
+              {wishlist.length} {wishlist.length === 1 ? "Piece" : "Pieces"}
+            </span>
+          </div>
+          <p style={{ fontSize: "0.85rem", color: "var(--muted-foreground)", margin: "4px 0 0 0" }}>
+            Curated selection ready for commission, sizing, or immediate acquisition.
+          </p>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <button
+            onClick={handleMoveAllToBag}
+            className="eyebrow"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              backgroundColor: "rgba(85, 104, 50, 0.08)",
+              color: "var(--primary)",
+              border: "1px solid rgba(85, 104, 50, 0.25)",
+              fontSize: "0.74rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              transition: "all 0.2s ease"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--primary)";
+              e.currentTarget.style.color = "#ffffff";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(85, 104, 50, 0.08)";
+              e.currentTarget.style.color = "var(--primary)";
+            }}
+          >
+            <ShoppingBag size={14} />
+            <span>Move All to Bag</span>
+          </button>
+        </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "24px" }}>
+      {/* Grid of Wishlist Cards */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gap: "24px"
+        }}
+      >
         {wishlist.map((id) => {
           const p = getProduct(id);
           if (!p) return null;
+          const productUrl = `/product/${p._id || p.id}`;
+          const defaultMetal = p.metals?.[0]?.name || (typeof p.metals?.[0] === "string" ? p.metals[0] : "14K White Gold");
+
           return (
             <div
               key={id}
-              className="card-luxury"
               style={{
                 display: "flex",
                 flexDirection: "column",
+                backgroundColor: "#ffffff",
+                borderRadius: "12px",
                 border: "1px solid #EDE8DE",
-                backgroundColor: "#FAF9F6",
-                borderRadius: "4px",
                 overflow: "hidden",
-                transition: "all 0.3s ease"
+                transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.02)"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.boxShadow = "0 14px 34px rgba(0, 0, 0, 0.07)";
+                e.currentTarget.style.borderColor = "#D8D1C5";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.02)";
+                e.currentTarget.style.borderColor = "#EDE8DE";
               }}
             >
-              {/* Image with zoom effect */}
+              {/* Image Stage */}
               <div
-                className="img-zoom-parent"
                 style={{
-                  width: "100%",
-                  aspectRatio: "1/1",
-                  backgroundColor: "#ffffff",
                   position: "relative",
-                  borderBottom: "1px solid #EDE8DE"
+                  aspectRatio: "1 / 1",
+                  backgroundColor: "#FAF9F6",
+                  borderBottom: "1px solid #EDE8DE",
+                  overflow: "hidden",
+                  cursor: "pointer"
                 }}
+                onClick={() => navigate(productUrl)}
               >
                 <img
                   src={p.image}
                   alt={p.name}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                    transition: "transform 0.5s ease"
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 />
-              </div>
 
-              {/* Body */}
-              <div style={{ padding: "18px 20px 22px", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
-                <div>
-                  <span className="eyebrow" style={{ color: "var(--gold-deep)", fontSize: "0.68rem" }}>
-                    {p.category || "Fine Jewelry"}
-                  </span>
-                  <Link
-                    to={`/product/${p.id}`}
+                {/* Top-Left Category Badge */}
+                {p.category && (
+                  <span
+                    className="eyebrow"
                     style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "1.2rem",
-                      fontWeight: 600,
+                      position: "absolute",
+                      top: "12px",
+                      left: "12px",
+                      backgroundColor: "rgba(255, 255, 255, 0.92)",
+                      backdropFilter: "blur(4px)",
                       color: "var(--foreground)",
-                      textDecoration: "none",
-                      display: "block",
-                      marginTop: "4px",
-                      lineHeight: 1.3
+                      padding: "3px 8px",
+                      borderRadius: "4px",
+                      fontSize: "0.64rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.1em",
+                      border: "1px solid rgba(220, 215, 205, 0.5)"
                     }}
                   >
+                    {p.category}
+                  </span>
+                )}
+
+                {/* Top-Right Remove Heart Button */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleWishlist(p.id || p._id);
+                  }}
+                  title="Remove from wishlist"
+                  aria-label="Remove item"
+                  style={{
+                    position: "absolute",
+                    top: "12px",
+                    right: "12px",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(255, 255, 255, 0.92)",
+                    backdropFilter: "blur(4px)",
+                    border: "1px solid rgba(220, 215, 205, 0.6)",
+                    color: "var(--primary)",
+                    display: "grid",
+                    placeItems: "center",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#fff0f0";
+                    e.currentTarget.style.borderColor = "#fca5a5";
+                    e.currentTarget.style.color = "#dc2626";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.92)";
+                    e.currentTarget.style.borderColor = "rgba(220, 215, 205, 0.6)";
+                    e.currentTarget.style.color = "var(--primary)";
+                  }}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+
+              {/* Card Body */}
+              <div
+                style={{
+                  padding: "16px 18px 20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  flex: 1,
+                  justifyContent: "space-between"
+                }}
+              >
+                <div>
+                  <h3
+                    onClick={() => navigate(productUrl)}
+                    title={p.name}
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "1.1rem",
+                      fontWeight: 600,
+                      color: "var(--foreground)",
+                      margin: 0,
+                      lineHeight: 1.35,
+                      cursor: "pointer",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      transition: "color 0.2s"
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
+                  >
                     {p.name}
-                  </Link>
-                  <p style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--foreground)", marginTop: "8px", margin: "8px 0 0 0" }}>
+                  </h3>
+
+                  <p
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: 700,
+                      color: "var(--primary)",
+                      margin: "8px 0 0",
+                      fontFamily: "var(--font-serif)"
+                    }}
+                  >
                     {format(p.price)}
                   </p>
                 </div>
 
-                <div style={{ marginTop: "18px", display: "flex", gap: "8px" }}>
+                {/* Move to Bag Action */}
+                <div style={{ marginTop: "16px" }}>
                   <button
                     onClick={() => {
-                      addToCart(p.id, "18k Yellow Gold");
-                      toggleWishlist(p.id);
+                      addToCart(p.id || p._id, defaultMetal);
+                      toggleWishlist(p.id || p._id);
                     }}
                     className="eyebrow"
                     style={{
-                      flex: 1,
+                      width: "100%",
                       backgroundColor: "var(--primary)",
                       color: "#ffffff",
-                      padding: "11px 16px",
+                      padding: "12px 16px",
                       border: "none",
-                      borderRadius: "2px",
+                      borderRadius: "8px",
                       cursor: "pointer",
-                      fontWeight: 600,
+                      fontWeight: 700,
+                      fontSize: "0.76rem",
                       letterSpacing: "0.12em",
-                      transition: "background 0.2s"
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary)")}
-                  >
-                    Move to Bag
-                  </button>
-                  <button
-                    onClick={() => toggleWishlist(p.id)}
-                    aria-label="Remove from wishlist"
-                    style={{
-                      border: "1px solid #EDE8DE",
-                      backgroundColor: "#ffffff",
-                      padding: "0 12px",
-                      borderRadius: "2px",
-                      cursor: "pointer",
-                      color: "#999",
-                      transition: "all 0.2s"
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "8px",
+                      boxShadow: "0 4px 14px rgba(85, 104, 50, 0.2)",
+                      transition: "all 0.2s ease"
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "#c33";
-                      e.currentTarget.style.color = "#c33";
+                      e.currentTarget.style.backgroundColor = "var(--primary-hover)";
+                      e.currentTarget.style.transform = "translateY(-1px)";
+                      e.currentTarget.style.boxShadow = "0 6px 18px rgba(85, 104, 50, 0.3)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "#EDE8DE";
-                      e.currentTarget.style.color = "#999";
+                      e.currentTarget.style.backgroundColor = "var(--primary)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = "0 4px 14px rgba(85, 104, 50, 0.2)";
                     }}
                   >
-                    <Trash2 size={16} strokeWidth={1.4} />
+                    <ShoppingBag size={14} />
+                    <span>Move to Bag</span>
                   </button>
                 </div>
               </div>
