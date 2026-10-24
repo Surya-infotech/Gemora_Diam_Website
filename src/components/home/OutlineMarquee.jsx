@@ -16,18 +16,29 @@ export default function OutlineMarquee() {
 
   return (
     <div
+      className="outline-marquee-wrapper"
       style={{
         borderTop: "1px solid rgba(197, 160, 89, 0.28)",
         borderBottom: "1px solid rgba(197, 160, 89, 0.28)",
-        padding: "clamp(18px, 2.6vw, 24px) 0",
+        padding: "clamp(14px, 2.2vw, 22px) 0",
         overflow: "hidden",
         backgroundColor: "#FAF8F5",
         position: "relative",
-        width: "100%",
-        maskImage: "linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)",
-        WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)"
+        width: "100%"
       }}
     >
+      <style>{`
+        .outline-marquee-wrapper {
+          mask-image: linear-gradient(to right, transparent 0%, black 1.5%, black 98.5%, transparent 100%);
+          -webkit-mask-image: linear-gradient(to right, transparent 0%, black 1.5%, black 98.5%, transparent 100%);
+        }
+        @media (max-width: 768px) {
+          .outline-marquee-wrapper {
+            mask-image: none !important;
+            -webkit-mask-image: none !important;
+          }
+        }
+      `}</style>
       <div
         className="animate-marquee"
         style={{

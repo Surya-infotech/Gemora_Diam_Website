@@ -201,26 +201,39 @@ export function ProductCard({ product }) {
 
       {/* Product Meta & Swatches */}
       <div style={{ padding: "14px 14px 16px 14px", display: "flex", flexDirection: "column", flex: 1 }}>
-        {/* Row 1: Title and Metal Swatches */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px" }}>
-          <h3
+        {/* Row 1: Title */}
+        <h3
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "0.84rem",
+            fontWeight: 500,
+            lineHeight: 1.35,
+            color: "#1a1a1a",
+            margin: 0,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            minHeight: "2.3em",
+            width: "100%"
+          }}
+        >
+          {product?.name}
+        </h3>
+
+        {/* Row 2: Price dynamically updated by selected metal & Circular Swatches */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px", gap: "6px" }}>
+          <div
             style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "0.82rem",
-              fontWeight: 500,
-              lineHeight: 1.35,
-              color: "#1a1a1a",
-              margin: 0,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-              minHeight: "2.2em",
-              flex: 1
+              fontSize: "0.88rem",
+              fontWeight: 600,
+              color: "#222222",
+              transition: "color 0.2s ease",
+              whiteSpace: "nowrap"
             }}
           >
-            {product?.name}
-          </h3>
+            {format ? format(currentPrice) : `$${currentPrice?.toLocaleString()}`}
+          </div>
 
           {/* Circular Metal Color Swatches */}
           {metals.length > 0 && (
@@ -229,7 +242,6 @@ export function ProductCard({ product }) {
                 display: "flex",
                 alignItems: "center",
                 gap: "5px",
-                marginTop: "3px",
                 flexShrink: 0
               }}
             >
@@ -262,19 +274,6 @@ export function ProductCard({ product }) {
               })}
             </div>
           )}
-        </div>
-
-        {/* Row 2: Price dynamically updated by selected metal */}
-        <div
-          style={{
-            fontSize: "0.88rem",
-            fontWeight: 600,
-            color: "#222222",
-            marginTop: "6px",
-            transition: "color 0.2s ease"
-          }}
-        >
-          {format ? format(currentPrice) : `$${currentPrice?.toLocaleString()}`}
         </div>
       </div>
     </div>

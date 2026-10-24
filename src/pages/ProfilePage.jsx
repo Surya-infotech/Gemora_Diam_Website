@@ -1809,7 +1809,7 @@ function SignInView() {
         style={{
           backgroundColor: "#ffffff",
           border: "1px solid #EDE8DE",
-          padding: "48px 38px",
+          padding: "clamp(28px, 6vw, 48px) clamp(18px, 5vw, 38px)",
           borderRadius: "14px",
           boxShadow: "0 20px 50px rgba(0, 0, 0, 0.04)",
           textAlign: "center"
@@ -1835,7 +1835,7 @@ function SignInView() {
         <p className="eyebrow" style={{ color: "var(--primary)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em" }}>
           GEMORA DIAM · PRIVATE CLIENT PORTAL
         </p>
-        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.3rem", margin: "8px 0 10px 0", color: "var(--foreground)", fontWeight: 600, letterSpacing: "-0.01em" }}>
+        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.75rem, 4vw, 2.3rem)", margin: "8px 0 10px 0", color: "var(--foreground)", fontWeight: 600, letterSpacing: "-0.01em" }}>
           {isRegister ? "Create An Account" : "Welcome Back"}
         </h1>
         <p style={{ fontSize: "0.9rem", color: "var(--muted-foreground)", lineHeight: 1.6, margin: "0 0 28px 0" }}>

@@ -512,6 +512,12 @@ export default function CollectionsPage({ slugOverride = null }) {
             gap: 10px;
           }
         }
+        @media (max-width: 350px) {
+          .bestseller-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+        }
       `}</style>
     </div>
   );

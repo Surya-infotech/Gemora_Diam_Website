@@ -43,8 +43,21 @@ export default function SplitCollectionBanners() {
                 transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
               }}
             >
+              <style>{`
+                @media (max-width: 768px) {
+                  .split-banner-image-col {
+                    order: 1 !important;
+                    height: clamp(240px, 55vw, 360px) !important;
+                  }
+                  .split-banner-content-col {
+                    order: 2 !important;
+                    padding: 16px 8px !important;
+                  }
+                }
+              `}</style>
               {/* IMAGE COLUMN */}
               <div
+                className="split-banner-image-col"
                 style={{
                   order: isLeft ? 1 : 2,
                   position: "relative",
@@ -80,6 +93,7 @@ export default function SplitCollectionBanners() {
 
               {/* CONTENT COLUMN */}
               <div
+                className="split-banner-content-col"
                 style={{
                   order: isLeft ? 2 : 1,
                   padding: "clamp(16px, 3vw, 40px)",

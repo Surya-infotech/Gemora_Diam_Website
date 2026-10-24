@@ -112,7 +112,18 @@ export default function BestSellerSection() {
           }}
         >
           {/* Underlined Minimal Tabs */}
-          <div style={{ display: "flex", gap: "clamp(24px, 3.5vw, 40px)", flexWrap: "wrap" }}>
+          <div
+            className="no-scrollbar"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "clamp(18px, 2.8vw, 36px)",
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch",
+              maxWidth: "100%",
+              flex: "1 1 auto"
+            }}
+          >
             {dynamicTabs.map((tab) => {
               const isSelected = currentTab === tab;
               return (
@@ -131,7 +142,9 @@ export default function BestSellerSection() {
                     color: isSelected ? "var(--foreground)" : "#8c867a",
                     borderBottom: isSelected ? "2px solid var(--primary)" : "2px solid transparent",
                     cursor: "pointer",
-                    transition: "all 0.2s ease"
+                    transition: "all 0.2s ease",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0
                   }}
                 >
                   {tab}
@@ -300,26 +313,39 @@ export default function BestSellerSection() {
 
                 {/* Product Meta & Swatches */}
                 <div style={{ padding: "14px 14px 16px 14px", display: "flex", flexDirection: "column", flex: 1 }}>
-                  {/* Row 1: Title and Metal Swatches */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px" }}>
-                    <h3
+                  {/* Row 1: Title */}
+                  <h3
+                    style={{
+                      fontFamily: "var(--font-sans)",
+                      fontSize: "0.84rem",
+                      fontWeight: 500,
+                      lineHeight: 1.35,
+                      color: "#1a1a1a",
+                      margin: 0,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      minHeight: "2.3em",
+                      width: "100%"
+                    }}
+                  >
+                    {item.name}
+                  </h3>
+
+                  {/* Row 2: Price dynamically updated by selected metal & Circular Swatches */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px", gap: "6px" }}>
+                    <div
                       style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "0.82rem",
-                        fontWeight: 500,
-                        lineHeight: 1.35,
-                        color: "#1a1a1a",
-                        margin: 0,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        minHeight: "2.2em",
-                        flex: 1
+                        fontSize: "0.88rem",
+                        fontWeight: 600,
+                        color: "#222222",
+                        transition: "color 0.2s ease",
+                        whiteSpace: "nowrap"
                       }}
                     >
-                      {item.name}
-                    </h3>
+                      {format ? format(currentPrice) : `$${currentPrice?.toLocaleString()}`}
+                    </div>
 
                     {/* Circular Metal Color Swatches */}
                     {metals.length > 0 && (
@@ -328,7 +354,6 @@ export default function BestSellerSection() {
                           display: "flex",
                           alignItems: "center",
                           gap: "5px",
-                          marginTop: "3px",
                           flexShrink: 0
                         }}
                       >
@@ -362,19 +387,6 @@ export default function BestSellerSection() {
                       </div>
                     )}
                   </div>
-
-                  {/* Row 2: Price dynamically updated by selected metal */}
-                  <div
-                    style={{
-                      fontSize: "0.88rem",
-                      fontWeight: 600,
-                      color: "#222222",
-                      marginTop: "6px",
-                      transition: "color 0.2s ease"
-                    }}
-                  >
-                    {format ? format(currentPrice) : `$${currentPrice?.toLocaleString()}`}
-                  </div>
                 </div>
               </div>
             );
@@ -403,6 +415,12 @@ export default function BestSellerSection() {
           .bestseller-grid {
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
+          }
+        }
+        @media (max-width: 350px) {
+          .bestseller-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
           }
         }
       `}</style>

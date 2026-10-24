@@ -306,7 +306,7 @@ export default function ShopByShapeSection() {
             backgroundColor: "#f5f0e8",
             backgroundImage: "linear-gradient(135deg, #fbf8f3 0%, #f1e8da 45%, #e8dcce 100%)",
             borderRadius: "28px",
-            padding: "clamp(24px, 4vw, 42px)",
+            padding: "clamp(16px, 3.5vw, 42px)",
             boxShadow: "0 10px 35px rgba(60, 40, 15, 0.08)",
             border: "1px solid rgba(220, 205, 185, 0.6)",
             overflow: "hidden"
@@ -716,8 +716,9 @@ export default function ShopByShapeSection() {
               <div
                 style={{
                   position: "relative",
-                  width: "min(390px, 90vw)",
-                  height: "min(390px, 90vw)",
+                  width: "min(360px, calc(100vw - 64px), 100%)",
+                  height: "min(360px, calc(100vw - 64px), 100%)",
+                  aspectRatio: "1 / 1",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
@@ -1360,6 +1361,13 @@ export default function ShopByShapeSection() {
           100% {
             transform: scale(1.4) rotate(90deg);
             opacity: 0;
+          }
+        }
+
+        @media (max-width: 1200px) and (min-width: 992px) {
+          .shape-steps-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 8px !important;
           }
         }
 

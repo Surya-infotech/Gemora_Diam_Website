@@ -1003,7 +1003,7 @@ function OrderDetailModal({ order, onClose }) {
         <div
           style={{
             background: "linear-gradient(180deg, #F9F7F3 0%, #FFFFFF 100%)",
-            padding: "20px 28px 16px 28px",
+            padding: "clamp(16px, 3.5vw, 22px) clamp(16px, 4vw, 28px) 16px",
             borderBottom: "1px solid #EDE8DE",
             position: "relative",
             flexShrink: 0
@@ -1080,7 +1080,7 @@ function OrderDetailModal({ order, onClose }) {
             <h2
               style={{
                 fontFamily: "var(--font-serif)",
-                fontSize: "2.2rem",
+                fontSize: "clamp(1.4rem, 4.5vw, 2.2rem)",
                 margin: 0,
                 letterSpacing: "-0.01em",
                 color: "var(--foreground)",
@@ -1127,7 +1127,7 @@ function OrderDetailModal({ order, onClose }) {
         <div
           className="atelier-modal-scroll"
           style={{
-            padding: "20px 28px",
+            padding: "clamp(14px, 3.5vw, 20px) clamp(14px, 4vw, 28px)",
             overflowY: "auto",
             display: "flex",
             flexDirection: "column",
@@ -1138,7 +1138,7 @@ function OrderDetailModal({ order, onClose }) {
           {!isCancelled ? (
             <div
               style={{
-                padding: "20px 24px",
+                padding: "clamp(14px, 3vw, 20px) clamp(12px, 3.5vw, 24px)",
                 backgroundColor: "#FAF9F6",
                 borderRadius: "14px",
                 border: "1px solid #EDE8DE"
@@ -1587,7 +1587,7 @@ function OrderDetailModal({ order, onClose }) {
         <div
           style={{
             background: "#FAF9F6",
-            padding: "16px 28px",
+            padding: "16px clamp(14px, 4vw, 28px)",
             borderTop: "1px solid #EDE8DE",
             display: "flex",
             justifyContent: "space-between",

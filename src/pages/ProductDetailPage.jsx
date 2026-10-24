@@ -325,8 +325,8 @@ function ProductDetailContent({ product }) {
                     onClick={() => setActiveMediaIndex(idx)}
                     aria-label={`Select media ${idx + 1}`}
                     style={{
-                      width: "74px",
-                      height: "74px",
+                      width: "clamp(60px, 14vw, 74px)",
+                      height: "clamp(60px, 14vw, 74px)",
                       flexShrink: 0,
                       borderRadius: "10px",
                       border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid #EDE8DE",
@@ -1143,7 +1143,17 @@ function ProductDetailContent({ product }) {
 
         {/* Detailed Tabs: Story, Specifications, Shipping */}
         <div style={{ marginTop: "70px", borderTop: "1px solid #EDE8DE" }}>
-          <div style={{ display: "flex", gap: "32px", borderBottom: "1px solid #EDE8DE", paddingTop: "20px" }}>
+          <div
+            className="no-scrollbar"
+            style={{
+              display: "flex",
+              gap: "clamp(18px, 3.5vw, 32px)",
+              borderBottom: "1px solid #EDE8DE",
+              paddingTop: "20px",
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch"
+            }}
+          >
             {hasDescription && (
               <button
                 onClick={() => setActiveTab("description")}
@@ -1155,6 +1165,8 @@ function ProductDetailContent({ product }) {
                   borderBottom: currentTab === "description" ? "2px solid var(--primary)" : "2px solid transparent",
                   cursor: "pointer",
                   background: "transparent",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
                   borderTop: "none",
                   borderLeft: "none",
                   borderRight: "none",

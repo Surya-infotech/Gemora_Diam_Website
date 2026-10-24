@@ -146,9 +146,9 @@ export default function HeroSlider() {
           <h1
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: "clamp(2.3rem, 4.6vw, 3.8rem)",
+              fontSize: "clamp(1.85rem, 5vw, 3.8rem)",
               fontWeight: 400,
-              lineHeight: 1.1,
+              lineHeight: 1.14,
               color: "#ffffff",
               margin: "0 0 16px 0",
               letterSpacing: "-0.01em",
@@ -174,7 +174,7 @@ export default function HeroSlider() {
           {cur.desc && (
             <p
               style={{
-                fontSize: "clamp(0.92rem, 1.15vw, 1.05rem)",
+                fontSize: "clamp(0.85rem, 1.2vw, 1.05rem)",
                 lineHeight: 1.65,
                 color: "rgba(255, 255, 255, 0.88)",
                 maxWidth: "540px",
@@ -188,7 +188,7 @@ export default function HeroSlider() {
           )}
 
           {/* Call To Action Pill Buttons */}
-          <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
             {cur.buttonText && (
               <Link
                 to={cur.buttonLink || "/collections"}

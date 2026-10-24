@@ -24,16 +24,8 @@ export function LegalLayout({ title, updated, sections, htmlContent }) {
           dangerouslySetInnerHTML={{ __html: htmlContent }}
         />
       ) : sections && sections.length > 0 ? (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "60px",
-            marginTop: "60px",
-            alignItems: "start"
-          }}
-        >
-          {/* Sticky Table of Contents */}
+        <div className="legal-page-grid">
+          {/* Table of Contents */}
           <nav style={{ position: "sticky", top: "110px" }}>
             <p className="eyebrow" style={{ color: "var(--muted-foreground)", marginBottom: "16px" }}>Contents</p>
             <ol style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "12px", borderLeft: "1px solid var(--border)" }}>
@@ -67,10 +59,10 @@ export function LegalLayout({ title, updated, sections, htmlContent }) {
           </nav>
 
           {/* Legal Text Sections */}
-          <div style={{ maxWidth: "780px", display: "flex", flexDirection: "column", gap: "50px", gridColumn: "span 2" }}>
+          <div style={{ maxWidth: "780px", display: "flex", flexDirection: "column", gap: "40px" }}>
             {sections.map((s, i) => (
               <section key={s.id || i} id={s.id} style={{ scrollMarginTop: "120px" }}>
-                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", marginBottom: "16px" }}>
+                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.6rem, 2.5vw, 2rem)", marginBottom: "14px" }}>
                   {i + 1}. {s.title}
                 </h2>
                 {s.body.map((p, k) => (

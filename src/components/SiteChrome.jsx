@@ -29,7 +29,7 @@ export function Logo() {
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: "10px",
+        gap: "clamp(6px, 1.5vw, 10px)",
         textDecoration: "none",
         transition: "opacity 0.2s",
         flexShrink: 0
@@ -42,8 +42,8 @@ export function Logo() {
         src="/GEMORALOGO.png"
         alt={brandName}
         style={{
-          width: "48px",
-          height: "48px",
+          width: "clamp(34px, 5.5vw, 46px)",
+          height: "clamp(34px, 5.5vw, 46px)",
           objectFit: "contain",
           flexShrink: 0,
           display: "block"
@@ -54,7 +54,7 @@ export function Logo() {
         <span
           style={{
             fontFamily: "var(--font-serif)",
-            fontSize: "clamp(1.15rem, 1.6vw, 1.45rem)",
+            fontSize: "clamp(1.02rem, 2vw, 1.45rem)",
             fontWeight: 600,
             fontStyle: "italic",
             letterSpacing: "0.02em",
@@ -66,7 +66,7 @@ export function Logo() {
         </span>
         <span
           style={{
-            fontSize: "0.50rem",
+            fontSize: "clamp(0.44rem, 0.9vw, 0.50rem)",
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             color: "var(--primary)",

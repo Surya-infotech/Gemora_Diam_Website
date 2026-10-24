@@ -219,7 +219,7 @@ img {
   scrollbar-width: thin;
 }
 
-@media (min-width: 860px) {
+@media (min-width: 960px) {
   .product-gallery-layout {
     flex-direction: row;
     align-items: flex-start;
@@ -343,6 +343,13 @@ img {
   }
 }
 
+@media (max-width: 350px) {
+  .bestseller-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
 /* Tesora-Style Single-Row Luxury Navbar */
 .site-navbar-tesora {
   display: flex;
@@ -414,25 +421,25 @@ img {
   width: 100%;
 }
 
-/* Categories balanced grid for 3-column tablet & desktop layout */
+/* Categories balanced grid for tablet & desktop layout */
 .categories-balanced-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, minmax(0, 320px));
   gap: clamp(16px, 2vw, 24px);
   justify-content: center;
   max-width: 1040px;
   margin: 0 auto;
 }
 
-@media (min-width: 640px) {
+@media (max-width: 959px) {
   .categories-balanced-grid {
-    grid-template-columns: repeat(3, minmax(0, 320px));
+    grid-template-columns: repeat(2, minmax(0, 340px));
   }
 }
 
 @media (max-width: 639px) {
   .categories-balanced-grid {
-    grid-template-columns: minmax(0, 320px);
+    grid-template-columns: minmax(0, 360px);
   }
 }
 
@@ -670,6 +677,12 @@ img {
 }
 
 /* 6. Mobile & Tablet Responsive Form Grids */
+.form-grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
 @media (max-width: 640px) {
   .form-grid-2-col {
     grid-template-columns: 1fr !important;
@@ -680,6 +693,23 @@ img {
   }
   .mobile-card-compact-pad {
     padding: 18px 14px !important;
+  }
+}
+
+/* Legal Page Responsive Grid */
+.legal-page-grid {
+  display: grid;
+  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+  margin-top: 48px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .legal-page-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+    margin-top: 28px !important;
   }
 }
 
