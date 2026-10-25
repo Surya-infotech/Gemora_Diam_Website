@@ -337,7 +337,7 @@ export default function LovedByCouplesSection() {
                         style={{
                           width: "100%",
                           height: "100%",
-                          objectFit: "cover",
+                          objectFit: "fill",
                           transition: "transform 1s cubic-bezier(0.16, 1, 0.3, 1)"
                         }}
                       />
@@ -582,7 +582,7 @@ export default function LovedByCouplesSection() {
                 <img
                   src={selectedStory.image}
                   alt={selectedStory.names || "Couple"}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{ width: "100%", height: "100%", objectFit: "fill" }}
                 />
               )}
               <button

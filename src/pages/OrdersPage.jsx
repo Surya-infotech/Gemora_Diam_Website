@@ -445,7 +445,7 @@ function OrderRow({ order, onSelect, format }) {
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "cover",
+                      objectFit: "fill",
                       display: "block"
                     }}
                     onError={(e) => {
@@ -1473,7 +1473,7 @@ function OrderDetailModal({ order, onClose }) {
                           style={{
                             width: "100%",
                             height: "100%",
-                            objectFit: "cover",
+                            objectFit: "fill",
                             display: "block"
                           }}
                           onError={(e) => {

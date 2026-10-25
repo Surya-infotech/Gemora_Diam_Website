@@ -830,7 +830,7 @@ export default function MegaMenu({ inline = false }) {
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "cover",
+                        objectFit: "fill",
                         transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}

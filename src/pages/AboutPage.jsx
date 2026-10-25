@@ -531,7 +531,7 @@ export default function AboutPage() {
                           width: "100%",
                           maxHeight: "500px",
                           aspectRatio: "4/3",
-                          objectFit: "cover",
+                          objectFit: "fill",
                           objectPosition: "center",
                           display: "block"
                         }}

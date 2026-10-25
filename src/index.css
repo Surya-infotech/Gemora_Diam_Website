@@ -91,6 +91,7 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+  object-fit: fill !important;
 }
 
 /* Eyebrow Label */
@@ -298,7 +299,7 @@ img {
   height: 100% !important;
   max-width: 100% !important;
   max-height: 100% !important;
-  object-fit: cover !important;
+  object-fit: fill !important;
   object-position: center !important;
   display: block;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);

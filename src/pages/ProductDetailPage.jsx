@@ -406,7 +406,7 @@ function ProductDetailContent({ product }) {
                         </div>
                       </div>
                     ) : (
-                      <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "6px" }} />
+                      <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "fill", borderRadius: "6px" }} />
                     )}
                   </button>
                 ))}

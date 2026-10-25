@@ -101,7 +101,7 @@ export default function ShopTheLookSection() {
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "cover",
+                      objectFit: "fill",
                       objectPosition: "center",
                       transform: isHovered ? "scale(1.05)" : "scale(1)",
                       transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)"

@@ -431,7 +431,7 @@ export default function CartPage() {
                           <img
                             src={item.image}
                             alt={item.itemname || item.name}
-                            style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "2px", border: "1px solid var(--border)" }}
+                            style={{ width: "48px", height: "48px", objectFit: "fill", borderRadius: "2px", border: "1px solid var(--border)" }}
                           />
                         )}
                         <div>

@@ -60,7 +60,7 @@ export function CartLines({ compact = false, onProductClick = null }) {
                 style={{
                   width: "100%",
                   height: "100%",
-                  objectFit: "cover",
+                  objectFit: "fill",
                   display: "block",
                   transition: "transform 0.3s ease"
                 }}

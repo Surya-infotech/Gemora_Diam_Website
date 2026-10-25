@@ -1094,7 +1094,7 @@ export function Header() {
                   <img
                     src={p.image}
                     alt={p.name}
-                    style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "4px", backgroundColor: "#f6f6f6" }}
+                    style={{ width: "48px", height: "48px", objectFit: "fill", borderRadius: "4px", backgroundColor: "#f6f6f6" }}
                   />
                   <div>
                     <h4 style={{ fontSize: "0.92rem", margin: 0, fontWeight: 500, fontFamily: "var(--font-serif)" }}>{p.name}</h4>
