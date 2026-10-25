@@ -285,7 +285,7 @@ function ProductDetailContent({ product }) {
     : product.name;
 
   return (
-    <div style={{ backgroundColor: "#ffffff", color: "var(--foreground)", paddingBottom: "100px" }}>
+    <div className="pdp-page-container" style={{ backgroundColor: "#ffffff", color: "var(--foreground)", paddingBottom: "100px" }}>
       {/* Breadcrumb Navigation */}
       <div style={{ borderBottom: "1px solid rgba(237, 232, 222, 0.75)", backgroundColor: "#FAF9F6" }}>
         <div className="container-luxury" style={{ padding: "14px 20px" }}>

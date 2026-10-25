@@ -293,7 +293,7 @@ export default function LovedByCouplesSection() {
                 <div
                   key={item.key}
                   style={{
-                    flex: "0 0 320px",
+                    flex: "0 0 min(320px, calc(100vw - 48px))",
                     scrollSnapAlign: "start",
                     display: "flex",
                     flexDirection: "column",
@@ -446,7 +446,7 @@ export default function LovedByCouplesSection() {
                 <div
                   key={item.key}
                   style={{
-                    flex: "0 0 320px",
+                    flex: "0 0 min(320px, calc(100vw - 48px))",
                     scrollSnapAlign: "start",
                     display: "flex",
                     flexDirection: "column",

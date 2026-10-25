@@ -347,7 +347,7 @@ export default function ShopByShapeSection() {
               position: "relative",
               zIndex: 1,
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
               alignItems: "center",
               gap: "clamp(24px, 3.5vw, 48px)"
             }}

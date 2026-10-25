@@ -102,27 +102,27 @@ img {
   font-weight: 600;
 }
 
-/* Container */
+/* Container with Safe Area Support for iPhone Notches & Dynamic Island */
 .container-luxury {
   width: 100%;
   max-width: 1440px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: max(20px, env(safe-area-inset-left, 20px));
+  padding-right: max(20px, env(safe-area-inset-right, 20px));
 }
 
 @media (max-width: 480px) {
   .container-luxury {
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: max(14px, env(safe-area-inset-left, 14px));
+    padding-right: max(14px, env(safe-area-inset-right, 14px));
   }
 }
 
 @media (min-width: 1024px) {
   .container-luxury {
-    padding-left: 44px;
-    padding-right: 44px;
+    padding-left: max(40px, env(safe-area-inset-left, 40px));
+    padding-right: max(40px, env(safe-area-inset-right, 40px));
   }
 }
 
@@ -315,7 +315,7 @@ img {
   background-color: #0b0f0c;
 }
 
-/* Universal Bestseller & Product Card Grid */
+/* Universal Bestseller & Product Card Grid (Multi-Resolution Calibrated) */
 .bestseller-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -323,16 +323,17 @@ img {
   width: 100%;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .bestseller-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .bestseller-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 14px;
   }
 }
 
@@ -343,7 +344,7 @@ img {
   }
 }
 
-@media (max-width: 350px) {
+@media (max-width: 330px) {
   .bestseller-grid {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -424,22 +425,23 @@ img {
 /* Categories balanced grid for tablet & desktop layout */
 .categories-balanced-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 320px));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 320px));
   gap: clamp(16px, 2vw, 24px);
   justify-content: center;
-  max-width: 1040px;
+  max-width: 1360px;
   margin: 0 auto;
+  width: 100%;
 }
 
 @media (max-width: 959px) {
   .categories-balanced-grid {
-    grid-template-columns: repeat(2, minmax(0, 340px));
+    grid-template-columns: repeat(2, minmax(0, 320px));
   }
 }
 
 @media (max-width: 639px) {
   .categories-balanced-grid {
-    grid-template-columns: minmax(0, 360px);
+    grid-template-columns: minmax(0, 340px);
   }
 }
 
@@ -663,16 +665,25 @@ img {
 /* 5. Small Laptop (1024px - 1280px) Navigation Refinements */
 @media (min-width: 1024px) and (max-width: 1280px) {
   .site-navbar-tesora {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .mega-menu-nav-track {
+    gap: clamp(8px, 1vw, 14px) !important;
   }
   .nav-link-luxury {
     font-size: 0.72rem !important;
-    letter-spacing: 0.08em !important;
+    letter-spacing: 0.07em !important;
     padding: 6px 2px !important;
   }
   .desktop-search-input {
-    width: 170px !important;
+    width: 155px !important;
+  }
+  .mega-menu-content-grid {
+    gap: 20px !important;
+  }
+  .mega-menu-banner-col {
+    width: 240px !important;
   }
 }
 
@@ -713,14 +724,14 @@ img {
   }
 }
 
-/* 7. Smooth Mobile Drawer Animation */
+/* 7. Smooth Mobile Drawer Animation with Safe Area Support */
 .mobile-drawer-content {
   width: 86%;
   max-width: 380px;
   height: 100%;
   overflow-y: auto;
   background-color: #ffffff;
-  padding: 24px 20px env(safe-area-inset-bottom, 24px);
+  padding: max(24px, env(safe-area-inset-top, 24px)) 20px max(24px, env(safe-area-inset-bottom, 24px));
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -733,5 +744,34 @@ img {
   button, a {
     min-height: 38px;
     min-width: 38px;
+  }
+}
+
+/* 9. iOS Prevent Viewport Auto-Zoom on Form Inputs */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* 10. The Promise & Vow 2-Column Breakpoint for Tablet Landscape & Laptops */
+@media (min-width: 900px) {
+  .promise-vow-grid {
+    grid-template-columns: 5fr 7fr !important;
+  }
+}
+
+/* 11. Shop By Shape Step Cards Responsive Mobile Stacking */
+@media (max-width: 640px) {
+  .shape-steps-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+/* 12. Product Detail Page Mobile Bottom Bar Safe Spacing */
+@media (max-width: 768px) {
+  .pdp-page-container {
+    padding-bottom: max(110px, calc(70px + env(safe-area-inset-bottom, 20px))) !important;
   }
 }

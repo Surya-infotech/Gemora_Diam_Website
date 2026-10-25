@@ -395,7 +395,7 @@ export default function MegaMenu({ inline = false }) {
           padding: inline ? 0 : "10px 0 14px",
           borderTop: inline ? "none" : "1px solid rgba(235, 229, 218, 0.6)"
         }}
-        className="desktop-only-nav"
+        className="desktop-only-nav mega-menu-nav-track"
       >
         {/* Dynamic Menus from Backend */}
         {activeMenus.map((menu) => {
@@ -520,12 +520,14 @@ export default function MegaMenu({ inline = false }) {
         >
           <div className="container-luxury" style={{ padding: "36px 44px 28px" }}>
             <div
+              className="mega-menu-content-grid"
               style={{
                 display: "flex",
-                gap: "clamp(36px, 4vw, 64px)",
+                gap: "clamp(24px, 3.2vw, 56px)",
                 alignItems: "start",
                 justifyContent: "flex-start",
-                flexWrap: "wrap"
+                flexWrap: "wrap",
+                width: "100%"
               }}
             >
               {/* COLUMN 1: Styles / Categories */}
@@ -807,13 +809,14 @@ export default function MegaMenu({ inline = false }) {
               {/* COLUMN 4: Promotional Atelier Banner Card (Only when banner data exists) */}
               {hasBanner && (
                 <div
+                  className="mega-menu-banner-col"
                   style={{
                     marginLeft: "auto",
-                    width: "320px",
+                    width: "clamp(240px, 24vw, 320px)",
                     maxWidth: "100%",
                     flexShrink: 0,
                     position: "relative",
-                    borderRadius: "4px",
+                    borderRadius: "8px",
                     overflow: "hidden",
                     aspectRatio: "4 / 3",
                     boxShadow: "0 10px 24px rgba(0,0,0,0.08)",

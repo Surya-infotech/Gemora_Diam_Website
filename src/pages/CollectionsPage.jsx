@@ -488,37 +488,6 @@ export default function CollectionsPage({ slugOverride = null }) {
           ))}
         </div>
       )}
-
-      <style>{`
-        .bestseller-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: clamp(16px, 1.8vw, 24px);
-        }
-        @media (max-width: 1024px) {
-          .bestseller-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-        @media (max-width: 768px) {
-          .bestseller-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-          }
-        }
-        @media (max-width: 480px) {
-          .bestseller-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-          }
-        }
-        @media (max-width: 350px) {
-          .bestseller-grid {
-            grid-template-columns: 1fr;
-            gap: 12px;
-          }
-        }
-      `}</style>
     </div>
   );
 }

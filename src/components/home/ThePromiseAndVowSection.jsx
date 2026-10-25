@@ -642,7 +642,7 @@ export default function ThePromiseAndVowSection() {
       </div>
 
       <style>{`
-        @media (min-width: 1024px) {
+        @media (min-width: 900px) {
           .promise-vow-grid {
             grid-template-columns: 5fr 7fr !important;
           }
