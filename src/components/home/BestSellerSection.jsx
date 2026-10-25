@@ -363,17 +363,24 @@ export default function BestSellerSection() {
                             <button
                               key={metal.name}
                               type="button"
+                              className="swatch-dot"
                               title={metal.name}
                               onClick={(e) => handleMetalSelect(item.id, metal.name, e)}
                               style={{
                                 width: "10px",
                                 height: "10px",
+                                minWidth: "10px",
+                                minHeight: "10px",
+                                maxWidth: "10px",
+                                maxHeight: "10px",
                                 borderRadius: "50%",
                                 backgroundColor: metal.color,
                                 border: "none",
                                 padding: 0,
+                                margin: 0,
                                 cursor: "pointer",
                                 outline: "none",
+                                flexShrink: 0,
                                 boxShadow: isSelected
                                   ? "0 0 0 1.5px #ffffff, 0 0 0 2.5px var(--primary)"
                                   : "none",

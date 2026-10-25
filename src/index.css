@@ -756,10 +756,21 @@ img {
 
 /* 8. Touch Target Accessibility */
 @media (pointer: coarse) {
-  button, a {
+  button:not(.swatch-dot):not(.slider-indicator-btn):not(.no-min-touch),
+  a:not(.swatch-dot):not(.no-min-touch) {
     min-height: 38px;
     min-width: 38px;
   }
+}
+
+/* Color & Metal Swatch Dots */
+.swatch-dot,
+.metal-swatch-dot {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
 }
 
 /* 9. iOS Prevent Viewport Auto-Zoom on Form Inputs */
