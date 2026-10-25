@@ -47,9 +47,9 @@ export default function ProfilePage() {
   }
 
   const tabs = [
-    { id: "wishlist", label: "Saved Wishlist", icon: Heart, badge: wishlist?.length || 0 },
-    { id: "settings", label: "Security & Profile", icon: User },
-    { id: "addresses", label: "Delivery Addresses", icon: MapPin }
+    { id: "wishlist", label: "Saved Wishlist", shortLabel: "Wishlist", icon: Heart, badge: wishlist?.length || 0 },
+    { id: "settings", label: "Security & Profile", shortLabel: "Profile", icon: User },
+    { id: "addresses", label: "Delivery Addresses", shortLabel: "Addresses", icon: MapPin }
   ];
 
   return (
@@ -173,23 +173,9 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      {/* Tabs Navigation */}
-      <div
-        style={{
-          display: "flex",
-          borderBottom: "1px solid #EDE8DE",
-          marginTop: "32px",
-          gap: "8px"
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            gap: "28px",
-            overflowX: "auto",
-            scrollbarWidth: "none"
-          }}
-        >
+      {/* Desktop Tabs Navigation */}
+      <div className="profile-tabs-desktop">
+        <div className="profile-tabs-scroll no-scrollbar">
           {tabs.map((t) => {
             const Icon = t.icon;
             const isActive = currentTab === t.id;
@@ -197,25 +183,16 @@ export default function ProfilePage() {
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className="eyebrow"
+                className="eyebrow profile-tab-btn"
                 style={{
-                  background: "none",
-                  border: "none",
                   borderBottom: isActive ? "2.5px solid var(--primary)" : "2.5px solid transparent",
-                  padding: "0 4px 14px 4px",
                   color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
                   fontWeight: isActive ? 700 : 500,
-                  letterSpacing: "0.14em",
-                  fontSize: "0.78rem",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  whiteSpace: "nowrap",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "8px"
+                  letterSpacing: "0.12em",
+                  fontSize: "0.78rem"
                 }}
               >
-                {Icon && <Icon size={14} style={{ color: isActive ? "var(--primary)" : "inherit" }} />}
+                {Icon && <Icon size={14} style={{ color: isActive ? "var(--primary)" : "inherit", flexShrink: 0 }} />}
                 <span>{t.label}</span>
                 {t.badge !== undefined && (
                   <span
@@ -225,7 +202,8 @@ export default function ProfilePage() {
                       padding: "2px 7px",
                       borderRadius: "999px",
                       backgroundColor: isActive ? "rgba(85, 104, 50, 0.12)" : "#EDE8DE",
-                      color: isActive ? "var(--primary)" : "var(--muted-foreground)"
+                      color: isActive ? "var(--primary)" : "var(--muted-foreground)",
+                      flexShrink: 0
                     }}
                   >
                     {t.badge}
@@ -235,6 +213,39 @@ export default function ProfilePage() {
             );
           })}
         </div>
+      </div>
+
+      {/* Mobile Tabs Navigation (Segmented Luxury Control) */}
+      <div className="profile-tabs-mobile">
+        {tabs.map((t) => {
+          const Icon = t.icon;
+          const isActive = currentTab === t.id;
+          return (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`profile-tab-mobile-btn ${isActive ? "active" : ""}`}
+            >
+              {Icon && <Icon size={14} style={{ color: isActive ? "var(--primary)" : "inherit", flexShrink: 0 }} />}
+              <span>{t.shortLabel || t.label}</span>
+              {t.badge !== undefined && (
+                <span
+                  style={{
+                    fontSize: "0.65rem",
+                    fontWeight: 700,
+                    padding: "1px 6px",
+                    borderRadius: "999px",
+                    backgroundColor: isActive ? "rgba(85, 104, 50, 0.14)" : "#EDE8DE",
+                    color: isActive ? "var(--primary)" : "var(--muted-foreground)",
+                    flexShrink: 0
+                  }}
+                >
+                  {t.badge}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       <div style={{ marginTop: "36px" }}>
