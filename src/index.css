@@ -56,9 +56,13 @@ html {
   overflow-x: hidden;
   max-width: 100vw;
   font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
 }
 
 body {
+  margin: 0;
+  padding: 0;
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
@@ -67,6 +71,14 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   max-width: 100vw;
+  width: 100%;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
 }
 
 /* Unified Typography across all Headings & Elements */
