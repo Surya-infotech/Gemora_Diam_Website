@@ -139,10 +139,9 @@ export default function ThePromiseAndVowSection() {
           {/* LEFT LARGE CARD: The Vows / Wedding Bands (5fr) */}
           <Link
             to={vowsButtonLink}
-            className="luxury-card"
+            className="promise-vow-card-left luxury-card"
             style={{
               display: "block",
-              minHeight: "clamp(380px, 50vw, 560px)",
               textDecoration: "none",
               position: "relative"
             }}
@@ -157,7 +156,7 @@ export default function ThePromiseAndVowSection() {
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  objectPosition: "center 55%",
+                  objectPosition: "center 32%",
                   transition: "transform 1.2s cubic-bezier(0.22, 1, 0.36, 1)"
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
@@ -165,12 +164,12 @@ export default function ThePromiseAndVowSection() {
               />
             )}
 
-            {/* Gradient Dark Vignette */}
+            {/* Gradient Dark Vignette - refined so image stays vibrant and text is crystal clear */}
             <div
               style={{
                 position: "absolute",
                 inset: 0,
-                background: "linear-gradient(180deg, rgba(20, 27, 17, 0.2) 0%, rgba(20, 27, 17, 0.6) 40%, rgba(20, 27, 17, 0.95) 100%)",
+                background: "linear-gradient(180deg, rgba(12, 17, 10, 0.08) 0%, rgba(12, 17, 10, 0.35) 45%, rgba(12, 17, 10, 0.92) 100%)",
                 pointerEvents: "none"
               }}
             />
@@ -197,7 +196,7 @@ export default function ThePromiseAndVowSection() {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                padding: "clamp(24px, 4vw, 44px)",
+                padding: "clamp(22px, 3.8vw, 38px)",
                 color: "#ffffff",
                 zIndex: 2
               }}
@@ -224,11 +223,11 @@ export default function ThePromiseAndVowSection() {
                 <h3
                   style={{
                     fontFamily: "var(--font-serif)",
-                    fontSize: "clamp(1.9rem, 3.4vw, 3rem)",
+                    fontSize: "clamp(1.75rem, 3.2vw, 2.8rem)",
                     fontWeight: 400,
                     color: "#ffffff",
                     margin: "0 0 6px 0",
-                    lineHeight: 1.1,
+                    lineHeight: 1.15,
                     textShadow: "0 2px 14px rgba(0,0,0,0.5)"
                   }}
                 >
@@ -241,9 +240,9 @@ export default function ThePromiseAndVowSection() {
                   style={{
                     fontFamily: "var(--font-serif)",
                     fontStyle: "italic",
-                    fontSize: "clamp(0.95rem, 1.25vw, 1.15rem)",
+                    fontSize: "clamp(0.88rem, 1.2vw, 1.05rem)",
                     color: "rgba(255, 255, 255, 0.88)",
-                    margin: "0 0 20px 0"
+                    margin: "0 0 16px 0"
                   }}
                 >
                   {vowsSubtitle}
@@ -276,10 +275,9 @@ export default function ThePromiseAndVowSection() {
             {/* Top Engagement Rings Card */}
             <Link
               to={proposalButtonLink}
-              className="luxury-card"
+              className="promise-vow-card-right luxury-card"
               style={{
                 display: "block",
-                minHeight: "clamp(260px, 28vw, 340px)",
                 textDecoration: "none",
                 position: "relative"
               }}
@@ -294,7 +292,7 @@ export default function ThePromiseAndVowSection() {
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    objectPosition: "55% center",
+                    objectPosition: "center center",
                     transition: "transform 1.2s cubic-bezier(0.22, 1, 0.36, 1)"
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
@@ -306,7 +304,7 @@ export default function ThePromiseAndVowSection() {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "linear-gradient(180deg, rgba(20, 27, 17, 0.2) 0%, rgba(20, 27, 17, 0.6) 40%, rgba(20, 27, 17, 0.95) 100%)",
+                  background: "linear-gradient(180deg, rgba(12, 17, 10, 0.08) 0%, rgba(12, 17, 10, 0.35) 45%, rgba(12, 17, 10, 0.92) 100%)",
                   pointerEvents: "none"
                 }}
               />
@@ -329,7 +327,7 @@ export default function ThePromiseAndVowSection() {
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  padding: "clamp(20px, 3.5vw, 36px)",
+                  padding: "clamp(22px, 3.8vw, 38px)",
                   color: "#ffffff",
                   zIndex: 2
                 }}
@@ -344,7 +342,7 @@ export default function ThePromiseAndVowSection() {
                       gap: "8px",
                       fontSize: "0.72rem",
                       letterSpacing: "0.26em",
-                      marginBottom: "6px"
+                      marginBottom: "8px"
                     }}
                   >
                     <span style={{ width: "20px", height: "1px", backgroundColor: "var(--gold-light)" }} />
@@ -356,11 +354,11 @@ export default function ThePromiseAndVowSection() {
                   <h3
                     style={{
                       fontFamily: "var(--font-serif)",
-                      fontSize: "clamp(1.7rem, 2.8vw, 2.6rem)",
+                      fontSize: "clamp(1.75rem, 3.2vw, 2.8rem)",
                       fontWeight: 400,
                       color: "#ffffff",
-                      margin: "0 0 4px 0",
-                      lineHeight: 1.1,
+                      margin: "0 0 6px 0",
+                      lineHeight: 1.15,
                       textShadow: "0 2px 14px rgba(0,0,0,0.5)"
                     }}
                   >
@@ -373,7 +371,7 @@ export default function ThePromiseAndVowSection() {
                     style={{
                       fontFamily: "var(--font-serif)",
                       fontStyle: "italic",
-                      fontSize: "clamp(0.9rem, 1.15vw, 1.05rem)",
+                      fontSize: "clamp(0.88rem, 1.2vw, 1.05rem)",
                       color: "rgba(255, 255, 255, 0.88)",
                       margin: "0 0 16px 0"
                     }}
@@ -394,7 +392,7 @@ export default function ThePromiseAndVowSection() {
                       fontWeight: 600,
                       color: "#ffffff",
                       borderBottom: "1.5px solid var(--gold)",
-                      paddingBottom: "3px"
+                      paddingBottom: "4px"
                     }}
                   >
                     {proposalButtonText} <ArrowRight size={14} style={{ color: "var(--gold)" }} />
