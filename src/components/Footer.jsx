@@ -113,20 +113,10 @@ export function Footer() {
 
   const brandName = generalSettings?.softwarename || "GEMORA DIAM";
 
-  // Policies from store with refined fallback commitments
-  const policyItems = (policies || [])
+  // Policies purely from store (backend dynamic policies)
+  const displayedPolicies = (policies || [])
     .filter((p) => p && p.policyname && p.status !== false)
     .map((p) => [p.policyname, `/${slugifyPolicy(p.policyname)}`]);
-
-  const defaultPolicies = [
-    ["Lifetime Warranty", "/warranty"],
-    ["Complimentary Returns & Exchange", "/returns"],
-    ["Privacy & Confidentiality", "/privacy"],
-    ["Terms of Bespoke Commission", "/terms"],
-    ["Ethical Diamond Certification", "/certification"]
-  ];
-
-  const displayedPolicies = policyItems.length > 0 ? policyItems : defaultPolicies;
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -157,7 +147,7 @@ export function Footer() {
     }
   };
 
-  // Curated category links strip
+  // Curated category links strip purely from backend categories
   const navCategories = categories && categories.length > 0
     ? [
         { label: "ALL BESPOKE COLLECTIONS", to: "/collections" },
@@ -166,13 +156,7 @@ export function Footer() {
           to: `/collections?category=${encodeURIComponent(c.categoryname)}`
         }))
       ]
-    : [
-        { label: "ALL BESPOKE COLLECTIONS", to: "/collections" },
-        { label: "ENGAGEMENT RINGS", to: "/collections?category=Engagement%20Rings" },
-        { label: "DIAMOND BANDS", to: "/collections?category=Bands" },
-        { label: "LUXURY BRACELETS", to: "/collections?category=Bracelets" },
-        { label: "SOLITAIRE EARRINGS", to: "/collections?category=Earrings" }
-      ];
+    : [];
 
   return (
     <footer
@@ -330,35 +314,37 @@ export function Footer() {
       </div>
 
       {/* 2. CATEGORY CURATION STRIP: Haute Joaillerie Nav Ribbon */}
-      <div
-        style={{
-          borderBottom: "1px solid rgba(255, 255, 255, 0.07)",
-          backgroundColor: "#101510",
-          padding: "16px 0"
-        }}
-      >
+      {navCategories.length > 0 && (
         <div
-          className="container-luxury"
           style={{
-            display: "flex",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            gap: "clamp(16px, 2.8vw, 32px)",
-            alignItems: "center"
+            borderBottom: "1px solid rgba(255, 255, 255, 0.07)",
+            backgroundColor: "#101510",
+            padding: "16px 0"
           }}
         >
-          {navCategories.map((cat, idx) => (
-            <div key={cat.label} style={{ display: "inline-flex", alignItems: "center", gap: "clamp(16px, 2.8vw, 32px)" }}>
-              <Link to={cat.to} className="footer-category-link">
-                {cat.label}
-              </Link>
-              {idx < navCategories.length - 1 && (
-                <span style={{ color: "rgba(197, 160, 89, 0.4)", fontSize: "0.6rem" }}>✦</span>
-              )}
-            </div>
-          ))}
+          <div
+            className="container-luxury"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              gap: "clamp(16px, 2.8vw, 32px)",
+              alignItems: "center"
+            }}
+          >
+            {navCategories.map((cat, idx) => (
+              <div key={cat.label} style={{ display: "inline-flex", alignItems: "center", gap: "clamp(16px, 2.8vw, 32px)" }}>
+                <Link to={cat.to} className="footer-category-link">
+                  {cat.label}
+                </Link>
+                {idx < navCategories.length - 1 && (
+                  <span style={{ color: "rgba(197, 160, 89, 0.4)", fontSize: "0.6rem" }}>✦</span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 3. MAIN FOOTER: 5 Editorial Columns */}
       <div
@@ -691,44 +677,46 @@ export function Footer() {
         </div>
 
         {/* Col 4: Our Commitments (Policies) */}
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "18px" }}>
-            <span style={{ color: "#D4AF37", fontSize: "0.8rem" }}>✦</span>
-            <h4
-              style={{
-                fontFamily: "var(--font-serif)",
-                fontSize: "1.32rem",
-                color: "#FFFFFF",
-                fontWeight: 400,
-                margin: 0,
-                letterSpacing: "0.02em"
-              }}
-            >
-              Our Commitments
-            </h4>
-          </div>
+        {displayedPolicies.length > 0 && (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "18px" }}>
+              <span style={{ color: "#D4AF37", fontSize: "0.8rem" }}>✦</span>
+              <h4
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "1.32rem",
+                  color: "#FFFFFF",
+                  fontWeight: 400,
+                  margin: 0,
+                  letterSpacing: "0.02em"
+                }}
+              >
+                Our Commitments
+              </h4>
+            </div>
 
-          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "13px" }}>
-            {displayedPolicies.map(([label, to]) => (
-              <li key={label}>
-                <Link
-                  to={to}
-                  className="footer-nav-link"
-                  style={{
-                    fontSize: "0.85rem",
-                    color: "#A8B2A0",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px"
-                  }}
-                >
-                  <span style={{ opacity: 0.4, fontSize: "0.6rem" }}>›</span>
-                  <span>{label}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "13px" }}>
+              {displayedPolicies.map(([label, to]) => (
+                <li key={label}>
+                  <Link
+                    to={to}
+                    className="footer-nav-link"
+                    style={{
+                      fontSize: "0.85rem",
+                      color: "#A8B2A0",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px"
+                    }}
+                  >
+                    <span style={{ opacity: 0.4, fontSize: "0.6rem" }}>›</span>
+                    <span>{label}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Col 5: The Maison */}
         <div>

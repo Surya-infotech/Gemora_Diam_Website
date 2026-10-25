@@ -491,7 +491,7 @@ export default function ContactPage() {
                       fontWeight: 500
                     }}
                   >
-                    {generalSettings?.cityname ? `${generalSettings.cityname} Flagship Showroom` : "Surat Flagship Studio"}
+                    {generalSettings?.cityname ? `${generalSettings.cityname} Flagship Showroom` : (generalSettings?.softwarename || "Atelier Showroom")}
                   </h4>
                 </div>
               </div>
