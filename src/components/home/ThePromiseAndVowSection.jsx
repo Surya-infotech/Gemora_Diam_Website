@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import SectionHeading from "../SectionHeading";
@@ -6,6 +6,7 @@ import SectionHeading from "../SectionHeading";
 export default function ThePromiseAndVowSection() {
   const [data, setData] = useState(null);
   const [activeStyleIdx, setActiveStyleIdx] = useState(0);
+  const stylesRowRef = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -30,16 +31,28 @@ export default function ThePromiseAndVowSection() {
     };
   }, []);
 
-  // If no data loaded from Super Admin or section is disabled, do not render
-  if (!data || data.status === false) {
-    return null;
-  }
-
   // Pure dynamic styles from backend
-  const styles = Array.isArray(data.styles) ? data.styles : [];
+  const styles = Array.isArray(data?.styles) ? data.styles : [];
   const hasStyles = styles.length > 0;
   const safeIdx = hasStyles ? Math.min(Math.max(0, activeStyleIdx), styles.length - 1) : 0;
   const activeStyle = hasStyles ? styles[safeIdx] : null;
+
+  // Auto-scroll active style thumbnail into view
+  useEffect(() => {
+    if (!stylesRowRef.current || !hasStyles) return;
+    const activeEl = stylesRowRef.current.children?.[safeIdx];
+    if (activeEl) {
+      activeEl.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest"
+      });
+    }
+  }, [safeIdx, hasStyles]);
+
+  if (!data) {
+    return null;
+  }
 
   // If Super Admin has not entered any content yet, cleanly return null
   const hasAnyContent = Boolean(
@@ -404,15 +417,17 @@ export default function ThePromiseAndVowSection() {
             {/* Bottom Card: "Shop by style" 3D Focal Dial (Only rendered if styles exist) */}
             {hasStyles && activeStyle && (
               <div
+                className="promise-vow-style-card"
                 style={{
                   backgroundColor: "#FAF9F6",
                   borderRadius: "16px",
                   border: "1px solid #EAE3D5",
-                  padding: "clamp(18px, 2.5vw, 26px) clamp(16px, 2.5vw, 24px)",
-                  boxShadow: "0 4px 18px rgba(0,0,0,0.03)"
+                  padding: "clamp(16px, 2.5vw, 24px)",
+                  boxShadow: "0 4px 18px rgba(0,0,0,0.03)",
+                  overflow: "hidden"
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", gap: "10px" }}>
                   {styleSectionTitle ? (
                     <p
                       className="eyebrow"
@@ -430,13 +445,14 @@ export default function ThePromiseAndVowSection() {
 
                   {/* Left / Right Carousel Buttons */}
                   {styles.length > 1 && (
-                    <div style={{ display: "flex", gap: "8px" }}>
+                    <div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
                       <button
+                        type="button"
                         onClick={prevStyle}
                         aria-label="Previous Style"
                         style={{
-                          width: "32px",
-                          height: "32px",
+                          width: "30px",
+                          height: "30px",
                           borderRadius: "50%",
                           border: "1px solid #DDD6C8",
                           backgroundColor: "#ffffff",
@@ -444,7 +460,9 @@ export default function ThePromiseAndVowSection() {
                           display: "grid",
                           placeItems: "center",
                           cursor: "pointer",
-                          transition: "all 0.2s"
+                          transition: "all 0.2s",
+                          padding: 0,
+                          flexShrink: 0
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = "var(--primary)";
@@ -461,11 +479,12 @@ export default function ThePromiseAndVowSection() {
                       </button>
 
                       <button
+                        type="button"
                         onClick={nextStyle}
                         aria-label="Next Style"
                         style={{
-                          width: "32px",
-                          height: "32px",
+                          width: "30px",
+                          height: "30px",
                           borderRadius: "50%",
                           border: "1px solid #DDD6C8",
                           backgroundColor: "#ffffff",
@@ -473,7 +492,9 @@ export default function ThePromiseAndVowSection() {
                           display: "grid",
                           placeItems: "center",
                           cursor: "pointer",
-                          transition: "all 0.2s"
+                          transition: "all 0.2s",
+                          padding: 0,
+                          flexShrink: 0
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = "var(--primary)";
@@ -492,15 +513,17 @@ export default function ThePromiseAndVowSection() {
                   )}
                 </div>
 
-                {/* Styles Horizontal Thumbnail Row */}
+                {/* Styles Horizontal Thumbnail Row with smooth touch scrolling */}
                 <div
+                  ref={stylesRowRef}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: styles.length > 5 ? "flex-start" : "center",
-                    gap: "clamp(8px, 1.8vw, 16px)",
+                    justifyContent: "flex-start",
+                    gap: "clamp(10px, 2.2vw, 18px)",
                     overflowX: "auto",
-                    padding: "10px 0"
+                    padding: "10px 4px",
+                    scrollBehavior: "smooth"
                   }}
                   className="no-scrollbar"
                 >
@@ -510,6 +533,7 @@ export default function ThePromiseAndVowSection() {
                     return (
                       <button
                         key={styleKey}
+                        type="button"
                         onClick={() => setActiveStyleIdx(idx)}
                         aria-label={`Select ${style.name}`}
                         style={{
@@ -528,8 +552,8 @@ export default function ThePromiseAndVowSection() {
                       >
                         <div
                           style={{
-                            width: isCurrent ? "64px" : "48px",
-                            height: isCurrent ? "64px" : "48px",
+                            width: isCurrent ? "60px" : "48px",
+                            height: isCurrent ? "60px" : "48px",
                             borderRadius: "50%",
                             overflow: "hidden",
                             border: isCurrent ? "2px solid var(--primary)" : "1.5px solid #DDD6C8",
@@ -568,8 +592,9 @@ export default function ThePromiseAndVowSection() {
                   })}
                 </div>
 
-                {/* Active Style Info & Direct Shop CTA */}
+                {/* Active Style Info & Direct Shop CTA - responsive wrapped */}
                 <div
+                  className="promise-vow-style-footer"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -577,16 +602,15 @@ export default function ThePromiseAndVowSection() {
                     borderTop: "1px solid #EAE3D5",
                     paddingTop: "14px",
                     marginTop: "8px",
-                    flexWrap: "wrap",
-                    gap: "10px"
+                    gap: "12px"
                   }}
                 >
-                  <div>
+                  <div style={{ flex: "1 1 auto", minWidth: 0 }}>
                     {activeStyle.name && (
                       <h4
                         style={{
                           fontFamily: "var(--font-serif)",
-                          fontSize: "1.15rem",
+                          fontSize: "1.12rem",
                           fontWeight: 600,
                           color: "var(--foreground)",
                           margin: 0
@@ -596,7 +620,14 @@ export default function ThePromiseAndVowSection() {
                       </h4>
                     )}
                     {activeStyle.desc && (
-                      <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", margin: "2px 0 0 0" }}>
+                      <p
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "var(--muted-foreground)",
+                          margin: "3px 0 0 0",
+                          lineHeight: 1.4
+                        }}
+                      >
                         {activeStyle.desc}
                       </p>
                     )}
@@ -604,10 +635,11 @@ export default function ThePromiseAndVowSection() {
 
                   <Link
                     to={activeStyle.link || `/collections?style=${encodeURIComponent(activeStyle.name || "")}`}
-                    className="eyebrow"
+                    className="eyebrow promise-vow-explore-btn"
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
+                      justifyContent: "center",
                       gap: "6px",
                       backgroundColor: "var(--primary)",
                       color: "#ffffff",
@@ -618,7 +650,9 @@ export default function ThePromiseAndVowSection() {
                       letterSpacing: "0.14em",
                       transition: "all 0.25s ease",
                       boxShadow: "0 2px 8px rgba(85, 104, 50, 0.3)",
-                      textDecoration: "none"
+                      textDecoration: "none",
+                      flexShrink: 0,
+                      whiteSpace: "nowrap"
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor = "var(--primary-hover)";
@@ -643,6 +677,18 @@ export default function ThePromiseAndVowSection() {
         @media (min-width: 900px) {
           .promise-vow-grid {
             grid-template-columns: 5fr 7fr !important;
+          }
+        }
+        @media (max-width: 580px) {
+          .promise-vow-style-footer {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 12px !important;
+          }
+          .promise-vow-explore-btn {
+            width: 100% !important;
+            justify-content: center !important;
+            padding: 10px 16px !important;
           }
         }
       `}</style>
