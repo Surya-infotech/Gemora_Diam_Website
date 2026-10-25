@@ -585,7 +585,7 @@ export default function AboutPage() {
                         MASTER WORKSHOP BENCH
                       </span>
                       <strong style={{ fontSize: "0.82rem", color: "#FFFFFF", fontWeight: 500 }}>
-                        Surat Flagship Workshop
+                        {generalSettings?.cityname ? `${generalSettings.cityname} Flagship Workshop` : `${brandName} Workshop`}
                       </strong>
                     </div>
                   </div>
