@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
+import SearchableLuxurySelect from "../components/SearchableLuxurySelect";
 
 const fieldStyle = {
   width: "100%",
@@ -1576,103 +1577,64 @@ function AddressesTab() {
 
               {/* Country & State Dropdowns */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px" }}>
-                <div>
-                  <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
-                    Country *
-                  </label>
-                  <select
-                    value={selectedCountry}
-                    onChange={(e) => {
-                      handleCountryChange(e.target.value);
-                      if (errors.country) setErrors((prev) => ({ ...prev, country: "" }));
-                    }}
-                    style={{
-                      ...fieldStyle,
-                      cursor: "pointer",
-                      backgroundColor: "#fff",
-                      borderColor: errors.country ? "#dc2626" : "#EDE8DE"
-                    }}
-                  >
-                    <option value="">Select Country</option>
-                    {countries.map((c) => (
-                      <option key={c.isoCode} value={c.isoCode}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.country && (
-                    <p style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "4px" }}>{errors.country}</p>
-                  )}
-                </div>
+                <SearchableLuxurySelect
+                  id="address-country"
+                  label="Country *"
+                  value={selectedCountry}
+                  options={countries}
+                  onChange={(val) => {
+                    handleCountryChange(val);
+                    if (errors.country) setErrors((prev) => ({ ...prev, country: "" }));
+                  }}
+                  placeholder="Select Country"
+                  searchPlaceholder="Search country..."
+                  error={errors.country}
+                />
 
-                <div>
-                  <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
-                    State / Region *
-                  </label>
-                  <select
-                    value={selectedState}
-                    disabled={!selectedCountry || states.length === 0}
-                    onChange={(e) => {
-                      handleStateChange(e.target.value);
-                      if (errors.state) setErrors((prev) => ({ ...prev, state: "" }));
-                    }}
-                    style={{
-                      ...fieldStyle,
-                      cursor: !selectedCountry || states.length === 0 ? "not-allowed" : "pointer",
-                      backgroundColor: !selectedCountry || states.length === 0 ? "#FAF9F6" : "#fff",
-                      borderColor: errors.state ? "#dc2626" : "#EDE8DE"
-                    }}
-                  >
-                    <option value="">
-                      {!selectedCountry
-                        ? "Select Country First"
-                        : states.length === 0
-                        ? "No states available"
-                        : "Select State"}
-                    </option>
-                    {states.map((s) => (
-                      <option key={s.isoCode} value={s.isoCode}>
-                        {s.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.state && (
-                    <p style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "4px" }}>{errors.state}</p>
-                  )}
-                </div>
+                <SearchableLuxurySelect
+                  id="address-state"
+                  label="State / Region *"
+                  value={selectedState}
+                  options={states}
+                  disabled={!selectedCountry || states.length === 0}
+                  onChange={(val) => {
+                    handleStateChange(val);
+                    if (errors.state) setErrors((prev) => ({ ...prev, state: "" }));
+                  }}
+                  placeholder={
+                    !selectedCountry
+                      ? "Select Country First"
+                      : states.length === 0
+                      ? "No states available"
+                      : "Select State"
+                  }
+                  searchPlaceholder="Search state..."
+                  error={errors.state}
+                />
               </div>
 
               {/* City Dropdown & Pincode */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px" }}>
-                <div>
-                  <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
-                    City *
-                  </label>
-                  {cities.length > 0 ? (
-                    <select
-                      value={selectedCity}
-                      disabled={!selectedState}
-                      onChange={(e) => {
-                        handleCityChange(e.target.value);
-                        if (errors.city) setErrors((prev) => ({ ...prev, city: "" }));
-                      }}
-                      style={{
-                        ...fieldStyle,
-                        cursor: !selectedState ? "not-allowed" : "pointer",
-                        backgroundColor: !selectedState ? "#FAF9F6" : "#fff",
-                        borderColor: errors.city ? "#dc2626" : "#EDE8DE"
-                      }}
-                    >
-                      <option value="">
-                        {!selectedState ? "Select State First" : "Select City"}
-                      </option>
-                      {cities.map((city, idx) => (
-                        <option key={`${city.name}-${idx}`} value={city.name}>
-                          {city.name}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
+                {cities.length > 0 ? (
+                  <SearchableLuxurySelect
+                    id="address-city"
+                    label="City *"
+                    value={selectedCity}
+                    options={cities.map((c) => ({ value: c.name, label: c.name }))}
+                    disabled={!selectedState}
+                    onChange={(val) => {
+                      handleCityChange(val);
+                      if (errors.city) setErrors((prev) => ({ ...prev, city: "" }));
+                    }}
+                    placeholder={!selectedState ? "Select State First" : "Select City"}
+                    searchPlaceholder="Search city..."
+                    error={errors.city}
+                  />
+                ) : (
+                  <div>
+                    <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>
+                      City *
+                    </label>
                     <input
                       type="text"
                       placeholder={!selectedState ? "Select State First" : "Enter city name"}
@@ -1684,15 +1646,15 @@ function AddressesTab() {
                       }}
                       style={{
                         ...fieldStyle,
-                        backgroundColor: !selectedState ? "#FAF9F6" : "transparent",
+                        backgroundColor: !selectedState ? "#FAF9F6" : "#fff",
                         borderColor: errors.city ? "#dc2626" : "#EDE8DE"
                       }}
                     />
-                  )}
-                  {errors.city && (
-                    <p style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "4px" }}>{errors.city}</p>
-                  )}
-                </div>
+                    {errors.city && (
+                      <p style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "4px" }}>{errors.city}</p>
+                    )}
+                  </div>
+                )}
 
                 <div>
                   <label style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px", color: "var(--foreground)" }}>

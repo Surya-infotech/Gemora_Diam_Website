@@ -22,6 +22,7 @@ import { useStore } from "../lib/store";
 import { formatPhoneNumber } from "../lib/formatters";
 import { CartLines } from "../components/CartLines";
 import PayPalCheckoutModal from "../components/cart/PayPalCheckoutModal";
+import SearchableLuxurySelect from "../components/SearchableLuxurySelect";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -1513,102 +1514,56 @@ export default function CartPage() {
 
               {/* Country & State */}
               <div className="form-grid-2-col">
-                <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, marginBottom: "6px" }}>
-                    Country *
-                  </label>
-                  <select
-                    value={selectedCountry}
-                    onChange={(e) => {
-                      setSelectedCountry(e.target.value);
-                      setSelectedState("");
-                      setSelectedCity("");
-                    }}
-                    style={{
-                      width: "100%",
-                      padding: "10px 12px",
-                      border: modalErrors.country ? "1px solid #ef4444" : "1px solid var(--border)",
-                      borderRadius: "2px",
-                      fontSize: "0.88rem",
-                      backgroundColor: "var(--card)"
-                    }}
-                  >
-                    <option value="">Select Country</option>
-                    {countries.map((c) => (
-                      <option key={c.isoCode} value={c.isoCode}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                  {modalErrors.country && (
-                    <p style={{ color: "#ef4444", fontSize: "0.75rem", marginTop: "4px" }}>
-                      {modalErrors.country}
-                    </p>
-                  )}
-                </div>
+                <SearchableLuxurySelect
+                  id="checkout-country"
+                  label="Country *"
+                  value={selectedCountry}
+                  options={countries}
+                  onChange={(val) => {
+                    setSelectedCountry(val);
+                    setSelectedState("");
+                    setSelectedCity("");
+                  }}
+                  placeholder="Select Country"
+                  searchPlaceholder="Search country..."
+                  error={modalErrors.country}
+                />
 
-                <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, marginBottom: "6px" }}>
-                    State / Region *
-                  </label>
-                  <select
-                    value={selectedState}
-                    onChange={(e) => {
-                      setSelectedState(e.target.value);
-                      setSelectedCity("");
-                    }}
-                    disabled={!selectedCountry}
-                    style={{
-                      width: "100%",
-                      padding: "10px 12px",
-                      border: modalErrors.state ? "1px solid #ef4444" : "1px solid var(--border)",
-                      borderRadius: "2px",
-                      fontSize: "0.88rem",
-                      backgroundColor: "var(--card)"
-                    }}
-                  >
-                    <option value="">Select State</option>
-                    {states.map((s) => (
-                      <option key={s.isoCode} value={s.isoCode}>
-                        {s.name}
-                      </option>
-                    ))}
-                  </select>
-                  {modalErrors.state && (
-                    <p style={{ color: "#ef4444", fontSize: "0.75rem", marginTop: "4px" }}>
-                      {modalErrors.state}
-                    </p>
-                  )}
-                </div>
+                <SearchableLuxurySelect
+                  id="checkout-state"
+                  label="State / Region *"
+                  value={selectedState}
+                  options={states}
+                  disabled={!selectedCountry}
+                  onChange={(val) => {
+                    setSelectedState(val);
+                    setSelectedCity("");
+                  }}
+                  placeholder={!selectedCountry ? "Select Country First" : "Select State"}
+                  searchPlaceholder="Search state..."
+                  error={modalErrors.state}
+                />
               </div>
 
               {/* City & Pincode */}
               <div className="form-grid-2-col">
-                <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, marginBottom: "6px" }}>
-                    City *
-                  </label>
-                  {cities.length > 0 ? (
-                    <select
-                      value={selectedCity}
-                      onChange={(e) => setSelectedCity(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "10px 12px",
-                        border: modalErrors.city ? "1px solid #ef4444" : "1px solid var(--border)",
-                        borderRadius: "2px",
-                        fontSize: "0.88rem",
-                        backgroundColor: "var(--card)"
-                      }}
-                    >
-                      <option value="">Select City</option>
-                      {cities.map((ci) => (
-                        <option key={ci.name} value={ci.name}>
-                          {ci.name}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
+                {cities.length > 0 ? (
+                  <SearchableLuxurySelect
+                    id="checkout-city"
+                    label="City *"
+                    value={selectedCity}
+                    options={cities.map((ci) => ({ value: ci.name, label: ci.name }))}
+                    disabled={!selectedState}
+                    onChange={(val) => setSelectedCity(val)}
+                    placeholder="Select City"
+                    searchPlaceholder="Search city..."
+                    error={modalErrors.city}
+                  />
+                ) : (
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, marginBottom: "6px" }}>
+                      City *
+                    </label>
                     <input
                       type="text"
                       placeholder="Enter city"
@@ -1623,13 +1578,13 @@ export default function CartPage() {
                         backgroundColor: "var(--card)"
                       }}
                     />
-                  )}
-                  {modalErrors.city && (
-                    <p style={{ color: "#ef4444", fontSize: "0.75rem", marginTop: "4px" }}>
-                      {modalErrors.city}
-                    </p>
-                  )}
-                </div>
+                    {modalErrors.city && (
+                      <p style={{ color: "#ef4444", fontSize: "0.75rem", marginTop: "4px" }}>
+                        {modalErrors.city}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, marginBottom: "6px" }}>
