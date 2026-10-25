@@ -13,7 +13,9 @@ import {
   Truck,
   ShieldCheck,
   Lock,
-  Sparkles
+  Sparkles,
+  ChevronRight,
+  ChevronDown
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import { formatPhoneNumber } from "../lib/formatters";
@@ -730,44 +732,80 @@ export function Header() {
                   const col2Items = m.column2?.items || [];
                   const allItems = [...col1Items, ...col2Items];
                   const hasSub = allItems.length > 0;
-                  const isExpanded = expandedMobileMenu === (m.menuid || mIdx);
+                  const menuKey = m.menuid || m._id || mIdx;
+                  const isExpanded = expandedMobileMenu === menuKey;
 
                   return (
-                    <div key={m.menuid || mIdx} style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "8px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div key={menuKey} style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "4px" }}>
+                      {hasSub ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setExpandedMobileMenu(isExpanded ? null : menuKey);
+                          }}
+                          aria-expanded={isExpanded}
+                          aria-label={`Toggle ${mTitle} menu`}
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            background: "none",
+                            border: "none",
+                            padding: "8px 0",
+                            cursor: "pointer",
+                            textAlign: "left",
+                            fontFamily: "inherit",
+                            color: "inherit"
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: "1.02rem",
+                              fontWeight: 600,
+                              color: isExpanded ? "var(--primary)" : "var(--foreground)",
+                              transition: "color 0.2s ease"
+                            }}
+                          >
+                            {mTitle}
+                          </span>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              color: isExpanded ? "var(--primary)" : "var(--muted-foreground)",
+                              transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
+                              transition: "transform 0.2s ease, color 0.2s ease"
+                            }}
+                          >
+                            <ChevronRight size={18} strokeWidth={2} />
+                          </span>
+                        </button>
+                      ) : (
                         <Link
                           to={cleanUrl}
                           onClick={() => setMobile(false)}
                           style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
                             fontSize: "1.02rem",
                             fontWeight: 600,
                             color: "var(--foreground)",
-                            padding: "6px 0",
-                            flex: 1
+                            padding: "8px 0",
+                            textDecoration: "none"
                           }}
                         >
-                          {mTitle}
+                          <span>{mTitle}</span>
                         </Link>
-                        {hasSub && (
-                          <button
-                            type="button"
-                            onClick={() => setExpandedMobileMenu(isExpanded ? null : (m.menuid || mIdx))}
-                            aria-label={`Expand ${mTitle}`}
-                            style={{
-                              padding: "6px 10px",
-                              color: "var(--foreground)",
-                              cursor: "pointer",
-                              fontSize: "0.85rem"
-                            }}
-                          >
-                            <span style={{ fontSize: "1.1rem", display: "inline-block", transform: isExpanded ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>+</span>
-                          </button>
-                        )}
-                      </div>
+                      )}
 
                       {hasSub && isExpanded && (
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "8px 0 4px 6px" }}>
-                          {allItems.slice(0, 8).map((it, itIdx) => {
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px 0 10px 4px" }}>
+                          {allItems.map((it, itIdx) => {
                             const itLabel = typeof it?.label === "object" ? it.label?.value || it.label?.label || "" : String(it?.label || "");
                             const itSlug = typeof it?.slug === "object" ? it.slug?.value || it.slug?.slug || "" : String(it?.slug || "");
                             const itUrl = itSlug ? (itSlug.startsWith("/") ? itSlug : `/collection/${itSlug}`) : `/collections?style=${encodeURIComponent(itLabel)}`;
@@ -781,7 +819,7 @@ export function Header() {
                                   color: "var(--muted-foreground)",
                                   backgroundColor: "#FAF8F5",
                                   border: "1px solid #EBE5DA",
-                                  padding: "4px 10px",
+                                  padding: "5px 12px",
                                   borderRadius: "50px",
                                   textDecoration: "none"
                                 }}
@@ -797,76 +835,117 @@ export function Header() {
                 })
               ) : (
                 /* Standard Fallback Curated Categories */
-                <>
-                  <div style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "8px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <Link
-                        to="/collections?category=Engagement%20Rings"
-                        onClick={() => setMobile(false)}
-                        style={{ fontSize: "1.02rem", fontWeight: 600, color: "var(--foreground)", padding: "6px 0" }}
+                [
+                  {
+                    id: "fallback-engagement",
+                    title: "Engagement Rings",
+                    popular: true,
+                    slug: "/collections?category=Engagement%20Rings",
+                    items: [
+                      { label: "Solitaire", url: "/collections?style=Solitaire" },
+                      { label: "Halo", url: "/collections?style=Halo" },
+                      { label: "Vintage Style", url: "/collections?style=Vintage%20Style" },
+                      { label: "Three Stone", url: "/collections?style=Three%20Stone" },
+                      { label: "Oval Cut", url: "/collections?style=Oval%20Cut" },
+                      { label: "Round Cut", url: "/collections?style=Round%20Cut" }
+                    ]
+                  },
+                  {
+                    id: "fallback-bridal",
+                    title: "Wedding Rings & Bridal Sets",
+                    slug: "/collections?category=Bridal%20Sets",
+                    items: [
+                      { label: "Eternity Bands", url: "/collections?category=Bridal%20Sets&style=Eternity%20Bands" },
+                      { label: "Classic Rings", url: "/collections?category=Bridal%20Sets&style=Classic%20Rings" },
+                      { label: "Two Stone", url: "/collections?category=Bridal%20Sets&style=Two%20Stone" }
+                    ]
+                  },
+                  {
+                    id: "fallback-fine",
+                    title: "Fine Jewelry",
+                    slug: "/collections",
+                    items: [
+                      { label: "Bracelets", url: "/collections?category=Bracelets" },
+                      { label: "Earrings", url: "/collections?category=Earrings" },
+                      { label: "Pendants", url: "/collections?category=Pendants" }
+                    ]
+                  }
+                ].map((cat) => {
+                  const isExpanded = expandedMobileMenu === cat.id;
+                  return (
+                    <div key={cat.id} style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "4px" }}>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setExpandedMobileMenu(isExpanded ? null : cat.id);
+                        }}
+                        aria-expanded={isExpanded}
+                        aria-label={`Toggle ${cat.title} menu`}
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          background: "none",
+                          border: "none",
+                          padding: "8px 0",
+                          cursor: "pointer",
+                          textAlign: "left",
+                          fontFamily: "inherit",
+                          color: "inherit"
+                        }}
                       >
-                        <span>Engagement Rings</span>
-                      </Link>
-                      <span style={{ fontSize: "0.58rem", backgroundColor: "var(--primary)", color: "#fff", padding: "2px 6px", borderRadius: "2px", fontWeight: 700 }}>POPULAR</span>
-                    </div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "8px 0 4px 6px" }}>
-                      {["Solitaire", "Halo", "Vintage Style", "Three Stone", "Oval Cut", "Round Cut"].map((st) => (
-                        <Link
-                          key={st}
-                          to={`/collections?style=${encodeURIComponent(st)}`}
-                          onClick={() => setMobile(false)}
-                          style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", backgroundColor: "#FAF8F5", border: "1px solid #EBE5DA", padding: "4px 10px", borderRadius: "50px" }}
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span style={{ fontSize: "1.02rem", fontWeight: 600, color: isExpanded ? "var(--primary)" : "var(--foreground)" }}>
+                            {cat.title}
+                          </span>
+                          {cat.popular && (
+                            <span style={{ fontSize: "0.58rem", backgroundColor: "var(--primary)", color: "#fff", padding: "2px 6px", borderRadius: "2px", fontWeight: 700 }}>
+                              POPULAR
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: isExpanded ? "var(--primary)" : "var(--muted-foreground)",
+                            transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
+                            transition: "transform 0.2s ease, color 0.2s ease"
+                          }}
                         >
-                          {st}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
+                          <ChevronRight size={18} strokeWidth={2} />
+                        </span>
+                      </button>
 
-                  <div style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "8px" }}>
-                    <Link
-                      to="/collections?category=Bridal%20Sets"
-                      onClick={() => setMobile(false)}
-                      style={{ fontSize: "1.02rem", fontWeight: 600, color: "var(--foreground)", padding: "6px 0", display: "block" }}
-                    >
-                      Wedding Rings &amp; Bridal Sets
-                    </Link>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "8px 0 4px 6px" }}>
-                      {["Eternity Bands", "Classic Rings", "Two Stone"].map((st) => (
-                        <Link
-                          key={st}
-                          to={`/collections?category=Bridal%20Sets&style=${encodeURIComponent(st)}`}
-                          onClick={() => setMobile(false)}
-                          style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", backgroundColor: "#FAF8F5", border: "1px solid #EBE5DA", padding: "4px 10px", borderRadius: "50px" }}
-                        >
-                          {st}
-                        </Link>
-                      ))}
+                      {isExpanded && (
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px 0 10px 4px" }}>
+                          {cat.items.map((it) => (
+                            <Link
+                              key={it.label}
+                              to={it.url}
+                              onClick={() => setMobile(false)}
+                              style={{
+                                fontSize: "0.76rem",
+                                color: "var(--muted-foreground)",
+                                backgroundColor: "#FAF8F5",
+                                border: "1px solid #EBE5DA",
+                                padding: "5px 12px",
+                                borderRadius: "50px",
+                                textDecoration: "none"
+                              }}
+                            >
+                              {it.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </div>
-
-                  <div style={{ borderBottom: "1px solid #f2eee6", paddingBottom: "8px" }}>
-                    <Link
-                      to="/collections"
-                      onClick={() => setMobile(false)}
-                      style={{ fontSize: "1.02rem", fontWeight: 600, color: "var(--foreground)", padding: "6px 0", display: "block" }}
-                    >
-                      Fine Jewelry
-                    </Link>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "8px 0 4px 6px" }}>
-                      {["Bracelets", "Earrings", "Pendants"].map((st) => (
-                        <Link
-                          key={st}
-                          to={`/collections?category=${encodeURIComponent(st)}`}
-                          onClick={() => setMobile(false)}
-                          style={{ fontSize: "0.76rem", color: "var(--muted-foreground)", backgroundColor: "#FAF8F5", border: "1px solid #EBE5DA", padding: "4px 10px", borderRadius: "50px" }}
-                        >
-                          {st}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </>
+                  );
+                })
               )}
 
               <Link
