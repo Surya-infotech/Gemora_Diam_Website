@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
-import {
-  HeroSlider,
-  ShopByShapeSection,
-  BestSellerSection,
-  CircularCategories,
-  SplitCollectionBanners,
-  OutlineMarquee,
-  ShopTheLookSection,
-  LovedByCouplesSection
-} from "../components/home";
+import HeroSlider from "../components/home/HeroSlider";
+import ShopByShapeSection from "../components/home/ShopByShapeSection";
+import BestSellerSection from "../components/home/BestSellerSection";
+import CircularCategories from "../components/home/CircularCategories";
+import SplitCollectionBanners from "../components/home/SplitCollectionBanners";
+import OutlineMarquee from "../components/home/OutlineMarquee";
+import ShopTheLookSection from "../components/home/ShopTheLookSection";
+import LovedByCouplesSection from "../components/home/LovedByCouplesSection";
 
 export default function HomePage() {
   const [showScrollTop, setShowScrollTop] = useState(false);
