@@ -29,16 +29,16 @@ export default function HomePage() {
       {/* 1. Hero Section Slider with Editorial Presentation */}
       <HeroSlider />
 
-      {/* 2. Shop By Shape Interactive Dial & 3-Step Ring Builder */}
+      {/* 2. Signature Collections (Featured Curations) */}
+      <CircularCategories />
+
+      {/* 3. Shop By Shape Interactive Dial & 3-Step Ring Builder */}
       <ShopByShapeSection />
 
       {/* 4. Best Seller Section with Tab Filter & Shop All Rings Link */}
       <BestSellerSection />
 
-      {/* 5. Signature Collections (Circular Medallion Curations) */}
-      <CircularCategories />
-
-      {/* 6. Split Collection Banners (Dynamic if configured) */}
+      {/* 5. Split Collection Banners (Dynamic if configured) */}
       <SplitCollectionBanners />
 
       {/* 7. Infinite Outline Typography Marquee */}
