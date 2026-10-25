@@ -726,7 +726,8 @@ export function Header() {
               {Array.isArray(menus) && menus.length > 0 ? (
                 menus.map((m, mIdx) => {
                   const mTitle = typeof m?.title === "object" ? m.title?.value || m.title?.label || "Collection" : (m?.title || "Collection");
-                  const mSlug = typeof m?.slug === "object" ? m.slug?.value || m.slug?.slug || "/collections" : (m?.slug || "/collections");
+                  const rawSlug = typeof m?.slug === "object" ? m.slug?.value || m.slug?.slug || "" : (m?.slug || "");
+                  const mSlug = rawSlug || (typeof mTitle === "string" ? mTitle.toLowerCase().trim().replace(/\s+/g, "-") : "collections");
                   const cleanUrl = mSlug.startsWith("/") ? mSlug : `/collection/${mSlug}`;
                   const col1Items = m.column1?.items || [];
                   const col2Items = m.column2?.items || [];

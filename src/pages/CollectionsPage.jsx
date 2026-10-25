@@ -48,7 +48,7 @@ export default function CollectionsPage({ slugOverride = null }) {
       return String(val).toLowerCase().replace(/^\//, "").replace(/^collections?\//, "");
     };
 
-    const matchedMenu = (menus || []).find((m) => getCleanSlug(m.slug) === slug);
+    const matchedMenu = (menus || []).find((m) => getCleanSlug(m.slug || m.title) === slug);
     if (matchedMenu) {
       const titleStr = typeof matchedMenu.title === "object" ? (matchedMenu.title?.value || matchedMenu.title?.label || "") : (matchedMenu.title || "");
       customTitle = titleStr;

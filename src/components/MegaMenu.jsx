@@ -400,8 +400,8 @@ export default function MegaMenu({ inline = false }) {
         {/* Dynamic Menus from Backend */}
         {activeMenus.map((menu) => {
           const isMenuOpen = activeMenuId === menu.menuid;
-          const targetUrl = toCollectionUrl(menu.slug);
-          const isPageActive = location.pathname === targetUrl || location.pathname === menu.slug;
+          const targetUrl = toCollectionUrl(menu.slug || menu.title);
+          const isPageActive = location.pathname === targetUrl || (menu.slug ? location.pathname === menu.slug : false);
           const menuHasDropdown = hasMenuDropdownContent(menu);
           const menuTitle = toSafeString(menu.title);
           return (
