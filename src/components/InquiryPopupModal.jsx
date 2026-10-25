@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { X, Gem, ArrowRight, CheckCircle2, Sparkles, ShieldCheck } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { X, Gem, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useStore } from "../lib/store";
 
 const validate = (f) => ({
@@ -11,7 +10,6 @@ const validate = (f) => ({
 
 export default function InquiryPopupModal() {
   const { submitContactUs, showToast } = useStore();
-  const location = useLocation();
 
   const [isOpen, setIsOpen] = useState(false);
   const [f, setF] = useState({ name: "", email: "", message: "" });
@@ -20,6 +18,11 @@ export default function InquiryPopupModal() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const errs = validate(f);
+
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+    sessionStorage.setItem("gemora_inquiry_dismissed", "true");
+  }, []);
 
   // 2 Minutes delay (120,000 ms) for new users arriving on the site
   useEffect(() => {
@@ -80,12 +83,7 @@ export default function InquiryPopupModal() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    sessionStorage.setItem("gemora_inquiry_dismissed", "true");
-  };
+  }, [isOpen, handleClose]);
 
   const onFieldChange = (key, val) => {
     setF((prev) => ({ ...prev, [key]: val }));

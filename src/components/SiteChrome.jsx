@@ -14,8 +14,7 @@ import {
   ShieldCheck,
   Lock,
   Sparkles,
-  ChevronRight,
-  ChevronDown
+  ChevronRight
 } from "lucide-react";
 import { useStore } from "../lib/store";
 import { formatPhoneNumber } from "../lib/formatters";
@@ -340,8 +339,7 @@ export function Header() {
     format,
     user,
     logout,
-    menus,
-    categories
+    menus
   } = useStore();
   const [mobile, setMobile] = useState(false);
   const [expandedMobileMenu, setExpandedMobileMenu] = useState(null);

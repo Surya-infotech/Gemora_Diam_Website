@@ -497,43 +497,6 @@ img {
    Tesora-Inspired Editorial Luxury Utilities & Animations
    ========================================================== */
 
-/* Luxury card with fine gold hairline border */
-.luxury-card {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border-radius: 16px;
-  background-color: var(--dark-luxury);
-  box-shadow: 0 4px 20px rgba(20, 27, 17, 0.15);
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.luxury-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 45px rgba(20, 27, 17, 0.28);
-}
-
-/* Shimmer sweep effect */
-@keyframes shimmerSweep {
-  0% { transform: translateX(-100%) skewX(-15deg); }
-  100% { transform: translateX(250%) skewX(-15deg); }
-}
-
-.shimmer-sweep {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
-  transform: translateX(-100%) skewX(-15deg);
-  pointer-events: none;
-}
-
-.luxury-card:hover .shimmer-sweep {
-  animation: shimmerSweep 1.2s ease-out;
-}
-
 /* Modern Pill Button */
 .btn-pill-primary {
   display: inline-flex;
@@ -750,9 +713,6 @@ img {
   .cart-flow-indicator-wrap {
     display: none !important;
   }
-  .mobile-card-compact-pad {
-    padding: 18px 14px !important;
-  }
 }
 
 /* Legal Page Responsive Grid */
@@ -797,8 +757,7 @@ img {
 }
 
 /* Color & Metal Swatch Dots */
-.swatch-dot,
-.metal-swatch-dot {
+.swatch-dot {
   min-width: 0 !important;
   min-height: 0 !important;
   box-sizing: border-box !important;
