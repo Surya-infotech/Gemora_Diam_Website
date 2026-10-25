@@ -63,6 +63,12 @@ export default function OrdersPage() {
 
   const displayedOrders = activeTab === "active" ? active : activeTab === "completed" ? done : orders;
 
+  const tabs = [
+    { id: "all", label: "All Commissions", shortLabel: "All", icon: Package, count: orders.length },
+    { id: "active", label: "Active In Progress", shortLabel: "Active", icon: Clock, count: active.length },
+    { id: "completed", label: "Completed & Delivered", shortLabel: "Delivered", icon: CheckCircle2, count: done.length }
+  ];
+
   return (
     <div className="container-luxury" style={{ maxWidth: "1340px", paddingTop: "40px", paddingBottom: "100px" }}>
       {/* Atelier Client Concierge Banner */}
@@ -182,62 +188,69 @@ export default function OrdersPage() {
 
       {/* Commission Tabs Navigation */}
       {orders.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            borderBottom: "1px solid #EDE8DE",
-            marginTop: "32px",
-            marginBottom: "32px",
-            gap: "8px"
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              gap: "28px",
-              overflowX: "auto",
-              scrollbarWidth: "none"
-            }}
-          >
-            {[
-              { id: "all", label: "All Commissions", icon: Package, count: orders.length },
-              { id: "active", label: "Active In Progress", icon: Clock, count: active.length },
-              { id: "completed", label: "Completed & Delivered", icon: CheckCircle2, count: done.length }
-            ].map((tab) => {
+        <>
+          {/* Desktop Tabs Navigation */}
+          <div className="orders-tabs-desktop">
+            <div className="orders-tabs-scroll no-scrollbar">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className="eyebrow orders-tab-btn"
+                    style={{
+                      borderBottom: isActive ? "2.5px solid var(--primary)" : "2.5px solid transparent",
+                      color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
+                      fontWeight: isActive ? 700 : 500,
+                      letterSpacing: "0.12em",
+                      fontSize: "0.78rem"
+                    }}
+                  >
+                    <Icon size={14} style={{ color: isActive ? "var(--primary)" : "inherit", flexShrink: 0 }} />
+                    <span>{tab.label}</span>
+                    <span
+                      style={{
+                        fontSize: "0.68rem",
+                        fontWeight: 700,
+                        padding: "2px 7px",
+                        borderRadius: "999px",
+                        backgroundColor: isActive ? "rgba(85, 104, 50, 0.12)" : "#EDE8DE",
+                        color: isActive ? "var(--primary)" : "var(--muted-foreground)",
+                        flexShrink: 0
+                      }}
+                    >
+                      {tab.count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Mobile Tabs Navigation (Segmented Luxury Control) */}
+          <div className="orders-tabs-mobile">
+            {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className="eyebrow"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    borderBottom: isActive ? "2.5px solid var(--primary)" : "2.5px solid transparent",
-                    padding: "0 4px 14px 4px",
-                    color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
-                    fontWeight: isActive ? 700 : 500,
-                    letterSpacing: "0.14em",
-                    fontSize: "0.78rem",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    whiteSpace: "nowrap",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "8px"
-                  }}
+                  className={`orders-tab-mobile-btn ${isActive ? "active" : ""}`}
                 >
-                  <Icon size={14} style={{ color: isActive ? "var(--primary)" : "inherit" }} />
-                  <span>{tab.label}</span>
+                  <Icon size={13} style={{ color: isActive ? "var(--primary)" : "inherit", flexShrink: 0 }} />
+                  <span>{tab.shortLabel}</span>
                   <span
                     style={{
-                      fontSize: "0.68rem",
+                      fontSize: "0.65rem",
                       fontWeight: 700,
-                      padding: "2px 7px",
+                      padding: "1px 6px",
                       borderRadius: "999px",
-                      backgroundColor: isActive ? "rgba(85, 104, 50, 0.12)" : "#EDE8DE",
-                      color: isActive ? "var(--primary)" : "var(--muted-foreground)"
+                      backgroundColor: isActive ? "rgba(85, 104, 50, 0.14)" : "#EDE8DE",
+                      color: isActive ? "var(--primary)" : "var(--muted-foreground)",
+                      flexShrink: 0
                     }}
                   >
                     {tab.count}
@@ -246,7 +259,7 @@ export default function OrdersPage() {
               );
             })}
           </div>
-        </div>
+        </>
       )}
 
       {loading ? (
@@ -399,22 +412,7 @@ function OrderRow({ order, onSelect, format }) {
       onClick={onSelect}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        gap: "24px",
-        border: isHovered ? "1px solid #D8D1C5" : "1px solid #EDE8DE",
-        backgroundColor: "#ffffff",
-        padding: "clamp(14px, 3vw, 22px) clamp(14px, 3.5vw, 28px)",
-        borderRadius: "14px",
-        cursor: "pointer",
-        transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-        boxShadow: isHovered ? "0 12px 30px rgba(85, 104, 50, 0.08)" : "0 2px 10px rgba(0, 0, 0, 0.02)",
-        transform: isHovered ? "translateY(-2px)" : "translateY(0)"
-      }}
+      className="order-row-card"
     >
       <div style={{ display: "flex", alignItems: "center", gap: "20px", flex: "1 1 min(100%, 340px)", minWidth: 0 }}>
         {/* Product Preview Stage with Gold/Olive Borders */}
@@ -544,8 +542,8 @@ function OrderRow({ order, onSelect, format }) {
       </div>
 
       {/* Right Column: Price, StatusBadge, Action Button */}
-      <div style={{ display: "flex", alignItems: "center", gap: "22px", flexWrap: "wrap" }}>
-        <div style={{ textAlign: "right" }}>
+      <div className="order-row-right-col">
+        <div className="order-total-block" style={{ textAlign: "right" }}>
           <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--muted-foreground)", display: "block" }}>
             Total Value
           </span>
@@ -556,24 +554,7 @@ function OrderRow({ order, onSelect, format }) {
 
         <StatusBadge s={status} />
 
-        <div
-          className="eyebrow"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "7px",
-            backgroundColor: isHovered ? "var(--primary)" : "rgba(85, 104, 50, 0.08)",
-            color: isHovered ? "#ffffff" : "var(--primary)",
-            border: isHovered ? "1px solid var(--primary)" : "1px solid rgba(85, 104, 50, 0.25)",
-            padding: "10px 18px",
-            borderRadius: "8px",
-            fontWeight: 700,
-            fontSize: "0.74rem",
-            letterSpacing: "0.1em",
-            transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-            transform: isHovered ? "translateX(2px)" : "none"
-          }}
-        >
+        <div className="eyebrow order-row-action-btn">
           <span>View Order Details</span>
           <ArrowRight
             size={13}
