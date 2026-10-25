@@ -371,13 +371,142 @@ function ProductDetailContent({ product }) {
     return getItemPrice(product, metal, activeStone, carat);
   }, [getItemPrice, product, metal, activeStone, carat]);
 
-  const hasDescription = Boolean(product?.description && product.description.trim());
+  const hasDescription = Boolean(
+    (product?.description && product.description.trim()) ||
+    (product?.seo?.metaDescription && product.seo.metaDescription.trim())
+  );
   const currentTab = useMemo(() => {
     if (activeTab === "specifications") return "specifications";
     if (activeTab === "delivery") return "delivery";
     if (!hasDescription) return "specifications";
     return "description";
   }, [hasDescription, activeTab]);
+
+  // Apply Item SEO content from the item table to Document Head
+  useEffect(() => {
+    if (!product) return;
+
+    const previousTitle = document.title;
+    const metaTitle = product.seo?.metaTitle?.trim() || `${product.name} | Gemora Diam Luxury Jewelry`;
+    const metaDesc = product.seo?.metaDescription?.trim() || product.description?.trim() || "";
+    const metaKeywords = product.seo?.metaKeywords?.trim() || "";
+    const canonicalUrl = product.seo?.canonicalUrl?.trim() || window.location.href;
+    const currentUrl = window.location.href;
+    const imageUrl = product.image || "";
+
+    // 1. Update Document Title
+    document.title = metaTitle;
+
+    // Helper to set or update meta tag
+    const setMetaTag = (attrName, attrValue, content) => {
+      if (!content) return null;
+      let el = document.querySelector(`meta[${attrName}="${attrValue}"]`);
+      let created = false;
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attrName, attrValue);
+        document.head.appendChild(el);
+        created = true;
+      }
+      const prevContent = el.getAttribute("content");
+      el.setAttribute("content", content);
+      return { el, prevContent, created };
+    };
+
+    // Helper to set or update link tag
+    const setLinkTag = (rel, href) => {
+      if (!href) return null;
+      let el = document.querySelector(`link[rel="${rel}"]`);
+      let created = false;
+      if (!el) {
+        el = document.createElement("link");
+        el.setAttribute(rel, href);
+        document.head.appendChild(el);
+        created = true;
+      }
+      const prevHref = el.getAttribute("href");
+      el.setAttribute("href", href);
+      return { el, prevHref, created };
+    };
+
+    const cleanups = [];
+
+    // Description
+    if (metaDesc) {
+      const res = setMetaTag("name", "description", metaDesc);
+      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("content", res.prevContent || "")));
+    }
+
+    // Keywords
+    if (metaKeywords) {
+      const res = setMetaTag("name", "keywords", metaKeywords);
+      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("content", res.prevContent || "")));
+    }
+
+    // Canonical Link
+    if (canonicalUrl) {
+      const res = setLinkTag("canonical", canonicalUrl);
+      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("href", res.prevHref || "")));
+    }
+
+    // Open Graph Tags
+    const ogTags = [
+      { prop: "og:title", val: metaTitle },
+      { prop: "og:description", val: metaDesc },
+      { prop: "og:url", val: canonicalUrl || currentUrl },
+      { prop: "og:type", val: "product" },
+      { prop: "og:image", val: imageUrl },
+      { prop: "og:site_name", val: "Gemora Diam" }
+    ];
+    ogTags.forEach(({ prop, val }) => {
+      const res = setMetaTag("property", prop, val);
+      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("content", res.prevContent || "")));
+    });
+
+    // Twitter Card Tags
+    const twitterTags = [
+      { name: "twitter:card", val: "summary_large_image" },
+      { name: "twitter:title", val: metaTitle },
+      { name: "twitter:description", val: metaDesc },
+      { name: "twitter:image", val: imageUrl }
+    ];
+    twitterTags.forEach(({ name, val }) => {
+      const res = setMetaTag("name", name, val);
+      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("content", res.prevContent || "")));
+    });
+
+    // Schema.org JSON-LD Structured Data
+    const schemaScript = document.createElement("script");
+    schemaScript.type = "application/ld+json";
+    schemaScript.id = "product-jsonld-schema";
+    schemaScript.textContent = JSON.stringify({
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      name: product.name,
+      image: imageUrl ? [imageUrl] : [],
+      description: metaDesc,
+      sku: product.sku || product.itemid || "",
+      brand: {
+        "@type": "Brand",
+        name: "Gemora Diam"
+      },
+      offers: {
+        "@type": "Offer",
+        url: canonicalUrl || currentUrl,
+        priceCurrency: "USD",
+        price: product.price || 0,
+        availability: "https://schema.org/InStock",
+        itemCondition: "https://schema.org/NewCondition"
+      }
+    });
+    document.head.appendChild(schemaScript);
+    cleanups.push(() => schemaScript.remove());
+
+    return () => {
+      document.title = previousTitle;
+      cleanups.forEach((fn) => fn());
+    };
+  }, [product]);
 
   const allMedia = useMemo(() => {
     if (!product) return [];
@@ -1317,7 +1446,7 @@ function ProductDetailContent({ product }) {
                     The Story &amp; Craftsmanship
                   </h3>
                   <p style={{ color: "var(--muted-foreground)", whiteSpace: "pre-line", fontSize: "0.94rem", lineHeight: 1.85, margin: 0 }}>
-                    {product.description}
+                    {product.description || product.seo?.metaDescription}
                   </p>
                 </div>
 
@@ -1580,14 +1709,15 @@ export default function ProductDetailPage() {
 
   const product = useMemo(() => {
     if (!products || products.length === 0) return null;
-    const strId = String(id).trim();
+    const strId = String(id).trim().toLowerCase();
     return (
       products.find(
         (p) =>
-          (p._id && String(p._id) === strId) ||
-          (p.id && String(p.id) === strId) ||
-          (p.rawId !== undefined && String(p.rawId) === strId) ||
-          (p.itemid !== undefined && String(p.itemid) === strId)
+          (p._id && String(p._id).toLowerCase() === strId) ||
+          (p.id && String(p.id).toLowerCase() === strId) ||
+          (p.rawId !== undefined && String(p.rawId).toLowerCase() === strId) ||
+          (p.itemid !== undefined && String(p.itemid).toLowerCase() === strId) ||
+          (p.seo?.slug && String(p.seo.slug).toLowerCase() === strId)
       ) || null
     );
   }, [products, id]);

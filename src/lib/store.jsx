@@ -76,6 +76,15 @@ function mapBackendItem(item) {
     styles,
     pricing: item.pricing,
     status: item.status,
+    seo: item.seo
+      ? {
+          metaTitle: item.seo.metaTitle || "",
+          metaDescription: item.seo.metaDescription || "",
+          metaKeywords: item.seo.metaKeywords || "",
+          slug: item.seo.slug || "",
+          canonicalUrl: item.seo.canonicalUrl || ""
+        }
+      : null,
     bestseller: true
   };
 }
