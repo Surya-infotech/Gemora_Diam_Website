@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Heart,
@@ -73,6 +73,199 @@ function getMetalType(metalName = "", product = null) {
     return val;
   }
   return metalName.split(" ")[0] || metalName.slice(0, 3).toUpperCase();
+}
+
+function LuxuryDropdownSelector({
+  id,
+  label,
+  value,
+  options,
+  onChange,
+  placeholder = "Select option"
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (!isOpen) return;
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
+  const selectedOption = options.find((opt) => (typeof opt === "string" ? opt : opt.value) === value);
+  const displayLabel = typeof selectedOption === "string"
+    ? selectedOption
+    : selectedOption?.label || value || placeholder;
+
+  return (
+    <div style={{ position: "relative", width: "100%", zIndex: isOpen ? 60 : 1 }} ref={dropdownRef}>
+      {label && (
+        <label
+          htmlFor={id}
+          style={{
+            fontSize: "0.76rem",
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+            display: "block",
+            marginBottom: "8px",
+            color: "var(--foreground)"
+          }}
+        >
+          {label}
+        </label>
+      )}
+
+      {/* Trigger Button */}
+      <button
+        id={id}
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        style={{
+          width: "100%",
+          height: "44px",
+          minHeight: "44px",
+          padding: "0 14px",
+          border: isOpen ? "1px solid var(--primary)" : "1px solid #E5DFD3",
+          borderRadius: "8px",
+          backgroundColor: "#FAF9F6",
+          color: "var(--foreground)",
+          fontSize: "0.85rem",
+          fontWeight: 500,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          boxShadow: isOpen ? "0 0 0 1px var(--primary)" : "none",
+          transition: "all 0.2s ease",
+          outline: "none",
+          boxSizing: "border-box"
+        }}
+        onMouseEnter={(e) => {
+          if (!isOpen) e.currentTarget.style.borderColor = "#c4bcae";
+        }}
+        onMouseLeave={(e) => {
+          if (!isOpen) e.currentTarget.style.borderColor = "#E5DFD3";
+        }}
+      >
+        <span
+          style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            textAlign: "left",
+            fontFamily: "var(--font-sans)",
+            fontSize: "0.85rem",
+            color: "var(--foreground)",
+            fontWeight: 500
+          }}
+        >
+          {displayLabel}
+        </span>
+        <ChevronDown
+          size={16}
+          style={{
+            color: "var(--muted-foreground)",
+            flexShrink: 0,
+            marginLeft: "8px",
+            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)"
+          }}
+        />
+      </button>
+
+      {/* Floating Luxury Dropdown List */}
+      {isOpen && (
+        <div
+          role="listbox"
+          style={{
+            position: "absolute",
+            top: "calc(100% + 5px)",
+            left: 0,
+            right: 0,
+            width: "100%",
+            backgroundColor: "#ffffff",
+            border: "1px solid #EDE8DE",
+            borderRadius: "10px",
+            boxShadow: "0 14px 35px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04)",
+            zIndex: 70,
+            maxHeight: "220px",
+            overflowY: "auto",
+            padding: "6px",
+            boxSizing: "border-box"
+          }}
+        >
+          {options.map((opt) => {
+            const optVal = typeof opt === "string" ? opt : opt.value;
+            const optLabel = typeof opt === "string" ? opt : opt.label;
+            const isSelected = optVal === value;
+
+            return (
+              <div
+                key={optVal}
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => {
+                  onChange(optVal);
+                  setIsOpen(false);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "10px 12px",
+                  borderRadius: "6px",
+                  fontSize: "0.85rem",
+                  fontWeight: isSelected ? 600 : 400,
+                  color: isSelected ? "var(--primary)" : "var(--foreground)",
+                  backgroundColor: isSelected ? "var(--primary-soft)" : "transparent",
+                  cursor: "pointer",
+                  transition: "background-color 0.15s ease",
+                  fontFamily: "var(--font-sans)",
+                  boxSizing: "border-box",
+                  minHeight: "40px"
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSelected) e.currentTarget.style.backgroundColor = "#F4F6F0";
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSelected) e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                <span>{optLabel}</span>
+                {isSelected && (
+                  <Check size={15} style={{ color: "var(--primary)", flexShrink: 0, marginLeft: "8px" }} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function ProductDetailContent({ product }) {
@@ -652,138 +845,24 @@ function ProductDetailContent({ product }) {
               >
                 {/* Stone Dropdown */}
                 {availableStones.length > 0 && (
-                  <div>
-                    <label
-                      htmlFor="stone-select"
-                      style={{
-                        fontSize: "0.76rem",
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.12em",
-                        display: "block",
-                        marginBottom: "8px",
-                        color: "var(--foreground)"
-                      }}
-                    >
-                      Diamond Type
-                    </label>
-                    <div style={{ position: "relative" }}>
-                      <select
-                        id="stone-select"
-                        value={activeStone}
-                        onChange={(e) => setSelectedStone(e.target.value)}
-                        style={{
-                          width: "100%",
-                          height: "44px",
-                          padding: "0 36px 0 14px",
-                          border: "1px solid #E5DFD3",
-                          borderRadius: "8px",
-                          backgroundColor: "#FAF9F6",
-                          color: "var(--foreground)",
-                          fontSize: "0.84rem",
-                          fontWeight: 500,
-                          cursor: "pointer",
-                          appearance: "none",
-                          WebkitAppearance: "none",
-                          outline: "none",
-                          transition: "all 0.2s"
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--primary)";
-                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "#E5DFD3";
-                          e.currentTarget.style.boxShadow = "none";
-                        }}
-                      >
-                        {availableStones.map((st) => (
-                          <option key={st} value={st}>
-                            {st}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        size={16}
-                        style={{
-                          position: "absolute",
-                          right: "12px",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          pointerEvents: "none",
-                          color: "var(--muted-foreground)"
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <LuxuryDropdownSelector
+                    id="stone-select"
+                    label="Diamond Type"
+                    value={activeStone}
+                    options={availableStones}
+                    onChange={(val) => setSelectedStone(val)}
+                  />
                 )}
 
                 {/* Diamond Size Dropdown */}
                 {hasCarat && activeCaratPrices.length > 0 && (
-                  <div>
-                    <label
-                      htmlFor="carat-select"
-                      style={{
-                        fontSize: "0.76rem",
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.12em",
-                        display: "block",
-                        marginBottom: "8px",
-                        color: "var(--foreground)"
-                      }}
-                    >
-                      Central Diamond Size
-                    </label>
-                    <div style={{ position: "relative" }}>
-                      <select
-                        id="carat-select"
-                        value={carat}
-                        onChange={(e) => setSelectedCarat(e.target.value)}
-                        style={{
-                          width: "100%",
-                          height: "44px",
-                          padding: "0 36px 0 14px",
-                          border: "1px solid #E5DFD3",
-                          borderRadius: "8px",
-                          backgroundColor: "#FAF9F6",
-                          color: "var(--foreground)",
-                          fontSize: "0.84rem",
-                          fontWeight: 500,
-                          cursor: "pointer",
-                          appearance: "none",
-                          WebkitAppearance: "none",
-                          outline: "none",
-                          transition: "all 0.2s"
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--primary)";
-                          e.currentTarget.style.boxShadow = "0 0 0 1px var(--primary)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "#E5DFD3";
-                          e.currentTarget.style.boxShadow = "none";
-                        }}
-                      >
-                        {activeCaratPrices.map((cp) => (
-                          <option key={cp.diamondsize} value={cp.diamondsize}>
-                            {cp.diamondsize}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        size={16}
-                        style={{
-                          position: "absolute",
-                          right: "12px",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          pointerEvents: "none",
-                          color: "var(--muted-foreground)"
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <LuxuryDropdownSelector
+                    id="carat-select"
+                    label="Central Diamond Size"
+                    value={carat}
+                    options={activeCaratPrices.map((cp) => ({ label: cp.diamondsize, value: cp.diamondsize }))}
+                    onChange={(val) => setSelectedCarat(val)}
+                  />
                 )}
               </div>
             )}

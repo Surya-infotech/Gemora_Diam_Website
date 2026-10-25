@@ -95,6 +95,18 @@ button {
   outline: none;
 }
 
+select,
+input,
+textarea {
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+select {
+  line-height: normal;
+  vertical-align: middle;
+}
+
 img {
   max-width: 100%;
   height: auto;
