@@ -1,5 +1,4 @@
 export { default as HeroSlider } from "./HeroSlider";
-export { default as ThePromiseAndVowSection } from "./ThePromiseAndVowSection";
 export { default as CircularCategories } from "./CircularCategories";
 export { default as ShopByShapeSection } from "./ShopByShapeSection";
 export { default as BestSellerSection } from "./BestSellerSection";

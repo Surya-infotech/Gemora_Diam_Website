@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
 import {
   HeroSlider,
-  ThePromiseAndVowSection,
   ShopByShapeSection,
   BestSellerSection,
   CircularCategories,
@@ -32,10 +31,7 @@ export default function HomePage() {
       {/* 1. Hero Section Slider with Editorial Presentation */}
       <HeroSlider />
 
-      {/* 2. The Promise & The Vow (Signature Tesora-inspired 2-card feature + Shop by style) */}
-      <ThePromiseAndVowSection />
-
-      {/* 3. Shop By Shape Interactive Dial & 3-Step Ring Builder */}
+      {/* 2. Shop By Shape Interactive Dial & 3-Step Ring Builder */}
       <ShopByShapeSection />
 
       {/* 4. Best Seller Section with Tab Filter & Shop All Rings Link */}

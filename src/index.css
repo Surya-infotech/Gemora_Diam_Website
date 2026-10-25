@@ -769,24 +769,6 @@ img {
   }
 }
 
-/* 10. The Promise & Vow Responsive Layout and Balanced Card Heights */
-.promise-vow-card-left,
-.promise-vow-card-right {
-  min-height: clamp(310px, 45vw, 360px);
-}
-
-@media (min-width: 900px) {
-  .promise-vow-grid {
-    grid-template-columns: 5fr 7fr !important;
-  }
-  .promise-vow-card-left {
-    min-height: 570px !important;
-  }
-  .promise-vow-card-right {
-    min-height: 310px !important;
-  }
-}
-
 /* 11. Shop By Shape Step Cards Responsive Mobile Stacking */
 @media (max-width: 640px) {
   .shape-steps-grid {
