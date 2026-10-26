@@ -54,11 +54,10 @@ export function Logo() {
       <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
         <span
           style={{
-            fontFamily: "var(--font-serif)",
+            fontFamily: "var(--font-sans)",
             fontSize: "clamp(1.02rem, 2vw, 1.45rem)",
-            fontWeight: 600,
-            fontStyle: "italic",
-            letterSpacing: "0.02em",
+            fontWeight: 700,
+            letterSpacing: "0.03em",
             color: "var(--foreground)",
             whiteSpace: "nowrap"
           }}
