@@ -345,72 +345,179 @@ function CategoryHorizontalRow({
     setTimeout(checkScroll, 400);
   };
 
+function getCategoryMeta(cat = "") {
+  const norm = cat.trim().toLowerCase();
+  if (norm.includes("bracelet")) {
+    return {
+      eyebrow: "Wristwear Curation",
+      subtitle: "Mastercrafted diamond tennis bracelets, delicate bangles & sculpted cuffs"
+    };
+  }
+  if (norm.includes("ear")) {
+    return {
+      eyebrow: "Earwear Atelier",
+      subtitle: "Luminous diamond studs, graceful drops & modern everyday huggies"
+    };
+  }
+  if (norm.includes("pendant")) {
+    return {
+      eyebrow: "Pendants & Necklaces",
+      subtitle: "Timeless diamond solitaires & sculpted pendants crafted for brilliance"
+    };
+  }
+  if (norm.includes("ring")) {
+    return {
+      eyebrow: "Iconic Rings & Bands",
+      subtitle: "Bespoke engagement rings, eternity bands & signature diamond solitaires"
+    };
+  }
+  if (norm.includes("bridal")) {
+    return {
+      eyebrow: "Bridal Atelier",
+      subtitle: "Curated engagement rings perfectly paired with bespoke wedding bands"
+    };
+  }
+  return {
+    eyebrow: "Fine Jewelry Atelier",
+    subtitle: "Explore our handcrafted selection of bespoke fine jewelry"
+  };
+}
+
   const categoryLink = `/collections?category=${encodeURIComponent(categoryName)}`;
   const displayTitle = formatCategoryTitle(categoryName);
+  const categoryMeta = getCategoryMeta(categoryName);
 
   return (
-    <div style={{ marginBottom: "clamp(36px, 4.5vw, 56px)" }}>
-      {/* Category Header Row */}
+    <div style={{ marginBottom: "clamp(42px, 5vw, 64px)" }}>
+      {/* Category Header Row - Refined Luxury Presentation */}
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-end",
           flexWrap: "wrap",
-          gap: "12px",
-          marginBottom: "16px"
+          gap: "16px",
+          marginBottom: "20px"
         }}
       >
-        {/* Left: Category Title & Count */}
-        <div style={{ display: "flex", alignItems: "baseline", gap: "10px" }}>
-          <h3
+        {/* Left: Category Eyebrow, Title, Count & Subtitle */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          {/* Eyebrow with gold dash */}
+          <div
             style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "clamp(1.15rem, 2vw, 1.55rem)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "0.68rem",
               fontWeight: 600,
-              color: "var(--foreground)",
-              letterSpacing: "0.01em",
-              margin: 0
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "var(--gold-deep)"
             }}
           >
-            {displayTitle}
-          </h3>
-          <span
+            <span style={{ width: "16px", height: "1px", backgroundColor: "var(--gold)", opacity: 0.8 }} />
+            <span>{categoryMeta.eyebrow}</span>
+          </div>
+
+          {/* Title and Luxury Piece Count Pill */}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+            <h3
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "clamp(1.5rem, 2.4vw, 2.1rem)",
+                fontWeight: 600,
+                color: "#181818",
+                letterSpacing: "0.01em",
+                margin: 0,
+                lineHeight: 1.15
+              }}
+            >
+              {displayTitle}
+            </h3>
+
+            {/* Refined Count Badge */}
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "5px",
+                fontSize: "0.72rem",
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: "#586348",
+                backgroundColor: "#FAF9F6",
+                border: "1px solid #E3DCCF",
+                padding: "3px 10px",
+                borderRadius: "999px"
+              }}
+            >
+              <span
+                style={{
+                  width: "5px",
+                  height: "5px",
+                  borderRadius: "50%",
+                  backgroundColor: "var(--primary)"
+                }}
+              />
+              {items.length} {items.length === 1 ? "Piece" : "Pieces"}
+            </span>
+          </div>
+
+          {/* Tailored Category Subtitle */}
+          <p
             style={{
-              fontSize: "0.72rem",
-              fontWeight: 600,
-              color: "var(--primary)",
-              letterSpacing: "0.06em",
-              backgroundColor: "var(--primary-soft)",
-              padding: "2px 8px",
-              borderRadius: "50px"
+              fontSize: "clamp(0.8rem, 1vw, 0.88rem)",
+              color: "#6e6e6a",
+              margin: "3px 0 0 0",
+              fontWeight: 400,
+              lineHeight: 1.4,
+              maxWidth: "580px"
             }}
           >
-            {items.length} {items.length === 1 ? "Piece" : "Pieces"}
-          </span>
+            {categoryMeta.subtitle}
+          </p>
         </div>
 
-        {/* Right: "Shop All" link */}
-        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+        {/* Right: Elegant Pill "Shop All" Link */}
+        <div style={{ display: "flex", alignItems: "center" }}>
           <Link
             to={categoryLink}
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "6px",
+              gap: "8px",
               fontSize: "0.72rem",
-              fontWeight: 700,
-              letterSpacing: "0.12em",
+              fontWeight: 600,
+              letterSpacing: "0.14em",
               textTransform: "uppercase",
               color: "var(--foreground)",
+              backgroundColor: "#ffffff",
+              border: "1px solid #ded6c8",
+              padding: "8px 18px",
+              borderRadius: "999px",
               textDecoration: "none",
-              transition: "color 0.2s"
+              transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+              whiteSpace: "nowrap"
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--foreground)")}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "var(--primary)";
+              e.currentTarget.style.color = "var(--primary)";
+              e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+              e.currentTarget.style.transform = "translateY(-1px)";
+              e.currentTarget.style.boxShadow = "0 4px 14px rgba(85, 104, 50, 0.16)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "#ded6c8";
+              e.currentTarget.style.color = "var(--foreground)";
+              e.currentTarget.style.backgroundColor = "#ffffff";
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.03)";
+            }}
           >
-            <span>Shop all {displayTitle.toLowerCase()}</span>
-            <ArrowRight size={13} strokeWidth={2} style={{ color: "var(--primary)" }} />
+            <span>Shop All {displayTitle}</span>
+            <ArrowRight size={13} strokeWidth={2.2} />
           </Link>
         </div>
       </div>
