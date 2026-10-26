@@ -332,9 +332,7 @@ function CategoryHorizontalRow({
           alignItems: "flex-end",
           flexWrap: "wrap",
           gap: "12px",
-          borderBottom: "1px solid #ebe5da",
-          paddingBottom: "14px",
-          marginBottom: "20px"
+          marginBottom: "16px"
         }}
       >
         {/* Left: Category Title & Count */}
