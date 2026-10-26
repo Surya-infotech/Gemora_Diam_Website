@@ -391,103 +391,91 @@ function CategoryHorizontalRow({
 
       {/* Horizontal Carousel with Floating Left & Right Arrows */}
       <div style={{ position: "relative" }} className="category-carousel-wrapper">
-        {/* Left Floating Arrow Button */}
-        <button
-          type="button"
-          onClick={() => handleScroll("left")}
-          disabled={!canScrollLeft}
-          aria-label={`Scroll ${categoryName} left`}
-          style={{
-            position: "absolute",
-            left: "clamp(-22px, -1.6vw, -12px)",
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 10,
-            width: "46px",
-            height: "46px",
-            borderRadius: "50%",
-            backgroundColor: "#ffffff",
-            border: canScrollLeft ? "1px solid #d4ccbd" : "1px solid #e5dfd3",
-            boxShadow: canScrollLeft
-              ? "0 4px 20px rgba(28, 34, 23, 0.18)"
-              : "0 2px 10px rgba(28, 34, 23, 0.08)",
-            color: canScrollLeft ? "var(--foreground)" : "#a39c8f",
-            display: "grid",
-            placeItems: "center",
-            cursor: canScrollLeft ? "pointer" : "default",
-            opacity: canScrollLeft ? 1 : 0.6,
-            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
-          }}
-          onMouseEnter={(e) => {
-            if (canScrollLeft) {
+        {/* Left Floating Arrow Button - only rendered when content can scroll left */}
+        {canScrollLeft && (
+          <button
+            type="button"
+            onClick={() => handleScroll("left")}
+            aria-label={`Scroll ${categoryName} left`}
+            style={{
+              position: "absolute",
+              left: "-16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 10,
+              width: "44px",
+              height: "44px",
+              borderRadius: "50%",
+              backgroundColor: "#ffffff",
+              border: "1px solid #d4ccbd",
+              boxShadow: "0 4px 20px rgba(28, 34, 23, 0.18)",
+              color: "var(--foreground)",
+              display: "grid",
+              placeItems: "center",
+              cursor: "pointer",
+              transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
+            }}
+            onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = "var(--primary)";
               e.currentTarget.style.color = "#ffffff";
               e.currentTarget.style.borderColor = "var(--primary)";
               e.currentTarget.style.transform = "translateY(-50%) scale(1.08)";
               e.currentTarget.style.boxShadow = "0 6px 24px rgba(85, 104, 50, 0.32)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (canScrollLeft) {
+            }}
+            onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = "#ffffff";
               e.currentTarget.style.color = "var(--foreground)";
               e.currentTarget.style.borderColor = "#d4ccbd";
               e.currentTarget.style.transform = "translateY(-50%) scale(1)";
               e.currentTarget.style.boxShadow = "0 4px 20px rgba(28, 34, 23, 0.18)";
-            }
-          }}
-        >
-          <ChevronLeft size={22} strokeWidth={2.2} />
-        </button>
+            }}
+          >
+            <ChevronLeft size={22} strokeWidth={2.2} />
+          </button>
+        )}
 
-        {/* Right Floating Arrow Button */}
-        <button
-          type="button"
-          onClick={() => handleScroll("right")}
-          disabled={!canScrollRight}
-          aria-label={`Scroll ${categoryName} right`}
-          style={{
-            position: "absolute",
-            right: "clamp(-22px, -1.6vw, -12px)",
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 10,
-            width: "46px",
-            height: "46px",
-            borderRadius: "50%",
-            backgroundColor: "#ffffff",
-            border: canScrollRight ? "1px solid #d4ccbd" : "1px solid #e5dfd3",
-            boxShadow: canScrollRight
-              ? "0 4px 20px rgba(28, 34, 23, 0.18)"
-              : "0 2px 10px rgba(28, 34, 23, 0.08)",
-            color: canScrollRight ? "var(--foreground)" : "#a39c8f",
-            display: "grid",
-            placeItems: "center",
-            cursor: canScrollRight ? "pointer" : "default",
-            opacity: canScrollRight ? 1 : 0.6,
-            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
-          }}
-          onMouseEnter={(e) => {
-            if (canScrollRight) {
+        {/* Right Floating Arrow Button - only rendered when content can scroll right */}
+        {canScrollRight && (
+          <button
+            type="button"
+            onClick={() => handleScroll("right")}
+            aria-label={`Scroll ${categoryName} right`}
+            style={{
+              position: "absolute",
+              right: "-16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 10,
+              width: "44px",
+              height: "44px",
+              borderRadius: "50%",
+              backgroundColor: "#ffffff",
+              border: "1px solid #d4ccbd",
+              boxShadow: "0 4px 20px rgba(28, 34, 23, 0.18)",
+              color: "var(--foreground)",
+              display: "grid",
+              placeItems: "center",
+              cursor: "pointer",
+              transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
+            }}
+            onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = "var(--primary)";
               e.currentTarget.style.color = "#ffffff";
               e.currentTarget.style.borderColor = "var(--primary)";
               e.currentTarget.style.transform = "translateY(-50%) scale(1.08)";
               e.currentTarget.style.boxShadow = "0 6px 24px rgba(85, 104, 50, 0.32)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (canScrollRight) {
+            }}
+            onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = "#ffffff";
               e.currentTarget.style.color = "var(--foreground)";
               e.currentTarget.style.borderColor = "#d4ccbd";
               e.currentTarget.style.transform = "translateY(-50%) scale(1)";
               e.currentTarget.style.boxShadow = "0 4px 20px rgba(28, 34, 23, 0.18)";
-            }
-          }}
-        >
-          <ChevronRight size={22} strokeWidth={2.2} />
-        </button>
+            }}
+          >
+            <ChevronRight size={22} strokeWidth={2.2} />
+          </button>
+        )}
 
         {/* Horizontal Scrolling Track for Items */}
         <div
@@ -500,7 +488,7 @@ function CategoryHorizontalRow({
             overflowX: "auto",
             scrollSnapType: "x mandatory",
             WebkitOverflowScrolling: "touch",
-            padding: "4px 2px 14px 2px"
+            padding: "6px 8px 16px 8px"
           }}
         >
           {items.map((item) => {
