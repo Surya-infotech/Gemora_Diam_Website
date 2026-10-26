@@ -311,12 +311,38 @@ function CategoryHorizontalRow({
 
   const handleScroll = (direction) => {
     if (!rowRef.current) return;
-    const scrollAmount = Math.max(300, rowRef.current.clientWidth * 0.75);
-    rowRef.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth"
-    });
-    setTimeout(checkScroll, 350);
+    const container = rowRef.current;
+    const cards = container.querySelectorAll(".bestseller-card");
+    
+    // Determine card step (card width + gap)
+    let cardStep = 280;
+    if (cards && cards.length >= 2) {
+      const rect0 = cards[0].getBoundingClientRect();
+      const rect1 = cards[1].getBoundingClientRect();
+      cardStep = rect1.left - rect0.left;
+    } else if (cards && cards.length === 1) {
+      cardStep = cards[0].getBoundingClientRect().width + 18;
+    }
+
+    // Scroll by visible cards count (or at least 1 card)
+    const visibleCount = Math.max(1, Math.floor(container.clientWidth / cardStep));
+    const scrollDistance = cardStep * visibleCount;
+
+    if (direction === "left") {
+      if (container.scrollLeft <= scrollDistance * 1.15) {
+        container.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        container.scrollBy({ left: -scrollDistance, behavior: "smooth" });
+      }
+    } else {
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      if (container.scrollLeft + scrollDistance >= maxScroll - 30) {
+        container.scrollTo({ left: maxScroll, behavior: "smooth" });
+      } else {
+        container.scrollBy({ left: scrollDistance, behavior: "smooth" });
+      }
+    }
+    setTimeout(checkScroll, 400);
   };
 
   const categoryLink = `/collections?category=${encodeURIComponent(categoryName)}`;
@@ -399,16 +425,17 @@ function CategoryHorizontalRow({
             aria-label={`Scroll ${categoryName} left`}
             style={{
               position: "absolute",
-              left: "-16px",
-              top: "50%",
+              left: "-18px",
+              top: "42%",
               transform: "translateY(-50%)",
               zIndex: 10,
-              width: "44px",
-              height: "44px",
+              width: "42px",
+              height: "42px",
               borderRadius: "50%",
-              backgroundColor: "#ffffff",
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
               border: "1px solid #d4ccbd",
-              boxShadow: "0 4px 20px rgba(28, 34, 23, 0.18)",
+              boxShadow: "0 4px 18px rgba(28, 34, 23, 0.16)",
+              backdropFilter: "blur(4px)",
               color: "var(--foreground)",
               display: "grid",
               placeItems: "center",
@@ -423,14 +450,14 @@ function CategoryHorizontalRow({
               e.currentTarget.style.boxShadow = "0 6px 24px rgba(85, 104, 50, 0.32)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#ffffff";
+              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
               e.currentTarget.style.color = "var(--foreground)";
               e.currentTarget.style.borderColor = "#d4ccbd";
               e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-              e.currentTarget.style.boxShadow = "0 4px 20px rgba(28, 34, 23, 0.18)";
+              e.currentTarget.style.boxShadow = "0 4px 18px rgba(28, 34, 23, 0.16)";
             }}
           >
-            <ChevronLeft size={22} strokeWidth={2.2} />
+            <ChevronLeft size={20} strokeWidth={2.2} />
           </button>
         )}
 
@@ -442,16 +469,17 @@ function CategoryHorizontalRow({
             aria-label={`Scroll ${categoryName} right`}
             style={{
               position: "absolute",
-              right: "-16px",
-              top: "50%",
+              right: "-18px",
+              top: "42%",
               transform: "translateY(-50%)",
               zIndex: 10,
-              width: "44px",
-              height: "44px",
+              width: "42px",
+              height: "42px",
               borderRadius: "50%",
-              backgroundColor: "#ffffff",
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
               border: "1px solid #d4ccbd",
-              boxShadow: "0 4px 20px rgba(28, 34, 23, 0.18)",
+              boxShadow: "0 4px 18px rgba(28, 34, 23, 0.16)",
+              backdropFilter: "blur(4px)",
               color: "var(--foreground)",
               display: "grid",
               placeItems: "center",
@@ -466,14 +494,14 @@ function CategoryHorizontalRow({
               e.currentTarget.style.boxShadow = "0 6px 24px rgba(85, 104, 50, 0.32)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#ffffff";
+              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
               e.currentTarget.style.color = "var(--foreground)";
               e.currentTarget.style.borderColor = "#d4ccbd";
               e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-              e.currentTarget.style.boxShadow = "0 4px 20px rgba(28, 34, 23, 0.18)";
+              e.currentTarget.style.boxShadow = "0 4px 18px rgba(28, 34, 23, 0.16)";
             }}
           >
-            <ChevronRight size={22} strokeWidth={2.2} />
+            <ChevronRight size={20} strokeWidth={2.2} />
           </button>
         )}
 
@@ -487,8 +515,10 @@ function CategoryHorizontalRow({
             gap: "clamp(14px, 1.8vw, 22px)",
             overflowX: "auto",
             scrollSnapType: "x mandatory",
+            scrollPaddingLeft: "12px",
+            scrollPaddingRight: "12px",
             WebkitOverflowScrolling: "touch",
-            padding: "6px 8px 16px 8px"
+            padding: "8px 12px 18px 12px"
           }}
         >
           {items.map((item) => {
