@@ -364,7 +364,7 @@ function CategoryHorizontalRow({
           </span>
         </div>
 
-        {/* Right: "Shop All" link + Left/Right Arrow Buttons */}
+        {/* Right: "Shop All" link */}
         <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
           <Link
             to={categoryLink}
@@ -386,220 +386,240 @@ function CategoryHorizontalRow({
             <span>Shop all {displayTitle.toLowerCase()}</span>
             <ArrowRight size={13} strokeWidth={2} style={{ color: "var(--primary)" }} />
           </Link>
-
-          {/* Navigation Arrows */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <button
-              type="button"
-              onClick={() => handleScroll("left")}
-              disabled={!canScrollLeft}
-              aria-label={`Scroll ${categoryName} left`}
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-                border: "1px solid #ebe5da",
-                backgroundColor: canScrollLeft ? "#ffffff" : "#fbfaf8",
-                color: canScrollLeft ? "var(--foreground)" : "#c5beaf",
-                display: "grid",
-                placeItems: "center",
-                cursor: canScrollLeft ? "pointer" : "default",
-                transition: "all 0.2s ease",
-                boxShadow: canScrollLeft ? "0 2px 6px rgba(0,0,0,0.04)" : "none",
-                opacity: canScrollLeft ? 1 : 0.45
-              }}
-              onMouseEnter={(e) => {
-                if (canScrollLeft) {
-                  e.currentTarget.style.backgroundColor = "var(--primary)";
-                  e.currentTarget.style.color = "#ffffff";
-                  e.currentTarget.style.borderColor = "var(--primary)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (canScrollLeft) {
-                  e.currentTarget.style.backgroundColor = "#ffffff";
-                  e.currentTarget.style.color = "var(--foreground)";
-                  e.currentTarget.style.borderColor = "#ebe5da";
-                }
-              }}
-            >
-              <ChevronLeft size={16} strokeWidth={2} />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleScroll("right")}
-              disabled={!canScrollRight}
-              aria-label={`Scroll ${categoryName} right`}
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-                border: "1px solid #ebe5da",
-                backgroundColor: canScrollRight ? "#ffffff" : "#fbfaf8",
-                color: canScrollRight ? "var(--foreground)" : "#c5beaf",
-                display: "grid",
-                placeItems: "center",
-                cursor: canScrollRight ? "pointer" : "default",
-                transition: "all 0.2s ease",
-                boxShadow: canScrollRight ? "0 2px 6px rgba(0,0,0,0.04)" : "none",
-                opacity: canScrollRight ? 1 : 0.45
-              }}
-              onMouseEnter={(e) => {
-                if (canScrollRight) {
-                  e.currentTarget.style.backgroundColor = "var(--primary)";
-                  e.currentTarget.style.color = "#ffffff";
-                  e.currentTarget.style.borderColor = "var(--primary)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (canScrollRight) {
-                  e.currentTarget.style.backgroundColor = "#ffffff";
-                  e.currentTarget.style.color = "var(--foreground)";
-                  e.currentTarget.style.borderColor = "#ebe5da";
-                }
-              }}
-            >
-              <ChevronRight size={16} strokeWidth={2} />
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Horizontal Scrolling Track for Items */}
-      <div
-        ref={rowRef}
-        onScroll={checkScroll}
-        className="no-scrollbar"
-        style={{
-          display: "flex",
-          gap: "clamp(14px, 1.8vw, 22px)",
-          overflowX: "auto",
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
-          padding: "4px 2px 14px 2px"
-        }}
-      >
-        {items.map((item) => {
-          const isLiked = wishlist.includes(item.id);
-          const rawMetals = item.metals || [];
-          const metals = rawMetals.map((m) => {
-            if (typeof m === "object" && m !== null) {
-              return { name: m.name || m.metalname || "", color: m.color || getMetalColor(m.name || m.metalname) };
-            }
-            return { name: String(m), color: getMetalColor(m) };
-          });
-          const activeMetal = selectedMetals[item.id] || metals[0]?.name || "";
-          const currentPrice = getItemPrice
-            ? getItemPrice(item, activeMetal)
-            : (item.price || 0);
-
-          return (
-            <ProductCard
-              key={item.id}
-              item={item}
-              isLiked={isLiked}
-              onToggleWishlist={toggleWishlist}
-              selectedMetal={activeMetal}
-              onSelectMetal={handleMetalSelect}
-              currentPrice={currentPrice}
-              format={format}
-              onNavigate={() => navigate(item.link || `/product/${item.id || item._id}` || `/collections`)}
-            />
-          );
-        })}
-
-        {/* Explore All Category Card */}
-        <div
-          onClick={() => navigate(categoryLink)}
+      {/* Horizontal Carousel with Floating Left & Right Arrows */}
+      <div style={{ position: "relative" }} className="category-carousel-wrapper">
+        {/* Left Floating Arrow Button */}
+        <button
+          type="button"
+          onClick={() => handleScroll("left")}
+          disabled={!canScrollLeft}
+          aria-label={`Scroll ${categoryName} left`}
           style={{
-            flex: "0 0 clamp(200px, 18vw, 240px)",
-            width: "clamp(200px, 18vw, 240px)",
-            scrollSnapAlign: "start",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            backgroundColor: "#FAF9F6",
-            borderRadius: "14px",
-            border: "1.5px dashed #DCD5C7",
-            padding: "24px 20px",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            minHeight: "280px"
+            position: "absolute",
+            left: "clamp(-20px, -1.5vw, -10px)",
+            top: "50%",
+            transform: "translateY(-50%)",
+            zIndex: 10,
+            width: "44px",
+            height: "44px",
+            borderRadius: "50%",
+            backgroundColor: "#ffffff",
+            border: "1px solid #ebe5da",
+            boxShadow: "0 4px 18px rgba(28, 34, 23, 0.12)",
+            color: canScrollLeft ? "var(--foreground)" : "#c5beaf",
+            display: "grid",
+            placeItems: "center",
+            cursor: canScrollLeft ? "pointer" : "default",
+            opacity: canScrollLeft ? 1 : 0.35,
+            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--primary-soft)";
-            e.currentTarget.style.borderColor = "var(--primary)";
-            e.currentTarget.style.transform = "translateY(-4px)";
+            if (canScrollLeft) {
+              e.currentTarget.style.backgroundColor = "var(--primary)";
+              e.currentTarget.style.color = "#ffffff";
+              e.currentTarget.style.borderColor = "var(--primary)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.08)";
+              e.currentTarget.style.boxShadow = "0 6px 22px rgba(85, 104, 50, 0.3)";
+            }
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "#FAF9F6";
-            e.currentTarget.style.borderColor = "#DCD5C7";
-            e.currentTarget.style.transform = "translateY(0)";
+            if (canScrollLeft) {
+              e.currentTarget.style.backgroundColor = "#ffffff";
+              e.currentTarget.style.color = "var(--foreground)";
+              e.currentTarget.style.borderColor = "#ebe5da";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+              e.currentTarget.style.boxShadow = "0 4px 18px rgba(28, 34, 23, 0.12)";
+            }
           }}
         >
+          <ChevronLeft size={22} strokeWidth={2} />
+        </button>
+
+        {/* Right Floating Arrow Button */}
+        <button
+          type="button"
+          onClick={() => handleScroll("right")}
+          disabled={!canScrollRight}
+          aria-label={`Scroll ${categoryName} right`}
+          style={{
+            position: "absolute",
+            right: "clamp(-20px, -1.5vw, -10px)",
+            top: "50%",
+            transform: "translateY(-50%)",
+            zIndex: 10,
+            width: "44px",
+            height: "44px",
+            borderRadius: "50%",
+            backgroundColor: "#ffffff",
+            border: "1px solid #ebe5da",
+            boxShadow: "0 4px 18px rgba(28, 34, 23, 0.12)",
+            color: canScrollRight ? "var(--foreground)" : "#c5beaf",
+            display: "grid",
+            placeItems: "center",
+            cursor: canScrollRight ? "pointer" : "default",
+            opacity: canScrollRight ? 1 : 0.35,
+            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
+          }}
+          onMouseEnter={(e) => {
+            if (canScrollRight) {
+              e.currentTarget.style.backgroundColor = "var(--primary)";
+              e.currentTarget.style.color = "#ffffff";
+              e.currentTarget.style.borderColor = "var(--primary)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.08)";
+              e.currentTarget.style.boxShadow = "0 6px 22px rgba(85, 104, 50, 0.3)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (canScrollRight) {
+              e.currentTarget.style.backgroundColor = "#ffffff";
+              e.currentTarget.style.color = "var(--foreground)";
+              e.currentTarget.style.borderColor = "#ebe5da";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+              e.currentTarget.style.boxShadow = "0 4px 18px rgba(28, 34, 23, 0.12)";
+            }
+          }}
+        >
+          <ChevronRight size={22} strokeWidth={2} />
+        </button>
+
+        {/* Horizontal Scrolling Track for Items */}
+        <div
+          ref={rowRef}
+          onScroll={checkScroll}
+          className="no-scrollbar"
+          style={{
+            display: "flex",
+            gap: "clamp(14px, 1.8vw, 22px)",
+            overflowX: "auto",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            padding: "4px 2px 14px 2px"
+          }}
+        >
+          {items.map((item) => {
+            const isLiked = wishlist.includes(item.id);
+            const rawMetals = item.metals || [];
+            const metals = rawMetals.map((m) => {
+              if (typeof m === "object" && m !== null) {
+                return { name: m.name || m.metalname || "", color: m.color || getMetalColor(m.name || m.metalname) };
+              }
+              return { name: String(m), color: getMetalColor(m) };
+            });
+            const activeMetal = selectedMetals[item.id] || metals[0]?.name || "";
+            const currentPrice = getItemPrice
+              ? getItemPrice(item, activeMetal)
+              : (item.price || 0);
+
+            return (
+              <ProductCard
+                key={item.id}
+                item={item}
+                isLiked={isLiked}
+                onToggleWishlist={toggleWishlist}
+                selectedMetal={activeMetal}
+                onSelectMetal={handleMetalSelect}
+                currentPrice={currentPrice}
+                format={format}
+                onNavigate={() => navigate(item.link || `/product/${item.id || item._id}` || `/collections`)}
+              />
+            );
+          })}
+
+          {/* Explore All Category Card */}
           <div
+            onClick={() => navigate(categoryLink)}
             style={{
-              width: "48px",
-              height: "48px",
-              borderRadius: "50%",
-              backgroundColor: "#ffffff",
-              display: "grid",
-              placeItems: "center",
-              boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
-              marginBottom: "16px",
-              color: "var(--primary)"
-            }}
-          >
-            <Sparkles size={20} strokeWidth={1.8} />
-          </div>
-          <p
-            style={{
-              fontSize: "0.72rem",
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              fontWeight: 600,
-              color: "var(--gold-deep)",
-              margin: "0 0 6px 0"
-            }}
-          >
-            Explore More
-          </p>
-          <h4
-            style={{
-              fontSize: "1.05rem",
-              fontWeight: 600,
-              color: "var(--foreground)",
-              margin: "0 0 8px 0"
-            }}
-          >
-            View All {displayTitle}
-          </h4>
-          <p
-            style={{
-              fontSize: "0.78rem",
-              color: "var(--muted-foreground)",
-              margin: "0 0 16px 0"
-            }}
-          >
-            Browse {items.length} bespoke pieces
-          </p>
-          <span
-            style={{
-              display: "inline-flex",
+              flex: "0 0 clamp(200px, 18vw, 240px)",
+              width: "clamp(200px, 18vw, 240px)",
+              scrollSnapAlign: "start",
+              display: "flex",
+              flexDirection: "column",
               alignItems: "center",
-              gap: "6px",
-              fontSize: "0.74rem",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              color: "var(--primary)"
+              justifyContent: "center",
+              textAlign: "center",
+              backgroundColor: "#FAF9F6",
+              borderRadius: "14px",
+              border: "1.5px dashed #DCD5C7",
+              padding: "24px 20px",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              minHeight: "280px"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--primary-soft)";
+              e.currentTarget.style.borderColor = "var(--primary)";
+              e.currentTarget.style.transform = "translateY(-4px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#FAF9F6";
+              e.currentTarget.style.borderColor = "#DCD5C7";
+              e.currentTarget.style.transform = "translateY(0)";
             }}
           >
-            <span>View All</span>
-            <ArrowRight size={13} strokeWidth={2} />
-          </span>
+            <div
+              style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+                backgroundColor: "#ffffff",
+                display: "grid",
+                placeItems: "center",
+                boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
+                marginBottom: "16px",
+                color: "var(--primary)"
+              }}
+            >
+              <Sparkles size={20} strokeWidth={1.8} />
+            </div>
+            <p
+              style={{
+                fontSize: "0.72rem",
+                letterSpacing: "0.16em",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                color: "var(--gold-deep)",
+                margin: "0 0 6px 0"
+              }}
+            >
+              Explore More
+            </p>
+            <h4
+              style={{
+                fontSize: "1.05rem",
+                fontWeight: 600,
+                color: "var(--foreground)",
+                margin: "0 0 8px 0"
+              }}
+            >
+              View All {displayTitle}
+            </h4>
+            <p
+              style={{
+                fontSize: "0.78rem",
+                color: "var(--muted-foreground)",
+                margin: "0 0 16px 0"
+              }}
+            >
+              Browse {items.length} bespoke pieces
+            </p>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                fontSize: "0.74rem",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                color: "var(--primary)"
+              }}
+            >
+              <span>View All</span>
+              <ArrowRight size={13} strokeWidth={2} />
+            </span>
+          </div>
         </div>
       </div>
     </div>
