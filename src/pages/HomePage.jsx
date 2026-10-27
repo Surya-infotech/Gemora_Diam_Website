@@ -8,6 +8,7 @@ import SplitCollectionBanners from "../components/home/SplitCollectionBanners";
 import OutlineMarquee from "../components/home/OutlineMarquee";
 import ShopTheLookSection from "../components/home/ShopTheLookSection";
 import LovedByCouplesSection from "../components/home/LovedByCouplesSection";
+import CustomDesignSection from "../components/home/CustomDesignSection";
 
 export default function HomePage() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -49,6 +50,9 @@ export default function HomePage() {
 
       {/* 9. Loved by couples (Real Love Stories & Client Reviews Carousel) */}
       <LovedByCouplesSection />
+
+      {/* 10. Custom Design Inquiry Atelier Section */}
+      <CustomDesignSection />
 
 
 
