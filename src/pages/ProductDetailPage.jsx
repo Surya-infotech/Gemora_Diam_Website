@@ -636,150 +636,192 @@ function ProductDetailContent({ product }) {
       {/* Main Product Showcase Section */}
       <div className="container-luxury" style={{ marginTop: "36px" }}>
         <div className="product-showcase-grid">
-          {/* LEFT: Media Gallery */}
-          <div className="product-gallery-layout product-gallery-sticky">
-            {/* Thumbnail Rail */}
-            {allMedia.length > 1 && (
-              <div className="product-gallery-thumbnails">
-                {allMedia.map((m, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveMediaIndex(idx)}
-                    aria-label={`Select media ${idx + 1}`}
-                    style={{
-                      width: "clamp(60px, 14vw, 74px)",
-                      height: "clamp(60px, 14vw, 74px)",
-                      flexShrink: 0,
-                      borderRadius: "10px",
-                      border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid #EDE8DE",
-                      backgroundColor: "#FAF9F6",
-                      padding: "3px",
-                      overflow: "hidden",
-                      cursor: "pointer",
-                      opacity: activeMediaIndex === idx ? 1 : 0.75,
-                      boxShadow: activeMediaIndex === idx ? "0 4px 12px rgba(85, 104, 50, 0.2)" : "none",
-                      transition: "all 0.2s"
-                    }}
-                    onMouseEnter={(e) => {
-                      if (activeMediaIndex !== idx) {
-                        e.currentTarget.style.opacity = "1";
-                        e.currentTarget.style.borderColor = "var(--primary-light)";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (activeMediaIndex !== idx) {
-                        e.currentTarget.style.opacity = "0.75";
-                        e.currentTarget.style.borderColor = "#EDE8DE";
-                      }
-                    }}
-                  >
-                    {m.type === "video" ? (
-                      <div
-                        style={{
-                          position: "relative",
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "#111813",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          overflow: "hidden",
-                          borderRadius: "6px"
-                        }}
-                      >
-                        <video
-                          src={m.url}
-                          muted
-                          playsInline
-                          preload="metadata"
-                          style={{
-                            position: "absolute",
-                            inset: 0,
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            pointerEvents: "none"
-                          }}
-                        />
+          {/* LEFT: Media Gallery & Trust Assurances */}
+          <div className="product-gallery-sticky" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div className="product-gallery-layout">
+              {/* Thumbnail Rail */}
+              {allMedia.length > 1 && (
+                <div className="product-gallery-thumbnails">
+                  {allMedia.map((m, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveMediaIndex(idx)}
+                      aria-label={`Select media ${idx + 1}`}
+                      style={{
+                        width: "clamp(60px, 14vw, 74px)",
+                        height: "clamp(60px, 14vw, 74px)",
+                        flexShrink: 0,
+                        borderRadius: "10px",
+                        border: activeMediaIndex === idx ? "2px solid var(--primary)" : "1px solid #EDE8DE",
+                        backgroundColor: "#FAF9F6",
+                        padding: "3px",
+                        overflow: "hidden",
+                        cursor: "pointer",
+                        opacity: activeMediaIndex === idx ? 1 : 0.75,
+                        boxShadow: activeMediaIndex === idx ? "0 4px 12px rgba(85, 104, 50, 0.2)" : "none",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => {
+                        if (activeMediaIndex !== idx) {
+                          e.currentTarget.style.opacity = "1";
+                          e.currentTarget.style.borderColor = "var(--primary-light)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (activeMediaIndex !== idx) {
+                          e.currentTarget.style.opacity = "0.75";
+                          e.currentTarget.style.borderColor = "#EDE8DE";
+                        }
+                      }}
+                    >
+                      {m.type === "video" ? (
                         <div
                           style={{
-                            position: "absolute",
-                            inset: 0,
-                            backgroundColor: "rgba(0, 0, 0, 0.35)",
+                            position: "relative",
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "#111813",
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "center"
+                            justifyContent: "center",
+                            overflow: "hidden",
+                            borderRadius: "6px"
                           }}
                         >
+                          <video
+                            src={m.url}
+                            muted
+                            playsInline
+                            preload="metadata"
+                            style={{
+                              position: "absolute",
+                              inset: 0,
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              pointerEvents: "none"
+                            }}
+                          />
                           <div
                             style={{
-                              width: "26px",
-                              height: "26px",
-                              borderRadius: "50%",
-                              backgroundColor: "rgba(255, 255, 255, 0.95)",
+                              position: "absolute",
+                              inset: 0,
+                              backgroundColor: "rgba(0, 0, 0, 0.35)",
                               display: "flex",
                               alignItems: "center",
-                              justifyContent: "center",
-                              boxShadow: "0 2px 6px rgba(0,0,0,0.3)"
+                              justifyContent: "center"
                             }}
                           >
-                            <Play size={12} fill="#1e2419" color="#1e2419" style={{ marginLeft: "2px" }} />
+                            <div
+                              style={{
+                                width: "26px",
+                                height: "26px",
+                                borderRadius: "50%",
+                                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                boxShadow: "0 2px 6px rgba(0,0,0,0.3)"
+                              }}
+                            >
+                              <Play size={12} fill="#1e2419" color="#1e2419" style={{ marginLeft: "2px" }} />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ) : (
-                      <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "fill", borderRadius: "6px" }} />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Main Stage */}
-            <div className="product-main-stage">
-              {currentMedia.type === "video" ? (
-                <video
-                  key={currentMedia.url}
-                  src={currentMedia.url}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  style={{ pointerEvents: "none" }}
-                />
-              ) : (
-                <img
-                  key={currentMedia.url}
-                  src={currentMedia.url}
-                  alt={product.name}
-                />
+                      ) : (
+                        <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "fill", borderRadius: "6px" }} />
+                      )}
+                    </button>
+                  ))}
+                </div>
               )}
 
-              {/* Floating Wishlist Button */}
-              <button
-                onClick={() => toggleWishlist(product.id)}
-                aria-label="Wishlist"
-                style={{
-                  position: "absolute",
-                  top: "16px",
-                  right: "16px",
-                  width: "42px",
-                  height: "42px",
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(255,255,255,0.92)",
-                  backdropFilter: "blur(8px)",
-                  display: "grid",
-                  placeItems: "center",
-                  color: isLiked ? "#e53e3e" : "#333",
-                  boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  border: "1px solid rgba(255,255,255,0.6)",
-                  zIndex: 2
-                }}
-              >
-                <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
-              </button>
+              {/* Main Stage */}
+              <div className="product-main-stage">
+                {currentMedia.type === "video" ? (
+                  <video
+                    key={currentMedia.url}
+                    src={currentMedia.url}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    style={{ pointerEvents: "none" }}
+                  />
+                ) : (
+                  <img
+                    key={currentMedia.url}
+                    src={currentMedia.url}
+                    alt={product.name}
+                  />
+                )}
+
+                {/* Floating Wishlist Button */}
+                <button
+                  onClick={() => toggleWishlist(product.id)}
+                  aria-label="Wishlist"
+                  style={{
+                    position: "absolute",
+                    top: "16px",
+                    right: "16px",
+                    width: "42px",
+                    height: "42px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(255,255,255,0.92)",
+                    backdropFilter: "blur(8px)",
+                    display: "grid",
+                    placeItems: "center",
+                    color: isLiked ? "#e53e3e" : "#333",
+                    boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    border: "1px solid rgba(255,255,255,0.6)",
+                    zIndex: 2
+                  }}
+                >
+                  <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
+                </button>
+              </div>
+            </div>
+
+            {/* Trust Assurances */}
+            <div
+              className="product-trust-grid"
+              style={{
+                padding: "20px 22px",
+                backgroundColor: "#FAF8F5",
+                border: "1px solid #EDE8DE",
+                borderRadius: "12px"
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                <Truck size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Complimentary Insured Delivery</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Direct to door via armoured courier</div>
+                </div>
+              </div>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                <ShieldCheck size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Certified Authenticity</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>100% Certified conflict-free stones</div>
+                </div>
+              </div>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                <RotateCcw size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>7-Day Bespoke Returns</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Hassle-free return &amp; exchange policy</div>
+                </div>
+              </div>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                <Sparkles size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Lifetime Warranty</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Annual prong check &amp; ultrasonic polish</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1304,47 +1346,6 @@ function ProductDetailContent({ product }) {
                 <Sparkles size={15} color="var(--gold-deep)" />
                 <span>Book Appointment</span>
               </Link>
-            </div>
-
-            {/* Trust Assurances */}
-            <div
-              className="product-trust-grid"
-              style={{
-                padding: "20px 22px",
-                backgroundColor: "#FAF8F5",
-                border: "1px solid #EDE8DE",
-                borderRadius: "12px",
-                marginTop: "6px"
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                <Truck size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                <div>
-                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Complimentary Insured Delivery</div>
-                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Direct to door via armoured courier</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                <ShieldCheck size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                <div>
-                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Certified Authenticity</div>
-                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>100% Certified conflict-free stones</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                <RotateCcw size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                <div>
-                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>7-Day Bespoke Returns</div>
-                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Hassle-free return &amp; exchange policy</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                <Sparkles size={17} color="var(--primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                <div>
-                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>Lifetime Warranty</div>
-                  <div style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>Annual prong check &amp; ultrasonic polish</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
