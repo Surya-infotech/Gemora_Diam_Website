@@ -1,13 +1,41 @@
 import { useEffect } from "react";
-import { useSearchParams, useParams, Link } from "react-router-dom";
+import { useSearchParams, useParams, Link, useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import { ProductCard } from "../components/ProductCard";
 import { useStore } from "../lib/store";
 import { slugify } from "../lib/slugify";
 
+function normalizeStyleName(str) {
+  if (!str) return "";
+  return String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[-_]/g, " ")
+    .replace(/[^a-z0-9 ]/g, "")
+    .replace(/\s+/g, " ")
+    .replace(/\brings\b/g, "ring")
+    .replace(/\bbands\b/g, "band")
+    .replace(/\bhalos\b/g, "halo")
+    .trim();
+}
+
+function normalizeShapeName(str) {
+  if (!str) return "";
+  return String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[-_]/g, " ")
+    .replace(/[^a-z0-9 ]/g, "")
+    .replace(/\s+/g, " ")
+    .replace(/\bcuts?\b/g, "")
+    .replace(/\bdiamonds?\b/g, "")
+    .trim();
+}
+
 export default function CollectionsPage({ slugOverride = null }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const routeParams = useParams();
+  const navigate = useNavigate();
   const { products, categories, menus, productsLoading } = useStore();
 
   const rawSlug = (slugOverride || routeParams.slug || "").trim().toLowerCase().replace(/^\//, "");
@@ -16,8 +44,8 @@ export default function CollectionsPage({ slugOverride = null }) {
   // 1. Resolve filters and title from clean slug or query params
   let category = searchParams.get("category") || null;
   let search = searchParams.get("search")?.toLowerCase().trim() || null;
-  let shape = searchParams.get("shape")?.toLowerCase().trim() || null;
-  let style = searchParams.get("style")?.toLowerCase().trim() || null;
+  let shape = searchParams.get("shape")?.trim() || null;
+  let style = searchParams.get("style")?.trim() || null;
   let featured = searchParams.get("featured")?.toLowerCase().trim() || null;
   let customTitle = null;
   let resolvedAttributeFilters = [];
@@ -63,7 +91,10 @@ export default function CollectionsPage({ slugOverride = null }) {
           ...(m.column2?.items || []),
           ...(m.column3?.items || [])
         ];
-        const found = allItems.find((it) => getCleanSlug(it.slug) === slug);
+        const found = allItems.find((it) => {
+          const itemClean = getCleanSlug(it.slug);
+          return itemClean === slug || normalizeStyleName(itemClean) === normalizeStyleName(slug);
+        });
         if (found) {
           const rawLabel = typeof found.label === "object" ? (found.label?.value || found.label?.label || "") : String(found.label || "");
           customTitle = rawLabel;
@@ -76,8 +107,8 @@ export default function CollectionsPage({ slugOverride = null }) {
           const fVals = Array.isArray(rawVal)
             ? rawVal.map((v) => (typeof v === "object" ? v?.value || v?.label || "" : String(v || ""))).filter(Boolean)
             : (typeof rawVal === "string" && rawVal.trim()
-                ? rawVal.split(",").map((s) => s.trim()).filter(Boolean)
-                : (rawVal ? [String(rawVal)] : (rawLabel ? [rawLabel] : [])));
+              ? rawVal.split(",").map((s) => s.trim()).filter(Boolean)
+              : (rawVal ? [String(rawVal)] : (rawLabel ? [rawLabel] : [])));
 
           if (fType === "style") {
             style = fVals.length > 0 ? fVals : (rawLabel || null);
@@ -136,46 +167,101 @@ export default function CollectionsPage({ slugOverride = null }) {
     }
   }
 
+  // Normalize style array
+  const resolvedStyleArr = style
+    ? (Array.isArray(style)
+      ? style
+      : String(style).split(",").map((s) => s.trim())
+    ).filter(Boolean)
+    : null;
+
+  // Normalize shape array
+  const resolvedShapeArr = shape
+    ? (Array.isArray(shape)
+      ? shape
+      : String(shape).split(",").map((s) => s.trim())
+    ).filter(Boolean)
+    : null;
+
   // 2. Filter products based on resolved parameters
   const list = allProducts.filter((p) => {
     if (search) {
+      const sLower = String(search).toLowerCase().trim();
       const match =
-        (p.name || "").toLowerCase().includes(search) ||
-        (p.category || "").toLowerCase().includes(search) ||
-        (p.description || "").toLowerCase().includes(search) ||
-        (p.subcategory || "").toLowerCase().includes(search) ||
-        (p.sku || "").toLowerCase().includes(search);
+        (p.name || "").toLowerCase().includes(sLower) ||
+        (p.category || "").toLowerCase().includes(sLower) ||
+        (p.description || "").toLowerCase().includes(sLower) ||
+        (p.subcategory || "").toLowerCase().includes(sLower) ||
+        (p.sku || "").toLowerCase().includes(sLower);
       if (!match) return false;
     }
+
     if (category) {
-      const catTrim = category.trim().toLowerCase();
+      const catTrim = String(category).trim().toLowerCase();
+      const normCat = catTrim.replace(/s\b/g, "");
+      const prodCat = String(p.category || "").trim().toLowerCase().replace(/s\b/g, "");
       const matchName =
-        (p.category || "").trim().toLowerCase() === catTrim ||
-        (catTrim.includes("ring") && (p.category || "").toLowerCase().includes("ring")) ||
-        (catTrim.includes("bridal") && (p.category || "").toLowerCase().includes("bridal")) ||
-        (catTrim.includes("bracelets") && (p.category || "").toLowerCase().includes("bracelets")) ||
-        (catTrim.includes("earrings") && (p.category || "").toLowerCase().includes("earrings"));
+        prodCat === normCat ||
+        (normCat.includes("ring") && prodCat.includes("ring")) ||
+        (normCat.includes("bridal") && prodCat.includes("bridal")) ||
+        (normCat.includes("bracelet") && prodCat.includes("bracelet")) ||
+        (normCat.includes("earing") && prodCat.includes("earing")) ||
+        (normCat.includes("earring") && prodCat.includes("earring")) ||
+        (normCat.includes("pendant") && prodCat.includes("pendant"));
       const matchId = p.categoryid && String(p.categoryid) === String(category);
       if (!matchName && !matchId) return false;
     }
-    if (shape) {
-      const shapeArr = Array.isArray(shape) ? shape.map((s) => String(s).toLowerCase()) : [String(shape).toLowerCase()];
-      const matchShape = shapeArr.some((sh) =>
-        (p.shapes || []).some((s) => String(s).toLowerCase().includes(sh) || sh.includes(String(s).toLowerCase())) ||
-        (p.name || "").toLowerCase().includes(sh) ||
-        (p.description || "").toLowerCase().includes(sh)
-      );
+
+    if (resolvedShapeArr && resolvedShapeArr.length > 0) {
+      const normalizedShapes = resolvedShapeArr
+        .map((s) => normalizeShapeName(s))
+        .filter(Boolean);
+
+      const prodShapes = (p.shapes || [])
+        .map((s) => normalizeShapeName(typeof s === "object" ? s.shapename : s))
+        .filter(Boolean);
+
+      let matchShape = false;
+      if (prodShapes.length > 0) {
+        matchShape = normalizedShapes.some((sh) =>
+          prodShapes.some((ps) => ps === sh || ps.replace(/\s+/g, "") === sh.replace(/\s+/g, ""))
+        );
+      } else {
+        const normName = normalizeShapeName(p.name);
+        matchShape = normalizedShapes.some((sh) => {
+          const escaped = sh.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          const reg = new RegExp(`(^|\\b)${escaped}(\\b|$)`, "i");
+          return reg.test(normName);
+        });
+      }
       if (!matchShape) return false;
     }
-    if (style) {
-      const styleArr = Array.isArray(style) ? style.map((s) => String(s).toLowerCase()) : [String(style).toLowerCase()];
-      const matchStyle = styleArr.some((st) =>
-        (p.styles || []).some((s) => String(s).toLowerCase().includes(st) || st.includes(String(s).toLowerCase())) ||
-        (p.name || "").toLowerCase().includes(st) ||
-        (p.description || "").toLowerCase().includes(st)
-      );
+
+    if (resolvedStyleArr && resolvedStyleArr.length > 0) {
+      const normalizedStyles = resolvedStyleArr
+        .map((s) => normalizeStyleName(s))
+        .filter(Boolean);
+
+      const prodStyles = (p.styles || [])
+        .map((s) => normalizeStyleName(typeof s === "object" ? s.stylename : s))
+        .filter(Boolean);
+
+      let matchStyle = false;
+      if (prodStyles.length > 0) {
+        // Strict match against product's configured styles from admin panel
+        matchStyle = normalizedStyles.some((st) => prodStyles.includes(st));
+      } else {
+        // Fallback only if product has NO styles configured in admin:
+        const normName = normalizeStyleName(p.name);
+        matchStyle = normalizedStyles.some((st) => {
+          const escaped = st.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          const reg = new RegExp(`(^|\\b)${escaped}(\\b|$)`, "i");
+          return reg.test(normName);
+        });
+      }
       if (!matchStyle) return false;
     }
+
     if (resolvedAttributeFilters && resolvedAttributeFilters.length > 0) {
       for (const rf of resolvedAttributeFilters) {
         if (!rf.values || rf.values.length === 0) continue;
@@ -184,12 +270,10 @@ export default function CollectionsPage({ slugOverride = null }) {
 
         let matches;
         if (type.includes("clarity")) {
-          // Exact match on clarity name (e.g. "vs1" must not match "vvs1")
           matches = (p.clarities || []).some((c) =>
             vals.includes(String(c).toLowerCase().trim())
           );
         } else if (type.includes("metal")) {
-          // Match metal name exactly or normalized
           matches = (p.metals || []).some((m) =>
             vals.some((v) => {
               const mNorm = String(m).toLowerCase().trim();
@@ -197,7 +281,6 @@ export default function CollectionsPage({ slugOverride = null }) {
             })
           );
         } else if (type.includes("stone")) {
-          // Match stone name exactly
           matches = (p.stones || []).some((s) =>
             vals.includes(String(s).toLowerCase().trim())
           );
@@ -214,7 +297,6 @@ export default function CollectionsPage({ slugOverride = null }) {
             vals.includes(String(s).toLowerCase().trim())
           );
         } else {
-          // Fallback exact word/token matching rather than loose substring match
           const jsonStr = JSON.stringify(p);
           matches = vals.some((v) => {
             const escaped = v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -247,11 +329,22 @@ export default function CollectionsPage({ slugOverride = null }) {
   let title = displayTitle;
   if (!customTitle) {
     if (searchParams.get("search")) title = `Search: "${searchParams.get("search")}"`;
-    else if (shape) title = `${shape.charAt(0).toUpperCase() + shape.slice(1)} Cut Diamonds`;
-    else if (style) title = `${style.charAt(0).toUpperCase() + style.slice(1)} Style`;
+    else if (resolvedShapeArr && resolvedShapeArr.length > 0) title = `${resolvedShapeArr[0].charAt(0).toUpperCase() + resolvedShapeArr[0].slice(1)} Cut Diamonds`;
+    else if (resolvedStyleArr && resolvedStyleArr.length > 0) title = `${resolvedStyleArr[0].charAt(0).toUpperCase() + resolvedStyleArr[0].slice(1)} Style`;
     else if (featured === "bestseller") title = "Best Sellers";
     else if (featured === "new") title = "New Arrivals";
   }
+
+  const handleRemoveFilter = (filterKey) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (nextParams.has(filterKey)) {
+      nextParams.delete(filterKey);
+      setSearchParams(nextParams);
+    } else {
+      // If this filter was resolved from the URL slug, navigate to base collections page
+      navigate("/collection");
+    }
+  };
 
   useEffect(() => {
     document.title = `${title} | Gemora Diam Fine Jewelry`;
@@ -297,7 +390,7 @@ export default function CollectionsPage({ slugOverride = null }) {
         ) : null}
 
         {/* Active Filter Chips */}
-        {(shape || style || featured || category || search || (resolvedAttributeFilters && resolvedAttributeFilters.length > 0)) && (
+        {((resolvedShapeArr && resolvedShapeArr.length > 0) || (resolvedStyleArr && resolvedStyleArr.length > 0) || featured || category || search || (resolvedAttributeFilters && resolvedAttributeFilters.length > 0)) && (
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "16px", alignItems: "center" }}>
             <span style={{ fontSize: "0.74rem", textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--muted-foreground)", fontWeight: 600 }}>
               Active Filter:
@@ -305,36 +398,37 @@ export default function CollectionsPage({ slugOverride = null }) {
             {category && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
                 Category: {category}
-                <button onClick={() => { searchParams.delete("category"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+                <button onClick={() => handleRemoveFilter("category")} aria-label="Remove category filter" style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
-            {shape && (
+            {resolvedShapeArr && resolvedShapeArr.length > 0 && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
-                Shape: {Array.isArray(shape) ? shape.join(", ") : shape}
-                <button onClick={() => { searchParams.delete("shape"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+                Shape: {resolvedShapeArr.join(", ")}
+                <button onClick={() => handleRemoveFilter("shape")} aria-label="Remove shape filter" style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
-            {style && (
+            {resolvedStyleArr && resolvedStyleArr.length > 0 && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
-                Style: {Array.isArray(style) ? style.join(", ") : style}
-                <button onClick={() => { searchParams.delete("style"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+                Style: {resolvedStyleArr.join(", ")}
+                <button onClick={() => handleRemoveFilter("style")} aria-label="Remove style filter" style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
             {resolvedAttributeFilters && resolvedAttributeFilters.map((rf, rIdx) => (
               <span key={rIdx} style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600, textTransform: "capitalize" }}>
                 {rf.type}: {Array.isArray(rf.values) ? rf.values.join(", ") : rf.values}
+                <button onClick={() => handleRemoveFilter(rf.type)} aria-label={`Remove ${rf.type} filter`} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             ))}
             {featured && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
                 Featured: {featured}
-                <button onClick={() => { searchParams.delete("featured"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+                <button onClick={() => handleRemoveFilter("featured")} aria-label="Remove featured filter" style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
             {search && !slug && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#f2eee6", padding: "4px 10px", borderRadius: "50px", fontSize: "0.78rem", fontWeight: 600 }}>
                 Keyword: "{search}"
-                <button onClick={() => { searchParams.delete("search"); setSearchParams(searchParams); }} style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
+                <button onClick={() => handleRemoveFilter("search")} aria-label="Remove search filter" style={{ border: "none", background: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}><X size={13} /></button>
               </span>
             )}
             <Link to="/collection" style={{ fontSize: "0.74rem", color: "var(--primary)", textDecoration: "underline", marginLeft: "4px" }}>
