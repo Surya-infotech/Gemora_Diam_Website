@@ -18,6 +18,7 @@ import { useStore } from "../lib/store";
 import { slugify } from "../lib/slugify";
 import SectionHeading from "../components/SectionHeading";
 import ProductCard from "../components/ProductCard";
+import ProductDescriptionView from "../components/ProductDescriptionView";
 
 
 
@@ -1419,102 +1420,10 @@ function ProductDetailContent({ product }) {
 
           <div style={{ padding: "32px 0", width: "100%", lineHeight: 1.8, fontSize: "0.94rem", color: "var(--foreground)" }}>
             {hasDescription && currentTab === "description" && (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
-                  gap: "40px",
-                  alignItems: "start"
-                }}
-              >
-                {/* Left Column: Description Narrative */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                  <h3
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "1.35rem",
-                      fontWeight: 500,
-                      color: "#182015",
-                      margin: 0
-                    }}
-                  >
-                    The Story &amp; Craftsmanship
-                  </h3>
-                  <p style={{ color: "var(--muted-foreground)", whiteSpace: "pre-line", fontSize: "0.94rem", lineHeight: 1.85, margin: 0 }}>
-                    {product.description || product.seo?.metaDescription}
-                  </p>
-                </div>
-
-                {/* Right Column: Atelier Standards & Presentation Card */}
-                <div
-                  style={{
-                    backgroundColor: "#FAF9F6",
-                    border: "1px solid #EAE4D7",
-                    borderRadius: "14px",
-                    padding: "26px 28px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "18px"
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div
-                      style={{
-                        width: "38px",
-                        height: "38px",
-                        borderRadius: "50%",
-                        backgroundColor: "var(--primary-soft)",
-                        display: "grid",
-                        placeItems: "center",
-                        color: "var(--primary)"
-                      }}
-                    >
-                      <Sparkles size={18} />
-                    </div>
-                    <div>
-                      <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.1rem", margin: 0, color: "var(--foreground)", fontWeight: 600 }}>
-                        Craftsmanship Standard
-                      </h4>
-                      <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                        Gemora Fine Jewelry
-                      </span>
-                    </div>
-                  </div>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: "14px", borderTop: "1px solid #EDE8DE", paddingTop: "16px" }}>
-                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                      <ShieldCheck size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
-                      <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
-                        <strong style={{ color: "var(--foreground)" }}>Certified Ethical Origin:</strong> Hand-selected Type IIa lab-grown stones crafted to highest diamond color &amp; clarity parameters.
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                      <Check size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
-                      <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
-                        <strong style={{ color: "var(--foreground)" }}>Master Artisan Setting:</strong> Secured with precision micro-prongs individually hand-examined under 10x gemological magnification.
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                      <Truck size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
-                      <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
-                        <strong style={{ color: "var(--foreground)" }}>Signature Presentation:</strong> Delivered in our bespoke illuminated velvet presentation box with certificate of authenticity.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ borderTop: "1px solid #EDE8DE", paddingTop: "14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: "0.76rem", color: "var(--muted-foreground)" }}>Have bespoke questions?</span>
-                    <a
-                      href={`https://wa.me/917845120369?text=${encodeURIComponent(`Hello, I have questions regarding the craftsmanship of ${product.name}`)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ fontSize: "0.78rem", color: "var(--primary)", fontWeight: 600, textDecoration: "none" }}
-                    >
-                      Ask Concierge &rarr;
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <ProductDescriptionView
+                description={product.description || product.seo?.metaDescription}
+                product={product}
+              />
             )}
 
             {currentTab === "specifications" && (
