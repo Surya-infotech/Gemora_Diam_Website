@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import DOMPurify from "dompurify";
-import { Sparkles, ShieldCheck, Check, Truck } from "lucide-react";
 
 /**
  * Strips emoji characters from text for clean, elegant typography.
@@ -115,80 +114,15 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-export default function ProductDescriptionView({ description, product }) {
+export default function ProductDescriptionView({ description }) {
   const sanitizedHtml = useMemo(() => formatToLuxuryHtml(description), [description]);
 
   return (
-    <div className="product-luxury-description-layout">
-      {/* LEFT: Dynamic HTML / Typography Description Container */}
-      <div className="product-luxury-description-body">
-        <div
-          className="luxury-html-content"
-          dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
-        />
-      </div>
-
-      {/* RIGHT: Sticky Craftsmanship Standard Card */}
-      <div className="product-luxury-description-sidebar">
-        <div className="craftsmanship-sticky-card">
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <div
-              style={{
-                width: "38px",
-                height: "38px",
-                borderRadius: "50%",
-                backgroundColor: "var(--primary-soft)",
-                display: "grid",
-                placeItems: "center",
-                color: "var(--primary)"
-              }}
-            >
-              <Sparkles size={18} />
-            </div>
-            <div>
-              <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "1.1rem", margin: 0, color: "var(--foreground)", fontWeight: 600 }}>
-                Craftsmanship Standard
-              </h4>
-              <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                Gemora Fine Jewelry
-              </span>
-            </div>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "14px", borderTop: "1px solid #EDE8DE", paddingTop: "16px" }}>
-            <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-              <ShieldCheck size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
-              <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
-                <strong style={{ color: "var(--foreground)" }}>Certified Ethical Origin:</strong> Hand-selected Type IIa lab-grown stones crafted to highest diamond color &amp; clarity parameters.
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-              <Check size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
-              <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
-                <strong style={{ color: "var(--foreground)" }}>Master Artisan Setting:</strong> Secured with precision micro-prongs individually hand-examined under 10x gemological magnification.
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-              <Truck size={16} color="var(--primary)" style={{ flexShrink: 0, marginTop: "3px" }} />
-              <div style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
-                <strong style={{ color: "var(--foreground)" }}>Signature Presentation:</strong> Delivered in our bespoke illuminated velvet presentation box with certificate of authenticity.
-              </div>
-            </div>
-          </div>
-
-          <div style={{ borderTop: "1px solid #EDE8DE", paddingTop: "14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: "0.76rem", color: "var(--muted-foreground)" }}>Have bespoke questions?</span>
-            <a
-              href={`https://wa.me/917845120369?text=${encodeURIComponent(`Hello, I have questions regarding the craftsmanship of ${product?.name || "this ring"}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ fontSize: "0.78rem", color: "var(--primary)", fontWeight: 600, textDecoration: "none" }}
-            >
-              Ask Concierge &rarr;
-            </a>
-          </div>
-        </div>
-      </div>
+    <div className="product-luxury-description-full">
+      <div
+        className="luxury-html-content"
+        dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+      />
     </div>
   );
 }

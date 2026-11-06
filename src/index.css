@@ -1047,41 +1047,9 @@ img {
    Luxury Product Description Layout & Typography (Way 3)
    ========================================================================== */
 
-.product-luxury-description-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 48px;
-  align-items: start;
+.product-luxury-description-full {
   width: 100%;
-}
-
-@media (max-width: 960px) {
-  .product-luxury-description-layout {
-    grid-template-columns: 1fr;
-    gap: 36px;
-  }
-}
-
-.product-luxury-description-body {
-  min-width: 0;
-  width: 100%;
-}
-
-.product-luxury-description-sidebar {
-  width: 100%;
-}
-
-.craftsmanship-sticky-card {
-  position: sticky;
-  top: 100px;
-  background-color: #FAF9F6;
-  border: 1px solid #EAE4D7;
-  border-radius: 14px;
-  padding: 26px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  max-width: 100%;
 }
 
 /* Rich / Typography Content Styling */
