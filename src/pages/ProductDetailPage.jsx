@@ -15,6 +15,7 @@ import {
   Check
 } from "lucide-react";
 import { useStore } from "../lib/store";
+import { slugify } from "../lib/slugify";
 import SectionHeading from "../components/SectionHeading";
 import ProductCard from "../components/ProductCard";
 
@@ -616,15 +617,9 @@ function ProductDetailContent({ product }) {
               Home
             </Link>
             <span style={{ color: "var(--gold-deep)", opacity: 0.6 }}>/</span>
-            <Link to="/collections" style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
+            <Link to={product.category ? `/collection/${slugify(product.category)}` : "/collection"} style={{ color: "inherit", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--primary)")} onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}>
               {product.category || "Collections"}
             </Link>
-            {product.subcategory && (
-              <>
-                <span style={{ color: "var(--gold-deep)", opacity: 0.6 }}>/</span>
-                <span>{product.subcategory}</span>
-              </>
-            )}
             <span style={{ color: "var(--gold-deep)", opacity: 0.6 }}>/</span>
             <span style={{ color: "var(--foreground)", fontWeight: 500 }} title={product.name}>
               {truncatedBreadcrumbTitle}
@@ -831,7 +826,6 @@ function ProductDetailContent({ product }) {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                 <span className="eyebrow" style={{ color: "var(--primary)", letterSpacing: "0.22em", fontSize: "0.74rem" }}>
                   {product.category || (generalSettings?.softwarename || "Gemora Diam")}
-                  {product.subcategory ? ` • ${product.subcategory}` : ""}
                 </span>
 
                 <button
