@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapPin,
   Phone,
@@ -11,6 +11,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { useStore } from "../lib/store";
+import { getCountryDetails } from "../utils/deviceDetails";
 import atelier from "../assets/atelier.jpg";
 
 const validate = (f) => ({
@@ -25,6 +26,24 @@ export default function ContactPage() {
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
+  const [userCountry, setUserCountry] = useState({ countryname: "", countrycode: "" });
+
+  // Pre-request / warm-up browser location so it is instantly available upon submit (same as Signin.jsx)
+  useEffect(() => {
+    if (typeof window !== "undefined" && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        () => {},
+        () => {},
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 300000 }
+      );
+    }
+
+    getCountryDetails().then((data) => {
+      if (data?.countryname) {
+        setUserCountry(data);
+      }
+    });
+  }, []);
 
   const errs = validate(f);
 
@@ -41,10 +60,21 @@ export default function ContactPage() {
       return;
     }
     setIsSubmitting(true);
+    let countryData = userCountry;
+    if (!countryData?.countryname) {
+      try {
+        countryData = await getCountryDetails();
+      } catch (err) {
+        console.warn("Country detection fallback:", err);
+      }
+    }
+
     const res = await submitContactUs({
       name: f.name,
       email: f.email,
-      message: f.message
+      message: f.message,
+      countryname: countryData?.countryname || "",
+      countrycode: countryData?.countrycode || ""
     });
     setIsSubmitting(false);
     if (res?.success) {

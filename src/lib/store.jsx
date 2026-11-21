@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatPhoneNumber } from "./formatters";
+import { getCountryDetails } from "../utils/deviceDetails";
 
 
 function mapBackendItem(item) {
@@ -999,12 +1000,30 @@ export function StoreProvider({ children }) {
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
 
   // Send Contact Us inquiry to backend Admin Panel
-  const submitContactUs = async ({ name, email, message }) => {
+  const submitContactUs = async ({ name, email, message, countryname, countrycode }) => {
     try {
+      let resolvedCountryName = countryname;
+      let resolvedCountryCode = countrycode;
+      if (!resolvedCountryName) {
+        try {
+          const detected = await getCountryDetails();
+          resolvedCountryName = detected?.countryname || "";
+          resolvedCountryCode = detected?.countrycode || "";
+        } catch {
+          // ignore detection errors
+        }
+      }
+
       const res = await fetch(`${backendUrl}/Support/AddContactUs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message })
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          countryname: resolvedCountryName || "",
+          countrycode: resolvedCountryCode || ""
+        })
       });
       const data = await res.json();
       if (!res.ok) {
