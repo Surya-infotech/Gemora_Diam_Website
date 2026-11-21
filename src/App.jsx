@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, Link } from "react-router-do
 import { StoreProvider } from "./lib/store";
 import { Header, Footer } from "./components/SiteChrome";
 import InquiryPopupModal from "./components/InquiryPopupModal";
+import ChatWidget from "./components/ChatWidget";
 
 import HomePage from "./pages/HomePage";
 import CollectionsPage from "./pages/CollectionsPage";
@@ -69,6 +70,7 @@ export default function App() {
       <StoreProvider>
         <ScrollToTop />
         <InquiryPopupModal />
+        <ChatWidget />
         <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
           <Header />
           <main style={{ flex: 1 }}>

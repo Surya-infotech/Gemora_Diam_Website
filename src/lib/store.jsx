@@ -231,9 +231,16 @@ export function StoreProvider({ children }) {
   const [cartOpen, setCartOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
-  // On mount: Purge all items from localStorage except CustomerID and customer token, and verify token
+  // On mount: Purge all items from localStorage except CustomerID, customer token, and chat credentials
   useEffect(() => {
-    const allowed = [customerIdKey, customerTokenKey];
+    const allowed = [
+      customerIdKey,
+      customerTokenKey,
+      "gemora_chat_guest_id",
+      "gemora_chat_conv_id",
+      "gemora_chat_guest_name",
+      "gemora_chat_guest_email"
+    ];
     try {
       // Purge all items from localStorage except CustomerID and customer token
       Object.keys(localStorage).forEach((key) => {
