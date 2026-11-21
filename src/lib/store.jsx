@@ -1000,15 +1000,13 @@ export function StoreProvider({ children }) {
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
 
   // Send Contact Us inquiry to backend Admin Panel
-  const submitContactUs = async ({ name, email, message, countryname, countrycode }) => {
+  const submitContactUs = async ({ name, email, message, countryname }) => {
     try {
       let resolvedCountryName = countryname;
-      let resolvedCountryCode = countrycode;
       if (!resolvedCountryName) {
         try {
           const detected = await getCountryDetails();
           resolvedCountryName = detected?.countryname || "";
-          resolvedCountryCode = detected?.countrycode || "";
         } catch {
           // ignore detection errors
         }
@@ -1021,8 +1019,7 @@ export function StoreProvider({ children }) {
           name,
           email,
           message,
-          countryname: resolvedCountryName || "",
-          countrycode: resolvedCountryCode || ""
+          countryname: resolvedCountryName || ""
         })
       });
       const data = await res.json();

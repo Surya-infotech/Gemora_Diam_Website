@@ -37,8 +37,7 @@ const reverseGeocodeCountry = async (latitude, longitude) => {
             const data = await response.json();
             if (data.countryName) {
                 return {
-                    countryname: data.countryName,
-                    countrycode: data.countryCode || ''
+                    countryname: data.countryName
                 };
             }
         }
@@ -54,11 +53,9 @@ const reverseGeocodeCountry = async (latitude, longitude) => {
         if (response.ok) {
             const data = await response.json();
             const country = data.address?.country || '';
-            const countryCode = data.address?.country_code ? data.address.country_code.toUpperCase() : '';
             if (country) {
                 return {
-                    countryname: country,
-                    countrycode: countryCode
+                    countryname: country
                 };
             }
         }
@@ -99,8 +96,7 @@ export const getCountryDetails = async () => {
             const data = await response.json();
             if (data.countryName) {
                 return {
-                    countryname: data.countryName,
-                    countrycode: data.countryCode || ''
+                    countryname: data.countryName
                 };
             }
         }
@@ -115,8 +111,7 @@ export const getCountryDetails = async () => {
             const data = await response.json();
             if (data.success && data.country) {
                 return {
-                    countryname: data.country,
-                    countrycode: data.country_code || ''
+                    countryname: data.country
                 };
             }
         }
@@ -131,8 +126,7 @@ export const getCountryDetails = async () => {
             const data = await response.json();
             if (data.countryName) {
                 return {
-                    countryname: data.countryName,
-                    countrycode: data.countryCode || ''
+                    countryname: data.countryName
                 };
             }
         }
@@ -147,8 +141,7 @@ export const getCountryDetails = async () => {
             const data = await response.json();
             if (data.country) {
                 return {
-                    countryname: data.country,
-                    countrycode: data.country_code || ''
+                    countryname: data.country
                 };
             }
         }
@@ -157,7 +150,6 @@ export const getCountryDetails = async () => {
     }
 
     return {
-        countryname: '',
-        countrycode: ''
+        countryname: ''
     };
 };

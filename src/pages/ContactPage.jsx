@@ -26,7 +26,7 @@ export default function ContactPage() {
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
-  const [userCountry, setUserCountry] = useState({ countryname: "", countrycode: "" });
+  const [userCountry, setUserCountry] = useState({ countryname: "" });
 
   // Pre-request / warm-up browser location so it is instantly available upon submit (same as Signin.jsx)
   useEffect(() => {
@@ -73,8 +73,7 @@ export default function ContactPage() {
       name: f.name,
       email: f.email,
       message: f.message,
-      countryname: countryData?.countryname || "",
-      countrycode: countryData?.countrycode || ""
+      countryname: countryData?.countryname || ""
     });
     setIsSubmitting(false);
     if (res?.success) {
