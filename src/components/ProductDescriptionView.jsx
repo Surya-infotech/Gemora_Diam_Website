@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import DOMPurify from "dompurify";
 
 /**
@@ -6,7 +6,8 @@ import DOMPurify from "dompurify";
  */
 function stripEmojis(text = "") {
   return String(text)
-    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1FA00}-\u{1FAFF}]/gu, "")
+    .replace(/\p{Extended_Pictographic}/gu, "")
+    .replace(/[\uFE00-\uFE0F\u200D]/g, "")
     .trim();
 }
 
@@ -71,7 +72,7 @@ function formatToLuxuryHtml(rawInput = "") {
     }
 
     // 3. Detect Bullet points and Key-Value specification lines
-    const isBulletLine = /^[\u27A4\u2022\-\*•➤\u2705\uD83D\uDEAB]/.test(rawLine);
+    const isBulletLine = /^[\u27A4\u2022\-*•➤\u2705\u{1F6AB}]/u.test(rawLine);
     const colonIdx = clean.indexOf(":");
     const isKeyValue = colonIdx > 1 && colonIdx < 35 && !clean.startsWith("http");
 
@@ -82,13 +83,13 @@ function formatToLuxuryHtml(rawInput = "") {
       }
 
       if (isKeyValue) {
-        const key = clean.slice(0, colonIdx).replace(/^[\u27A4\u2022\-\*•➤\s]+/, "").trim();
+        const key = clean.slice(0, colonIdx).replace(/^[\u27A4\u2022\-*•➤\s]+/u, "").trim();
         const val = clean.slice(colonIdx + 1).replace(/^\[|\]$/g, "").trim();
         htmlParts.push(
           `<li><span class="luxury-bullet-dot">✦</span><span class="spec-key">${escapeHtml(key)}:</span> <span class="spec-value">${escapeHtml(val)}</span></li>`
         );
       } else {
-        const itemText = clean.replace(/^[\u27A4\u2022\-\*•➤\s]+/, "").trim();
+        const itemText = clean.replace(/^[\u27A4\u2022\-*•➤\s]+/u, "").trim();
         htmlParts.push(
           `<li><span class="luxury-bullet-dot">✦</span><span class="spec-value">${escapeHtml(itemText)}</span></li>`
         );

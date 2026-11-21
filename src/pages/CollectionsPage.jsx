@@ -221,19 +221,18 @@ export default function CollectionsPage({ slugOverride = null }) {
         .map((s) => normalizeShapeName(typeof s === "object" ? s.shapename : s))
         .filter(Boolean);
 
-      let matchShape = false;
-      if (prodShapes.length > 0) {
-        matchShape = normalizedShapes.some((sh) =>
-          prodShapes.some((ps) => ps === sh || ps.replace(/\s+/g, "") === sh.replace(/\s+/g, ""))
-        );
-      } else {
-        const normName = normalizeShapeName(p.name);
-        matchShape = normalizedShapes.some((sh) => {
-          const escaped = sh.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-          const reg = new RegExp(`(^|\\b)${escaped}(\\b|$)`, "i");
-          return reg.test(normName);
-        });
-      }
+      const matchShape = prodShapes.length > 0
+        ? normalizedShapes.some((sh) =>
+            prodShapes.some((ps) => ps === sh || ps.replace(/\s+/g, "") === sh.replace(/\s+/g, ""))
+          )
+        : (() => {
+            const normName = normalizeShapeName(p.name);
+            return normalizedShapes.some((sh) => {
+              const escaped = sh.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+              const reg = new RegExp(`(^|\\b)${escaped}(\\b|$)`, "i");
+              return reg.test(normName);
+            });
+          })();
       if (!matchShape) return false;
     }
 
@@ -246,19 +245,16 @@ export default function CollectionsPage({ slugOverride = null }) {
         .map((s) => normalizeStyleName(typeof s === "object" ? s.stylename : s))
         .filter(Boolean);
 
-      let matchStyle = false;
-      if (prodStyles.length > 0) {
-        // Strict match against product's configured styles from admin panel
-        matchStyle = normalizedStyles.some((st) => prodStyles.includes(st));
-      } else {
-        // Fallback only if product has NO styles configured in admin:
-        const normName = normalizeStyleName(p.name);
-        matchStyle = normalizedStyles.some((st) => {
-          const escaped = st.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-          const reg = new RegExp(`(^|\\b)${escaped}(\\b|$)`, "i");
-          return reg.test(normName);
-        });
-      }
+      const matchStyle = prodStyles.length > 0
+        ? normalizedStyles.some((st) => prodStyles.includes(st))
+        : (() => {
+            const normName = normalizeStyleName(p.name);
+            return normalizedStyles.some((st) => {
+              const escaped = st.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+              const reg = new RegExp(`(^|\\b)${escaped}(\\b|$)`, "i");
+              return reg.test(normName);
+            });
+          })();
       if (!matchStyle) return false;
     }
 
