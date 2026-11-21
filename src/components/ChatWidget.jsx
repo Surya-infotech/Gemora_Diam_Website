@@ -1,10 +1,26 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MessageSquare, X, Send, Image as ImageIcon, Minus, Sparkles, Check, CheckCheck, Loader2 } from "lucide-react";
+import {
+  MessageSquare,
+  X,
+  Send,
+  Image as ImageIcon,
+  Minus,
+  Sparkles,
+  Check,
+  CheckCheck,
+  Loader2,
+  User,
+  LogIn,
+  LogOut,
+  Mail,
+  Lock,
+  Phone
+} from "lucide-react";
 import { io } from "socket.io-client";
 import { useStore } from "../lib/store";
 
 export default function ChatWidget() {
-  const { user } = useStore();
+  const { user, login, logout } = useStore();
   const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8085";
   const customerTokenKey = import.meta.env.VITE_CUSTOMERTOKEN_NAME;
 
@@ -17,15 +33,33 @@ export default function ChatWidget() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [adminTyping, setAdminTyping] = useState(false);
 
+  // Authentication & Guest Tab state
+  const [authTab, setAuthTab] = useState("signin"); // "signin" | "guest"
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [authError, setAuthError] = useState("");
+
   // Guest form fields for non-logged in users
   const [guestName, setGuestName] = useState(() => localStorage.getItem("gemora_chat_guest_name") || "");
   const [guestEmail, setGuestEmail] = useState(() => localStorage.getItem("gemora_chat_guest_email") || "");
-  const [needsGuestDetails, setNeedsGuestDetails] = useState(false);
 
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+
+  // Clear errors when authTab changes
+  useEffect(() => {
+    setAuthError("");
+  }, [authTab]);
+
+  // If user state updates (e.g. from token verification or login), prefill credentials and clear errors
+  useEffect(() => {
+    if (user) {
+      setAuthError("");
+    }
+  }, [user]);
 
   // Get or generate persistent Guest ID
   const getGuestId = () => {
@@ -112,61 +146,60 @@ export default function ChatWidget() {
   }, [backendUrl, conversation?.conversationId, isOpen]);
 
   // Initiate conversation with server
-  const initiateChat = useCallback(async (forcedName, forcedEmail) => {
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem(customerTokenKey);
-      const guestId = !user ? getGuestId() : null;
+  const initiateChat = useCallback(
+    async (forcedName, forcedEmail, initialMsg = "") => {
+      try {
+        setIsLoading(true);
+        const token = localStorage.getItem(customerTokenKey);
+        const guestId = !user ? getGuestId() : null;
 
-      const payload = {
-        guestId,
-        name: user?.fullname || forcedName || guestName,
-        email: user?.email || forcedEmail || guestEmail
-      };
+        const payload = {
+          guestId,
+          name: forcedName || user?.fullname || guestName || "Visitor",
+          email: forcedEmail || user?.email || guestEmail || "",
+          initialMessage: (initialMsg || "").trim()
+        };
 
-      const res = await fetch(`${backendUrl}/Chat/Initiate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-user": "true",
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify(payload)
-      });
+        const res = await fetch(`${backendUrl}/Chat/Initiate`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user": "true",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(payload)
+        });
 
-      const data = await res.json();
-      if (data.success && data.conversation) {
-        setConversation(data.conversation);
-        setMessages(data.messages || []);
-        localStorage.setItem("gemora_chat_conv_id", data.conversation.conversationId);
+        const data = await res.json();
+        if (data.success && data.conversation) {
+          setConversation(data.conversation);
+          setMessages(data.messages || []);
+          localStorage.setItem("gemora_chat_conv_id", data.conversation.conversationId);
 
-        if (socketRef.current) {
-          socketRef.current.emit("join_conversation", {
-            conversationId: data.conversation.conversationId
-          });
+          if (socketRef.current) {
+            socketRef.current.emit("join_conversation", {
+              conversationId: data.conversation.conversationId
+            });
+          }
+          if (initialMsg) {
+            setInputText("");
+          }
         }
-        setNeedsGuestDetails(false);
+      } catch (err) {
+        console.error("Chat initiation error:", err);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      console.error("Chat initiation error:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [backendUrl, customerTokenKey, guestEmail, guestName, user]);
+    },
+    [backendUrl, customerTokenKey, guestEmail, guestName, user]
+  );
 
   // Load chat on opening widget
   const handleOpenWidget = () => {
     setIsOpen(true);
     setUnreadCount(0);
 
-    if (!user && !guestName && !localStorage.getItem("gemora_chat_guest_name")) {
-      setNeedsGuestDetails(true);
-      return;
-    }
-
-    if (!conversation) {
-      initiateChat();
-    } else if (socketRef.current) {
+    if (conversation?.conversationId && socketRef.current) {
       socketRef.current.emit("mark_messages_read", {
         conversationId: conversation.conversationId,
         readerType: "customer"
@@ -174,6 +207,29 @@ export default function ChatWidget() {
     }
   };
 
+  // Handle direct sign-in from inside chat widget
+  const handleInlineSignIn = async (e) => {
+    e.preventDefault();
+    if (!signInEmail.trim() || !signInPassword) return;
+
+    try {
+      setIsSigningIn(true);
+      setAuthError("");
+      const res = await login({ email: signInEmail.trim(), password: signInPassword });
+      if (res && res.success && res.customer) {
+        // Auto initiate or resume conversation for the newly signed in user
+        await initiateChat(res.customer.fullname, res.customer.email);
+      } else {
+        setAuthError(res?.error || "Invalid email or password. Please try again.");
+      }
+    } catch (err) {
+      setAuthError(err.message || "Sign in failed. Please verify your credentials.");
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
+
+  // Handle guest chat start
   const handleStartGuestChat = (e) => {
     e.preventDefault();
     if (!guestName.trim()) return;
@@ -186,11 +242,32 @@ export default function ChatWidget() {
     initiateChat(guestName.trim(), guestEmail.trim());
   };
 
+  // Sign out handler from inside the widget
+  const handleLogoutFromChat = () => {
+    logout();
+    setConversation(null);
+    setMessages([]);
+    localStorage.removeItem("gemora_chat_conv_id");
+    setAuthTab("signin");
+  };
+
   // Send message
   const handleSendMessage = async (textToSend = inputText, attachmentUrl = "") => {
     const text = (textToSend || "").trim();
     if (!text && !attachmentUrl) return;
-    if (!conversation?.conversationId) return;
+
+    // If conversation is not yet initiated, initiate it first with this message
+    if (!conversation?.conversationId) {
+      if (user) {
+        initiateChat(user.fullname, user.email, text);
+        return;
+      }
+      if (guestName.trim()) {
+        initiateChat(guestName.trim(), guestEmail.trim(), text);
+        return;
+      }
+      return;
+    }
 
     const senderType = user ? "customer" : "guest";
     const senderName = user?.fullname || guestName || "Visitor";
@@ -373,7 +450,7 @@ export default function ChatWidget() {
               justifyContent: "space-between"
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
               <div
                 style={{
                   width: "38px",
@@ -384,16 +461,17 @@ export default function ChatWidget() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#d4af37"
+                  color: "#d4af37",
+                  flexShrink: 0
                 }}
               >
                 <Sparkles size={18} />
               </div>
-              <div>
+              <div style={{ minWidth: 0 }}>
                 <h4 style={{ margin: 0, fontSize: "14px", fontWeight: "600", letterSpacing: "0.5px", color: "#f3f4f6" }}>
                   Gemora Diam Concierge
                 </h4>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "2px", flexWrap: "wrap" }}>
                   <span
                     style={{
                       width: "7px",
@@ -401,15 +479,36 @@ export default function ChatWidget() {
                       borderRadius: "50%",
                       backgroundColor: "#10b981",
                       display: "inline-block",
-                      boxShadow: "0 0 6px #10b981"
+                      boxShadow: "0 0 6px #10b981",
+                      flexShrink: 0
                     }}
                   />
                   <span style={{ fontSize: "11px", color: "#9ca3af" }}>Live Diamond Specialist</span>
+                  {user && (
+                    <span
+                      style={{
+                        fontSize: "10px",
+                        fontWeight: "600",
+                        color: "#d4af37",
+                        backgroundColor: "rgba(212,175,55,0.12)",
+                        padding: "1px 6px",
+                        borderRadius: "4px",
+                        border: "1px solid rgba(212,175,55,0.25)",
+                        maxWidth: "110px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap"
+                      }}
+                      title={`Signed in as ${user.fullname} (${user.email})`}
+                    >
+                      ✦ {user.fullname.split(" ")[0]}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "4px", flexShrink: 0 }}>
               <button
                 onClick={() => setIsOpen(false)}
                 aria-label="Minimize Chat"
@@ -455,93 +554,496 @@ export default function ChatWidget() {
               gap: "12px"
             }}
           >
-            {/* Guest Welcome Form */}
-            {needsGuestDetails && !conversation && (
-              <div
-                style={{
-                  padding: "18px",
-                  backgroundColor: "#161b24",
-                  border: "1px solid #2a3140",
-                  borderRadius: "12px",
-                  marginTop: "10px"
-                }}
-              >
-                <h5 style={{ margin: "0 0 6px", fontSize: "14px", color: "#d4af37", fontWeight: "600" }}>
-                  Welcome to Gemora Diam Atelier
-                </h5>
-                <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#9ca3af", lineHeight: "1.4" }}>
-                  Please share your details so our diamond concierge can assist you seamlessly.
-                </p>
-                <form onSubmit={handleStartGuestChat} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: "11px", color: "#9ca3af", marginBottom: "4px" }}>
-                      Your Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={guestName}
-                      onChange={(e) => setGuestName(e.target.value)}
-                      placeholder="e.g. Sarah Jenkins"
+            {/* INITIAL WELCOME / IDENTITY CARD (When conversation is not yet active) */}
+            {!conversation && (
+              user ? (
+                /* ======================================================== */
+                /* CASE 1: SIGNED-IN CLIENT ACCOUNT DETAILS CARD            */
+                /* ======================================================== */
+                <div
+                  style={{
+                    padding: "18px",
+                    backgroundColor: "#161b24",
+                    border: "1px solid rgba(212, 175, 55, 0.4)",
+                    borderRadius: "14px",
+                    marginTop: "4px",
+                    boxShadow: "0 10px 28px rgba(0, 0, 0, 0.45)"
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <Sparkles size={13} style={{ color: "#d4af37" }} />
+                      <span style={{ fontSize: "10px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.14em", color: "#d4af37" }}>
+                        Signed In Client
+                      </span>
+                    </div>
+                    <span
                       style={{
-                        width: "100%",
-                        padding: "9px 12px",
-                        backgroundColor: "#0d0f14",
-                        border: "1px solid #2d3340",
-                        borderRadius: "6px",
-                        color: "#f3f4f6",
-                        fontSize: "13px",
-                        outline: "none"
+                        fontSize: "10px",
+                        fontWeight: "600",
+                        backgroundColor: "rgba(16, 185, 129, 0.15)",
+                        color: "#10b981",
+                        padding: "2px 8px",
+                        borderRadius: "10px",
+                        border: "1px solid rgba(16, 185, 129, 0.3)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px"
                       }}
-                    />
+                    >
+                      <span style={{ width: "5px", height: "5px", borderRadius: "50%", backgroundColor: "#10b981" }} />
+                      Verified Profile
+                    </span>
                   </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: "11px", color: "#9ca3af", marginBottom: "4px" }}>
-                      Email or WhatsApp (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={guestEmail}
-                      onChange={(e) => setGuestEmail(e.target.value)}
-                      placeholder="e.g. sarah@example.com"
+
+                  {/* Account Details Box */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 14px",
+                      backgroundColor: "#0d0f14",
+                      border: "1px solid #28303f",
+                      borderRadius: "10px",
+                      marginBottom: "14px"
+                    }}
+                  >
+                    <div
                       style={{
-                        width: "100%",
-                        padding: "9px 12px",
-                        backgroundColor: "#0d0f14",
-                        border: "1px solid #2d3340",
-                        borderRadius: "6px",
-                        color: "#f3f4f6",
-                        fontSize: "13px",
-                        outline: "none"
+                        width: "44px",
+                        height: "44px",
+                        borderRadius: "50%",
+                        background: "linear-gradient(135deg, #d4af37 0%, #aa8624 100%)",
+                        color: "#0a0c10",
+                        fontWeight: "700",
+                        fontSize: "18px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        boxShadow: "0 4px 12px rgba(212, 175, 55, 0.25)"
                       }}
-                    />
+                    >
+                      {user.fullname ? user.fullname[0].toUpperCase() : "U"}
+                    </div>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontSize: "14px", fontWeight: "600", color: "#f3f4f6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {user.fullname}
+                      </div>
+                      <div style={{ fontSize: "12px", color: "#9ca3af", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginTop: "2px" }}>
+                        {user.email}
+                      </div>
+                      {user.phone ? (
+                        <div style={{ fontSize: "11px", color: "#6b7280", marginTop: "2px", display: "flex", alignItems: "center", gap: "4px" }}>
+                          <Phone size={10} /> {user.phone}
+                        </div>
+                      ) : null}
+                      {user.customerid ? (
+                        <div style={{ fontSize: "10px", color: "#d4af37", marginTop: "3px", letterSpacing: "0.06em" }}>
+                          Client ID: #{user.customerid}
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
+
+                  <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#9ca3af", lineHeight: "1.45" }}>
+                    Welcome back to the atelier, <strong style={{ color: "#f3f4f6" }}>{user.fullname}</strong>. Your consultation will be linked directly to your authenticated account.
+                  </p>
+
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={() => initiateChat(user.fullname, user.email)}
                     disabled={isLoading}
                     style={{
-                      marginTop: "6px",
-                      padding: "10px 14px",
+                      width: "100%",
+                      padding: "11px 16px",
                       background: "linear-gradient(135deg, #d4af37 0%, #aa8624 100%)",
                       color: "#0a0c10",
                       border: "none",
-                      borderRadius: "6px",
+                      borderRadius: "8px",
                       fontSize: "13px",
                       fontWeight: "600",
-                      cursor: "pointer"
+                      cursor: isLoading ? "not-allowed" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "8px",
+                      boxShadow: "0 4px 14px rgba(212, 175, 55, 0.3)"
                     }}
                   >
-                    {isLoading ? "Starting Chat..." : "Start Conversation"}
+                    {isLoading ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        <span>Connecting to Concierge...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={16} />
+                        <span>Start Conversation as {user.fullname.split(" ")[0]}</span>
+                      </>
+                    )}
                   </button>
-                </form>
-              </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginTop: "12px",
+                      paddingTop: "10px",
+                      borderTop: "1px solid #232936"
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={handleLogoutFromChat}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#9ca3af",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        padding: 0
+                      }}
+                    >
+                      <LogOut size={12} />
+                      <span>Sign Out / Switch</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAuthTab("guest");
+                        initiateChat(guestName.trim() || "Visitor", guestEmail.trim());
+                      }}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#6b7280",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        padding: 0
+                      }}
+                    >
+                      Chat as Guest
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* ======================================================== */
+                /* CASE 2: NOT SIGNED IN (Sign In Tab or Guest Tab)         */
+                /* ======================================================== */
+                <div
+                  style={{
+                    padding: "18px",
+                    backgroundColor: "#161b24",
+                    border: "1px solid #2a3140",
+                    borderRadius: "14px",
+                    marginTop: "4px"
+                  }}
+                >
+                  <h5 style={{ margin: "0 0 4px", fontSize: "14px", color: "#d4af37", fontWeight: "600" }}>
+                    Welcome to Gemora Diam Atelier
+                  </h5>
+                  <p style={{ margin: "0 0 14px", fontSize: "12px", color: "#9ca3af", lineHeight: "1.4" }}>
+                    Sign in to your client account or continue as guest to speak with our diamond concierge.
+                  </p>
+
+                  {/* Tabs: Sign In vs Guest */}
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "4px",
+                      backgroundColor: "#0d0f14",
+                      padding: "3px",
+                      borderRadius: "8px",
+                      marginBottom: "14px",
+                      border: "1px solid #252b37"
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setAuthTab("signin")}
+                      style={{
+                        padding: "8px 10px",
+                        borderRadius: "6px",
+                        border: "none",
+                        backgroundColor: authTab === "signin" ? "#d4af37" : "transparent",
+                        color: authTab === "signin" ? "#0a0c10" : "#9ca3af",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "5px",
+                        transition: "all 0.15s ease"
+                      }}
+                    >
+                      <LogIn size={13} />
+                      <span>Sign In Account</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAuthTab("guest")}
+                      style={{
+                        padding: "8px 10px",
+                        borderRadius: "6px",
+                        border: "none",
+                        backgroundColor: authTab === "guest" ? "#d4af37" : "transparent",
+                        color: authTab === "guest" ? "#0a0c10" : "#9ca3af",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "5px",
+                        transition: "all 0.15s ease"
+                      }}
+                    >
+                      <User size={13} />
+                      <span>Guest Visitor</span>
+                    </button>
+                  </div>
+
+                  {authTab === "signin" ? (
+                    /* Sign In Form */
+                    <form onSubmit={handleInlineSignIn} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                      {authError && (
+                        <div
+                          style={{
+                            padding: "8px 12px",
+                            backgroundColor: "rgba(225, 29, 72, 0.12)",
+                            border: "1px solid rgba(225, 29, 72, 0.35)",
+                            borderRadius: "6px",
+                            color: "#fb7185",
+                            fontSize: "11px",
+                            lineHeight: "1.35"
+                          }}
+                        >
+                          {authError}
+                        </div>
+                      )}
+                      <div>
+                        <label style={{ display: "block", fontSize: "11px", color: "#9ca3af", marginBottom: "4px" }}>
+                          Email Address *
+                        </label>
+                        <div style={{ position: "relative" }}>
+                          <input
+                            type="email"
+                            required
+                            value={signInEmail}
+                            onChange={(e) => setSignInEmail(e.target.value)}
+                            placeholder="e.g. sarah@example.com"
+                            style={{
+                              width: "100%",
+                              padding: "9px 12px 9px 34px",
+                              backgroundColor: "#0d0f14",
+                              border: "1px solid #2d3340",
+                              borderRadius: "6px",
+                              color: "#f3f4f6",
+                              fontSize: "13px",
+                              outline: "none"
+                            }}
+                          />
+                          <Mail size={14} style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#6b7280" }} />
+                        </div>
+                      </div>
+                      <div>
+                        <label style={{ display: "block", fontSize: "11px", color: "#9ca3af", marginBottom: "4px" }}>
+                          Password *
+                        </label>
+                        <div style={{ position: "relative" }}>
+                          <input
+                            type="password"
+                            required
+                            value={signInPassword}
+                            onChange={(e) => setSignInPassword(e.target.value)}
+                            placeholder="••••••••"
+                            style={{
+                              width: "100%",
+                              padding: "9px 12px 9px 34px",
+                              backgroundColor: "#0d0f14",
+                              border: "1px solid #2d3340",
+                              borderRadius: "6px",
+                              color: "#f3f4f6",
+                              fontSize: "13px",
+                              outline: "none"
+                            }}
+                          />
+                          <Lock size={14} style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#6b7280" }} />
+                        </div>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isSigningIn}
+                        style={{
+                          marginTop: "4px",
+                          padding: "10px 14px",
+                          background: "linear-gradient(135deg, #d4af37 0%, #aa8624 100%)",
+                          color: "#0a0c10",
+                          border: "none",
+                          borderRadius: "6px",
+                          fontSize: "13px",
+                          fontWeight: "600",
+                          cursor: isSigningIn ? "not-allowed" : "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px"
+                        }}
+                      >
+                        {isSigningIn ? (
+                          <>
+                            <Loader2 size={16} className="animate-spin" />
+                            <span>Signing In...</span>
+                          </>
+                        ) : (
+                          <>
+                            <LogIn size={15} />
+                            <span>Sign In & Start Chat</span>
+                          </>
+                        )}
+                      </button>
+                    </form>
+                  ) : (
+                    /* Guest Form */
+                    <form onSubmit={handleStartGuestChat} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                      <div>
+                        <label style={{ display: "block", fontSize: "11px", color: "#9ca3af", marginBottom: "4px" }}>
+                          Your Full Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={guestName}
+                          onChange={(e) => setGuestName(e.target.value)}
+                          placeholder="e.g. Sarah Jenkins"
+                          style={{
+                            width: "100%",
+                            padding: "9px 12px",
+                            backgroundColor: "#0d0f14",
+                            border: "1px solid #2d3340",
+                            borderRadius: "6px",
+                            color: "#f3f4f6",
+                            fontSize: "13px",
+                            outline: "none"
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: "block", fontSize: "11px", color: "#9ca3af", marginBottom: "4px" }}>
+                          Email or WhatsApp (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          value={guestEmail}
+                          onChange={(e) => setGuestEmail(e.target.value)}
+                          placeholder="e.g. sarah@example.com"
+                          style={{
+                            width: "100%",
+                            padding: "9px 12px",
+                            backgroundColor: "#0d0f14",
+                            border: "1px solid #2d3340",
+                            borderRadius: "6px",
+                            color: "#f3f4f6",
+                            fontSize: "13px",
+                            outline: "none"
+                          }}
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isLoading}
+                        style={{
+                          marginTop: "4px",
+                          padding: "10px 14px",
+                          background: "linear-gradient(135deg, #d4af37 0%, #aa8624 100%)",
+                          color: "#0a0c10",
+                          border: "none",
+                          borderRadius: "6px",
+                          fontSize: "13px",
+                          fontWeight: "600",
+                          cursor: isLoading ? "not-allowed" : "pointer"
+                        }}
+                      >
+                        {isLoading ? "Starting Chat..." : "Start Conversation"}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              )
             )}
 
             {/* Loading indicator */}
             {isLoading && (
-              <div style={{ textAlign: "center", padding: "20px", color: "#9ca3af" }}>
+              <div style={{ textAlign: "center", padding: "16px", color: "#9ca3af" }}>
                 <Loader2 size={22} className="animate-spin" style={{ margin: "0 auto 8px" }} />
                 <span style={{ fontSize: "12px" }}>Connecting to Atelier Concierge...</span>
+              </div>
+            )}
+
+            {/* Conversation Active: Top Account Banner if Signed In */}
+            {conversation && user && (
+              <div
+                style={{
+                  padding: "10px 12px",
+                  backgroundColor: "rgba(212, 175, 55, 0.08)",
+                  border: "1px solid rgba(212, 175, 55, 0.25)",
+                  borderRadius: "10px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "4px"
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                  <div
+                    style={{
+                      width: "28px",
+                      height: "28px",
+                      borderRadius: "50%",
+                      background: "linear-gradient(135deg, #d4af37 0%, #aa8624 100%)",
+                      color: "#0a0c10",
+                      fontWeight: "700",
+                      fontSize: "12px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0
+                    }}
+                  >
+                    {user.fullname ? user.fullname[0].toUpperCase() : "U"}
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: "12px", fontWeight: "600", color: "#f3f4f6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {user.fullname}
+                    </div>
+                    <div style={{ fontSize: "10px", color: "#9ca3af", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {user.email}
+                    </div>
+                  </div>
+                </div>
+                <span
+                  style={{
+                    fontSize: "9px",
+                    fontWeight: "700",
+                    letterSpacing: "0.06em",
+                    backgroundColor: "rgba(16, 185, 129, 0.15)",
+                    color: "#10b981",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    border: "1px solid rgba(16, 185, 129, 0.3)",
+                    flexShrink: 0
+                  }}
+                >
+                  VERIFIED ACCOUNT
+                </span>
               </div>
             )}
 
@@ -663,7 +1165,7 @@ export default function ChatWidget() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading || (!conversation && needsGuestDetails)}
+              disabled={isUploading || (!conversation && !user && !guestName.trim())}
               aria-label="Attach Photo"
               style={{
                 background: "transparent",
@@ -690,8 +1192,13 @@ export default function ChatWidget() {
                   handleSendMessage();
                 }
               }}
-              disabled={!conversation && needsGuestDetails}
-              placeholder={needsGuestDetails ? "Please enter your name first..." : "Ask about diamonds, rings, shipping..."}
+              placeholder={
+                !conversation
+                  ? user
+                    ? "Type your question to start..."
+                    : "Please sign in or enter details above..."
+                  : "Ask about diamonds, rings, shipping..."
+              }
               style={{
                 flex: 1,
                 padding: "10px 14px",
@@ -707,7 +1214,7 @@ export default function ChatWidget() {
             <button
               type="button"
               onClick={() => handleSendMessage()}
-              disabled={!inputText.trim() || (!conversation && needsGuestDetails)}
+              disabled={!inputText.trim()}
               aria-label="Send Message"
               style={{
                 width: "38px",
