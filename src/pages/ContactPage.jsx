@@ -527,34 +527,32 @@ export default function ContactPage() {
 
               {/* Salon Details Body */}
               <div style={{ padding: "26px 28px" }}>
-                {generalSettings?.address && (
-                  <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
-                    <div
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        backgroundColor: "rgba(197, 160, 89, 0.12)",
-                        border: "1px solid rgba(197, 160, 89, 0.3)",
-                        display: "grid",
-                        placeItems: "center",
-                        color: "var(--gold-deep)",
-                        flexShrink: 0,
-                        marginTop: "2px"
-                      }}
-                    >
-                      <MapPin size={17} />
-                    </div>
-                    <div>
-                      <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
-                        Showroom Location
-                      </span>
-                      <p style={{ fontSize: "0.90rem", color: "var(--foreground)", lineHeight: 1.5, margin: "2px 0 0 0", fontWeight: 500 }}>
-                        {addressString}
-                      </p>
-                    </div>
+                <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
+                  <div
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      backgroundColor: "rgba(197, 160, 89, 0.12)",
+                      border: "1px solid rgba(197, 160, 89, 0.3)",
+                      display: "grid",
+                      placeItems: "center",
+                      color: "var(--gold-deep)",
+                      flexShrink: 0,
+                      marginTop: "2px"
+                    }}
+                  >
+                    <MapPin size={17} />
                   </div>
-                )}
+                  <div>
+                    <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+                      Showroom Location
+                    </span>
+                    <p style={{ fontSize: "0.90rem", color: "var(--foreground)", lineHeight: 1.5, margin: "2px 0 0 0", fontWeight: 500 }}>
+                      {addressString}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 

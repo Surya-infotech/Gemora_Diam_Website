@@ -521,7 +521,7 @@ export function Footer() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {generalSettings?.address && (
+            {(generalSettings?.address || generalSettings?.cityname || generalSettings?.countryname) && (
               <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                 <div
                   style={{
@@ -540,10 +540,10 @@ export function Footer() {
                 </div>
                 <p style={{ fontSize: "0.84rem", color: "#B8C1B0", lineHeight: 1.6, margin: 0 }}>
                   <strong style={{ color: "#FFFFFF", display: "block", fontWeight: 600 }}>Master Workshop &amp; Showroom</strong>
-                  {generalSettings.address}, {generalSettings.cityname}
+                  {[generalSettings?.address, generalSettings?.cityname].filter(Boolean).join(", ")}
                   <br />
-                  {generalSettings.statename}, {generalSettings.countryname}
-                  {generalSettings.postalcode ? ` - ${generalSettings.postalcode}` : ""}
+                  {[generalSettings?.statename, generalSettings?.countryname].filter(Boolean).join(", ")}
+                  {generalSettings?.postalcode ? ` - ${generalSettings.postalcode}` : ""}
                 </p>
               </div>
             )}
