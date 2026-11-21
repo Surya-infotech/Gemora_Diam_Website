@@ -150,12 +150,12 @@ export function Footer() {
   // Curated category links strip purely from backend categories
   const navCategories = categories && categories.length > 0
     ? [
-        { label: "ALL BESPOKE COLLECTIONS", to: "/collections" },
-        ...categories.slice(0, 6).map((c) => ({
-          label: (c.categoryname || "").toUpperCase(),
-          to: `/collections?category=${encodeURIComponent(c.categoryname)}`
-        }))
-      ]
+      { label: "ALL BESPOKE COLLECTIONS", to: "/collections" },
+      ...categories.slice(0, 6).map((c) => ({
+        label: (c.categoryname || "").toUpperCase(),
+        to: `/collections?category=${encodeURIComponent(c.categoryname)}`
+      }))
+    ]
     : [];
 
   return (
@@ -538,13 +538,17 @@ export function Footer() {
                 >
                   <MapPin size={14} />
                 </div>
-                <p style={{ fontSize: "0.84rem", color: "#B8C1B0", lineHeight: 1.6, margin: 0 }}>
-                  <strong style={{ color: "#FFFFFF", display: "block", fontWeight: 600 }}>Master Workshop &amp; Showroom</strong>
-                  {[generalSettings?.address, generalSettings?.cityname].filter(Boolean).join(", ")}
-                  <br />
-                  {[generalSettings?.statename, generalSettings?.countryname].filter(Boolean).join(", ")}
-                  {generalSettings?.postalcode ? ` - ${generalSettings.postalcode}` : ""}
-                </p>
+                <div>
+                  <span style={{ display: "block", fontSize: "0.70rem", color: "#7D8775", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                    Master Workshop
+                  </span>
+                  <p style={{ fontSize: "0.85rem", color: "#EDE8DE", fontWeight: 500, lineHeight: 1.5, margin: "2px 0 0 0" }}>
+                    {[generalSettings?.address, generalSettings?.cityname].filter(Boolean).join(", ")}
+                    {generalSettings?.address || generalSettings?.cityname ? <br /> : null}
+                    {[generalSettings?.statename, generalSettings?.countryname].filter(Boolean).join(", ")}
+                    {generalSettings?.postalcode ? ` - ${generalSettings.postalcode}` : ""}
+                  </p>
+                </div>
               </div>
             )}
 
