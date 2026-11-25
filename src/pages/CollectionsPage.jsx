@@ -32,6 +32,25 @@ function normalizeShapeName(str) {
     .trim();
 }
 
+function normalizeCategoryKey(str) {
+  if (!str) return "";
+  const s = String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .replace(/s\b/g, "")
+    .trim();
+  if (!s) return "";
+  // Check earring before ring because "earing"/"earring" ends with "ring"
+  if (/\bear+ing\b/.test(s) || s.includes("earring") || s.includes("earing")) return "earring";
+  if (/\bring\b/.test(s) || s.includes("engagement") || s.includes("wedding band")) return "ring";
+  if (s.includes("bracelet")) return "bracelet";
+  if (s.includes("pendant") || s.includes("necklace")) return "pendant";
+  if (s.includes("bridal")) return "bridal";
+  return s;
+}
+
 export default function CollectionsPage({ slugOverride = null }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const routeParams = useParams();
@@ -200,14 +219,11 @@ export default function CollectionsPage({ slugOverride = null }) {
       const catTrim = String(category).trim().toLowerCase();
       const normCat = catTrim.replace(/s\b/g, "");
       const prodCat = String(p.category || "").trim().toLowerCase().replace(/s\b/g, "");
+      const normKey = normalizeCategoryKey(category);
+      const prodKey = normalizeCategoryKey(p.category);
       const matchName =
         prodCat === normCat ||
-        (normCat.includes("ring") && prodCat.includes("ring")) ||
-        (normCat.includes("bridal") && prodCat.includes("bridal")) ||
-        (normCat.includes("bracelet") && prodCat.includes("bracelet")) ||
-        (normCat.includes("earing") && prodCat.includes("earing")) ||
-        (normCat.includes("earring") && prodCat.includes("earring")) ||
-        (normCat.includes("pendant") && prodCat.includes("pendant"));
+        (normKey && prodKey && normKey === prodKey);
       const matchId = p.categoryid && String(p.categoryid) === String(category);
       if (!matchName && !matchId) return false;
     }
