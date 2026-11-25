@@ -304,6 +304,10 @@ export function StoreProvider({ children }) {
     localStorage.removeItem(customerIdKey);
     localStorage.removeItem("customer_token");
     localStorage.removeItem("customer_id");
+    localStorage.removeItem("gemora_chat_conv_id");
+    localStorage.removeItem("gemora_chat_guest_id");
+    localStorage.removeItem("gemora_chat_guest_name");
+    localStorage.removeItem("gemora_chat_guest_email");
     try {
       Object.keys(localStorage).forEach((key) => {
         localStorage.removeItem(key);

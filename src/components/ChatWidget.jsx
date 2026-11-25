@@ -48,18 +48,85 @@ export default function ChatWidget() {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+  const prevUserRef = useRef(user);
 
   // Clear errors when authTab changes
   useEffect(() => {
     setAuthError("");
   }, [authTab]);
 
-  // If user state updates (e.g. from token verification or login), prefill credentials and clear errors
+  // Handle user authentication state changes (logout, login, switch account)
   useEffect(() => {
-    if (user) {
+    const prevUser = prevUserRef.current;
+
+    // Detect logout (was signed in, now logged out)
+    if (prevUser && !user) {
+      setConversation(null);
+      setMessages([]);
+      setInputText("");
+      setUnreadCount(0);
+      setIsOpen(false);
+      setAuthTab("signin");
       setAuthError("");
+      setGuestName("");
+      setGuestEmail("");
+
+      try {
+        localStorage.removeItem("gemora_chat_conv_id");
+        localStorage.removeItem("gemora_chat_guest_id");
+        localStorage.removeItem("gemora_chat_guest_name");
+        localStorage.removeItem("gemora_chat_guest_email");
+      } catch {
+        // ignore
+      }
+
+      if (socketRef.current && conversation?.conversationId) {
+        socketRef.current.emit("leave_conversation", conversation.conversationId);
+      }
     }
-  }, [user]);
+    // Detect switching to a different user account
+    else if (
+      prevUser &&
+      user &&
+      (prevUser._id !== user._id || prevUser.customerid !== user.customerid || prevUser.email !== user.email)
+    ) {
+      setConversation(null);
+      setMessages([]);
+      setInputText("");
+      setUnreadCount(0);
+      setAuthError("");
+
+      try {
+        localStorage.removeItem("gemora_chat_conv_id");
+      } catch {
+        // ignore
+      }
+
+      if (socketRef.current && conversation?.conversationId) {
+        socketRef.current.emit("leave_conversation", conversation.conversationId);
+      }
+    }
+    // Detect logging in (from guest/null to user)
+    else if (!prevUser && user) {
+      setAuthError("");
+      // Reset any previous unauthenticated/guest session so user starts clean with their account
+      setConversation(null);
+      setMessages([]);
+      setInputText("");
+      setUnreadCount(0);
+
+      try {
+        localStorage.removeItem("gemora_chat_conv_id");
+        localStorage.removeItem("gemora_chat_guest_id");
+        localStorage.removeItem("gemora_chat_guest_name");
+        localStorage.removeItem("gemora_chat_guest_email");
+      } catch {
+        // ignore
+      }
+    }
+
+    prevUserRef.current = user;
+  }, [user, conversation?.conversationId]);
 
   // Get or generate persistent Guest ID
   const getGuestId = () => {
@@ -247,8 +314,21 @@ export default function ChatWidget() {
     logout();
     setConversation(null);
     setMessages([]);
-    localStorage.removeItem("gemora_chat_conv_id");
+    setInputText("");
+    setUnreadCount(0);
+    setIsOpen(false);
     setAuthTab("signin");
+    setAuthError("");
+    setGuestName("");
+    setGuestEmail("");
+    try {
+      localStorage.removeItem("gemora_chat_conv_id");
+      localStorage.removeItem("gemora_chat_guest_id");
+      localStorage.removeItem("gemora_chat_guest_name");
+      localStorage.removeItem("gemora_chat_guest_email");
+    } catch {
+      // ignore
+    }
   };
 
   // Send message
