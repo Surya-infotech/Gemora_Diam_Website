@@ -15,6 +15,15 @@ import {
   Check
 } from "lucide-react";
 import { useStore } from "../lib/store";
+import {
+  DEFAULT_IMAGE,
+  DEFAULT_ROBOTS,
+  normalizeCanonicalUrl,
+  upsertJsonLd,
+  upsertLinkTag,
+  upsertMetaTag,
+  usePageSeo
+} from "../lib/seo";
 import { slugify } from "../lib/slugify";
 import SectionHeading from "../components/SectionHeading";
 import ProductCard from "../components/ProductCard";
@@ -279,7 +288,8 @@ function ProductDetailContent({ product }) {
     getItemPrice,
     toggleWishlist,
     wishlist,
-    generalSettings
+    generalSettings,
+    storeCurrency
   } = useStore();
 
   const availableMetals = product?.metals || [];
@@ -388,104 +398,43 @@ function ProductDetailContent({ product }) {
   useEffect(() => {
     if (!product) return;
 
-    const previousTitle = document.title;
     const metaTitle = product.seo?.metaTitle?.trim() || `${product.name} | Gemora Diam Luxury Jewelry`;
-    const metaDesc = product.seo?.metaDescription?.trim() || product.description?.trim() || "";
+    const metaDesc =
+      product.seo?.metaDescription?.trim() ||
+      product.description?.trim() ||
+      `${product.name} — ethically crafted certified lab-grown diamond jewelry by Gemora Diam.`;
     const metaKeywords = product.seo?.metaKeywords?.trim() || "";
-    const canonicalUrl = product.seo?.canonicalUrl?.trim() || window.location.href;
-    const currentUrl = window.location.href;
-    const imageUrl = product.image || "";
+    const fallbackPath = `/product/${product._id || product.id}`;
+    const canonicalUrl = normalizeCanonicalUrl(product.seo?.canonicalUrl, fallbackPath);
+    const imageUrl = product.image || DEFAULT_IMAGE;
+    const currencyCode = storeCurrency?.currency || "USD";
 
-    // 1. Update Document Title
     document.title = metaTitle;
-
-    // Helper to set or update meta tag
-    const setMetaTag = (attrName, attrValue, content) => {
-      if (!content) return null;
-      let el = document.querySelector(`meta[${attrName}="${attrValue}"]`);
-      let created = false;
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attrName, attrValue);
-        document.head.appendChild(el);
-        created = true;
-      }
-      const prevContent = el.getAttribute("content");
-      el.setAttribute("content", content);
-      return { el, prevContent, created };
-    };
-
-    // Helper to set or update link tag
-    const setLinkTag = (rel, href) => {
-      if (!href) return null;
-      let el = document.querySelector(`link[rel="${rel}"]`);
-      let created = false;
-      if (!el) {
-        el = document.createElement("link");
-        el.setAttribute(rel, href);
-        document.head.appendChild(el);
-        created = true;
-      }
-      const prevHref = el.getAttribute("href");
-      el.setAttribute("href", href);
-      return { el, prevHref, created };
-    };
-
-    const cleanups = [];
-
-    // Description
-    if (metaDesc) {
-      const res = setMetaTag("name", "description", metaDesc);
-      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("content", res.prevContent || "")));
-    }
-
-    // Keywords
+    upsertMetaTag("name", "description", metaDesc);
+    upsertMetaTag("name", "robots", DEFAULT_ROBOTS);
     if (metaKeywords) {
-      const res = setMetaTag("name", "keywords", metaKeywords);
-      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("content", res.prevContent || "")));
+      upsertMetaTag("name", "keywords", metaKeywords);
     }
 
-    // Canonical Link
-    if (canonicalUrl) {
-      const res = setLinkTag("canonical", canonicalUrl);
-      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("href", res.prevHref || "")));
-    }
+    upsertLinkTag("canonical", canonicalUrl);
 
-    // Open Graph Tags
-    const ogTags = [
-      { prop: "og:title", val: metaTitle },
-      { prop: "og:description", val: metaDesc },
-      { prop: "og:url", val: canonicalUrl || currentUrl },
-      { prop: "og:type", val: "product" },
-      { prop: "og:image", val: imageUrl },
-      { prop: "og:site_name", val: "Gemora Diam" }
-    ];
-    ogTags.forEach(({ prop, val }) => {
-      const res = setMetaTag("property", prop, val);
-      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("content", res.prevContent || "")));
-    });
+    upsertMetaTag("property", "og:site_name", "Gemora Diam");
+    upsertMetaTag("property", "og:type", "product");
+    upsertMetaTag("property", "og:title", metaTitle);
+    upsertMetaTag("property", "og:description", metaDesc);
+    upsertMetaTag("property", "og:url", canonicalUrl);
+    upsertMetaTag("property", "og:image", imageUrl);
 
-    // Twitter Card Tags
-    const twitterTags = [
-      { name: "twitter:card", val: "summary_large_image" },
-      { name: "twitter:title", val: metaTitle },
-      { name: "twitter:description", val: metaDesc },
-      { name: "twitter:image", val: imageUrl }
-    ];
-    twitterTags.forEach(({ name, val }) => {
-      const res = setMetaTag("name", name, val);
-      if (res) cleanups.push(() => (res.created ? res.el.remove() : res.el.setAttribute("content", res.prevContent || "")));
-    });
+    upsertMetaTag("name", "twitter:card", "summary_large_image");
+    upsertMetaTag("name", "twitter:title", metaTitle);
+    upsertMetaTag("name", "twitter:description", metaDesc);
+    upsertMetaTag("name", "twitter:image", imageUrl);
 
-    // Schema.org JSON-LD Structured Data
-    const schemaScript = document.createElement("script");
-    schemaScript.type = "application/ld+json";
-    schemaScript.id = "product-jsonld-schema";
-    schemaScript.textContent = JSON.stringify({
+    upsertJsonLd("product-jsonld-schema", {
       "@context": "https://schema.org/",
       "@type": "Product",
       name: product.name,
-      image: imageUrl ? [imageUrl] : [],
+      image: product.image ? [product.image] : [],
       description: metaDesc,
       sku: product.sku || product.itemid || "",
       brand: {
@@ -494,21 +443,18 @@ function ProductDetailContent({ product }) {
       },
       offers: {
         "@type": "Offer",
-        url: canonicalUrl || currentUrl,
-        priceCurrency: "USD",
+        url: canonicalUrl,
+        priceCurrency: currencyCode,
         price: product.price || 0,
         availability: "https://schema.org/InStock",
         itemCondition: "https://schema.org/NewCondition"
       }
     });
-    document.head.appendChild(schemaScript);
-    cleanups.push(() => schemaScript.remove());
 
     return () => {
-      document.title = previousTitle;
-      cleanups.forEach((fn) => fn());
+      upsertJsonLd("product-jsonld-schema", null);
     };
-  }, [product]);
+  }, [product, storeCurrency?.currency]);
 
   const allMedia = useMemo(() => {
     if (!product) return [];
@@ -1606,10 +1552,64 @@ function ProductDetailContent({ product }) {
   );
 }
 
+function ProductNotFoundState({ id, onBack }) {
+  usePageSeo({
+    title: "Jewelry Piece Unavailable | Gemora Diam",
+    description: "The requested piece could not be located in our collection catalog.",
+    canonicalPath: `/product/${id || ""}`,
+    robots: "noindex, nofollow"
+  });
+
+  return (
+    <div style={{ minHeight: "65vh", display: "grid", placeItems: "center", padding: "60px 20px", textAlign: "center", backgroundColor: "#ffffff" }}>
+      <div style={{ maxWidth: "460px" }}>
+        <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
+          Item Not Found
+        </p>
+        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.4rem", margin: "14px 0" }}>
+          Jewelry Piece Unavailable
+        </h1>
+        <p style={{ color: "var(--muted-foreground)", fontSize: "0.95rem", marginBottom: "28px" }}>
+          The requested piece could not be located in our collection catalog.
+        </p>
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+          <button
+            onClick={onBack}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "12px 24px",
+              border: "1px solid var(--border)",
+              borderRadius: "2px",
+              cursor: "pointer",
+              color: "var(--foreground)"
+            }}
+          >
+            <ArrowLeft size={16} /> Go Back
+          </button>
+          <Link
+            to="/collections"
+            className="eyebrow"
+            style={{
+              padding: "12px 26px",
+              backgroundColor: "var(--primary)",
+              color: "#ffffff",
+              borderRadius: "2px"
+            }}
+          >
+            Explore Collection
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products, loading } = useStore();
+  const { products, productsLoading } = useStore();
 
   const product = useMemo(() => {
     if (!products || products.length === 0) return null;
@@ -1637,7 +1637,7 @@ export default function ProductDetailPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [id]);
 
-  if (loading && !product) {
+  if (productsLoading && !product) {
     return (
       <div style={{ minHeight: "65vh", display: "grid", placeItems: "center", backgroundColor: "#ffffff" }}>
         <div style={{ textAlign: "center", padding: "60px 20px" }}>
@@ -1653,50 +1653,7 @@ export default function ProductDetailPage() {
   }
 
   if (!product) {
-    return (
-      <div style={{ minHeight: "65vh", display: "grid", placeItems: "center", padding: "60px 20px", textAlign: "center", backgroundColor: "#ffffff" }}>
-        <div style={{ maxWidth: "460px" }}>
-          <p className="eyebrow" style={{ color: "var(--gold-deep)" }}>
-            Item Not Found
-          </p>
-          <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2.4rem", margin: "14px 0" }}>
-            Jewelry Piece Unavailable
-          </h1>
-          <p style={{ color: "var(--muted-foreground)", fontSize: "0.95rem", marginBottom: "28px" }}>
-            The requested piece could not be located in our collection catalog.
-          </p>
-          <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
-            <button
-              onClick={() => navigate(-1)}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "12px 24px",
-                border: "1px solid var(--border)",
-                borderRadius: "2px",
-                cursor: "pointer",
-                color: "var(--foreground)"
-              }}
-            >
-              <ArrowLeft size={16} /> Go Back
-            </button>
-            <Link
-              to="/collections"
-              className="eyebrow"
-              style={{
-                padding: "12px 26px",
-                backgroundColor: "var(--primary)",
-                color: "#ffffff",
-                borderRadius: "2px"
-              }}
-            >
-              Explore Collection
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <ProductNotFoundState id={id} onBack={() => navigate(-1)} />;
   }
 
   return <ProductDetailContent key={product.id || id} product={product} />;

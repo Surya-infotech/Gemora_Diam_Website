@@ -1,4 +1,5 @@
 import { useStore } from "../lib/store";
+import { usePageSeo } from "../lib/seo";
 import { formatPhoneNumber } from "../lib/formatters";
 import { Link } from "react-router-dom";
 import {
@@ -16,6 +17,15 @@ import atelier from "../assets/atelier.jpg";
 export default function AboutPage() {
   const { aboutUs, generalSettings, settingsLoading } = useStore();
   const brandName = generalSettings?.softwarename || "GEMORA DIAM";
+
+  usePageSeo({
+    title: `About ${brandName} | Ethical Lab-Grown Diamond Atelier`,
+    description:
+      aboutUs?.heroDescription?.trim() ||
+      "Discover Gemora Diam's ethical lab-grown diamond craftsmanship, bespoke design studio, and 100% recycled precious metals.",
+    canonicalPath: "/about",
+    image: aboutUs?.studioImage || undefined
+  });
 
   const locationString = [
     generalSettings?.address,

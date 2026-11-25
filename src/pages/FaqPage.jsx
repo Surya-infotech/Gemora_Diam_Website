@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, Sparkles, MessageCircle, ArrowRight } from "lucide-react";
 import { useStore } from "../lib/store";
+import { usePageSeo } from "../lib/seo";
 
 function formatTabLabel(type) {
   if (!type) return "General";
@@ -73,6 +74,31 @@ export default function FaqPage() {
   const toggleFaq = (id) => {
     setOpenId((prev) => (prev === id ? null : id));
   };
+
+  const faqSchema = useMemo(() => {
+    const active = (faqs || []).filter((f) => f && f.status !== false && f.question && f.answer);
+    if (active.length === 0) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: active.map((f) => ({
+        "@type": "Question",
+        name: String(f.question).trim(),
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: String(f.answer).trim()
+        }
+      }))
+    };
+  }, [faqs]);
+
+  usePageSeo({
+    title: "Frequently Asked Questions | Gemora Diam",
+    description:
+      "Find quick answers to common questions about Gemora Diam's certified lab-grown diamonds, custom creations, insured delivery, and lifetime care.",
+    canonicalPath: "/faq",
+    jsonLd: faqSchema
+  });
 
   return (
     <div style={{ backgroundColor: "#FAF9F6", minHeight: "100vh", color: "var(--foreground)" }}>

@@ -1,5 +1,27 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { generateSitemap } from './scripts/generate-sitemap.mjs'
+
+function normalizeCanonical(rawUrl, fallbackPath) {
+  const siteUrl = 'https://gemoradiam.com'
+  const fallback = `${siteUrl}${fallbackPath}`
+  const trimmed = String(rawUrl || '').trim()
+  if (!trimmed) return fallback
+  try {
+    const parsed = new URL(trimmed, siteUrl)
+    if (parsed.hostname === 'www.gemoradiam.com' || parsed.hostname === 'gemoradiam.com') {
+      const cleanPath = parsed.pathname === '/' ? '/' : `/${parsed.pathname.replace(/^\/+|\/+$/g, '')}`
+      return `${siteUrl}${cleanPath}`
+    }
+    return parsed.toString()
+  } catch {
+    return fallback
+  }
+}
+
+function escapeAttr(val = '') {
+  return String(val).replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+}
 
 function productSeoPlugin() {
   let cachedItems = null
@@ -10,15 +32,20 @@ function productSeoPlugin() {
     if (cachedItems && now - cacheTime < 30000) {
       return cachedItems
     }
-    try {
-      const res = await fetch('http://localhost:8085/Products/GetActiveItems')
-      if (res.ok) {
-        cachedItems = await res.json()
-        cacheTime = now
-        return cachedItems
+    for (const endpoint of [
+      'http://localhost:8085/Products/GetActiveItems',
+      'https://backend.gemoradiam.com/Products/GetActiveItems',
+    ]) {
+      try {
+        const res = await fetch(endpoint)
+        if (res.ok) {
+          cachedItems = await res.json()
+          cacheTime = now
+          return cachedItems
+        }
+      } catch {
+        // try next endpoint
       }
-    } catch {
-      // fallback
     }
     return cachedItems || []
   }
@@ -45,44 +72,80 @@ function productSeoPlugin() {
       const title = item.seo?.metaTitle?.trim() || `${item.itemname} | Gemora Diam Luxury Jewelry`
       const desc = item.seo?.metaDescription?.trim() || item.description?.trim() || ''
       const keywords = item.seo?.metaKeywords?.trim() || ''
-      const canonical = item.seo?.canonicalUrl?.trim() || `https://gemoradiam.com/product/${item.seo?.slug || item._id}`
-      const image = item.image || ''
+      const canonical = normalizeCanonical(item.seo?.canonicalUrl, `/product/${item._id || productId}`)
+      const image = item.image || 'https://gemoradiam.com/GEMORALOGO.png'
 
       let modified = html
-      if (title) {
-        modified = modified.replace(/<title>.*?<\/title>/i, `<title>${title}</title>`)
-      }
+      modified = modified.replace(/<title>.*?<\/title>/i, `<title>${escapeAttr(title)}</title>`)
       if (desc) {
         modified = modified.replace(
-          /<meta name="description" content=".*?" \/>/i,
-          `<meta name="description" content="${desc.replace(/"/g, '&quot;')}" />`
+          /<meta name="description" content=".*?"\s*\/?>/i,
+          `<meta name="description" content="${escapeAttr(desc)}" />`
         )
       }
+      modified = modified.replace(
+        /<link rel="canonical" href=".*?"\s*\/?>/i,
+        `<link rel="canonical" href="${escapeAttr(canonical)}" />`
+      )
+      modified = modified.replace(
+        /<meta property="og:type" content=".*?"\s*\/?>/i,
+        `<meta property="og:type" content="product" />`
+      )
+      modified = modified.replace(
+        /<meta property="og:title" content=".*?"\s*\/?>/i,
+        `<meta property="og:title" content="${escapeAttr(title)}" />`
+      )
+      if (desc) {
+        modified = modified.replace(
+          /<meta property="og:description" content=".*?"\s*\/?>/i,
+          `<meta property="og:description" content="${escapeAttr(desc)}" />`
+        )
+        modified = modified.replace(
+          /<meta name="twitter:description" content=".*?"\s*\/?>/i,
+          `<meta name="twitter:description" content="${escapeAttr(desc)}" />`
+        )
+      }
+      modified = modified.replace(
+        /<meta property="og:url" content=".*?"\s*\/?>/i,
+        `<meta property="og:url" content="${escapeAttr(canonical)}" />`
+      )
+      modified = modified.replace(
+        /<meta property="og:image" content=".*?"\s*\/?>/i,
+        `<meta property="og:image" content="${escapeAttr(image)}" />`
+      )
+      modified = modified.replace(
+        /<meta name="twitter:title" content=".*?"\s*\/?>/i,
+        `<meta name="twitter:title" content="${escapeAttr(title)}" />`
+      )
+      modified = modified.replace(
+        /<meta name="twitter:image" content=".*?"\s*\/?>/i,
+        `<meta name="twitter:image" content="${escapeAttr(image)}" />`
+      )
 
-      const tags = [
-        keywords ? `<meta name="keywords" content="${keywords.replace(/"/g, '&quot;')}" />` : '',
-        canonical ? `<link rel="canonical" href="${canonical}" />` : '',
-        `<meta property="og:title" content="${title.replace(/"/g, '&quot;')}" />`,
-        desc ? `<meta property="og:description" content="${desc.replace(/"/g, '&quot;')}" />` : '',
-        `<meta property="og:url" content="${canonical}" />`,
-        image ? `<meta property="og:image" content="${image}" />` : '',
-        `<meta property="og:type" content="product" />`,
-        `<meta name="twitter:card" content="summary_large_image" />`,
-        `<meta name="twitter:title" content="${title.replace(/"/g, '&quot;')}" />`,
-        desc ? `<meta name="twitter:description" content="${desc.replace(/"/g, '&quot;')}" />` : '',
-        image ? `<meta name="twitter:image" content="${image}" />` : ''
-      ]
-        .filter(Boolean)
-        .join('\n    ')
+      if (keywords) {
+        modified = modified.replace(
+          '</head>',
+          `    <meta name="keywords" content="${escapeAttr(keywords)}" />\n  </head>`
+        )
+      }
+      return modified
+    }
+  }
+}
 
-      return modified.replace('</head>', `    ${tags}\n  </head>`)
+function sitemapBuildPlugin() {
+  return {
+    name: 'vite-plugin-sitemap',
+    apply: 'build',
+    async buildStart() {
+      await generateSitemap()
     }
   }
 }
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), productSeoPlugin()],
+  plugins: [react(), productSeoPlugin(), sitemapBuildPlugin()],
   server: {
     port: 5178,
   },

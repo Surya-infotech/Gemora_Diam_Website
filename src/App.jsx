@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Link } from "react-router-dom";
 import { StoreProvider } from "./lib/store";
+import { usePageSeo } from "./lib/seo";
 import { Header, Footer } from "./components/SiteChrome";
 import InquiryPopupModal from "./components/InquiryPopupModal";
 import ChatWidget from "./components/ChatWidget";
@@ -28,6 +29,14 @@ function ScrollToTop() {
 }
 
 function NotFoundPage() {
+  const { pathname } = useLocation();
+  usePageSeo({
+    title: "Page Not Found | Gemora Diam",
+    description: "The page or jewelry item you are looking for may have been moved or is unavailable.",
+    canonicalPath: pathname || "/",
+    robots: "noindex, nofollow"
+  });
+
   return (
     <div
       style={{

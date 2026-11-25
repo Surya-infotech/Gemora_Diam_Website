@@ -1,8 +1,8 @@
-import { useEffect } from "react";
 import { useSearchParams, useParams, Link, useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import { ProductCard } from "../components/ProductCard";
 import { useStore } from "../lib/store";
+import { DEFAULT_ROBOTS, SITE_URL, usePageSeo } from "../lib/seo";
 import { slugify } from "../lib/slugify";
 
 function normalizeStyleName(str) {
@@ -342,9 +342,34 @@ export default function CollectionsPage({ slugOverride = null }) {
     }
   };
 
-  useEffect(() => {
-    document.title = `${title} | Gemora Diam Fine Jewelry`;
-  }, [title]);
+  const isSearchQuery = Boolean(searchParams.get("search")?.trim());
+  const canonicalCollectionPath = isSearchQuery
+    ? "/collections"
+    : slug && slug !== "collections" && slug !== "collection"
+    ? `/collection/${slug}`
+    : currentCategoryObj
+    ? `/collection/${slugify(typeof currentCategoryObj === "string" ? currentCategoryObj : currentCategoryObj.categoryname)}`
+    : "/collections";
+
+  const collectionDescription =
+    (currentCategoryObj && typeof currentCategoryObj === "object" && currentCategoryObj.description?.trim()) ||
+    `Explore ${title} at Gemora Diam — ethically crafted certified lab-grown diamond fine jewelry in recycled precious metals.`;
+
+  usePageSeo({
+    title: `${title} | Gemora Diam Fine Jewelry`,
+    description: collectionDescription,
+    canonicalPath: canonicalCollectionPath,
+    robots: isSearchQuery ? "noindex, follow" : DEFAULT_ROBOTS,
+    jsonLd: isSearchQuery
+      ? null
+      : {
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: title,
+          description: collectionDescription,
+          url: `${SITE_URL}${canonicalCollectionPath}`
+        }
+  });
 
   return (
     <div className="container-luxury" style={{ paddingTop: "60px", paddingBottom: "120px" }}>

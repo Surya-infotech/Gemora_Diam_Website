@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
+import { usePageSeo } from "../lib/seo";
 import SearchableLuxurySelect from "../components/SearchableLuxurySelect";
 
 const fieldStyle = {
@@ -34,6 +35,13 @@ const fieldStyle = {
 };
 
 export default function ProfilePage() {
+  usePageSeo({
+    title: "Client Account & Wishlist | Gemora Diam",
+    description: "Manage your Gemora Diam client account, saved wishlist, and shipping addresses.",
+    canonicalPath: "/profile",
+    robots: "noindex, nofollow"
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const rawTab = searchParams.get("tab");
   const currentTab = rawTab === "settings" ? "settings" : rawTab === "addresses" ? "addresses" : "wishlist";

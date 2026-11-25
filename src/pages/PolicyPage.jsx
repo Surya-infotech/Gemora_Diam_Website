@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { LegalLayout } from "../components/LegalLayout";
 import { useStore } from "../lib/store";
+import { usePageSeo } from "../lib/seo";
 import { slugifyPolicy } from "../lib/slugify";
 
 export default function PolicyPage({ fallbackTitle = "", NotFoundComponent = null }) {
@@ -45,6 +46,18 @@ export default function PolicyPage({ fallbackTitle = "", NotFoundComponent = nul
       (p.policyname.toLowerCase().includes("term") || p.policyname.toLowerCase().includes("service"))
     ) return true;
     return false;
+  });
+
+  const resolvedTitle = policy?.policyname || fallbackTitle || "Legal Policy";
+  const isMissingPolicy = !loading && !policy && !fallbackTitle;
+
+  usePageSeo({
+    title: isMissingPolicy ? "Policy Not Found | Gemora Diam" : `${resolvedTitle} | Gemora Diam`,
+    description: isMissingPolicy
+      ? "The requested policy page could not be found."
+      : `Read the official ${resolvedTitle} for Gemora Diam fine jewelry and certified lab-grown diamonds.`,
+    canonicalPath: policy?.policyname ? `/${slugifyPolicy(policy.policyname)}` : `/${currentSlug}`,
+    robots: isMissingPolicy ? "noindex, nofollow" : "index, follow"
   });
 
   if (loading && !policy) {

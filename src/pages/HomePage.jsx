@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, usePageSeo } from "../lib/seo";
 import HeroSlider from "../components/home/HeroSlider";
 import ShopByShapeSection from "../components/home/ShopByShapeSection";
 import BestSellerSection from "../components/home/BestSellerSection";
@@ -11,6 +12,12 @@ import LovedByCouplesSection from "../components/home/LovedByCouplesSection";
 import CustomDesignSection from "../components/home/CustomDesignSection";
 
 export default function HomePage() {
+  usePageSeo({
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    canonicalPath: "/"
+  });
+
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {

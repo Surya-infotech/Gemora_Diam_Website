@@ -11,6 +11,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { useStore } from "../lib/store";
+import { usePageSeo } from "../lib/seo";
 import { getCountryDetails } from "../utils/deviceDetails";
 import atelier from "../assets/atelier.jpg";
 
@@ -22,6 +23,14 @@ const validate = (f) => ({
 
 export default function ContactPage() {
   const { showToast, generalSettings, submitContactUs } = useStore();
+
+  usePageSeo({
+    title: "Contact & Book Private Consultation | Gemora Diam",
+    description:
+      "Connect with Gemora Diam's master jewelers for bespoke engagement ring consultations, custom lab-grown diamond inquiries, and showroom appointments.",
+    canonicalPath: "/contact"
+  });
+
   const [f, setF] = useState({ name: "", email: "", message: "" });
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);

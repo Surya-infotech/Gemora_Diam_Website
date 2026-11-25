@@ -17,6 +17,7 @@ import {
   Truck
 } from "lucide-react";
 import { useStore } from "../lib/store";
+import { usePageSeo } from "../lib/seo";
 import { formatPhoneNumber } from "../lib/formatters";
 import { StatusBadge } from "../components/StatusBadge";
 import { jsPDF } from "jspdf";
@@ -25,6 +26,13 @@ import html2canvas from "html2canvas";
 const ORDER_STEPS = ["Confirmed", "Processing", "Shipped", "Delivered"];
 
 export default function OrdersPage() {
+  usePageSeo({
+    title: "My Orders & Tracking | Gemora Diam",
+    description: "Track your bespoke Gemora Diam jewelry orders and view order history.",
+    canonicalPath: "/orders",
+    robots: "noindex, nofollow"
+  });
+
   const { format, getCustomerOrders, user } = useStore();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);

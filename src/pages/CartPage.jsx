@@ -19,12 +19,20 @@ import {
 } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
+import { usePageSeo } from "../lib/seo";
 import { formatPhoneNumber } from "../lib/formatters";
 import { CartLines } from "../components/CartLines";
 import PayPalCheckoutModal from "../components/cart/PayPalCheckoutModal";
 import SearchableLuxurySelect from "../components/SearchableLuxurySelect";
 
 export default function CartPage() {
+  usePageSeo({
+    title: "Shopping Bag & Checkout | Gemora Diam",
+    description: "Review your selected fine jewelry pieces and complete checkout securely at Gemora Diam.",
+    canonicalPath: "/cart",
+    robots: "noindex, nofollow"
+  });
+
   const navigate = useNavigate();
   const {
     cart,
