@@ -3,31 +3,31 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://gemoradiam.com/</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://gemoradiam.com/collections</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemoradiam.com/about</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://gemoradiam.com/contact</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://gemoradiam.com/faq</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -38,8 +38,8 @@
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://gemoradiam.com/collection/earings</loc>
-    <lastmod>2026-11-06</lastmod>
+    <loc>https://gemoradiam.com/collection/earrings</loc>
+    <lastmod>2026-11-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -290,12 +290,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemoradiam.com/collection/earrings</loc>
-    <lastmod>2026-11-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
     <loc>https://gemoradiam.com/collection/pendants</loc>
     <lastmod>2026-11-06</lastmod>
     <changefreq>weekly</changefreq>
@@ -344,8 +338,68 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://gemoradiam.com/product/6b07c5a60d179417e34256bd</loc>
+    <lastmod>2026-11-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://gemora-diam.s3.us-east-1.amazonaws.com/item/1795671460945_ER-0005%40W-%23viwe4.jpg</image:loc>
+      <image:title>Modern Trillion Lab Diamond Stud Earring 18K Solid Gold Three Prong Set Screw Back Earring Custom Birthday Present Her</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gemoradiam.com/product/6b07c4fb0d179417e342568d</loc>
+    <lastmod>2026-11-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://gemora-diam.s3.us-east-1.amazonaws.com/item/1795671290173_1%20%283%29.jpg</image:loc>
+      <image:title>East West Oval Cut Lab Diamond Solitaire Bracelet, 14K Solid Gold Four Prong Set With Cable Chain, Birthday Gift For Her</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gemoradiam.com/product/6b07bdd20d179417e34252cb</loc>
+    <lastmod>2026-11-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://gemora-diam.s3.us-east-1.amazonaws.com/item/1795669457272_1%20%283%29.jpg</image:loc>
+      <image:title>Classic Emerald Lab Diamond Solitaire Wristlet, 10K Solid Gold Four Secure Prong Set Bracelet, Bridal Wedding Gift</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gemoradiam.com/product/6b06d8e20d179417e3424f5a</loc>
+    <lastmod>2026-11-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://gemora-diam.s3.us-east-1.amazonaws.com/item/1795610849622_ER-0004%40W-%23viwe4.jpg</image:loc>
+      <image:title>Elongated Marquise Lab Grown Diamond Stud Earring 14K Solid Gold Two Prong Set Earring For Women</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gemoradiam.com/product/6b06bc9f0d179417e3424c34</loc>
+    <lastmod>2026-11-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://gemora-diam.s3.us-east-1.amazonaws.com/item/1795603614325_ER-0002%40W-%23viwe4.jpg</image:loc>
+      <image:title>Minimalist Pear Lab Diamond Stud Earring 14K Solid Gold Three Prong Setting Earring Custom Anniversary Gift For Wife</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gemoradiam.com/product/6b06bb5d0d179417e3424bea</loc>
+    <lastmod>2026-11-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://gemora-diam.s3.us-east-1.amazonaws.com/item/1795603292246_1%20%283%29.jpg</image:loc>
+      <image:title>Minimalist Round Lab Diamond Solitaire Bracelet, 925 Silver Four Prong Basket Setting Bracelet, Anniversary Gift For Her</image:title>
+    </image:image>
+  </url>
+  <url>
     <loc>https://gemoradiam.com/product/6b06954e0d179417e34248a0</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -355,7 +409,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b068eae0d179417e342452a</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -365,7 +419,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b068566122c8724e6777711</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -375,7 +429,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b067ae6122c8724e67774e0</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -385,7 +439,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0676dc122c8724e6777463</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -395,7 +449,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0671fe122c8724e67772f3</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -405,7 +459,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b066bff122c8724e67771d0</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -415,7 +469,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b066848122c8724e677710d</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -425,7 +479,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0585f5122c8724e6776e1d</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -435,7 +489,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b05819a122c8724e6776c86</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -445,7 +499,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b057ab6122c8724e6776a3b</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -455,7 +509,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b057335122c8724e6776904</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -465,7 +519,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b056eca122c8724e67767b4</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -475,7 +529,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0565d9122c8724e677660c</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -485,7 +539,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0561e1122c8724e677643f</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -495,7 +549,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0543d0122c8724e677624c</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -505,7 +559,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b053ab3122c8724e67760d8</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -515,7 +569,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b052e2f122c8724e6775f16</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -525,7 +579,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b052525122c8724e6775d97</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -535,7 +589,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b051b93122c8724e6775c0c</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -545,7 +599,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0437ec122c8724e6775b37</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -555,7 +609,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0423d0122c8724e6775a12</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -565,7 +619,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b041717122c8724e6775951</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -575,7 +629,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b040b5a122c8724e6775834</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -585,7 +639,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b03e881122c8724e677575b</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -595,7 +649,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b03db13122c8724e6775697</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -605,7 +659,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0195d9122c8724e67752f7</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -615,7 +669,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0185c2122c8724e6775228</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -625,7 +679,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b017a59122c8724e67750e9</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -635,7 +689,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b0166df122c8724e6774eb0</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -645,7 +699,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b014776a47d34e7859a9e07</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -655,7 +709,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b014040a47d34e7859a9844</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -665,7 +719,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b013871d48cbfe160a297d5</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -675,7 +729,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b01322fd48cbfe160a29612</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -685,7 +739,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b012e5bd48cbfe160a29475</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -695,7 +749,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b012856d48cbfe160a29053</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -705,7 +759,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b01207ed7fc479e406fb74d</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -715,7 +769,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b003d7ad7fc479e406fb4fa</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -725,7 +779,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b00322ed7fc479e406fb3ce</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -735,7 +789,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b00257fd7fc479e406fb1f2</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -745,7 +799,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b001c5ad7fc479e406faffe</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -755,7 +809,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6b001026d7fc479e406faf4a</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -765,7 +819,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6affe8dfd7fc479e406faa84</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -775,7 +829,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6affe214d7fc479e406fa824</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -785,7 +839,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aed9fb6d7fc479e406f98df</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -795,7 +849,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aed7ab5334421e880786458</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -805,7 +859,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aed74dc334421e88078636c</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -815,7 +869,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aed7176334421e880786257</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -825,7 +879,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aed6a9d334421e880785f0c</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -835,7 +889,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aed6766334421e880785d77</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -845,7 +899,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aed632c334421e880785c46</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -855,7 +909,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aed5ee2334421e880785bdd</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -865,7 +919,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec4eb3334421e880784f78</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -875,7 +929,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec4a4c334421e880784f14</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -885,7 +939,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec33a4334421e880784e87</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -895,7 +949,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec306f334421e880784e47</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -905,7 +959,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec2a50334421e880784e03</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -915,7 +969,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec2673334421e880784db3</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -925,7 +979,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec2392334421e880784d73</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -935,7 +989,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec2023334421e880784d27</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -945,7 +999,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec1d19334421e880784cef</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -955,7 +1009,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec1959334421e880784caf</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -965,7 +1019,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec165e334421e880784c63</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -975,7 +1029,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec1310334421e880784c25</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -985,7 +1039,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec0fee334421e880784be5</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -995,7 +1049,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec0d03334421e880784b6e</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -1005,7 +1059,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aec04da334421e880784ade</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -1015,7 +1069,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aeb2466334421e8807847b1</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -1025,7 +1079,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aeb1df7334421e8807846a4</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -1035,7 +1089,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aeb16a9334421e88078451e</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -1045,7 +1099,7 @@
   </url>
   <url>
     <loc>https://gemoradiam.com/product/6aeb02a5334421e88078403e</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>

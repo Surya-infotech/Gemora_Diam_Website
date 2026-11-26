@@ -1116,7 +1116,7 @@ function ProductDetailContent({ product }) {
                   {product.bandColors && product.bandColors.length > 0 && (
                     <div>
                       <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
-                        Band Color: <span style={{ fontWeight: 600, color: "var(--primary)" }}>{selectedBandColor || product.bandColors[0]}</span>
+                        Metal Color: <span style={{ fontWeight: 600, color: "var(--primary)" }}>{selectedBandColor || product.bandColors[0]}</span>
                       </label>
                       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                         {product.bandColors.map((bc) => {
