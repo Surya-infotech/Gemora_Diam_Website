@@ -253,6 +253,7 @@ export default function CartPage() {
         clarityname: item.clarityname || item.clarity || "",
         diamondcolor: item.diamondcolor || "",
         bandcolor: item.bandcolor || "",
+        size: item.size || "",
         specialinstruction: item.specialinstruction || "",
         price: Number(item.price ?? p?.price ?? 0),
         qty: Number(item.qty || 1),

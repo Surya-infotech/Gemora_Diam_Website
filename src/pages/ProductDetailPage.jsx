@@ -305,6 +305,27 @@ function ProductDetailContent({ product }) {
   const [selectedClarity, setSelectedClarity] = useState(product?.clarities?.[0] || "");
   const [selectedDiamondColor, setSelectedDiamondColor] = useState(product?.diamondColors?.[0] || "");
   const [selectedBandColor, setSelectedBandColor] = useState(product?.bandColors?.[0] || "");
+  const [selectedRingSize, setSelectedRingSize] = useState(product?.ringSizes?.[0] || "");
+
+  const isRingCategory = useMemo(() => {
+    const cat = String(product?.category || "").trim().toLowerCase();
+    if (!cat) return false;
+    if (/\bear+ings?\b/.test(cat) || cat.includes("earring") || cat.includes("earing")) return false;
+    return /\brings?\b/.test(cat);
+  }, [product?.category]);
+
+  const availableRingSizes = useMemo(() => {
+    if (!isRingCategory) return [];
+    return Array.isArray(product?.ringSizes) ? product.ringSizes : [];
+  }, [isRingCategory, product?.ringSizes]);
+
+  const activeRingSize = useMemo(() => {
+    if (availableRingSizes.length === 0) return "";
+    if (selectedRingSize && availableRingSizes.includes(selectedRingSize)) {
+      return selectedRingSize;
+    }
+    return availableRingSizes[0] || "";
+  }, [availableRingSizes, selectedRingSize]);
 
   // Available stones for selected metal from backend pricing
   const availableStones = useMemo(() => {
@@ -537,7 +558,7 @@ function ProductDetailContent({ product }) {
     const finalBandColor = selectedBandColor || product?.bandColors?.[0] || "";
 
     for (let i = 0; i < qty; i++) {
-      addToCart(product.id, metal, "", carat, currentPrice, activeStone, {
+      addToCart(product.id, metal, activeRingSize, carat, currentPrice, activeStone, {
         shape: finalShape,
         shapename: finalShape,
         clarity: finalClarity,
@@ -1148,6 +1169,41 @@ function ProductDetailContent({ product }) {
                   )}
                 </div>
               )}
+
+              {/* Ring Size (shown when Category is Ring) */}
+              {isRingCategory && availableRingSizes.length > 0 && (
+                <div>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", display: "block", marginBottom: "8px", color: "var(--foreground)" }}>
+                    Ring Size: <span style={{ fontWeight: 600, color: "var(--primary)" }}>{activeRingSize}</span>
+                  </label>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {availableRingSizes.map((rs) => {
+                      const isSelected = activeRingSize === rs;
+                      return (
+                        <button
+                          key={rs}
+                          type="button"
+                          onClick={() => setSelectedRingSize(rs)}
+                          style={{
+                            padding: "7px 16px",
+                            border: isSelected ? "1.5px solid var(--primary)" : "1px solid #E5DFD3",
+                            backgroundColor: isSelected ? "var(--primary)" : "#FAF8F5",
+                            color: isSelected ? "#ffffff" : "var(--foreground)",
+                            borderRadius: "6px",
+                            fontSize: "0.82rem",
+                            fontWeight: isSelected ? 600 : 500,
+                            cursor: "pointer",
+                            transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                            boxShadow: isSelected ? "0 2px 8px rgba(85, 104, 50, 0.25)" : "none"
+                          }}
+                        >
+                          {rs}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Quantity & Add to Cart Action */}
@@ -1414,6 +1470,12 @@ function ProductDetailContent({ product }) {
                   <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
                     <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Diamond Color</span>
                     <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{selectedDiamondColor || product.diamondColors[0]}</span>
+                  </div>
+                )}
+                {isRingCategory && activeRingSize && (
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                    <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Ring Size</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{activeRingSize}</span>
                   </div>
                 )}
                 <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
