@@ -727,7 +727,7 @@ function OrderDetailModal({ order, onClose }) {
             item.shapename && `Shape: ${item.shapename}`,
             item.clarityname && `Clarity: ${item.clarityname}`,
             item.stonename && `Stone: ${item.stonename}`,
-            item.size && `Size: ${item.size}`,
+            (item.ringsize || item.size) && `Size: ${item.ringsize || item.size}`,
             item.diamondcolor && `Color: ${item.diamondcolor}`,
             item.bandcolor && `Band: ${item.bandcolor}`
           ]
@@ -1426,7 +1426,7 @@ function OrderDetailModal({ order, onClose }) {
                   it.shapename && { label: "Shape", val: it.shapename },
                   it.clarityname && { label: "Clarity", val: it.clarityname },
                   it.stonename && { label: "Stone", val: it.stonename },
-                  it.size && { label: "Size", val: it.size },
+                  (it.ringsize || it.size) && { label: "Size", val: it.ringsize || it.size },
                   it.diamondcolor && { label: "Color", val: it.diamondcolor },
                   it.bandcolor && { label: "Band", val: it.bandcolor }
                 ].filter(Boolean);

@@ -25,6 +25,7 @@ import {
   usePageSeo
 } from "../lib/seo";
 import { slugify } from "../lib/slugify";
+import { isRingCategory as checkIsRingCategory } from "../lib/formatters";
 import SectionHeading from "../components/SectionHeading";
 import ProductCard from "../components/ProductCard";
 import ProductDescriptionView from "../components/ProductDescriptionView";
@@ -307,12 +308,7 @@ function ProductDetailContent({ product }) {
   const [selectedBandColor, setSelectedBandColor] = useState(product?.bandColors?.[0] || "");
   const [selectedRingSize, setSelectedRingSize] = useState(product?.ringSizes?.[0] || "");
 
-  const isRingCategory = useMemo(() => {
-    const cat = String(product?.category || "").trim().toLowerCase();
-    if (!cat) return false;
-    if (/\bear+ings?\b/.test(cat) || cat.includes("earring") || cat.includes("earing")) return false;
-    return /\brings?\b/.test(cat);
-  }, [product?.category]);
+  const isRingCategory = useMemo(() => checkIsRingCategory(product?.category), [product?.category]);
 
   const availableRingSizes = useMemo(() => {
     if (!isRingCategory) return [];

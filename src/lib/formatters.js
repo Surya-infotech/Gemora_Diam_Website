@@ -64,3 +64,13 @@ export function formatPhoneNumber(phone) {
 
   return trimmed;
 }
+
+/**
+ * Determine whether a product category represents a Ring (excluding Earrings).
+ */
+export function isRingCategory(category = "") {
+  const cat = String(category || "").trim().toLowerCase();
+  if (!cat) return false;
+  if (/\bear+ings?\b/.test(cat) || cat.includes("earring") || cat.includes("earing")) return false;
+  return /\brings?\b/.test(cat);
+}

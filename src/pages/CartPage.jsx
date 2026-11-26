@@ -20,7 +20,7 @@ import {
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
 import { usePageSeo } from "../lib/seo";
-import { formatPhoneNumber } from "../lib/formatters";
+import { formatPhoneNumber, isRingCategory } from "../lib/formatters";
 import { CartLines } from "../components/CartLines";
 import PayPalCheckoutModal from "../components/cart/PayPalCheckoutModal";
 import SearchableLuxurySelect from "../components/SearchableLuxurySelect";
@@ -241,9 +241,11 @@ export default function CartPage() {
         : (p?.itemid !== undefined && !isNaN(p?.itemid)
           ? Number(p.itemid)
           : (!isNaN(item.productId) ? Number(item.productId) : 1));
+      const ringSize = isRingCategory(p?.category) ? (item.size || "") : "";
       return {
         itemid: numericItemId,
         productId: item.productId,
+        categoryname: p?.category || "",
         itemname: p?.name || "Fine Jewelry Piece",
         image: p?.image || "",
         metalname: item.metal || "",
@@ -253,7 +255,8 @@ export default function CartPage() {
         clarityname: item.clarityname || item.clarity || "",
         diamondcolor: item.diamondcolor || "",
         bandcolor: item.bandcolor || "",
-        size: item.size || "",
+        ringsize: ringSize,
+        size: ringSize,
         specialinstruction: item.specialinstruction || "",
         price: Number(item.price ?? p?.price ?? 0),
         qty: Number(item.qty || 1),
@@ -447,7 +450,7 @@ export default function CartPage() {
                         <div>
                           <div style={{ fontWeight: 600 }}>{item.itemname || item.name}</div>
                           <div style={{ fontSize: "0.78rem", color: "var(--muted-foreground)" }}>
-                            {[item.metalname || item.metal, item.stonename || item.stone, item.diamondsize || item.carat, item.size ? `Size ${item.size}` : null].filter(Boolean).join(" · ")}
+                            {[item.metalname || item.metal, item.stonename || item.stone, item.diamondsize || item.carat, (item.ringsize || item.size) ? `Size ${item.ringsize || item.size}` : null].filter(Boolean).join(" · ")}
                           </div>
                         </div>
                       </div>
