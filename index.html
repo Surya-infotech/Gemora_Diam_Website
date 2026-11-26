@@ -36,6 +36,32 @@
     <meta name="twitter:title" content="GEMORA DIAM | Luxury & Fine Jewelry" />
     <meta name="twitter:description" content="Heirloom fine jewelry and rare certified diamonds crafted in our design studio with conflict-free Kimberley gems and 100% recycled gold." />
     <meta name="twitter:image" content="https://gemoradiam.com/GEMORALOGO.png" />
+    <script>
+      (function () {
+        try {
+          var host = "https://gemoradiam.com";
+          var path = window.location.pathname || "/";
+          var cleanPath = path === "/" ? "/" : "/" + path.replace(/^\/+|\/+$/g, "");
+          var lower = cleanPath.toLowerCase();
+          var canonicalHref = cleanPath === "/" ? host + "/" : host + cleanPath;
+
+          var canonicalEl = document.querySelector('link[rel="canonical"]');
+          if (canonicalEl) canonicalEl.setAttribute("href", canonicalHref);
+
+          var ogUrlEl = document.querySelector('meta[property="og:url"]');
+          if (ogUrlEl) ogUrlEl.setAttribute("content", canonicalHref);
+
+          var robotsEl = document.querySelector('meta[name="robots"]');
+          if (robotsEl) {
+            if (lower === "/profile" || lower === "/cart" || lower === "/orders") {
+              robotsEl.setAttribute("content", "noindex, nofollow");
+            } else if ((lower === "/collections" || lower === "/collection") && window.location.search.indexOf("search=") !== -1) {
+              robotsEl.setAttribute("content", "noindex, follow");
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Organization & Website Structured Data -->
     <script type="application/ld+json">

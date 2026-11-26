@@ -1,8 +1,4 @@
 User-agent: *
 Allow: /
 
-Disallow: /cart
-Disallow: /orders
-Disallow: /profile
-
 Sitemap: https://gemoradiam.com/sitemap.xml

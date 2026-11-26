@@ -190,6 +190,7 @@ function AccountMenu() {
               <div style={{ padding: "8px 0" }}>
                 <Link
                   to="/profile?tab=wishlist"
+                  rel="nofollow"
                   onClick={() => setOpen(false)}
                   style={{
                     display: "flex",
@@ -214,6 +215,7 @@ function AccountMenu() {
 
                 <Link
                   to="/orders"
+                  rel="nofollow"
                   onClick={() => setOpen(false)}
                   style={{
                     display: "flex",
@@ -238,6 +240,7 @@ function AccountMenu() {
 
                 <Link
                   to="/profile?tab=settings"
+                  rel="nofollow"
                   onClick={() => setOpen(false)}
                   style={{
                     display: "flex",
@@ -300,6 +303,7 @@ function AccountMenu() {
               </p>
               <Link
                 to="/profile"
+                rel="nofollow"
                 onClick={() => setOpen(false)}
                 className="eyebrow"
                 style={{
@@ -610,6 +614,7 @@ export function Header() {
             {/* Wishlist Link with Luxury Count Badge */}
             <Link
               to="/profile?tab=wishlist"
+              rel="nofollow"
               aria-label="Wishlist"
               style={{
                 position: "relative",
@@ -901,6 +906,7 @@ export function Header() {
                   </div>
                   <Link
                     to="/profile"
+                    rel="nofollow"
                     onClick={() => setMobile(false)}
                     style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--foreground)", marginTop: "4px" }}
                   >
@@ -908,6 +914,7 @@ export function Header() {
                   </Link>
                   <Link
                     to="/orders"
+                    rel="nofollow"
                     onClick={() => setMobile(false)}
                     style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--foreground)" }}
                   >
@@ -940,6 +947,7 @@ export function Header() {
               ) : (
                 <Link
                   to="/profile"
+                  rel="nofollow"
                   onClick={() => setMobile(false)}
                   className="eyebrow"
                   style={{
