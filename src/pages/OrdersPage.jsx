@@ -729,6 +729,8 @@ function OrderDetailModal({ order, onClose }) {
             item.stonename && `Stone: ${item.stonename}`,
             (item.ringsize || item.size) && `Size: ${item.ringsize || item.size}`,
             item.closuretype && `Closure: ${item.closuretype}`,
+            item.braceletlength && `Bracelet Length: ${item.braceletlength}`,
+            item.pendantlength && `Pendant Length: ${item.pendantlength}`,
             item.diamondcolor && `Color: ${item.diamondcolor}`,
             item.bandcolor && `Band: ${item.bandcolor}`
           ]
@@ -1429,6 +1431,8 @@ function OrderDetailModal({ order, onClose }) {
                   it.stonename && { label: "Stone", val: it.stonename },
                   (it.ringsize || it.size) && { label: "Size", val: it.ringsize || it.size },
                   it.closuretype && { label: "Closure", val: it.closuretype },
+                  it.braceletlength && { label: "Bracelet Length", val: it.braceletlength },
+                  it.pendantlength && { label: "Pendant Length", val: it.pendantlength },
                   it.diamondcolor && { label: "Color", val: it.diamondcolor },
                   it.bandcolor && { label: "Band", val: it.bandcolor }
                 ].filter(Boolean);

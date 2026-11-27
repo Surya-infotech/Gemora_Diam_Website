@@ -41,6 +41,16 @@ function mapBackendItem(item) {
   const closureTypes = (item.closuretypes || item.closureTypes || [])
     .map((c) => (typeof c === "object" ? (c.label || c.closuretype || c.value || "") : String(c || "")).trim())
     .filter(Boolean);
+  const lengths = (item.lengths || [])
+    .map((l) =>
+      typeof l === "object" && l !== null
+        ? {
+            lengthname: String(l.lengthname || l.label || "").trim(),
+            lengthtype: String(l.lengthtype || "").trim().toLowerCase()
+          }
+        : { lengthname: String(l || "").trim(), lengthtype: "" }
+    )
+    .filter((l) => l.lengthname);
 
   const gallery = (item.galleryimages || []).map((g) => (typeof g === "object" ? g?.imageUrl : g)).filter(Boolean);
   const mainImage = item.image || gallery[0] || "";
@@ -79,6 +89,7 @@ function mapBackendItem(item) {
     stones,
     styles,
     closureTypes,
+    lengths,
     pricing: item.pricing,
     status: item.status,
     seo: item.seo
@@ -940,8 +951,10 @@ export function StoreProvider({ children }) {
     const diamondcolor = extra.diamondcolor || extra.diamondColor || "";
     const bandcolor = extra.bandcolor || extra.bandColor || "";
     const closuretype = extra.closuretype || extra.closureType || "";
+    const braceletlength = extra.braceletlength || extra.braceletLength || "";
+    const pendantlength = extra.pendantlength || extra.pendantLength || "";
 
-    const key = `${productId}|${metal || ""}|${stone || ""}|${size || ""}|${carat || ""}|${shape}|${clarity}|${diamondcolor}|${bandcolor}|${closuretype}`;
+    const key = `${productId}|${metal || ""}|${stone || ""}|${size || ""}|${carat || ""}|${shape}|${clarity}|${diamondcolor}|${bandcolor}|${closuretype}|${braceletlength}|${pendantlength}`;
     setCart((c) => {
       const ex = c.find((i) => i.key === key);
       return ex
@@ -962,6 +975,8 @@ export function StoreProvider({ children }) {
             diamondcolor,
             bandcolor,
             closuretype,
+            braceletlength,
+            pendantlength,
             specialinstruction: extra.specialinstruction || extra.specialInstruction || "",
             price: resolvedPrice,
             qty: 1

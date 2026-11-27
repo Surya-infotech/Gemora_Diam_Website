@@ -83,3 +83,21 @@ export function isEarringsCategory(category = "") {
   if (!cat) return false;
   return /\bearr?ings?\b/.test(cat);
 }
+
+/**
+ * Determine whether a product category represents a Pendant.
+ */
+export function isPendantCategory(category = "") {
+  const cat = String(category || "").trim().toLowerCase();
+  if (!cat) return false;
+  return /\bpend[ae]nts?\b/.test(cat);
+}
+
+/**
+ * Determine whether a product category represents a Bracelet.
+ */
+export function isBraceletCategory(category = "") {
+  const cat = String(category || "").trim().toLowerCase();
+  if (!cat) return false;
+  return /\bb(?:ra|ar)celets?\b/.test(cat);
+}

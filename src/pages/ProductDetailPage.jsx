@@ -27,7 +27,9 @@ import {
 import { slugify } from "../lib/slugify";
 import {
   isRingCategory as checkIsRingCategory,
-  isEarringsCategory as checkIsEarringsCategory
+  isEarringsCategory as checkIsEarringsCategory,
+  isPendantCategory as checkIsPendantCategory,
+  isBraceletCategory as checkIsBraceletCategory
 } from "../lib/formatters";
 import SectionHeading from "../components/SectionHeading";
 import ProductCard from "../components/ProductCard";
@@ -283,6 +285,19 @@ function LuxuryDropdownSelector({
   );
 }
 
+function getLengthsByType(lengths, type) {
+  if (!Array.isArray(lengths)) return [];
+  const typed = lengths.filter((l) => l.lengthtype === type);
+  const list = typed.length > 0 ? typed : lengths.filter((l) => !l.lengthtype);
+  return list.map((l) => l.lengthname).filter(Boolean);
+}
+
+function resolveActiveOption(options, selected) {
+  if (!options || options.length === 0) return "";
+  if (selected && options.includes(selected)) return selected;
+  return options[0] || "";
+}
+
 function OptionChipGroup({ label, value, options, onSelect }) {
   if (!options || options.length === 0) return null;
   return (
@@ -358,35 +373,49 @@ function ProductDetailContent({ product }) {
   const [selectedBandColor, setSelectedBandColor] = useState(product?.bandColors?.[0] || "");
   const [selectedRingSize, setSelectedRingSize] = useState(product?.ringSizes?.[0] || "");
   const [selectedClosureType, setSelectedClosureType] = useState(product?.closureTypes?.[0] || "");
+  const [selectedBraceletLength, setSelectedBraceletLength] = useState("");
+  const [selectedPendantLength, setSelectedPendantLength] = useState("");
 
   const isRingCategory = useMemo(() => checkIsRingCategory(product?.category), [product?.category]);
   const isEarringsCategory = useMemo(() => checkIsEarringsCategory(product?.category), [product?.category]);
+  const isBraceletCategory = useMemo(() => checkIsBraceletCategory(product?.category), [product?.category]);
+  const isPendantCategory = useMemo(() => checkIsPendantCategory(product?.category), [product?.category]);
 
-  const availableRingSizes = useMemo(() => {
-    if (!isRingCategory) return [];
-    return Array.isArray(product?.ringSizes) ? product.ringSizes : [];
-  }, [isRingCategory, product?.ringSizes]);
+  const availableRingSizes = useMemo(
+    () => (isRingCategory && Array.isArray(product?.ringSizes) ? product.ringSizes : []),
+    [isRingCategory, product?.ringSizes]
+  );
+  const activeRingSize = useMemo(
+    () => resolveActiveOption(availableRingSizes, selectedRingSize),
+    [availableRingSizes, selectedRingSize]
+  );
 
-  const activeRingSize = useMemo(() => {
-    if (availableRingSizes.length === 0) return "";
-    if (selectedRingSize && availableRingSizes.includes(selectedRingSize)) {
-      return selectedRingSize;
-    }
-    return availableRingSizes[0] || "";
-  }, [availableRingSizes, selectedRingSize]);
+  const availableClosureTypes = useMemo(
+    () => (isEarringsCategory && Array.isArray(product?.closureTypes) ? product.closureTypes : []),
+    [isEarringsCategory, product?.closureTypes]
+  );
+  const activeClosureType = useMemo(
+    () => resolveActiveOption(availableClosureTypes, selectedClosureType),
+    [availableClosureTypes, selectedClosureType]
+  );
 
-  const availableClosureTypes = useMemo(() => {
-    if (!isEarringsCategory) return [];
-    return Array.isArray(product?.closureTypes) ? product.closureTypes : [];
-  }, [isEarringsCategory, product?.closureTypes]);
+  const availableBraceletLengths = useMemo(
+    () => (isBraceletCategory ? getLengthsByType(product?.lengths, "bracelet") : []),
+    [isBraceletCategory, product?.lengths]
+  );
+  const activeBraceletLength = useMemo(
+    () => resolveActiveOption(availableBraceletLengths, selectedBraceletLength),
+    [availableBraceletLengths, selectedBraceletLength]
+  );
 
-  const activeClosureType = useMemo(() => {
-    if (availableClosureTypes.length === 0) return "";
-    if (selectedClosureType && availableClosureTypes.includes(selectedClosureType)) {
-      return selectedClosureType;
-    }
-    return availableClosureTypes[0] || "";
-  }, [availableClosureTypes, selectedClosureType]);
+  const availablePendantLengths = useMemo(
+    () => (isPendantCategory ? getLengthsByType(product?.lengths, "pendant") : []),
+    [isPendantCategory, product?.lengths]
+  );
+  const activePendantLength = useMemo(
+    () => resolveActiveOption(availablePendantLengths, selectedPendantLength),
+    [availablePendantLengths, selectedPendantLength]
+  );
 
   // Available stones for selected metal from backend pricing
   const availableStones = useMemo(() => {
@@ -626,7 +655,9 @@ function ProductDetailContent({ product }) {
         clarityname: finalClarity,
         diamondcolor: finalDiamondColor,
         bandcolor: finalBandColor,
-        closuretype: activeClosureType
+        closuretype: activeClosureType,
+        braceletlength: activeBraceletLength,
+        pendantlength: activePendantLength
       });
     }
     notify("Added to Bag", `${qty}x ${product.name} (${format(currentPrice * qty)})`);
@@ -1251,6 +1282,28 @@ function ProductDetailContent({ product }) {
                   onSelect={setSelectedClosureType}
                 />
               )}
+
+              {/* Bracelet Length Dropdown (shown when Category is Bracelet) */}
+              {isBraceletCategory && availableBraceletLengths.length > 0 && (
+                <LuxuryDropdownSelector
+                  id="bracelet-length-select"
+                  label="Bracelet Length"
+                  value={activeBraceletLength}
+                  options={availableBraceletLengths}
+                  onChange={(val) => setSelectedBraceletLength(val)}
+                />
+              )}
+
+              {/* Pendant Length Dropdown (shown when Category is Pendant) */}
+              {isPendantCategory && availablePendantLengths.length > 0 && (
+                <LuxuryDropdownSelector
+                  id="pendant-length-select"
+                  label="Pendant Length"
+                  value={activePendantLength}
+                  options={availablePendantLengths}
+                  onChange={(val) => setSelectedPendantLength(val)}
+                />
+              )}
             </div>
 
             {/* Quantity & Add to Cart Action */}
@@ -1529,6 +1582,18 @@ function ProductDetailContent({ product }) {
                   <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
                     <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Closure Type</span>
                     <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{activeClosureType}</span>
+                  </div>
+                )}
+                {isBraceletCategory && activeBraceletLength && (
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                    <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Bracelet Length</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{activeBraceletLength}</span>
+                  </div>
+                )}
+                {isPendantCategory && activePendantLength && (
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>
+                    <span style={{ color: "var(--muted-foreground)", fontSize: "0.85rem" }}>Pendant Length</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{activePendantLength}</span>
                   </div>
                 )}
                 <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #EDE8DE", paddingBottom: "10px" }}>

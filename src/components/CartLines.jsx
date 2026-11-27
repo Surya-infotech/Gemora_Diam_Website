@@ -117,6 +117,8 @@ export function CartLines({ compact = false, onProductClick = null }) {
                     {item.bandcolor && <span>• Band: {item.bandcolor}</span>}
                     {item.size && <span>• Size {item.size}</span>}
                     {item.closuretype && <span>• Closure: {item.closuretype}</span>}
+                    {item.braceletlength && <span>• Length: {item.braceletlength}</span>}
+                    {item.pendantlength && <span>• Length: {item.pendantlength}</span>}
                   </div>
                 </div>
 
