@@ -179,7 +179,7 @@ export default function PayPalCheckoutModal({
 
     const script = document.createElement("script");
     script.id = scriptId;
-    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&intent=capture&components=buttons`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&intent=capture&components=buttons&locale=en_US`;
     script.async = true;
 
     script.onload = () => {
