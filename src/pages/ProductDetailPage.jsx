@@ -1263,13 +1263,14 @@ function ProductDetailContent({ product }) {
                   </div>
                 )}
 
-              {/* Ring Size (shown when Category is Ring) */}
-              {isRingCategory && (
-                <OptionChipGroup
+              {/* Ring Size Dropdown (shown when Category is Ring) */}
+              {isRingCategory && availableRingSizes.length > 0 && (
+                <LuxuryDropdownSelector
+                  id="ring-size-select"
                   label="Ring Size"
                   value={activeRingSize}
                   options={availableRingSizes}
-                  onSelect={setSelectedRingSize}
+                  onChange={(val) => setSelectedRingSize(val)}
                 />
               )}
 
