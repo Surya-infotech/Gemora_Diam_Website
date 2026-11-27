@@ -71,6 +71,15 @@ export function formatPhoneNumber(phone) {
 export function isRingCategory(category = "") {
   const cat = String(category || "").trim().toLowerCase();
   if (!cat) return false;
-  if (/\bear+ings?\b/.test(cat) || cat.includes("earring") || cat.includes("earing")) return false;
+  if (/\bearr?ings?\b/.test(cat)) return false;
   return /\brings?\b/.test(cat);
+}
+
+/**
+ * Determine whether a product category represents Earrings.
+ */
+export function isEarringsCategory(category = "") {
+  const cat = String(category || "").trim().toLowerCase();
+  if (!cat) return false;
+  return /\bearr?ings?\b/.test(cat);
 }

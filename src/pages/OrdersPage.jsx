@@ -728,6 +728,7 @@ function OrderDetailModal({ order, onClose }) {
             item.clarityname && `Clarity: ${item.clarityname}`,
             item.stonename && `Stone: ${item.stonename}`,
             (item.ringsize || item.size) && `Size: ${item.ringsize || item.size}`,
+            item.closuretype && `Closure: ${item.closuretype}`,
             item.diamondcolor && `Color: ${item.diamondcolor}`,
             item.bandcolor && `Band: ${item.bandcolor}`
           ]
@@ -1427,6 +1428,7 @@ function OrderDetailModal({ order, onClose }) {
                   it.clarityname && { label: "Clarity", val: it.clarityname },
                   it.stonename && { label: "Stone", val: it.stonename },
                   (it.ringsize || it.size) && { label: "Size", val: it.ringsize || it.size },
+                  it.closuretype && { label: "Closure", val: it.closuretype },
                   it.diamondcolor && { label: "Color", val: it.diamondcolor },
                   it.bandcolor && { label: "Band", val: it.bandcolor }
                 ].filter(Boolean);

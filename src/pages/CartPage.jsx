@@ -20,7 +20,7 @@ import {
 import { Country, State, City } from "country-state-city";
 import { useStore } from "../lib/store";
 import { usePageSeo } from "../lib/seo";
-import { formatPhoneNumber, isRingCategory } from "../lib/formatters";
+import { formatPhoneNumber, isRingCategory, isEarringsCategory } from "../lib/formatters";
 import { CartLines } from "../components/CartLines";
 import PayPalCheckoutModal from "../components/cart/PayPalCheckoutModal";
 import SearchableLuxurySelect from "../components/SearchableLuxurySelect";
@@ -242,6 +242,7 @@ export default function CartPage() {
           ? Number(p.itemid)
           : (!isNaN(item.productId) ? Number(item.productId) : 1));
       const ringSize = isRingCategory(p?.category) ? (item.size || "") : "";
+      const closureType = isEarringsCategory(p?.category) ? (item.closuretype || "") : "";
       return {
         itemid: numericItemId,
         productId: item.productId,
@@ -257,6 +258,7 @@ export default function CartPage() {
         bandcolor: item.bandcolor || "",
         ringsize: ringSize,
         size: ringSize,
+        closuretype: closureType,
         specialinstruction: item.specialinstruction || "",
         price: Number(item.price ?? p?.price ?? 0),
         qty: Number(item.qty || 1),
@@ -450,7 +452,7 @@ export default function CartPage() {
                         <div>
                           <div style={{ fontWeight: 600 }}>{item.itemname || item.name}</div>
                           <div style={{ fontSize: "0.78rem", color: "var(--muted-foreground)" }}>
-                            {[item.metalname || item.metal, item.stonename || item.stone, item.diamondsize || item.carat, (item.ringsize || item.size) ? `Size ${item.ringsize || item.size}` : null].filter(Boolean).join(" · ")}
+                            {[item.metalname || item.metal, item.stonename || item.stone, item.diamondsize || item.carat, (item.ringsize || item.size) ? `Size ${item.ringsize || item.size}` : null, item.closuretype ? `Closure: ${item.closuretype}` : null].filter(Boolean).join(" · ")}
                           </div>
                         </div>
                       </div>

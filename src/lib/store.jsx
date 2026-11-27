@@ -38,6 +38,9 @@ function mapBackendItem(item) {
   const bandColors = (item.bandcolors || []).map((c) => (typeof c === "object" ? c.colorname : c)).filter(Boolean);
   const stones = (item.stones || []).map((s) => (typeof s === "object" ? s.stonename : s)).filter(Boolean);
   const styles = (item.styles || []).map((s) => (typeof s === "object" ? s.stylename : s)).filter(Boolean);
+  const closureTypes = (item.closuretypes || item.closureTypes || [])
+    .map((c) => (typeof c === "object" ? (c.label || c.closuretype || c.value || "") : String(c || "")).trim())
+    .filter(Boolean);
 
   const gallery = (item.galleryimages || []).map((g) => (typeof g === "object" ? g?.imageUrl : g)).filter(Boolean);
   const mainImage = item.image || gallery[0] || "";
@@ -75,16 +78,17 @@ function mapBackendItem(item) {
     bandColors,
     stones,
     styles,
+    closureTypes,
     pricing: item.pricing,
     status: item.status,
     seo: item.seo
       ? {
-          metaTitle: item.seo.metaTitle || "",
-          metaDescription: item.seo.metaDescription || "",
-          metaKeywords: item.seo.metaKeywords || "",
-          slug: item.seo.slug || "",
-          canonicalUrl: item.seo.canonicalUrl || ""
-        }
+        metaTitle: item.seo.metaTitle || "",
+        metaDescription: item.seo.metaDescription || "",
+        metaKeywords: item.seo.metaKeywords || "",
+        slug: item.seo.slug || "",
+        canonicalUrl: item.seo.canonicalUrl || ""
+      }
       : null,
     bestseller: true
   };
@@ -804,10 +808,10 @@ export function StoreProvider({ children }) {
             const list = Array.isArray(data)
               ? data
               : Array.isArray(data.categories)
-              ? data.categories
-              : Array.isArray(data.value)
-              ? data.value
-              : [];
+                ? data.categories
+                : Array.isArray(data.value)
+                  ? data.value
+                  : [];
             setCategories(list);
           })
           .catch((err) => console.warn("Failed to fetch categories:", err));
@@ -935,32 +939,34 @@ export function StoreProvider({ children }) {
     const clarity = extra.clarity || extra.clarityname || "";
     const diamondcolor = extra.diamondcolor || extra.diamondColor || "";
     const bandcolor = extra.bandcolor || extra.bandColor || "";
+    const closuretype = extra.closuretype || extra.closureType || "";
 
-    const key = `${productId}|${metal || ""}|${stone || ""}|${size || ""}|${carat || ""}|${shape}|${clarity}|${diamondcolor}|${bandcolor}`;
+    const key = `${productId}|${metal || ""}|${stone || ""}|${size || ""}|${carat || ""}|${shape}|${clarity}|${diamondcolor}|${bandcolor}|${closuretype}`;
     setCart((c) => {
       const ex = c.find((i) => i.key === key);
       return ex
         ? c.map((i) => (i.key === key ? { ...i, qty: i.qty + 1 } : i))
         : [
-            ...c,
-            {
-              key,
-              productId,
-              metal,
-              stone,
-              size,
-              carat,
-              shape,
-              shapename: shape,
-              clarity,
-              clarityname: clarity,
-              diamondcolor,
-              bandcolor,
-              specialinstruction: extra.specialinstruction || extra.specialInstruction || "",
-              price: resolvedPrice,
-              qty: 1
-            }
-          ];
+          ...c,
+          {
+            key,
+            productId,
+            metal,
+            stone,
+            size,
+            carat,
+            shape,
+            shapename: shape,
+            clarity,
+            clarityname: clarity,
+            diamondcolor,
+            bandcolor,
+            closuretype,
+            specialinstruction: extra.specialinstruction || extra.specialInstruction || "",
+            price: resolvedPrice,
+            qty: 1
+          }
+        ];
     });
     notify("Added to Bag", `${p?.name || "Jewelry Piece"}${metal ? " • " + metal : ""}`);
     setCartOpen(true);
